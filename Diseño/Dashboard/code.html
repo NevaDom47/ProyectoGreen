@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard - Mercadito</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#bec9c1",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed": "#caead7",
+                    "on-secondary-fixed-variant": "#314c3f",
+                    "on-primary-container": "#8bd8b2",
+                    "surface-container-highest": "#e0e3df",
+                    "tertiary": "#682826",
+                    "primary-fixed": "#a5f3cb",
+                    "outline": "#6f7a73",
+                    "error": "#ba1a1a",
+                    "secondary-fixed-dim": "#afcebb",
+                    "surface-container-lowest": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "inverse-surface": "#2d312e",
+                    "on-tertiary": "#ffffff",
+                    "secondary-container": "#caead7",
+                    "on-tertiary-container": "#ffb5b0",
+                    "surface-bright": "#f7faf5",
+                    "surface": "#f7faf5",
+                    "tertiary-fixed-dim": "#ffb3ae",
+                    "on-secondary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-surface": "#181d1a",
+                    "on-secondary-container": "#4e6b5b",
+                    "on-background": "#181d1a",
+                    "surface-container": "#ebefea",
+                    "inverse-primary": "#89d6b0",
+                    "tertiary-fixed": "#ffdad7",
+                    "on-surface-variant": "#3f4943",
+                    "inverse-on-surface": "#eef2ed",
+                    "tertiary-container": "#853e3b",
+                    "surface-container-high": "#e6e9e4",
+                    "surface-container-low": "#f1f4f0",
+                    "surface-tint": "#186b4c",
+                    "on-error-container": "#93000a",
+                    "primary": "#00462f",
+                    "primary-fixed-dim": "#89d6b0",
+                    "on-tertiary-fixed-variant": "#75322f",
+                    "on-primary-fixed-variant": "#005137",
+                    "secondary": "#486456",
+                    "on-primary-fixed": "#002114",
+                    "background": "#f7faf5",
+                    "on-tertiary-fixed": "#3c0708",
+                    "surface-variant": "#e0e3df",
+                    "surface-dim": "#d7dbd6",
+                    "primary-container": "#036042",
+                    "on-secondary-fixed": "#042015"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "2xl": "1rem",
+                    "3xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans", "sans-serif"],
+                    "body": ["Plus Jakarta Sans", "sans-serif"],
+                    "label": ["Plus Jakarta Sans", "sans-serif"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-24 md:pb-8">
+<!-- TopAppBar -->
+<header class="bg-[#f7faf5] dark:bg-gray-900 docked full-width top-0 no-border bg-surface-container-low flat no shadows flex justify-between items-center w-full px-4 h-16 sticky z-40">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container/20">
+<img alt="Supplier Profile" class="w-full h-full object-cover" data-alt="Portrait of a smiling farmer with a straw hat standing in a sunny green field" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZpzQJylefZ8ozl-r5qbThUIoYdpepCJBADUdsgq4XadPV6Ht5FovQufXXPFrrsQiDvIHkxbbbKerxfTLsmLE5QYrJn0YpNFHbr5WVbawRi4dwlA5bfUv8D58MUIggytHPntNrESnd28o6dHHLEIN2-HzHZieGva826Eo1ggjOZF7266hc3KxDk7l4SXjlEV6gN7nQNBkMfrAmUBaZ20_x64nC-0BZSX7V3e0OB66mi6evapySX5eHbtIXFuROR4KPE3C1hI3dzV4"/>
+</div>
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold text-lg tracking-tight text-[#00462f] dark:text-emerald-500">Mercadito</h1>
+</div>
+<button aria-label="Notifications" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-[#00462f] dark:text-emerald-500">
+<span class="material-symbols-outlined text-[24px]">notifications</span>
+</button>
+</header>
+<main class="max-w-7xl mx-auto px-4 pt-4 md:pt-8 flex flex-col gap-6">
+<!-- Header Section -->
+<section class="flex flex-col gap-1">
+<h2 class="text-2xl md:text-3xl font-headline font-bold text-primary">Panel de Control</h2>
+<p class="text-sm font-body text-on-surface-variant">Resumen de actividad y métricas clave.</p>
+</section>
+<!-- KPIs Bento Grid -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<!-- KPI Card 1 -->
+<div class="bg-surface-container-lowest rounded-2xl p-4 shadow-sm flex flex-col justify-between border border-outline-variant/20 relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-16 h-16 bg-primary-container/5 rounded-full transition-transform group-hover:scale-150 duration-500"></div>
+<div class="flex items-center justify-between mb-4 relative z-10">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">handshake</span>
+<span class="text-xs font-label font-bold text-primary bg-primary-container/10 px-2 py-1 rounded-md">+12%</span>
+</div>
+<div class="relative z-10">
+<h3 class="text-2xl font-headline font-extrabold text-on-surface">48</h3>
+<p class="text-xs font-body text-on-surface-variant font-medium mt-1">Total Negociaciones</p>
+</div>
+</div>
+<!-- KPI Card 2 -->
+<div class="bg-surface-container-lowest rounded-2xl p-4 shadow-sm flex flex-col justify-between border border-outline-variant/20 relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-16 h-16 bg-secondary-container/20 rounded-full transition-transform group-hover:scale-150 duration-500"></div>
+<div class="flex items-center justify-between mb-4 relative z-10">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">visibility</span>
+<span class="text-xs font-label font-bold text-primary bg-primary-container/10 px-2 py-1 rounded-md">+5%</span>
+</div>
+<div class="relative z-10">
+<h3 class="text-2xl font-headline font-extrabold text-on-surface">1,204</h3>
+<p class="text-xs font-body text-on-surface-variant font-medium mt-1">Visitas al Perfil</p>
+</div>
+</div>
+<!-- KPI Card 3 -->
+<div class="bg-surface-container-lowest rounded-2xl p-4 shadow-sm flex flex-col justify-between border border-outline-variant/20 relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-16 h-16 bg-tertiary-container/10 rounded-full transition-transform group-hover:scale-150 duration-500"></div>
+<div class="flex items-center justify-between mb-4 relative z-10">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+<span class="text-xs font-label font-bold text-tertiary bg-tertiary-container/10 px-2 py-1 rounded-md">-2%</span>
+</div>
+<div class="relative z-10">
+<h3 class="text-2xl font-headline font-extrabold text-on-surface">12</h3>
+<p class="text-xs font-body text-on-surface-variant font-medium mt-1">En Tránsito</p>
+</div>
+</div>
+<!-- KPI Card 4 -->
+<div class="bg-primary-container rounded-2xl p-4 shadow-sm flex flex-col justify-between relative overflow-hidden group text-on-primary-container md:col-span-1 col-span-2">
+<div class="absolute right-0 top-0 w-full h-full opacity-20" style="background-image: radial-gradient(circle at 80% 20%, var(--tw-colors-primary-fixed) 0%, transparent 50%);"></div>
+<div class="flex items-center justify-between mb-4 relative z-10">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+<div class="relative z-10">
+<p class="text-xs font-body text-on-primary-container/80 font-medium mb-1">Ingresos del Mes</p>
+<h3 class="text-2xl font-headline font-extrabold text-on-primary">$14,500</h3>
+</div>
+</div>
+</section>
+<!-- Chart Section -->
+<section class="bg-surface-container-lowest rounded-3xl p-5 shadow-sm border border-outline-variant/20 flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<h3 class="text-base font-headline font-bold text-on-surface">Crecimiento de Negociaciones</h3>
+<button class="text-xs font-label font-bold text-primary flex items-center gap-1 bg-surface-container px-3 py-1.5 rounded-full hover:bg-surface-container-high transition-colors">
+                    Últimos 6 meses
+                    <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+</div>
+<!-- Pseudo Chart -->
+<div class="h-48 w-full flex items-end justify-between gap-2 pt-4 relative">
+<!-- Grid lines -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none z-0">
+<div class="w-full h-px bg-outline-variant/20"></div>
+<div class="w-full h-px bg-outline-variant/20"></div>
+<div class="w-full h-px bg-outline-variant/20"></div>
+<div class="w-full h-px bg-outline-variant/20"></div>
+</div>
+<!-- Bars -->
+<div class="w-1/6 flex flex-col items-center gap-2 z-10 group cursor-pointer">
+<div class="w-full bg-secondary-container/50 rounded-t-md h-[40%] group-hover:bg-secondary-container transition-colors relative">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface text-[10px] font-bold py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">24 Neg.</div>
+</div>
+<span class="text-[10px] font-label font-bold text-on-surface-variant">Ene</span>
+</div>
+<div class="w-1/6 flex flex-col items-center gap-2 z-10 group cursor-pointer">
+<div class="w-full bg-secondary-container/50 rounded-t-md h-[55%] group-hover:bg-secondary-container transition-colors relative">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface text-[10px] font-bold py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">32 Neg.</div>
+</div>
+<span class="text-[10px] font-label font-bold text-on-surface-variant">Feb</span>
+</div>
+<div class="w-1/6 flex flex-col items-center gap-2 z-10 group cursor-pointer">
+<div class="w-full bg-secondary-container/50 rounded-t-md h-[45%] group-hover:bg-secondary-container transition-colors relative">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface text-[10px] font-bold py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">28 Neg.</div>
+</div>
+<span class="text-[10px] font-label font-bold text-on-surface-variant">Mar</span>
+</div>
+<div class="w-1/6 flex flex-col items-center gap-2 z-10 group cursor-pointer">
+<div class="w-full bg-primary-container/80 rounded-t-md h-[70%] group-hover:bg-primary-container transition-colors relative">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface text-[10px] font-bold py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">42 Neg.</div>
+</div>
+<span class="text-[10px] font-label font-bold text-on-surface-variant">Abr</span>
+</div>
+<div class="w-1/6 flex flex-col items-center gap-2 z-10 group cursor-pointer">
+<div class="w-full bg-primary rounded-t-md h-[85%] group-hover:bg-primary/90 transition-colors relative shadow-[0_-4px_10px_rgba(0,70,47,0.2)]">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface text-[10px] font-bold py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">51 Neg.</div>
+</div>
+<span class="text-[10px] font-label font-extrabold text-primary">May</span>
+</div>
+<div class="w-1/6 flex flex-col items-center gap-2 z-10 group cursor-pointer">
+<div class="w-full bg-primary-fixed rounded-t-md h-[80%] group-hover:bg-primary-fixed/90 transition-colors relative">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface text-[10px] font-bold py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">48 Neg.</div>
+</div>
+<span class="text-[10px] font-label font-bold text-on-surface-variant">Jun</span>
+</div>
+</div>
+</section>
+<!-- Recent Activity Section -->
+<section class="flex flex-col gap-4 mb-6">
+<div class="flex justify-between items-end px-1">
+<h3 class="text-lg font-headline font-bold text-on-surface">Actividad Reciente</h3>
+<a class="text-xs font-label font-bold text-primary hover:underline" href="#">Ver Todo</a>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Activity Item 1 -->
+<div class="bg-surface-container-lowest rounded-2xl p-3 shadow-sm border border-outline-variant/20 flex items-center gap-4 hover:bg-surface-container-low transition-colors cursor-pointer">
+<div class="w-12 h-12 rounded-xl bg-surface-container overflow-hidden flex-shrink-0">
+<img alt="Tomates" class="w-full h-full object-cover" data-alt="Close up of fresh red ripe tomatoes with green stems on a wooden crate" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDo0_M3uCb5LEocAN3TJ4sUxNFfP-ZakeuGrbRWaLCSFd9VnkxeGCAEQd6umAiwoHrryYk2oh2F42UI63Ziny8FG_BnK8XDabhSUR6gwdqunGKXbvVyRH955bUM1UvsGNHluKTMzZDh2pIaleJlBz1MusmeDlrfYDQ7N1enT3a9vk9C7lk6wSvIbly3160L9BOKVIba9zK9-T4FKCE0-AAilh4MEuuIrtQPW4mAMkpNteKSQHKvMx68qOv8wNrYh7X4cyapU87P-oc"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-sm font-headline font-bold text-on-surface truncate">Tomate Cherry Orgánico</h4>
+<span class="text-[10px] font-label font-medium text-on-surface-variant whitespace-nowrap">Hace 2h</span>
+</div>
+<p class="text-xs font-body text-on-surface-variant truncate">Nueva oferta recibida: $450 por 100kg</p>
+</div>
+<div class="w-8 h-8 rounded-full bg-primary-container/10 flex items-center justify-center flex-shrink-0 text-primary">
+<span class="material-symbols-outlined text-[18px]">forum</span>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="bg-surface-container-lowest rounded-2xl p-3 shadow-sm border border-outline-variant/20 flex items-center gap-4 hover:bg-surface-container-low transition-colors cursor-pointer relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary rounded-l-2xl"></div>
+<div class="w-12 h-12 rounded-xl bg-surface-container overflow-hidden flex-shrink-0">
+<img alt="Aguacates" class="w-full h-full object-cover" data-alt="Several perfectly ripe whole and halved avocados arranged on a rustic table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVv30dYBRpc7YO6gURA5YQBgDZkkgkuuAKrlS3gykX1zNXUFCLOPo_aXcWEA67UmoDDFtlTptbH5LrpokmJaj1gSuMViBU8hxZ2m4zarpZUG9yFYXMwgQeKYvBpvhj9da9XfPzFo6Xp0kLh5LSDGJcdDNE2lTatHI-JGCHosgQdnd-6e1YBZD7onHmUo1vHze_mQE6LZ9ysdGTQZutk4nXCM4pVsNJfqFOUTPFmU6NtTYaSkEGnQbpIA2rFr9ryO13LImRI5Qfkr0"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-sm font-headline font-bold text-on-surface truncate">Aguacate Hass Premium</h4>
+<span class="text-[10px] font-label font-medium text-on-surface-variant whitespace-nowrap">Ayer</span>
+</div>
+<p class="text-xs font-body text-tertiary truncate">Pago retrasado detectado</p>
+</div>
+<div class="w-8 h-8 rounded-full bg-tertiary-container/10 flex items-center justify-center flex-shrink-0 text-tertiary">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+</div>
+</div>
+<!-- Activity Item 3 -->
+<div class="bg-surface-container-lowest rounded-2xl p-3 shadow-sm border border-outline-variant/20 flex items-center gap-4 hover:bg-surface-container-low transition-colors cursor-pointer relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-2xl"></div>
+<div class="w-12 h-12 rounded-xl bg-surface-container overflow-hidden flex-shrink-0">
+<img alt="Maíz" class="w-full h-full object-cover" data-alt="Ears of yellow sweet corn partially husked lying down on a surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSrw6pLp__VdQSh0E79utFM-JXhQg4vM159Jo4PnKkzQqCsuOvs_iBIhJYczoHaF9QWi9e_foS3lMSUmlyicGZtLAvgn7JZw6__7FEj4b9-4zuAIoWbxkyVLHajfOZto6lSDRWkczu9AmnJcDH_89C-_GSobXyYPt2U8G6MeDYs9u2DOSHS8keNaMndk3JDKoXIsPqg6mp4qBCoTSxn064JEc-Je2anAxEuXqC5V9Nve550M06CNTAaHLApgmQtyFTSJk7hT9aaO4"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-sm font-headline font-bold text-on-surface truncate">Maíz Amarillo Dulce</h4>
+<span class="text-[10px] font-label font-medium text-on-surface-variant whitespace-nowrap">Hace 2 días</span>
+</div>
+<p class="text-xs font-body text-primary truncate">Negociación cerrada con éxito</p>
+</div>
+<div class="w-8 h-8 rounded-full bg-primary-container/10 flex items-center justify-center flex-shrink-0 text-primary">
+<span class="material-symbols-outlined text-[18px] w-[18px] h-[18px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md hidden md:hidden docked full-width bottom-0 rounded-t-2xl no-border shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] shadow-lg fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe md:flex">
+<!-- Panel (Active) -->
+<a class="flex flex-col items-center justify-center bg-[#00462f] text-white rounded-xl px-4 py-2 hover:text-[#00462f] dark:hover:text-emerald-400 group" href="#">
+<span class="material-symbols-outlined mb-1 transition-transform group-hover:scale-110" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+<span class="font-['Plus_Jakarta_Sans'] font-black text-[10px] uppercase tracking-widest">Panel</span>
+</a>
+<!-- Métricas (Inactive) -->
+<a class="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 px-4 py-2 hover:text-[#00462f] dark:hover:text-emerald-400 group" href="#">
+<span class="material-symbols-outlined mb-1 transition-transform group-hover:scale-110">analytics</span>
+<span class="font-['Plus_Jakarta_Sans'] font-black text-[10px] uppercase tracking-widest">Métricas</span>
+</a>
+<!-- Tránsito (Inactive) -->
+<a class="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 px-4 py-2 hover:text-[#00462f] dark:hover:text-emerald-400 group" href="#">
+<span class="material-symbols-outlined mb-1 transition-transform group-hover:scale-110">local_shipping</span>
+<span class="font-['Plus_Jakarta_Sans'] font-black text-[10px] uppercase tracking-widest">Tránsito</span>
+</a>
+<!-- Perfil (Inactive) -->
+<a class="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 px-4 py-2 hover:text-[#00462f] dark:hover:text-emerald-400 group" href="#">
+<span class="material-symbols-outlined mb-1 transition-transform group-hover:scale-110">person</span>
+<span class="font-['Plus_Jakarta_Sans'] font-black text-[10px] uppercase tracking-widest">Perfil</span>
+</a>
+</nav>
+<!-- Desktop Side Nav Alternative (Hidden on Mobile) -->
+<nav class="hidden md:flex fixed left-0 top-16 bottom-0 w-24 bg-surface-container-low flex-col items-center py-8 gap-8 border-r border-outline-variant/20 z-30">
+<a class="flex flex-col items-center justify-center bg-[#00462f] text-white rounded-2xl w-16 h-16 group shadow-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+<span class="font-['Plus_Jakarta_Sans'] font-black text-[8px] uppercase tracking-widest mt-1">Panel</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant w-16 h-16 rounded-2xl hover:bg-surface-container-highest transition-colors group" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-['Plus_Jakarta_Sans'] font-black text-[8px] uppercase tracking-widest mt-1">Métricas</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant w-16 h-16 rounded-2xl hover:bg-surface-container-highest transition-colors group" href="#">
+<span class="material-symbols-outlined">local_shipping</span>
+<span class="font-['Plus_Jakarta_Sans'] font-black text-[8px] uppercase tracking-widest mt-1">Tránsito</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant w-16 h-16 rounded-2xl hover:bg-surface-container-highest transition-colors group" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Plus_Jakarta_Sans'] font-black text-[8px] uppercase tracking-widest mt-1">Perfil</span>
+</a>
+</nav>
+<style>
+        /* Adjust main layout for desktop side nav */
+        @media (min-width: 768px) {
+            main {
+                margin-left: 6rem;
+                max-width: calc(100% - 6rem);
+            }
+        }
+    </style>
+</body></html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Supplier Quick View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-primary": "#89d6b0",
+                      "on-tertiary-container": "#ffb5b0",
+                      "surface": "#f7faf5",
+                      "surface-tint": "#186b4c",
+                      "tertiary-fixed-dim": "#ffb3ae",
+                      "surface-container": "#ebefea",
+                      "secondary-fixed": "#caead7",
+                      "primary-fixed": "#a5f3cb",
+                      "primary-fixed-dim": "#89d6b0",
+                      "secondary": "#486456",
+                      "on-primary": "#ffffff",
+                      "outline-variant": "#bec9c1",
+                      "on-tertiary-fixed-variant": "#75322f",
+                      "on-primary-fixed": "#002114",
+                      "on-primary-container": "#8bd8b2",
+                      "secondary-fixed-dim": "#afcebb",
+                      "on-secondary-fixed-variant": "#314c3f",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-container": "#4e6b5b",
+                      "on-error-container": "#93000a",
+                      "background": "#f7faf5",
+                      "surface-dim": "#d7dbd6",
+                      "on-background": "#181d1a",
+                      "surface-variant": "#e0e3df",
+                      "error-container": "#ffdad6",
+                      "inverse-surface": "#2d312e",
+                      "on-surface-variant": "#3f4943",
+                      "on-secondary": "#ffffff",
+                      "tertiary-container": "#853e3b",
+                      "surface-container-low": "#f1f4f0",
+                      "tertiary": "#682826",
+                      "outline": "#6f7a73",
+                      "inverse-on-surface": "#eef2ed",
+                      "on-error": "#ffffff",
+                      "surface-container-high": "#e6e9e4",
+                      "surface-bright": "#f7faf5",
+                      "on-primary-fixed-variant": "#005137",
+                      "primary": "#00462f",
+                      "primary-container": "#036042",
+                      "surface-container-highest": "#e0e3df",
+                      "tertiary-fixed": "#ffdad7",
+                      "on-tertiary-fixed": "#3c0708",
+                      "on-secondary-fixed": "#042015",
+                      "on-surface": "#181d1a",
+                      "error": "#ba1a1a",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-container": "#caead7"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {},
+              "fontFamily": {
+                      "headline": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "label": [
+                              "Plus Jakarta Sans"
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface h-screen w-screen overflow-hidden flex items-center justify-center relative">
+<!-- Blurred Background (Simulated Marketplace Feed) -->
+<div aria-hidden="true" class="absolute inset-0 z-0 bg-surface-container-high overflow-hidden">
+<!-- Header Mock -->
+<div class="bg-surface-container-lowest h-16 w-full flex items-center px-4 justify-between border-b border-surface-variant/50">
+<div class="h-6 w-32 bg-surface-variant rounded-full opacity-50"></div>
+<div class="h-8 w-8 bg-surface-variant rounded-full opacity-50"></div>
+</div>
+<!-- Feed Mock -->
+<div class="p-4 space-y-4 opacity-50">
+<div class="h-48 w-full bg-surface-variant rounded-xl"></div>
+<div class="h-32 w-full bg-surface-variant rounded-xl"></div>
+<div class="h-64 w-full bg-surface-variant rounded-xl"></div>
+</div>
+<!-- Blur Overlay -->
+<div class="absolute inset-0 bg-on-background/40 backdrop-blur-sm z-10"></div>
+</div>
+<!-- Centered Modal -->
+<div class="relative z-20 w-[92%] max-w-md bg-surface-container-lowest rounded-[2rem] shadow-lg flex flex-col max-h-[751px] overflow-hidden">
+<!-- Modal Header / Cover Area -->
+<div class="relative h-24 bg-primary-container/10">
+<!-- Close Button -->
+<button aria-label="Close" class="absolute top-4 right-4 h-8 w-8 flex items-center justify-center rounded-full bg-surface-container-lowest/80 text-on-surface-variant hover:bg-surface-variant transition-colors backdrop-blur-md">
+<span class="material-symbols-outlined" style="font-size: 20px;">close</span>
+</button>
+</div>
+<!-- Content Body -->
+<div class="px-6 pb-6 pt-0 -mt-12 flex flex-col items-center">
+<!-- Profile Avatar -->
+<div class="relative mb-3">
+<div class="w-24 h-24 rounded-full border-4 border-surface-container-lowest overflow-hidden bg-surface-variant shadow-sm">
+<img alt="Ricardo Mendoza" class="w-full h-full object-cover" data-alt="Portrait of a friendly middle-aged Mexican farmer smiling in a sunlit field, wearing a straw hat and casual work shirt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYXsiD5V97GMCY6XhpYrIgyNkcAyWihkQWonW_eAe56rGM619KFaZ1rexGD4E1Z57MJNbBeRAd2ZqtD98LL-CtH-d9q6Lx_fotvBnXS8vynPMml-vhffSrNcaFf9dFktcfMsmGlH4qGHfkGySkc5vFPYNq4EJantasJv0XJq7jRiLfW3G82Jv3u8aoqX1JWXnOv-qR5yW5QckNsBO84hnBmAp9GSkOAssnuKmW0KYZNlhpuF4rXU0pkMiS2Gj2hBQJeO7ex2Mt69w"/>
+</div>
+<!-- Verified Badge -->
+<div class="absolute bottom-0 right-0 bg-primary text-on-primary rounded-full p-1 border-2 border-surface-container-lowest shadow-sm flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-size: 14px; font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<!-- Name & Title -->
+<div class="text-center mb-4">
+<h2 class="text-xl font-bold text-on-surface font-headline tracking-tight flex items-center justify-center gap-1">
+                    Ricardo Mendoza
+                </h2>
+<p class="text-sm font-medium text-secondary mt-1">
+                    Hacienda Los Volcanes
+                </p>
+</div>
+<!-- Stats Row -->
+<div class="flex items-center justify-center gap-4 w-full mb-6">
+<div class="flex flex-col items-center">
+<div class="flex items-center text-primary gap-0.5">
+<span class="font-bold text-sm">4.9</span>
+<span class="material-symbols-outlined text-primary" style="font-size: 14px; font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="text-[10px] uppercase tracking-widest font-bold text-outline mt-1">Rating</span>
+</div>
+<div class="h-6 w-px bg-outline-variant/30"></div>
+<div class="flex flex-col items-center">
+<div class="flex items-center text-on-surface gap-1">
+<span class="material-symbols-outlined text-on-surface-variant" style="font-size: 14px;">location_on</span>
+<span class="font-bold text-sm">Texcoco, MX</span>
+</div>
+<span class="text-[10px] uppercase tracking-widest font-bold text-outline mt-1">Location</span>
+</div>
+<div class="h-6 w-px bg-outline-variant/30"></div>
+<div class="flex flex-col items-center">
+<span class="font-bold text-sm text-on-surface">1.2k</span>
+<span class="text-[10px] uppercase tracking-widest font-bold text-outline mt-1">Followers</span>
+</div>
+</div>
+<!-- Bio -->
+<p class="text-sm text-on-surface-variant text-center leading-relaxed mb-6 px-2">
+                Specialist in premium white corn and organic vegetables. 5 years of experience delivering fresh harvest to your table.
+            </p>
+<!-- Featured Products -->
+<div class="w-full mb-6">
+<h3 class="text-[10px] uppercase tracking-widest font-bold text-outline mb-3 pl-1">Featured Harvest</h3>
+<div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x" style="scrollbar-width: none;">
+<!-- Product 1 -->
+<div class="min-w-[100px] flex-shrink-0 bg-surface-container-low rounded-xl overflow-hidden snap-center">
+<div class="h-20 w-full bg-surface-variant">
+<img alt="White Corn" class="w-full h-full object-cover" data-alt="Close up of fresh raw white corn on the cob with green husks on a rustic wooden table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmQwv1aTvCJ-qfJfyOZyMCxpz90bwV5XlszqTYsncYlE6MhCQ3kjtz70vSIn1racv5fi1y9-7F3HY85dccCKmMuYaJ-1bhvjAH7K4-3JsDeQKjDU02gTJOtMOD2iktmFztjlLPvKbBH78KmP4ouU5J3Aeo9MV0lSl2_73B2PNWhPzDORgSUwk-AEfdKC-KDlyEEqy8CTrF1EDj_Fy4cShdhVWNMIyE6_kcqQzYcmSN77BvvIiLUHGT5WE4sWXwNKlVotVkwCfUxIA"/>
+</div>
+<div class="p-2">
+<h4 class="text-xs font-semibold text-on-surface mb-1 truncate">Maíz Blanco</h4>
+<p class="text-[10px] font-bold text-primary">$12 <span class="text-outline font-normal">/ kg</span></p>
+</div>
+</div>
+<!-- Product 2 -->
+<div class="min-w-[100px] flex-shrink-0 bg-surface-container-low rounded-xl overflow-hidden snap-center">
+<div class="h-20 w-full bg-surface-variant">
+<img alt="Avocado" class="w-full h-full object-cover" data-alt="Halved fresh Hass avocados with pit visible on a dark natural stone background with soft side lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhEr9RHMJwPOJZ4RklPWTnOCW7iZ6NU7v-2JnRL2Y0M2ryaHeuWa2b6SluXxohtIkkogBMWg_GtMnZlTBzsXih64T4qfreQ1Y4OcL6qR5ocx3HJkYC0ssRNn7fVEVwMDtb7Ib6ObxfLpmw2nGqQ3v4i9jP4lXCvwg48HPUfhdh0fDK2ooLxPhevvGCUYnGiis47gNQBHqWVOmWOWHPMRqOU24O0YLZhVZAYkRnsmkgnb6tGmFDEDBYt-0QiBua7qzJ0RL4pjVBGMw"/>
+</div>
+<div class="p-2">
+<h4 class="text-xs font-semibold text-on-surface mb-1 truncate">Aguacate Hass</h4>
+<p class="text-[10px] font-bold text-primary">$45 <span class="text-outline font-normal">/ kg</span></p>
+</div>
+</div>
+<!-- Product 3 -->
+<div class="min-w-[100px] flex-shrink-0 bg-surface-container-low rounded-xl overflow-hidden snap-center">
+<div class="h-20 w-full bg-surface-variant">
+<img alt="Tomato" class="w-full h-full object-cover" data-alt="Vibrant red organic heirloom tomatoes on a vine resting on a burlap cloth" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZHPoy_U2Qp4yGUDfzMGTMf-v2CYiCreYorvFrVwa290XphD8f7gmwI6d5Hy_xgQXAajrk38LgMCspAITjQzmCWO2hsryNuqyYtQP_NIID4KCEF8MA1ycGb65XwddxAUhuBQMtw-Sz3XV852IwxFvx7PTTG4zh3mF_l7gEBZ7Vcv7cumYJFJ4gwxxWHMb5z32n5dlCf3GdNGCR2h_q2OrLj5a9Bt2Cem0CP7FvoBNM2Cjk_h4QtNssswmWJOhmqQzs5vOhN5EKCoY"/>
+</div>
+<div class="p-2">
+<h4 class="text-xs font-semibold text-on-surface mb-1 truncate">Tomate Saladet</h4>
+<p class="text-[10px] font-bold text-primary">$28 <span class="text-outline font-normal">/ kg</span></p>
+</div>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="w-full flex gap-3 mt-auto">
+<button class="flex-1 py-3 px-4 rounded-full border border-primary text-primary font-bold text-xs uppercase tracking-widest hover:bg-primary-container/10 transition-colors flex items-center justify-center">
+                    Ver Perfil
+                </button>
+<button class="flex-1 py-3 px-4 rounded-full bg-primary text-on-primary font-bold text-xs uppercase tracking-widest hover:bg-primary-container transition-colors flex items-center justify-center shadow-sm">
+                    Contactar
+                </button>
+</div>
+</div>
+</div>
+</body></html>

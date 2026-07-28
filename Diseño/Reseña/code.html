@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es" style=""><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mis Reseñas</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#3c0708",
+                        "primary-fixed": "#a5f3cb",
+                        "surface-container-low": "#f1f4f0",
+                        "inverse-primary": "#89d6b0",
+                        "surface-container-highest": "#e0e3df",
+                        "on-tertiary-fixed-variant": "#75322f",
+                        "secondary-fixed-dim": "#afcebb",
+                        "on-tertiary-container": "#ffb5b0",
+                        "surface-container-high": "#e6e9e4",
+                        "surface-bright": "#f7faf5",
+                        "on-surface": "#181d1a",
+                        "on-primary-container": "#8bd8b2",
+                        "inverse-on-surface": "#eef2ed",
+                        "secondary-container": "#caead7",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#d7dbd6",
+                        "secondary": "#486456",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#3f4943",
+                        "outline": "#6f7a73",
+                        "tertiary-fixed-dim": "#ffb3ae",
+                        "primary-container": "#036042",
+                        "on-secondary-fixed": "#042015",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#181d1a",
+                        "inverse-surface": "#2d312e",
+                        "background": "#f7faf5",
+                        "surface-tint": "#186b4c",
+                        "error-container": "#ffdad6",
+                        "primary": "#00462f",
+                        "on-primary-fixed": "#002114",
+                        "outline-variant": "#bec9c1",
+                        "on-secondary-fixed-variant": "#314c3f",
+                        "primary-fixed-dim": "#89d6b0",
+                        "surface": "#f7faf5",
+                        "on-secondary-container": "#4e6b5b",
+                        "secondary-fixed": "#caead7",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#e0e3df",
+                        "surface-container": "#ebefea",
+                        "on-primary-fixed-variant": "#005137",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#853e3b",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#ffdad7",
+                        "on-error": "#ffffff",
+                        "tertiary": "#682826"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-outlined.fill { font-variation-settings: 'FILL' 1; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen pb-24 font-body">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface-dim w-full top-0 sticky z-40 bg-surface-container-low dark:bg-surface-container-low flat no shadows">
+<div class="flex items-center px-4 h-16 w-full max-w-screen-xl mx-auto">
+<button aria-label="Volver" class="mr-4 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-colors active:scale-95 transition-transform duration-100 rounded-full p-2">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline font-bold text-headline-sm uppercase tracking-tight text-primary dark:text-primary-fixed flex-1 text-center pr-12">Mis Reseñas</h1>
+</div>
+</header>
+<main class="max-w-md mx-auto px-4 pt-6">
+<!-- Hero Section -->
+<div class="mb-8 relative overflow-hidden rounded-xl bg-primary-container p-6 text-on-primary-container shadow-sm">
+<div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 100% 0%, #ffffff 0%, transparent 50%);"></div>
+<div class="relative z-10">
+<h2 class="font-display font-extrabold text-2xl mb-1 tracking-tight">EVALÚA. IMPACTA.</h2>
+<p class="font-body text-sm opacity-90 max-w-[200px]">Tu voz construye una comunidad más fuerte y transparente.</p>
+</div>
+</div>
+<!-- Pendientes Section -->
+<section class="mb-10">
+<h3 class="font-headline font-bold text-lg mb-4 text-primary flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="pending_actions">pending_actions</span>
+                Pendientes (3)
+            </h3>
+<div class="flex flex-col gap-4">
+<!-- Pending Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm flex gap-4 items-center">
+<div class="w-20 h-20 shrink-0 rounded-lg overflow-hidden relative">
+<img alt="Tomates Orgánicos" class="w-full h-full object-cover" data-alt="A close up shot of vibrant, fresh organic red tomatoes on a wooden crate. The lighting is natural and bright, highlighting the dewy skin of the tomatoes. The aesthetic is organic, fresh, and grounded in a deep green and earthy color palette. The mood is wholesome and high-quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCK1u8etbY5cHiRod_Fsz0_cuGTPBYf1Kj3M9WWtxHKJPGQ80EV82hmsmCV_Gt93yIiAAYRrHcpjpcGQvWY6oCOXHF5JcfmhpwXq5fj6OyrK4y_GaFvJgKHtBGGRbV3fH5b06o4tW0WeCL9448PUxQhHSfSX58eVK_lx7JUhms8WnRMbpDqcWul-oB60GyFZHNBDb6ouVvsT47SpGzBpuWhNyUDtZ7iBTFmBGB6DtwzTd28a4GMKjluGv3yihiGBfs1OZehh14Ktak"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-label font-black text-[10px] text-secondary tracking-widest uppercase mb-1">ORD-4829</p>
+<h4 class="font-headline font-bold text-base text-on-surface truncate">Tomates Heirloom</h4>
+<p class="font-body text-xs text-on-surface-variant mb-2">Finca La Esperanza</p>
+<button class="w-full bg-primary-container text-on-primary-container font-label font-black text-[10px] uppercase tracking-widest py-2 rounded-lg active:scale-95 transition-transform">
+                            Escribir Reseña
+                        </button>
+</div>
+</div>
+<!-- Pending Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm flex gap-4 items-center">
+<div class="w-20 h-20 shrink-0 rounded-lg overflow-hidden relative">
+<img alt="Miel Artesanal" class="w-full h-full object-cover" data-alt="A jar of golden artisanal honey sitting on a rustic wooden table with a dipper. Warm sunlight filters through, making the honey glow with rich amber tones. The aesthetic is premium agrarian, blending natural textures with a clean, high-end presentation. The overall palette features warm yellows, deep browns, and subtle forest greens." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXVjjLbAdq-qPVQ_4K3NOYusCymD1EzqS1kC-Lo2r8QtaXyo5pkWNSGVhL5GRtQdbQGSokSKklmFZQkqOdUI4YyvMbTzXiN4AXEBPr5cPtwmDPhu-Xq-fe5DmDEQ7bb12IupTY6GlguVCGhQguSo9BlaDDC8cklW1Mk-PM8CK-6xz9XhSIfBgoT5YJi9nx55BRZ0yONRnrZSQ4Xft817qS_jLiuOtjEbCKVWGb-EVrUn1Ker8c_Z-DsulYXVud8E41W1UHegQnM4Q"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-label font-black text-[10px] text-secondary tracking-widest uppercase mb-1">ORD-4712</p>
+<h4 class="font-headline font-bold text-base text-on-surface truncate">Miel Silvestre</h4>
+<p class="font-body text-xs text-on-surface-variant mb-2">Apicultura Los Pinos</p>
+<button class="w-full bg-primary-container text-on-primary-container font-label font-black text-[10px] uppercase tracking-widest py-2 rounded-lg active:scale-95 transition-transform">
+                            Escribir Reseña
+                        </button>
+</div>
+</div>
+<!-- Pending Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm flex gap-4 items-center">
+<div class="w-20 h-20 shrink-0 rounded-lg overflow-hidden relative">
+<img alt="Queso de Cabra" class="w-full h-full object-cover" data-alt="A wheel of artisanal goat cheese placed on a dark slate board, surrounded by fresh herbs. The lighting is moody and editorial, emphasizing the texture of the cheese rind. The scene conveys high-end culinary quality, utilizing deep greens and contrasting bright whites to match a premium digital agrarian style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjdenPCC0s2roiOH2l6Sz2N-rAy2Z5-g76EAQ8oY8i6fZ5WyY2RRz3m5HRw-qieLTCWthbVvW_NkOtrz91LyjbwmmFV3VWJCDt0pchBuJrLF59mdAp64Rn-cCXRH2AIoNWH4L9A2VYArB1_irCME483PC-rXFcRaoC0hmqStlNSBMRqPK9gbl78IDP5FVW173bEhD9BhIOUJQeqA2wimkZJkE_AjWeDrXQdWreMOCFy5wZuNYYGotHD0NLXVKdDdHHms4qWYhrVOc"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-label font-black text-[10px] text-secondary tracking-widest uppercase mb-1">ORD-4655</p>
+<h4 class="font-headline font-bold text-base text-on-surface truncate">Queso Curado</h4>
+<p class="font-body text-xs text-on-surface-variant mb-2">Lácteos del Valle</p>
+<button class="w-full bg-primary-container text-on-primary-container font-label font-black text-[10px] uppercase tracking-widest py-2 rounded-lg active:scale-95 transition-transform">
+                            Escribir Reseña
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Completadas Section -->
+<section>
+<h3 class="font-headline font-bold text-lg mb-4 text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="task_alt">task_alt</span>
+                Completadas
+            </h3>
+<div class="flex flex-col gap-4">
+<!-- Completed Card 1 -->
+<div class="bg-surface-container-low rounded-xl p-4 flex flex-col gap-3"><div class="flex flex-col gap-3">
+<div class="flex items-center gap-3 mb-1">
+<div class="w-12 h-12 shrink-0 rounded-lg overflow-hidden">
+<img alt="Cesta de Verduras Mixtas" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCK1u8etbY5cHiRod_Fsz0_cuGTPBYf1Kj3M9WWtxHKJPGQ80EV82hmsmCV_Gt93yIiAAYRrHcpjpcGQvWY6oCOXHF5JcfmhpwXq5fj6OyrK4y_GaFvJgKHtBGGRbV3fH5b06o4tW0WeCL9448PUxQhHSfSX58eVK_lx7JUhms8WnRMbpDqcWul-oB60GyFZHNBDb6ouVvsT47SpGzBpuWhNyUDtZ7iBTFmBGB6DtwzTd28a4GMKjluGv3yihiGBfs1OZehh14Ktak"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-headline font-bold text-sm text-on-surface">Cesta de Verduras Mixtas</h4>
+<p class="font-body text-[10px] text-on-surface-variant">Huerta San Miguel • Hace 2 semanas</p>
+</div>
+<div class="flex gap-0.5 text-primary">
+<span class="material-symbols-outlined fill text-xs" data-icon="star">star</span>
+<span class="material-symbols-outlined fill text-xs" data-icon="star">star</span>
+<span class="material-symbols-outlined fill text-xs" data-icon="star">star</span>
+<span class="material-symbols-outlined fill text-xs" data-icon="star">star</span>
+<span class="material-symbols-outlined fill text-xs" data-icon="star">star</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex gap-3 items-start bg-surface-bright p-3 rounded-lg border border-outline-variant/20">
+<div class="w-24 h-24 shrink-0 rounded-lg overflow-hidden shadow-sm">
+<img alt="Foto del cliente" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkExJjnogapAzYJSb7dQcgEWoBPwi2xrSMgswCUDDdVdRIXBZrVUKFDHMFPh8uh9DUS0PoOVg9IrZX3QGXegq2vzNujlg8qkX9oTAilz4-qbfjAC8xvPkNtl_X5ZFNpvFUAB6cbjL0rQECyadtUul-xcUGi73dT-_8e1Rr3QDvasFOTid1uiY8_3qwe0DHWwWnt-yKwa_USTLTgTbZYGYoRW7zLXOSazPfHD2Ouw_9Onw8CMHvzMiClYcBiFiabXucIHwkS4Ts75c"/>
+</div>
+<div class="flex-1">
+<p class="font-body text-sm text-on-surface italic leading-relaxed">"Excelente calidad, todo muy fresco. Los pimientos estaban espectaculares y el empaque muy cuidadoso."</p>
+</div>
+</div>
+<div class="mt-1 ml-4 p-3 bg-secondary-container/30 border-l-4 border-secondary rounded-r-lg">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-[14px] text-secondary" data-icon="reply">reply</span>
+<p class="font-label font-bold text-[10px] text-secondary uppercase tracking-wider">Respuesta del productor</p>
+</div>
+<p class="font-body text-xs text-on-surface-variant leading-relaxed">
+        "¡Muchas gracias por tu comentario! Nos alegra mucho saber que disfrutaste la frescura de nuestra cosecha. Trabajamos con mucho cariño para que cada empaque llegue perfecto a tu mesa. - Huerta San Miguel"
+    </p>
+</div></div></div>
+<!-- Completed Card 2 -->
+<div class="bg-surface-container-low rounded-xl p-4 flex flex-col gap-3"><div class="flex flex-col gap-3">
+<div class="flex items-center gap-3 mb-1">
+<div class="w-12 h-12 shrink-0 rounded-lg overflow-hidden">
+<img alt="Aceite de Oliva Virgen Extra" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXVjjLbAdq-qPVQ_4K3NOYusCymD1EzqS1kC-Lo2r8QtaXyo5pkWNSGVhL5GRtQdbQGSokSKklmFZQkqOdUI4YyvMbTzXiN4AXEBPr5cPtwmDPhu-Xq-fe5DmDEQ7bb12IupTY6GlguVCGhQguSo9BlaDDC8cklW1Mk-PM8CK-6xz9XhSIfBgoT5YJi9nx55BRZ0yONRnrZSQ4Xft817qS_jLiuOtjEbCKVWGb-EVrUn1Ker8c_Z-DsulYXVud8E41W1UHegQnM4Q"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-headline font-bold text-sm text-on-surface">Aceite de Oliva Virgen Extra</h4>
+<p class="font-body text-[10px] text-on-surface-variant">Olivar Los Cerezos • Hace 1 mes</p>
+</div>
+<div class="flex gap-0.5 text-primary">
+<span class="material-symbols-outlined fill text-xs" data-icon="star">star</span>
+<span class="material-symbols-outlined fill text-xs" data-icon="star">star</span>
+<span class="material-symbols-outlined fill text-xs" data-icon="star">star</span>
+<span class="material-symbols-outlined fill text-xs" data-icon="star">star</span>
+<span class="material-symbols-outlined text-xs text-outline-variant" data-icon="star">star</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex gap-3 items-start bg-surface-bright p-3 rounded-lg border border-outline-variant/20">
+<div class="w-24 h-24 shrink-0 rounded-lg overflow-hidden shadow-sm">
+<img alt="Foto del cliente" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDP2SAhDf3xiSDi_M640MlgD1SQS_efXAy3Nge5f61w_PC0JqfPVQnJ_kzRN9OgQrCitc4c0LnJKeKKJHU00mVz4zapAJiBALXB2tF9-vkiIl8iYScPOcNMZwg2qMrHJfOf4och7hchrTrvSDLEMP3wTPctSP4iDgSaaRlygMLAx9hQgab4WuZ3LM2naJkAN4LC7H4CrZZrEyxehsOObIA6mq_8FYKPBB7xwkEQ9p6uL63m30AzftO3X0FNrF6k_45fChAU1ky479Y"/>
+</div>
+<div class="flex-1">
+<p class="font-body text-sm text-on-surface italic leading-relaxed">"Muy buen sabor, intenso y con toques frutales. Ideal para ensaladas."</p>
+</div>
+</div>
+</div></div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-surface-container-lowest dark:bg-inverse-surface fixed bottom-0 w-full z-50 rounded-t-xl shadow-lg dark:shadow-none fixed bottom-0 left-0 w-full flex justify-around items-end pb-4 pt-2 px-2 md:hidden">
+<a class="flex flex-col items-center justify-center text-on-secondary-fixed-variant dark:text-outline p-2 hover:text-primary dark:hover:text-primary-fixed transition-all active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="font-label font-black text-[10px] uppercase tracking-widest">Inicio</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-fixed-variant dark:text-outline p-2 hover:text-primary dark:hover:text-primary-fixed transition-all active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="storefront">storefront</span>
+<span class="font-label font-black text-[10px] uppercase tracking-widest">Mercado</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-fixed-variant dark:text-outline p-2 hover:text-primary dark:hover:text-primary-fixed transition-all active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="add_circle">add_circle</span>
+<span class="font-label font-black text-[10px] uppercase tracking-widest">Vender</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-secondary-container text-on-primary-container dark:text-on-secondary-container rounded-full px-4 py-1 hover:text-primary dark:hover:text-primary-fixed transition-all active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="rate_review">rate_review</span>
+<span class="font-label font-black text-[10px] uppercase tracking-widest">Reseñas</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-fixed-variant dark:text-outline p-2 hover:text-primary dark:hover:text-primary-fixed transition-all active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-label font-black text-[10px] uppercase tracking-widest">Perfil</span>
+</a>
+</nav>
+</body></html>

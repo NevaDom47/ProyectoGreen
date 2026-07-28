@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#016042",
+                        "background-light": "#f5f8f7",
+                        "background-dark": "#0f231d",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Top Navigation -->
+<header class="flex items-center bg-background-light dark:bg-background-dark p-4 justify-between border-b border-primary/10">
+<div class="text-primary flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined">close</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10">El Mercadito</h2>
+</header>
+<main class="flex-1 flex flex-col items-center justify-center p-6 @container">
+<!-- Success State Illustration -->
+<div class="mb-8 flex flex-col items-center">
+<div class="size-24 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary !text-6xl">check_circle</span>
+</div>
+<h1 class="text-slate-900 dark:text-slate-100 tracking-tight text-3xl font-bold leading-tight text-center mb-3">¡Pedido Confirmado!</h1>
+<p class="text-slate-600 dark:text-slate-400 text-base font-normal leading-relaxed text-center max-w-sm">
+                Tu pedido ha sido enviado al vendedor para coordinar la entrega. ¡Gracias por apoyar al campo local!
+            </p>
+</div>
+<!-- Summary Card -->
+<div class="w-full max-w-md bg-white dark:bg-slate-800/50 rounded-xl shadow-sm border border-primary/10 overflow-hidden mb-8">
+<div class="p-5">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-16 h-16 rounded-lg bg-center bg-no-repeat bg-cover flex-shrink-0" data-alt="Cesta de frutas y verduras frescas locales" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBkqrw1Y_cVYXdUcivEyW0vN9jFyeyQDIXYbdLSu_972-VlaiVtTUrTvmJWBJU21V5EeJa0xRVOy1OjQnBQAQLvl-YqDm4ddfJtCUF0tSwQ7pt6T1xyuofWyVk5j_IVXXLkZ-PnMfl8IE-Aq4cxcYYXb1rE7S-_3A-1DKyMix0eZKLkJPt371T33B7bhqPW1lBg0yIptkKWeMnPJMg7ng-xDGabm0qBMHgDp_109nri6MGcIF0W5Gv7kviT5PezIfKT93L7ZuXEAb4");'></div>
+<div class="flex flex-col">
+<span class="text-xs font-semibold uppercase tracking-wider text-primary/70">Número de pedido</span>
+<p class="text-slate-900 dark:text-slate-100 text-lg font-bold">#MERC-9928</p>
+</div>
+</div>
+<div class="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-700">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary size-5">calendar_today</span>
+<div>
+<p class="text-xs text-slate-500 dark:text-slate-400">Entrega estimada</p>
+<p class="text-sm font-medium text-slate-900 dark:text-slate-100">Viernes, 25 de Octubre</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary size-5">payments</span>
+<div>
+<p class="text-xs text-slate-500 dark:text-slate-400">Total pagado</p>
+<p class="text-sm font-bold text-primary">$45.50</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Map/Location visual placeholder -->
+<div class="w-full max-w-md rounded-xl overflow-hidden h-32 relative mb-8">
+<div class="absolute inset-0 bg-primary/5 flex items-center justify-center">
+<div class="w-full h-full bg-cover bg-center" data-alt="Mapa de la zona de entrega" data-location="Bogotá, Colombia" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAEZSu7HiLuyLO1VdPut5jvNPkJbL7C2se7ghFApRbJU1AxoGsY229FZtkYYQYLxidcMOCd7AeBqTqpBqVHIcYPzS5Oy8BZqJB5pxC6sMcp1NYP3ZiSfixSqNra8BpsclkeP3fd8UjtVyyvSkN9E7Mrx3UluJmhQpxymb3PogqOCbSVakyBd527DnVt2rVW-run5W_Sjmf0UDV8hiJXRGXYQ3g4nqNVmY5lZ_AJbzFZivqkq7V6S2vtkuHQ24Ldp0vMdFvnktR0oGY');"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background-light/80 dark:from-background-dark/80 to-transparent"></div>
+</div>
+<div class="absolute bottom-3 left-3 flex items-center gap-2 bg-white/90 dark:bg-slate-800/90 px-3 py-1.5 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-primary !text-sm">local_shipping</span>
+<span class="text-xs font-semibold text-slate-700 dark:text-slate-200">En preparación</span>
+</div>
+</div>
+</main>
+<!-- Footer Actions -->
+<footer class="p-6 space-y-3 max-w-md mx-auto w-full">
+<button class="w-full bg-primary text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+            Volver al Inicio
+        </button>
+<button class="w-full bg-primary/10 text-primary font-semibold py-4 rounded-xl active:scale-[0.98] transition-transform">
+            Ver mis pedidos
+        </button>
+</footer>
+<div class="h-6"></div>
+</body></html>

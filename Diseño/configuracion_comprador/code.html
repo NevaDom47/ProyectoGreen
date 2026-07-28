@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error": "#ba1a1a",
+                    "on-surface-variant": "#3f4943",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#2d312e",
+                    "tertiary-fixed-dim": "#ffb3ae",
+                    "primary": "#00462f",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed": "#042015",
+                    "on-tertiary-fixed-variant": "#75322f",
+                    "secondary": "#486456",
+                    "on-background": "#181d1a",
+                    "tertiary": "#682826",
+                    "primary-fixed-dim": "#89d6b0",
+                    "primary-fixed": "#a5f3cb",
+                    "on-secondary-container": "#4e6b5b",
+                    "outline-variant": "#bec9c1",
+                    "surface-variant": "#e0e3df",
+                    "on-primary": "#ffffff",
+                    "surface-tint": "#186b4c",
+                    "tertiary-container": "#853e3b",
+                    "secondary-container": "#caead7",
+                    "background": "#f7faf5",
+                    "secondary-fixed-dim": "#afcebb",
+                    "on-tertiary-container": "#ffb5b0",
+                    "on-primary-fixed-variant": "#005137",
+                    "on-secondary-fixed-variant": "#314c3f",
+                    "surface-dim": "#d7dbd6",
+                    "surface-bright": "#f7faf5",
+                    "on-tertiary": "#ffffff",
+                    "on-surface": "#181d1a",
+                    "secondary-fixed": "#caead7",
+                    "inverse-on-surface": "#eef2ed",
+                    "outline": "#6f7a73",
+                    "surface-container": "#ebefea",
+                    "on-error-container": "#93000a",
+                    "on-primary-container": "#8bd8b2",
+                    "primary-container": "#036042",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed": "#ffdad7",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed": "#3c0708",
+                    "surface-container-high": "#e6e9e4",
+                    "inverse-primary": "#89d6b0",
+                    "surface": "#f7faf5",
+                    "surface-container-highest": "#e0e3df",
+                    "on-primary-fixed": "#002114"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#f7faf5] dark:bg-neutral-900 flex items-center px-4 h-16 w-full">
+<div class="flex items-center gap-4 w-full">
+<button class="material-symbols-outlined text-[#00462f] dark:text-emerald-400 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors rounded-full active:scale-95 duration-150" data-icon="arrow_back">arrow_back</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold text-[1.125rem] tracking-tight text-[#00462f] dark:text-emerald-400">Configuración de cuenta</h1>
+</div>
+</header>
+<main class="pt-20 px-4 max-w-2xl mx-auto space-y-8">
+<!-- Profile Picture Section -->
+<section class="flex flex-col items-center justify-center py-6">
+<div class="relative">
+<div class="w-24 h-24 rounded-full overflow-hidden shadow-sm border-4 border-surface-container-lowest">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="professional portrait of a smiling man with short hair and a clean-shaven face in soft natural outdoor lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsIZyjU5mngGZVEHpehZnqLVn6gyd1kdzZNZHsiz7vXNJjiy5tPJ3Sh1HDtSAqwIrXET6t6AyIQB_JPZ5ab6IaEwqNl5W6g2qIP6JDYJJRRCqN04QcIYkR7uHXnesSDIClo2z9HlmZUNwsGGg2kFDzbCuDPGPs850rYWNJjfjiJ5h4-lZ9ZWHskxaDKZ61BPMJjHTU68qbM1zlyh8egGJuh3F9yKIms7grS7M-eyV46-rmWPkzmtTXJ__o7QrUUhU0mnCEcQ6RNzI"/>
+</div>
+<button class="absolute bottom-0 right-0 bg-primary p-2 rounded-full text-on-primary shadow-lg active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-sm" data-icon="edit">edit</span>
+</button>
+</div>
+<div class="mt-4 text-center">
+<h2 class="text-xl font-bold tracking-tight text-on-surface">Mateo Estrada</h2>
+<p class="text-secondary font-medium text-sm">Productor Premium</p>
+</div>
+</section>
+<!-- Personal Information Bento-ish Grid -->
+<div class="space-y-4">
+<h3 class="font-bold text-[10px] uppercase tracking-[0.2em] text-secondary ml-1">Información Personal</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Nombre Completo -->
+<div class="bg-surface-container-lowest p-5 rounded-xl shadow-sm border border-outline-variant/10 group hover:border-primary/20 transition-colors">
+<label class="block font-bold text-[8px] uppercase tracking-widest text-outline mb-1">Nombre completo</label>
+<div class="flex justify-between items-center">
+<span class="text-on-surface font-semibold">Mateo Estrada</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-lg" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<!-- Username -->
+<div class="bg-surface-container-lowest p-5 rounded-xl shadow-sm border border-outline-variant/10 group hover:border-primary/20 transition-colors">
+<label class="block font-bold text-[8px] uppercase tracking-widest text-outline mb-1">Nombre de usuario</label>
+<div class="flex justify-between items-center">
+<span class="text-on-surface font-semibold">@mateo_cosecha</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-lg" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<!-- Email -->
+<div class="bg-surface-container-lowest p-5 rounded-xl shadow-sm border border-outline-variant/10 group hover:border-primary/20 transition-colors md:col-span-2">
+<label class="block font-bold text-[8px] uppercase tracking-widest text-outline mb-1">Correo electrónico</label>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="text-on-surface font-semibold">m.estrada@agro-mail.com</span>
+<span class="bg-secondary-container text-on-secondary-container text-[8px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter">Verificado</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-lg" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<!-- Phone -->
+<div class="bg-surface-container-lowest p-5 rounded-xl shadow-sm border border-outline-variant/10 group hover:border-primary/20 transition-colors md:col-span-2">
+<label class="block font-bold text-[8px] uppercase tracking-widest text-outline mb-1">Número de teléfono</label>
+<div class="flex justify-between items-center">
+<span class="text-on-surface font-semibold">+52 55 1234 5678</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-lg" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Security Section -->
+<div class="space-y-4">
+<h3 class="font-bold text-[10px] uppercase tracking-[0.2em] text-secondary ml-1">Seguridad</h3>
+<div class="bg-surface-container-low rounded-xl overflow-hidden border border-outline-variant/10">
+<!-- 2FA Toggle -->
+<div class="flex items-center justify-between p-5 bg-surface-container-lowest border-b border-surface-container">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<div>
+<p class="text-on-surface font-bold text-sm">Autenticación en dos pasos (2FA)</p>
+<p class="text-outline text-[11px] font-medium">Mayor seguridad para tus transacciones</p>
+</div>
+</div>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</div>
+</div>
+<!-- Log out other devices -->
+<button class="w-full flex items-center justify-between p-5 bg-surface-container-lowest active:bg-neutral-100 transition-colors">
+<div class="flex items-center gap-4 text-left">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="phonelink_erase">phonelink_erase</span>
+</div>
+<div>
+<p class="text-on-surface font-bold text-sm">Cerrar sesión en otros dispositivos</p>
+<p class="text-outline text-[11px] font-medium">3 dispositivos activos actualmente</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Danger Zone -->
+<div class="pt-4">
+<button class="w-full py-4 px-6 rounded-xl border-2 border-error/20 text-error font-bold text-[10px] uppercase tracking-widest hover:bg-error/5 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-lg" data-icon="logout">logout</span>
+                Cerrar Sesión
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border-t border-neutral-100 dark:border-neutral-800 shadow-lg flex justify-around items-center h-20 px-6 pb-safe">
+<a class="flex flex-col items-center justify-center text-neutral-400 dark:text-neutral-500 hover:text-[#00462f] dark:hover:text-emerald-300 tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="storefront">storefront</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-black uppercase tracking-widest">Mercado</span>
+</a>
+<a class="flex flex-col items-center justify-center text-neutral-400 dark:text-neutral-500 hover:text-[#00462f] dark:hover:text-emerald-300 tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="favorite">favorite</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-black uppercase tracking-widest">Favoritos</span>
+</a>
+<a class="flex flex-col items-center justify-center text-neutral-400 dark:text-neutral-500 hover:text-[#00462f] dark:hover:text-emerald-300 tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="receipt_long">receipt_long</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-black uppercase tracking-widest">Pedidos</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#00462f] dark:text-emerald-400 scale-110 transition-transform tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-black uppercase tracking-widest">Perfil</span>
+</a>
+</nav>
+</body></html>

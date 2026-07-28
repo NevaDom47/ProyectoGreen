@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Negociación Cancelada - El Mercadito</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdad7",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-container": "#ebefea",
+                        "on-primary-fixed": "#002114",
+                        "inverse-surface": "#2d312e",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#4e6b5b",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#8bd8b2",
+                        "on-secondary-fixed-variant": "#314c3f",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#005137",
+                        "surface-container-lowest": "#ffffff",
+                        "on-background": "#181d1a",
+                        "surface-tint": "#186b4c",
+                        "on-error-container": "#93000a",
+                        "primary": "#00462f",
+                        "background": "#f7faf5",
+                        "inverse-on-surface": "#eef2ed",
+                        "tertiary-container": "#853e3b",
+                        "tertiary-fixed-dim": "#ffb3ae",
+                        "secondary-container": "#caead7",
+                        "tertiary": "#682826",
+                        "on-tertiary-fixed-variant": "#75322f",
+                        "on-tertiary-fixed": "#3c0708",
+                        "surface-variant": "#e0e3df",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#181d1a",
+                        "on-surface-variant": "#3f4943",
+                        "surface-container-highest": "#e0e3df",
+                        "secondary-fixed-dim": "#afcebb",
+                        "primary-fixed": "#a5f3cb",
+                        "surface-container-low": "#f1f4f0",
+                        "on-secondary-fixed": "#042015",
+                        "primary-fixed-dim": "#89d6b0",
+                        "primary-container": "#036042",
+                        "secondary": "#486456",
+                        "surface-container-high": "#e6e9e4",
+                        "outline-variant": "#bec9c1",
+                        "on-tertiary-container": "#ffb5b0",
+                        "inverse-primary": "#89d6b0",
+                        "surface-bright": "#f7faf5",
+                        "surface": "#f7faf5",
+                        "outline": "#6f7a73",
+                        "surface-dim": "#d7dbd6",
+                        "secondary-fixed": "#caead7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans", "sans-serif"],
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "body": ["Plus Jakarta Sans", "sans-serif"],
+                        "label": ["Plus Jakarta Sans", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-outlined.fill { font-variation-settings: 'FILL' 1; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col antialiased">
+<!-- TopAppBar -->
+<header class="bg-surface text-primary font-headline font-bold text-lg tracking-tight docked full-width top-0 bg-surface-container-low flat no shadows flex justify-between items-center w-full px-4 h-16 sticky z-40">
+<button aria-label="Atrás" class="flex items-center justify-center p-2 rounded-full hover:bg-surface-variant/50 transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<div class="flex items-center gap-3 flex-1 ml-2">
+<div class="relative w-10 h-10 rounded-full overflow-hidden border-2 border-surface-container-high shrink-0 shadow-sm">
+<img alt="Granja El Sol" class="w-full h-full object-cover" data-alt="A close-up, high-quality portrait of a weathered, smiling farmer wearing a classic straw hat, standing in front of a sunlit agricultural field. The lighting is warm and natural, evoking a sense of trust and earthy authenticity consistent with a premium local farmer's market aesthetic. The colors emphasize healthy skin tones and vibrant organic greens in the blurred background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyHO8AQxZeWhwfcJsp3MnWzYiOYZVL-Wp6bZQ9-WVydBJ_EjaO5usBUOni40tJ7H2CqP3ETr3Dl8awMkHDBAMB-1FLv_dJMExSscQYVt3Da-wf8rdh9WBPlrFS7fIiLzF3A5wVkdk2nGj24iCnY9IM2CABR2wZBGM3NfA4zpr3cYApDLdGsaQ8nyceXN5PZyGJVW-2OZoUzP0R3dheAU_fOy8__WXHtwe4Z82osvI1ZhpXjCzDv_7Uc3G61Gm7x1fXVP9IUhoemI0"/>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-error rounded-full border-2 border-surface-container-lowest"></div>
+</div>
+<div class="flex flex-col">
+<h1 class="font-headline font-extrabold text-primary leading-tight text-base">Granja El Sol</h1>
+<span class="font-label font-black text-[10px] text-on-surface-variant uppercase tracking-widest">Desconectado</span>
+</div>
+</div>
+<button aria-label="Más opciones" class="flex items-center justify-center p-2 rounded-full hover:bg-surface-variant/50 transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-2xl">more_vert</span>
+</button>
+</header>
+<!-- Main Chat Canvas -->
+<main class="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-6 w-full max-w-3xl mx-auto pb-24">
+<!-- Context Widget: Cancelled Product -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm border border-error-container/30 flex items-start gap-4 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-16 h-16 bg-error-container/20 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+<div class="w-20 h-20 rounded-lg overflow-hidden shrink-0 shadow-sm relative">
+<img alt="Tomate Saladette" class="w-full h-full object-cover grayscale-[30%] opacity-80" data-alt="A vibrant, high-saturation, macro food photography shot of a pile of ripe, red Roma (Saladette) tomatoes resting on a rustic wooden crate. The lighting is bright and directional, highlighting the smooth, glossy skin of the tomatoes against a soft-focus background of an organic farm setting. The aesthetic is premium, fresh, and deeply connected to agrarian roots." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgFeyj_9XcqQEoVYpV76rb-dpCmBryHM1EMX19cyuOnC_npkh8_iTEnk7OYfKYlwqnJr3TkgD6YysueZtzWb1c4HfAQzUP_tgUwz7h2d8mj2ONiXhRmSUkuf-PG3BVJFFNlvSgZIlVTMAjsJ2Q49XhVcjnM4F6E5xW6FVv_FH0hwrDHDeNRWwSxO7eF7VhzB_JH1ilKU1NHlR5ds_iiLOfvrDwJUmSmMjI30E0P58KrQr03O1bo3gFngRDNP4oeWvmxxGhT-t6nPI"/>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label font-black text-[10px] uppercase tracking-widest text-error bg-error-container/50 px-2 py-0.5 rounded-sm">Cancelado</span>
+<span class="font-label font-black text-[10px] text-on-surface-variant uppercase tracking-widest opacity-60">Pedido #4829</span>
+</div>
+<h2 class="font-headline font-bold text-base text-on-surface truncate">Tomate Saladette Premium</h2>
+<p class="font-body text-sm text-on-surface-variant mt-0.5">50 Cajas • Calibre Extra</p>
+<div class="flex items-center gap-2 mt-2">
+<span class="font-headline font-bold text-tertiary line-through opacity-70">$1,250.00</span>
+</div>
+</div>
+</div>
+<!-- Chat History (Context) -->
+<div class="flex flex-col gap-4">
+<!-- Timestamp -->
+<div class="flex justify-center">
+<span class="font-label font-bold text-[10px] uppercase tracking-widest text-outline bg-surface-container py-1 px-3 rounded-full">Ayer, 14:30</span>
+</div>
+<!-- Provider Message -->
+<div class="flex gap-3 justify-start max-w-[85%]">
+<div class="w-8 h-8 rounded-full overflow-hidden shrink-0 mt-auto shadow-sm">
+<img alt="Granja El Sol" class="w-full h-full object-cover" data-alt="A close-up, high-quality portrait of a weathered, smiling farmer wearing a classic straw hat, standing in front of a sunlit agricultural field. The lighting is warm and natural, evoking a sense of trust and earthy authenticity consistent with a premium local farmer's market aesthetic. The colors emphasize healthy skin tones and vibrant organic greens in the blurred background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBavwvZHYQuZdeJo1ksjDZOlRq0wcLCHjuQxt84RCHJ0-3GOtlze2YKoZmrrmfG_Avp4Qyw9CZKfyzIEyFVO3aDCKTI_T4hyRXMhrnrS6El2Yta21t_Z5-TPLodDY_6ubt48mK2hofW9h1yg84FSbfYD03M5aRB6H8F7va3HTVs-WYc1J13o1PXtCQWmjHPVwnIvI_4xYYplaEDWfs0AAIIdQ8whLDbAzXomBiA9gEQmfHxmgmxEnHofesN7GL_au5ehcAhM8dItlI"/>
+</div>
+<div class="bg-surface-container-low rounded-2xl rounded-bl-sm p-3 shadow-sm text-sm font-body text-on-surface relative">
+<p>Hola, revisé el inventario y solo me quedan 20 cajas del Saladette Extra. ¿Te sirve o cancelamos?</p>
+<span class="text-[9px] text-outline mt-1 block text-right">14:32</span>
+</div>
+</div>
+<!-- Buyer Message -->
+<div class="flex gap-3 justify-end max-w-[85%] self-end">
+<div class="bg-primary-container rounded-2xl rounded-br-sm p-3 shadow-sm text-sm font-body text-on-primary-container relative">
+<p>Necesito las 50 cajas para mañana. Mejor cancelamos esta vez, lo buscaré con otro proveedor. Gracias.</p>
+<div class="flex items-center justify-end gap-1 mt-1">
+<span class="text-[9px] text-primary-fixed-dim/70">15:05</span>
+<span class="material-symbols-outlined text-[12px] text-primary-fixed-dim">done_all</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Centralized System Message: Negotiation Cancelled -->
+<div class="mt-4 mb-2">
+<div class="bg-error-container/20 border border-error/20 rounded-xl p-5 shadow-sm text-center relative overflow-hidden backdrop-blur-sm">
+<div class="absolute inset-0 bg-gradient-to-b from-transparent to-error-container/10 pointer-events-none"></div>
+<div class="w-12 h-12 bg-error-container rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm">
+<span class="material-symbols-outlined text-error text-2xl fill">cancel</span>
+</div>
+<h3 class="font-headline font-bold text-error text-lg mb-1">Negociación Cancelada</h3>
+<div class="bg-surface-container-lowest/80 rounded-lg p-3 mt-3 inline-block text-left mx-auto max-w-sm">
+<p class="font-label font-black text-[10px] uppercase tracking-widest text-outline mb-1">Motivo de cancelación</p>
+<p class="font-body text-sm text-on-surface font-medium">El producto ya no está disponible en la cantidad requerida.</p>
+</div>
+<p class="font-body text-xs text-on-surface-variant mt-4">Los fondos retenidos (si los hubo) han sido liberados.</p>
+</div>
+</div>
+</main>
+<!-- Disabled Input Area -->
+<div class="fixed bottom-0 left-0 w-full z-40 bg-surface-container-lowest border-t border-outline-variant/20 px-4 py-4 pb-safe flex justify-center items-center shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
+<div class="bg-surface-container flex items-center justify-center w-full max-w-md rounded-full py-3 px-6 gap-2 opacity-80 cursor-not-allowed">
+<span class="material-symbols-outlined text-outline text-lg">lock</span>
+<span class="font-label font-bold text-xs uppercase tracking-widest text-outline">Este chat está cerrado</span>
+</div>
+</div>
+</body></html>

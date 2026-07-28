@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#016042",
+                        "background-light": "#f5f8f7",
+                        "background-dark": "#0f231d",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>Favoritos - El Mercadito</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="relative flex h-screen w-full max-w-md mx-auto flex-col bg-white dark:bg-background-dark overflow-hidden shadow-2xl">
+<!-- Header -->
+<div class="flex items-center bg-white dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10 border-b border-primary/10">
+<div class="text-primary flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 text-center">Mis Favoritos</h2>
+<div class="size-10"></div> <!-- Spacer for centering -->
+</div>
+<!-- Search and Filters -->
+<div class="px-4 py-3 space-y-3 bg-white dark:bg-background-dark">
+<label class="flex flex-col min-w-40 h-12 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-xl h-full shadow-sm">
+<div class="text-primary/60 flex border-none bg-primary/5 items-center justify-center pl-4 rounded-l-xl">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-xl text-slate-900 dark:text-slate-100 focus:outline-0 focus:ring-0 border-none bg-primary/5 h-full placeholder:text-primary/40 px-4 pl-2 text-base font-normal" placeholder="Buscar en mis favoritos" value=""/>
+</div>
+</label>
+<div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary text-white px-5 shadow-sm shadow-primary/20">
+<span class="text-sm font-medium">Todos</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary/10 text-primary px-4">
+<span class="text-sm font-medium">Frutas</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary/10 text-primary px-4">
+<span class="text-sm font-medium">Verduras</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary/10 text-primary px-4">
+<span class="text-sm font-medium">Lácteos</span>
+</button>
+</div>
+</div>
+<!-- Product List -->
+<div class="flex-1 overflow-y-auto p-4 space-y-4">
+<!-- Product Card 1 -->
+<div class="flex flex-col rounded-xl overflow-hidden shadow-sm border border-primary/5 bg-white dark:bg-background-dark/50">
+<div class="relative w-full aspect-[16/9] bg-center bg-no-repeat bg-cover" data-alt="Cesta de fresas rojas y frescas en un mercado" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCwFaqKu6KntDHUpBa9ZKs9WGQXbYXzvcaGxRgGZPVCVeEhgf7lprbDhOHB5u04NVxE3jhS41fb_tmKbzXruxFyObchNwiJQQ-YFFm_mBuUNF9r3nXhrRY4tm1OZU4Lf5wz7Qs-B0fm3gQYOmol5W_bRjphDJbh4piPle02rQm47fhOtUE8U2CYBqqHPyVmAMm2IGHx7E2wXxG-1dtjqQ2qdV4l7UZzDSisEAYcRoZKLoBbtmW4ua5SgTzhnWmhLKUe6EOqAg0XeIk");'>
+<button class="absolute top-3 right-3 size-9 flex items-center justify-center bg-white/90 rounded-full text-red-500 shadow-md">
+<span class="material-symbols-outlined fill-1" style="font-variation-settings: 'FILL' 1">favorite</span>
+</button>
+</div>
+<div class="flex flex-col p-4 gap-3">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight">Fresas Orgánicas</p>
+<p class="text-primary/70 text-sm font-medium">Eco-Granja S.A.</p>
+</div>
+<div class="flex items-center gap-1 bg-primary/5 px-2 py-1 rounded-lg">
+<span class="material-symbols-outlined text-yellow-500 text-sm" style="font-variation-settings: 'FILL' 1">star</span>
+<span class="text-primary font-bold text-sm">4.8</span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-1">
+<div class="flex flex-col">
+<span class="text-primary text-xl font-bold">$4.50</span>
+<span class="text-slate-400 text-xs">por libra</span>
+</div>
+<button class="flex items-center gap-2 bg-primary text-white px-5 py-2 rounded-lg font-semibold text-sm hover:bg-primary/90 transition-all shadow-md shadow-primary/20">
+<span class="material-symbols-outlined text-base">shopping_cart</span>
+                            Agregar
+                        </button>
+</div>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="flex flex-col rounded-xl overflow-hidden shadow-sm border border-primary/5 bg-white dark:bg-background-dark/50">
+<div class="relative w-full aspect-[16/9] bg-center bg-no-repeat bg-cover" data-alt="Aguacates maduros abiertos a la mitad sobre madera" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCRwYx6vLjU775rpev3lR63zO7Lz33pEoelgrIII__uL6jvMkoFbLU6KhmtJaKjczihttXJ7syXJQIAZPXFSWlgzSNLukXygxvKiXPjLBvy1cbgPV1I-LzNNzDoDxIFBQxFNCe6DkGpINQ5uwYeHF2pHNtJqqjEGfcccM0lpL8NjJA5L9zXfEoPVp0NDs-184wjgP4zO2B1IJPCrl3kYbwlYb1iXY-pXXabCc2vDAyeAhxgXenYpE9dbW9oS5YfUP8GEJXdRRnVZ_Y");'>
+<button class="absolute top-3 right-3 size-9 flex items-center justify-center bg-white/90 rounded-full text-red-500 shadow-md">
+<span class="material-symbols-outlined fill-1" style="font-variation-settings: 'FILL' 1">favorite</span>
+</button>
+</div>
+<div class="flex flex-col p-4 gap-3">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight">Aguacates Hass</p>
+<p class="text-primary/70 text-sm font-medium">Huerto del Sol</p>
+</div>
+<div class="flex items-center gap-1 bg-primary/5 px-2 py-1 rounded-lg">
+<span class="material-symbols-outlined text-yellow-500 text-sm" style="font-variation-settings: 'FILL' 1">star</span>
+<span class="text-primary font-bold text-sm">4.9</span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-1">
+<div class="flex flex-col">
+<span class="text-primary text-xl font-bold">$2.25</span>
+<span class="text-slate-400 text-xs">por unidad</span>
+</div>
+<button class="flex items-center gap-2 bg-primary text-white px-5 py-2 rounded-lg font-semibold text-sm hover:bg-primary/90 transition-all shadow-md shadow-primary/20">
+<span class="material-symbols-outlined text-base">shopping_cart</span>
+                            Agregar
+                        </button>
+</div>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="flex flex-col rounded-xl overflow-hidden shadow-sm border border-primary/5 bg-white dark:bg-background-dark/50">
+<div class="relative w-full aspect-[16/9] bg-center bg-no-repeat bg-cover" data-alt="Tomates cherry rojos brillantes en rama" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBHOb892B5me7rsHN9BLjAtuvcsEpGo1VrRV6dP2J5F5FeDlnP9fSbAhWTNBrHo7AfCBa2UJ9hXp_j2GBSUqZg-GX-VyRBv5JXlV6MiHw_s4HSUtqGzVZ3-magpGmcXWQiyIr_8sXxrAHlcLE5lukc_T12APAyR2UuP9qfurDDd-0QzCJ-yVftAtJGCoPKTAp7_oH_h2fVZsZKNWwWUJlrN_fLxTVMmupW98Id5ESA5rGGS_XndVfkw7hHV26apec7jtihZ2G1fHgk");'>
+<button class="absolute top-3 right-3 size-9 flex items-center justify-center bg-white/90 rounded-full text-red-500 shadow-md">
+<span class="material-symbols-outlined fill-1" style="font-variation-settings: 'FILL' 1">favorite</span>
+</button>
+</div>
+<div class="flex flex-col p-4 gap-3">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight">Tomates Cherry</p>
+<p class="text-primary/70 text-sm font-medium">Finca La Huerta</p>
+</div>
+<div class="flex items-center gap-1 bg-primary/5 px-2 py-1 rounded-lg">
+<span class="material-symbols-outlined text-yellow-500 text-sm" style="font-variation-settings: 'FILL' 1">star</span>
+<span class="text-primary font-bold text-sm">4.7</span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-1">
+<div class="flex flex-col">
+<span class="text-primary text-xl font-bold">$3.10</span>
+<span class="text-slate-400 text-xs">por paquete</span>
+</div>
+<button class="flex items-center gap-2 bg-primary text-white px-5 py-2 rounded-lg font-semibold text-sm hover:bg-primary/90 transition-all shadow-md shadow-primary/20">
+<span class="material-symbols-outlined text-base">shopping_cart</span>
+                            Agregar
+                        </button>
+</div>
+</div>
+</div>
+<div class="h-10"></div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="flex gap-1 border-t border-primary/10 bg-white dark:bg-background-dark px-4 pb-6 pt-2 sticky bottom-0 z-20">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-[10px] font-medium leading-normal">Inicio</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">shopping_basket</span>
+<p class="text-[10px] font-medium leading-normal">Carrito</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center -mt-6" href="#">
+<div class="bg-primary size-14 rounded-full flex items-center justify-center text-white shadow-lg shadow-primary/30 border-4 border-white dark:border-background-dark">
+<span class="material-symbols-outlined text-3xl">storefront</span>
+</div>
+<p class="text-[10px] font-semibold text-primary mt-1">Mercado</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined fill-1" style="font-variation-settings: 'FILL' 1">favorite</span>
+<p class="text-[10px] font-bold leading-normal">Favoritos</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">person</span>
+<p class="text-[10px] font-medium leading-normal">Perfil</p>
+</a>
+</div>
+</div>
+</body></html>

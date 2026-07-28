@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Horario - Supplier Registration</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#005137",
+                        "surface": "#f7faf5",
+                        "secondary": "#486456",
+                        "on-tertiary-container": "#ffb5b0",
+                        "on-surface-variant": "#3f4943",
+                        "surface-container-highest": "#e0e3df",
+                        "primary": "#00462f",
+                        "surface-tint": "#186b4c",
+                        "on-secondary-container": "#4e6b5b",
+                        "tertiary": "#682826",
+                        "surface-variant": "#e0e3df",
+                        "on-primary-fixed": "#002114",
+                        "outline-variant": "#bec9c1",
+                        "on-primary": "#ffffff",
+                        "on-background": "#181d1a",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed": "#3c0708",
+                        "on-primary-container": "#8bd8b2",
+                        "inverse-surface": "#2d312e",
+                        "primary-fixed": "#a5f3cb",
+                        "secondary-fixed-dim": "#afcebb",
+                        "primary-fixed-dim": "#89d6b0",
+                        "inverse-on-surface": "#eef2ed",
+                        "primary-container": "#036042",
+                        "on-secondary-fixed": "#042015",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#314c3f",
+                        "tertiary-fixed-dim": "#ffb3ae",
+                        "surface-container-low": "#f1f4f0",
+                        "surface-container": "#ebefea",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e6e9e4",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#75322f",
+                        "on-surface": "#181d1a",
+                        "on-secondary": "#ffffff",
+                        "background": "#f7faf5",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "outline": "#6f7a73",
+                        "inverse-primary": "#89d6b0",
+                        "secondary-fixed": "#caead7",
+                        "tertiary-fixed": "#ffdad7",
+                        "secondary-container": "#caead7",
+                        "surface-dim": "#d7dbd6",
+                        "tertiary-container": "#853e3b",
+                        "surface-bright": "#f7faf5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .toggle-checkbox:checked { right: 0; border-color: #036042; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #036042; }
+        .toggle-checkbox { right: 0; z-index: 1; border-color: #e2e8f0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .toggle-label { width: 3rem; height: 1.5rem; background-color: #cbd5e1; border-radius: 9999px; position: relative; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .toggle-label:after { content: ''; position: absolute; top: 0.125rem; left: 0.125rem; width: 1.25rem; height: 1.25rem; background-color: white; border-radius: 50%; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .toggle-checkbox:checked + .toggle-label:after { transform: translateX(1.5rem); }
+        
+        /* Custom scrollbar to hide it but keep functionality */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Animations */
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up {
+            animation: slideUpFade 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        
+        @keyframes progressAnim {
+            from { width: 60%; }
+            to { width: 80%; }
+        }
+        .animate-progress {
+            animation: progressAnim 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            width: 60%;
+        }
+
+        @keyframes subtlePulse {
+            0% { box-shadow: 0 0 0 0 rgba(3, 96, 66, 0.3); }
+            70% { box-shadow: 0 0 0 12px rgba(3, 96, 66, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(3, 96, 66, 0); }
+        }
+        .animate-subtle-pulse {
+            animation: subtlePulse 2s infinite;
+        }
+
+        .time-controls-container {
+            display: grid;
+            grid-template-rows: 1fr;
+            transition: grid-template-rows 0.3s ease-out, opacity 0.3s ease-out, margin 0.3s ease-out;
+            opacity: 1;
+        }
+        .time-controls-container.collapsed {
+            grid-template-rows: 0fr;
+            opacity: 0;
+            margin-top: 0 !important;
+        }
+        .time-controls-inner {
+            overflow: hidden;
+        }
+        
+        .closed-text-container {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.3s ease-out, opacity 0.3s ease-out;
+            opacity: 0;
+        }
+        .closed-text-container.active {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .closed-text-inner {
+            overflow: hidden;
+        }
+
+        .day-card {
+            transition: background-color 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
+        }
+        .day-card.inactive {
+            background-color: #ebefea;
+            border-color: rgba(190, 201, 193, 0.1);
+            opacity: 0.75;
+        }
+        .day-title {
+            transition: color 0.3s ease;
+        }
+        .day-card.inactive .day-title {
+            color: #6f7a73;
+            text-decoration: line-through;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background antialiased flex justify-center min-h-screen">
+<div class="w-full max-w-md bg-surface-container-lowest min-h-screen relative flex flex-col shadow-2xl">
+<!-- Header: TopAppBar -->
+<header class="w-full top-0 sticky bg-surface-container-lowest z-20 px-4 pt-6 pb-2">
+<div class="flex items-center justify-between mb-4">
+<button class="p-2 rounded-full hover:bg-surface-container-low active:bg-surface-container transition-colors duration-200 text-primary">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<div class="text-xs font-label font-bold text-secondary uppercase tracking-widest">Paso 4 de registro</div>
+<div class="w-10"></div> <!-- Spacer for centering -->
+</div>
+<div class="px-2">
+<h1 class="font-headline text-2xl font-extrabold text-primary mb-2">Horario</h1>
+<p class="font-body text-sm text-on-surface-variant leading-relaxed">Configura los días y horarios en los que tu negocio estará disponible para los clientes.</p>
+</div>
+<!-- Progress Bar -->
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full mt-6 mb-2 overflow-hidden">
+<div class="bg-primary h-1.5 rounded-full animate-progress"></div>
+</div>
+</header>
+<!-- Main Content (Scrollable) -->
+<main class="flex-1 overflow-y-auto px-4 pb-32 hide-scrollbar">
+<!-- Quick Actions -->
+<div class="py-4 flex flex-col gap-3 animate-slide-up" style="animation-delay: 100ms;">
+<button class="flex items-center justify-center gap-2 w-full py-3 bg-surface-container-low text-primary font-label text-sm font-bold rounded-xl border border-outline-variant/30 hover:bg-surface-container active:scale-[0.98] transition-all duration-200 shadow-sm">
+<span class="material-symbols-outlined text-xl">content_copy</span>
+                    Aplicar mismo horario a todos los días
+                </button>
+</div>
+<!-- Schedule List -->
+<div class="space-y-4 pb-8" id="schedule-list">
+<!-- Lunes (Active) -->
+<div class="day-card bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/20 flex flex-col animate-slide-up" style="animation-delay: 150ms;">
+<div class="flex justify-between items-center pb-3 border-b border-surface-container-highest">
+<span class="day-title font-headline font-bold text-on-surface text-base">Lunes</span>
+<div class="relative inline-block w-12 mr-2 align-middle select-none">
+<input checked="" class="day-toggle toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" id="toggle_lunes" name="toggle_lunes" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer" for="toggle_lunes"></label>
+</div>
+</div>
+<div class="time-controls-container mt-4">
+<div class="time-controls-inner flex items-center justify-between gap-4">
+<div class="flex-1">
+<label class="block font-label text-[10px] font-black uppercase tracking-widest text-secondary mb-1">Apertura</label>
+<button class="w-full flex justify-between items-center px-4 py-2 bg-surface-container-low rounded-lg text-on-surface font-body text-sm hover:bg-surface-variant hover:shadow-inner active:bg-surface-container-highest transition-all duration-200">
+                                    08:00 AM
+                                    <span class="material-symbols-outlined text-secondary text-sm">schedule</span>
+</button>
+</div>
+<span class="material-symbols-outlined text-outline mt-5">horizontal_rule</span>
+<div class="flex-1">
+<label class="block font-label text-[10px] font-black uppercase tracking-widest text-secondary mb-1">Cierre</label>
+<button class="w-full flex justify-between items-center px-4 py-2 bg-surface-container-low rounded-lg text-on-surface font-body text-sm hover:bg-surface-variant hover:shadow-inner active:bg-surface-container-highest transition-all duration-200">
+                                    06:00 PM
+                                    <span class="material-symbols-outlined text-secondary text-sm">schedule</span>
+</button>
+</div>
+</div>
+</div>
+<div class="closed-text-container">
+<div class="closed-text-inner flex items-center justify-center py-2">
+<span class="font-body text-sm text-outline italic">Cerrado</span>
+</div>
+</div>
+</div>
+<!-- Martes (Active) -->
+<div class="day-card bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/20 flex flex-col animate-slide-up" style="animation-delay: 200ms;">
+<div class="flex justify-between items-center pb-3 border-b border-surface-container-highest">
+<span class="day-title font-headline font-bold text-on-surface text-base">Martes</span>
+<div class="relative inline-block w-12 mr-2 align-middle select-none">
+<input checked="" class="day-toggle toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" id="toggle_martes" name="toggle_martes" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer" for="toggle_martes"></label>
+</div>
+</div>
+<div class="time-controls-container mt-4">
+<div class="time-controls-inner flex items-center justify-between gap-4">
+<div class="flex-1">
+<label class="block font-label text-[10px] font-black uppercase tracking-widest text-secondary mb-1">Apertura</label>
+<button class="w-full flex justify-between items-center px-4 py-2 bg-surface-container-low rounded-lg text-on-surface font-body text-sm hover:bg-surface-variant hover:shadow-inner active:bg-surface-container-highest transition-all duration-200">
+                                    08:00 AM
+                                    <span class="material-symbols-outlined text-secondary text-sm">schedule</span>
+</button>
+</div>
+<span class="material-symbols-outlined text-outline mt-5">horizontal_rule</span>
+<div class="flex-1">
+<label class="block font-label text-[10px] font-black uppercase tracking-widest text-secondary mb-1">Cierre</label>
+<button class="w-full flex justify-between items-center px-4 py-2 bg-surface-container-low rounded-lg text-on-surface font-body text-sm hover:bg-surface-variant hover:shadow-inner active:bg-surface-container-highest transition-all duration-200">
+                                    06:00 PM
+                                    <span class="material-symbols-outlined text-secondary text-sm">schedule</span>
+</button>
+</div>
+</div>
+</div>
+<div class="closed-text-container">
+<div class="closed-text-inner flex items-center justify-center py-2">
+<span class="font-body text-sm text-outline italic">Cerrado</span>
+</div>
+</div>
+</div>
+<!-- Miércoles (Active) -->
+<div class="day-card bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/20 flex flex-col animate-slide-up" style="animation-delay: 250ms;">
+<div class="flex justify-between items-center pb-3 border-b border-surface-container-highest">
+<span class="day-title font-headline font-bold text-on-surface text-base">Miércoles</span>
+<div class="relative inline-block w-12 mr-2 align-middle select-none">
+<input checked="" class="day-toggle toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" id="toggle_miercoles" name="toggle_miercoles" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer" for="toggle_miercoles"></label>
+</div>
+</div>
+<div class="time-controls-container mt-4">
+<div class="time-controls-inner flex items-center justify-between gap-4">
+<div class="flex-1">
+<label class="block font-label text-[10px] font-black uppercase tracking-widest text-secondary mb-1">Apertura</label>
+<button class="w-full flex justify-between items-center px-4 py-2 bg-surface-container-low rounded-lg text-on-surface font-body text-sm hover:bg-surface-variant hover:shadow-inner active:bg-surface-container-highest transition-all duration-200">
+                                    08:00 AM
+                                    <span class="material-symbols-outlined text-secondary text-sm">schedule</span>
+</button>
+</div>
+<span class="material-symbols-outlined text-outline mt-5">horizontal_rule</span>
+<div class="flex-1">
+<label class="block font-label text-[10px] font-black uppercase tracking-widest text-secondary mb-1">Cierre</label>
+<button class="w-full flex justify-between items-center px-4 py-2 bg-surface-container-low rounded-lg text-on-surface font-body text-sm hover:bg-surface-variant hover:shadow-inner active:bg-surface-container-highest transition-all duration-200">
+                                    06:00 PM
+                                    <span class="material-symbols-outlined text-secondary text-sm">schedule</span>
+</button>
+</div>
+</div>
+</div>
+<div class="closed-text-container">
+<div class="closed-text-inner flex items-center justify-center py-2">
+<span class="font-body text-sm text-outline italic">Cerrado</span>
+</div>
+</div>
+</div>
+<!-- Jueves (Active) -->
+<div class="day-card bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/20 flex flex-col animate-slide-up" style="animation-delay: 300ms;">
+<div class="flex justify-between items-center pb-3 border-b border-surface-container-highest">
+<span class="day-title font-headline font-bold text-on-surface text-base">Jueves</span>
+<div class="relative inline-block w-12 mr-2 align-middle select-none">
+<input checked="" class="day-toggle toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" id="toggle_jueves" name="toggle_jueves" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer" for="toggle_jueves"></label>
+</div>
+</div>
+<div class="time-controls-container mt-4">
+<div class="time-controls-inner flex items-center justify-between gap-4">
+<div class="flex-1">
+<label class="block font-label text-[10px] font-black uppercase tracking-widest text-secondary mb-1">Apertura</label>
+<button class="w-full flex justify-between items-center px-4 py-2 bg-surface-container-low rounded-lg text-on-surface font-body text-sm hover:bg-surface-variant hover:shadow-inner active:bg-surface-container-highest transition-all duration-200">
+                                    08:00 AM
+                                    <span class="material-symbols-outlined text-secondary text-sm">schedule</span>
+</button>
+</div>
+<span class="material-symbols-outlined text-outline mt-5">horizontal_rule</span>
+<div class="flex-1">
+<label class="block font-label text-[10px] font-black uppercase tracking-widest text-secondary mb-1">Cierre</label>
+<button class="w-full flex justify-between items-center px-4 py-2 bg-surface-container-low rounded-lg text-on-surface font-body text-sm hover:bg-surface-variant hover:shadow-inner active:bg-surface-container-highest transition-all duration-200">
+                                    06:00 PM
+                                    <span class="material-symbols-outlined text-secondary text-sm">schedule</span>
+</button>
+</div>
+</div>
+</div>
+<div class="closed-text-container">
+<div class="closed-text-inner flex items-center justify-center py-2">
+<span class="font-body text-sm text-outline italic">Cerrado</span>
+</div>
+</div>
+</div>
+<!-- Viernes (Active) -->
+<div class="day-card bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/20 flex flex-col animate-slide-up" style="animation-delay: 350ms;">
+<div class="flex justify-between items-center pb-3 border-b border-surface-container-highest">
+<span class="day-title font-headline font-bold text-on-surface text-base">Viernes</span>
+<div class="relative inline-block w-12 mr-2 align-middle select-none">
+<input checked="" class="day-toggle toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" id="toggle_viernes" name="toggle_viernes" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer" for="toggle_viernes"></label>
+</div>
+</div>
+<div class="time-controls-container mt-4">
+<div class="time-controls-inner flex items-center justify-between gap-4">
+<div class="flex-1">
+<label class="block font-label text-[10px] font-black uppercase tracking-widest text-secondary mb-1">Apertura</label>
+<button class="w-full flex justify-between items-center px-4 py-2 bg-surface-container-low rounded-lg text-on-surface font-body text-sm hover:bg-surface-variant hover:shadow-inner active:bg-surface-container-highest transition-all duration-200">
+                                    08:00 AM
+                                    <span class="material-symbols-outlined text-secondary text-sm">schedule</span>
+</button>
+</div>
+<span class="material-symbols-outlined text-outline mt-5">horizontal_rule</span>
+<div class="flex-1">
+<label class="block font-label text-[10px] font-black uppercase tracking-widest text-secondary mb-1">Cierre</label>
+<button class="w-full flex justify-between items-center px-4 py-2 bg-surface-container-low rounded-lg text-on-surface font-body text-sm hover:bg-surface-variant hover:shadow-inner active:bg-surface-container-highest transition-all duration-200">
+                                    06:00 PM
+                                    <span class="material-symbols-outlined text-secondary text-sm">schedule</span>
+</button>
+</div>
+</div>
+</div>
+<div class="closed-text-container">
+<div class="closed-text-inner flex items-center justify-center py-2">
+<span class="font-body text-sm text-outline italic">Cerrado</span>
+</div>
+</div>
+</div>
+<!-- Sábado (Inactive) -->
+<div class="day-card inactive bg-surface-container p-4 rounded-xl shadow-sm border border-outline-variant/10 flex flex-col animate-slide-up" style="animation-delay: 400ms;">
+<div class="flex justify-between items-center pb-3 border-b border-surface-container-highest">
+<span class="day-title font-headline font-bold text-on-surface text-base">Sábado</span>
+<div class="relative inline-block w-12 mr-2 align-middle select-none">
+<input class="day-toggle toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" id="toggle_sabado" name="toggle_sabado" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer" for="toggle_sabado"></label>
+</div>
+</div>
+<div class="time-controls-container mt-4 collapsed">
+<div class="time-controls-inner flex items-center justify-between gap-4">
+<div class="flex-1">
+<label class="block font-label text-[10px] font-black uppercase tracking-widest text-secondary mb-1">Apertura</label>
+<button class="w-full flex justify-between items-center px-4 py-2 bg-surface-container-low rounded-lg text-on-surface font-body text-sm hover:bg-surface-variant hover:shadow-inner active:bg-surface-container-highest transition-all duration-200">
+                                    08:00 AM
+                                    <span class="material-symbols-outlined text-secondary text-sm">schedule</span>
+</button>
+</div>
+<span class="material-symbols-outlined text-outline mt-5">horizontal_rule</span>
+<div class="flex-1">
+<label class="block font-label text-[10px] font-black uppercase tracking-widest text-secondary mb-1">Cierre</label>
+<button class="w-full flex justify-between items-center px-4 py-2 bg-surface-container-low rounded-lg text-on-surface font-body text-sm hover:bg-surface-variant hover:shadow-inner active:bg-surface-container-highest transition-all duration-200">
+                                    06:00 PM
+                                    <span class="material-symbols-outlined text-secondary text-sm">schedule</span>
+</button>
+</div>
+</div>
+</div>
+<div class="closed-text-container active">
+<div class="closed-text-inner flex items-center justify-center py-2">
+<span class="font-body text-sm text-outline italic">Cerrado</span>
+</div>
+</div>
+</div>
+<!-- Domingo (Inactive) -->
+<div class="day-card inactive bg-surface-container p-4 rounded-xl shadow-sm border border-outline-variant/10 flex flex-col animate-slide-up" style="animation-delay: 450ms;">
+<div class="flex justify-between items-center pb-3 border-b border-surface-container-highest">
+<span class="day-title font-headline font-bold text-on-surface text-base">Domingo</span>
+<div class="relative inline-block w-12 mr-2 align-middle select-none">
+<input class="day-toggle toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" id="toggle_domingo" name="toggle_domingo" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer" for="toggle_domingo"></label>
+</div>
+</div>
+<div class="time-controls-container mt-4 collapsed">
+<div class="time-controls-inner flex items-center justify-between gap-4">
+<div class="flex-1">
+<label class="block font-label text-[10px] font-black uppercase tracking-widest text-secondary mb-1">Apertura</label>
+<button class="w-full flex justify-between items-center px-4 py-2 bg-surface-container-low rounded-lg text-on-surface font-body text-sm hover:bg-surface-variant hover:shadow-inner active:bg-surface-container-highest transition-all duration-200">
+                                    08:00 AM
+                                    <span class="material-symbols-outlined text-secondary text-sm">schedule</span>
+</button>
+</div>
+<span class="material-symbols-outlined text-outline mt-5">horizontal_rule</span>
+<div class="flex-1">
+<label class="block font-label text-[10px] font-black uppercase tracking-widest text-secondary mb-1">Cierre</label>
+<button class="w-full flex justify-between items-center px-4 py-2 bg-surface-container-low rounded-lg text-on-surface font-body text-sm hover:bg-surface-variant hover:shadow-inner active:bg-surface-container-highest transition-all duration-200">
+                                    06:00 PM
+                                    <span class="material-symbols-outlined text-secondary text-sm">schedule</span>
+</button>
+</div>
+</div>
+</div>
+<div class="closed-text-container active">
+<div class="closed-text-inner flex items-center justify-center py-2">
+<span class="font-body text-sm text-outline italic">Cerrado</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Action Bar (Sticky) -->
+<div class="absolute bottom-0 left-0 w-full bg-surface-container-lowest border-t border-surface-container-highest px-4 py-4 pb-8 z-50 flex justify-between items-center gap-4">
+<button class="px-6 py-3 rounded-full font-label text-sm font-bold text-primary hover:bg-surface-container active:bg-surface-variant transition-colors duration-200">
+                Atrás
+            </button>
+<button class="flex-1 bg-primary-container text-on-primary-container font-label text-[12px] font-black uppercase tracking-widest py-4 rounded-full shadow-lg flex justify-center items-center gap-2 hover:opacity-90 active:scale-95 transition-all duration-200 animate-subtle-pulse">
+                Continuar
+                <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">arrow_forward</span>
+</button>
+</div>
+</div>
+<script>
+    // Handle toggle interactions smoothly
+    document.addEventListener('DOMContentLoaded', () => {
+        const toggles = document.querySelectorAll('.day-toggle');
+        
+        toggles.forEach(toggle => {
+            toggle.addEventListener('change', (e) => {
+                const card = e.target.closest('.day-card');
+                const timeContainer = card.querySelector('.time-controls-container');
+                const closedText = card.querySelector('.closed-text-container');
+                
+                if (e.target.checked) {
+                    card.classList.remove('inactive');
+                    timeContainer.classList.remove('collapsed');
+                    closedText.classList.remove('active');
+                } else {
+                    card.classList.add('inactive');
+                    timeContainer.classList.add('collapsed');
+                    closedText.classList.add('active');
+                }
+            });
+        });
+    });
+</script>
+</body></html>

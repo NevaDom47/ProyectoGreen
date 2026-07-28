@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Favorite Suppliers - Emerald Harvest</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-dim": "#d7dbd6",
+                      "surface-container-highest": "#e0e3df",
+                      "surface-container": "#ebefea",
+                      "on-tertiary-fixed-variant": "#75322f",
+                      "secondary": "#486456",
+                      "outline-variant": "#bec9c1",
+                      "tertiary-fixed": "#ffdad7",
+                      "on-error": "#ffffff",
+                      "on-background": "#181d1a",
+                      "tertiary": "#682826",
+                      "on-tertiary-container": "#ffb5b0",
+                      "surface-container-low": "#f1f4f0",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-fixed": "#042015",
+                      "surface-variant": "#e0e3df",
+                      "primary": "#00462f",
+                      "outline": "#6f7a73",
+                      "on-primary-container": "#8bd8b2",
+                      "primary-fixed-dim": "#89d6b0",
+                      "on-secondary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "inverse-primary": "#89d6b0",
+                      "surface-tint": "#186b4c",
+                      "secondary-container": "#caead7",
+                      "on-primary-fixed-variant": "#005137",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-high": "#e6e9e4",
+                      "on-tertiary-fixed": "#3c0708",
+                      "surface-bright": "#f7faf5",
+                      "error-container": "#ffdad6",
+                      "inverse-on-surface": "#eef2ed",
+                      "on-surface": "#181d1a",
+                      "tertiary-container": "#853e3b",
+                      "on-primary-fixed": "#002114",
+                      "surface": "#f7faf5",
+                      "primary-fixed": "#a5f3cb",
+                      "on-secondary-fixed-variant": "#314c3f",
+                      "on-surface-variant": "#3f4943",
+                      "on-primary": "#ffffff",
+                      "inverse-surface": "#2d312e",
+                      "secondary-fixed": "#caead7",
+                      "on-secondary-container": "#4e6b5b",
+                      "error": "#ba1a1a",
+                      "primary-container": "#036042",
+                      "secondary-fixed-dim": "#afcebb",
+                      "tertiary-fixed-dim": "#ffb3ae",
+                      "background": "#f7faf5"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Plus Jakarta Sans"],
+                      "display": ["Plus Jakarta Sans"],
+                      "body": ["Plus Jakarta Sans"],
+                      "label": ["Plus Jakarta Sans"]
+              }
+            },
+          }
+        }
+      </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="w-full sticky top-0 z-40 bg-surface-container-low">
+<div class="flex items-center px-4 h-16 w-full max-w-screen-xl mx-auto">
+<button class="material-symbols-outlined text-primary hover:bg-surface-container-high transition-colors p-2 rounded-full active:scale-95 duration-200" data-icon="arrow_back">arrow_back</button>
+<h1 class="flex-grow text-center font-headline text-headline-sm font-bold tracking-tight text-primary">Favorite Suppliers</h1>
+<div class="w-10"></div> <!-- Spacer for centering -->
+</div>
+</header>
+<main class="px-4 py-6 max-w-screen-xl mx-auto">
+<!-- Search Filter -->
+<div class="mb-8">
+<div class="relative flex items-center bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-outline-variant/10 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+<span class="material-symbols-outlined absolute left-4 text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full pl-12 pr-4 py-4 bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-on-surface-variant/60 font-body text-sm" placeholder="Search your favorites..." type="text"/>
+</div>
+</div>
+<!-- Supplier Grid/List -->
+<div class="space-y-4">
+<!-- Supplier Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm flex items-start gap-4 hover:shadow-md transition-shadow">
+<div class="relative flex-shrink-0">
+<img alt="Producer" class="w-20 h-20 rounded-full object-cover border-2 border-primary-fixed" data-alt="A portrait of a weathered, smiling male Mexican farmer in his late 50s wearing a traditional straw hat and a white linen shirt. He is standing in a sun-drenched field of organic vegetables during the golden hour. The lighting is warm and natural, emphasizing the rich earthy tones and deep greens of the agriculture. The overall aesthetic is professional, editorial, and high-quality commerce." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCis-7vdPxg5burfxkulXhS1cTQCUf3ZiOSo9jgngPpcFGdvZ0RS-boanW7n5hd7GZDIreoS5zYuhcu5P_unhdYCjV26ellx0JD4_ExofVhN2vdPmSGpPzOdvMfmqlaHPwr7Si7Sd6NxXAwiNTS3TxaRCxU9wVDMe2H1e9mMyjYRaUGQpO4KA_962BDaSwGqY1IsNg_s_mC1f3TTrYPFguYIV05xWr_-P19pnJij0phQRBwKZkXSqgM7yH6icKO-gq5IgIYmJToITg"/>
+<div class="absolute -bottom-1 -right-1 bg-primary text-white p-1 rounded-full border-2 border-surface-container-lowest">
+<span class="material-symbols-outlined text-[14px] block" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-bold text-on-background text-base tracking-tight">Ricardo M.</h3>
+<div class="flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-tertiary text-sm" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold text-on-surface">4.9</span>
+<span class="text-[10px] text-on-surface-variant font-medium">(128 reviews)</span>
+</div>
+</div>
+<button class="bg-white/80 backdrop-blur-md p-2 rounded-full shadow-sm active:scale-90 transition-all">
+<span class="material-symbols-outlined text-primary" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="flex items-center gap-1 mt-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="location_on">location_on</span>
+<span class="text-[11px] font-medium">Texcoco, Edo. de México</span>
+</div>
+<div class="mt-3 flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-container rounded-lg text-[10px] font-black uppercase tracking-wider">Verduras</span>
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-container rounded-lg text-[10px] font-black uppercase tracking-wider">Hortalizas</span>
+</div>
+</div>
+</div>
+<!-- Supplier Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm flex items-start gap-4 hover:shadow-md transition-shadow">
+<div class="relative flex-shrink-0">
+<img alt="Producer" class="w-20 h-20 rounded-full object-cover border-2 border-primary-fixed" data-alt="A close-up portrait of a female producer in her 40s with a kind expression, wearing a sage green apron over a simple neutral shirt. She is holding a wooden basket filled with vibrant, freshly harvested tomatoes. The setting is a clean, bright farmhouse kitchen with soft side-lighting that highlights textures. The style is sophisticated and agrarian, with a palette of deep greens and earthy neutrals." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhBMhzRLXdaZSTLYNqfJqWKOhrvJ-maoAmLv7O_G_dI_f-HnjYZtKlI-RnHkwMlPgjkS-3qKAd5f7d9bxY0kejZ9sYDoOOrgHuOZw_Yoyge2K0ixA7y17v6B2sl656y__3SMocVC2S5h5MFUB3XWMwoRISKFtFRxmAW8l1zWkbRyRTJK_Qy89BdGV2e7r9BsYe8rBBsNhezTDaNqENlA3gudubdX_rRCrlPjSCKycs7csIp9VfTb9kFxsmfT8WPIuiHyRiUrYXiHU"/>
+<div class="absolute -bottom-1 -right-1 bg-primary text-white p-1 rounded-full border-2 border-surface-container-lowest">
+<span class="material-symbols-outlined text-[14px] block" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-bold text-on-background text-base tracking-tight">Elena G.</h3>
+<div class="flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-tertiary text-sm" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold text-on-surface">4.8</span>
+<span class="text-[10px] text-on-surface-variant font-medium">(215 reviews)</span>
+</div>
+</div>
+<button class="bg-white/80 backdrop-blur-md p-2 rounded-full shadow-sm active:scale-90 transition-all">
+<span class="material-symbols-outlined text-primary" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="flex items-center gap-1 mt-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="location_on">location_on</span>
+<span class="text-[11px] font-medium">Xochimilco, CDMX</span>
+</div>
+<div class="mt-3 flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-container rounded-lg text-[10px] font-black uppercase tracking-wider">Flores Edibles</span>
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-container rounded-lg text-[10px] font-black uppercase tracking-wider">Miel</span>
+</div>
+</div>
+</div>
+<!-- Supplier Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm flex items-start gap-4 hover:shadow-md transition-shadow">
+<div class="relative flex-shrink-0">
+<img alt="Producer" class="w-20 h-20 rounded-full object-cover border-2 border-primary-fixed" data-alt="A modern editorial portrait of a young artisan producer with a confident smile, standing in a brightly lit greenhouse surrounded by hanging microgreens. The lighting is crisp and modern, creating a clean light-mode atmosphere. She wears a minimalist canvas work-shirt in a neutral stone color. The composition focuses on her as a symbol of the new digital agrarian movement, balancing technology and nature." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEM9y7pafyX0n4Kc0v7waUEFnNUU-7EFgsY7P_LnCOFYxeTgKgvD9A_6Zd_mRtBLq56HvccDSEs_OB6YQj6g6jJ8abDtnEvO7H_zkjRdsPTxoZhoyYHC58cY0NqnCgA0RCSs98H87li6DVxRyH6D_-ieP1o_XYN_qgcBtHBJjmodU5NHCPQMMhpuZj0nG2EIxK9_Z9nH4gKPpzmWBhhN2F84x-6Lpt0KPZjOy5qklS6-1QCF0sIqV41t9Za1VqSEkauVcH1MwF-qc"/>
+<div class="absolute -bottom-1 -right-1 bg-primary text-white p-1 rounded-full border-2 border-surface-container-lowest">
+<span class="material-symbols-outlined text-[14px] block" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-bold text-on-background text-base tracking-tight">Lucía R.</h3>
+<div class="flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-tertiary text-sm" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold text-on-surface">5.0</span>
+<span class="text-[10px] text-on-surface-variant font-medium">(94 reviews)</span>
+</div>
+</div>
+<button class="bg-white/80 backdrop-blur-md p-2 rounded-full shadow-sm active:scale-90 transition-all">
+<span class="material-symbols-outlined text-primary" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="flex items-center gap-1 mt-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="location_on">location_on</span>
+<span class="text-[11px] font-medium">Cholula, Puebla</span>
+</div>
+<div class="mt-3 flex flex-wrap gap-2">
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-container rounded-lg text-[10px] font-black uppercase tracking-wider">Quesos</span>
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-container rounded-lg text-[10px] font-black uppercase tracking-wider">Lácteos</span>
+</div>
+</div>
+</div>
+<!-- Empty State Context / Recommendation -->
+<div class="mt-12 py-8 px-6 text-center bg-surface-container/30 rounded-3xl border border-dashed border-outline-variant/40">
+<span class="material-symbols-outlined text-primary/30 text-5xl mb-4 block" data-icon="person_add">person_add</span>
+<p class="font-bold text-on-surface-variant text-sm mb-2">Discover more producers</p>
+<p class="text-on-surface-variant/70 text-xs leading-relaxed max-w-xs mx-auto">Explore the market to find local artisans and add them to your favorites for quick access.</p>
+<button class="mt-6 px-8 py-3 bg-primary-container text-white font-label text-[10px] font-black uppercase tracking-widest rounded-full shadow-sm active:scale-95 transition-transform">Explore Market</button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-3 bg-surface shadow-lg">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="font-label text-[10px] font-black uppercase tracking-widest">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="storefront">storefront</span>
+<span class="font-label text-[10px] font-black uppercase tracking-widest">Market</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-4 py-1 active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-label text-[10px] font-black uppercase tracking-widest">Favorites</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="receipt_long">receipt_long</span>
+<span class="font-label text-[10px] font-black uppercase tracking-widest">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-label text-[10px] font-black uppercase tracking-widest">Profile</span>
+</a>
+</nav>
+</body></html>

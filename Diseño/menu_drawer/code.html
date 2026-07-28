@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-container": "#4e6b5b",
+              "surface-tint": "#186b4c",
+              "on-secondary-fixed-variant": "#314c3f",
+              "primary-container": "#036042",
+              "surface-dim": "#d7dbd6",
+              "secondary-fixed": "#caead7",
+              "on-tertiary-fixed-variant": "#75322f",
+              "surface-container": "#ebefea",
+              "inverse-surface": "#2d312e",
+              "primary": "#00462f",
+              "on-secondary": "#ffffff",
+              "on-error-container": "#93000a",
+              "primary-fixed-dim": "#89d6b0",
+              "surface-bright": "#f7faf5",
+              "tertiary-fixed": "#ffdad7",
+              "on-surface": "#181d1a",
+              "on-error": "#ffffff",
+              "background": "#f7faf5",
+              "tertiary-container": "#853e3b",
+              "outline": "#6f7a73",
+              "on-primary-fixed-variant": "#005137",
+              "surface-container-low": "#f1f4f0",
+              "surface-container-highest": "#e0e3df",
+              "error": "#ba1a1a",
+              "secondary-container": "#caead7",
+              "tertiary-fixed-dim": "#ffb3ae",
+              "on-tertiary-fixed": "#3c0708",
+              "primary-fixed": "#a5f3cb",
+              "secondary-fixed-dim": "#afcebb",
+              "secondary": "#486456",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed": "#002114",
+              "tertiary": "#682826",
+              "on-primary": "#ffffff",
+              "surface-variant": "#e0e3df",
+              "on-background": "#181d1a",
+              "error-container": "#ffdad6",
+              "surface": "#f7faf5",
+              "surface-container-high": "#e6e9e4",
+              "inverse-on-surface": "#eef2ed",
+              "on-secondary-fixed": "#042015",
+              "on-primary-container": "#8bd8b2",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-container": "#ffb5b0",
+              "inverse-primary": "#89d6b0",
+              "outline-variant": "#bec9c1",
+              "on-surface-variant": "#3f4943"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- Backdrop Overlay -->
+<div class="fixed inset-0 bg-on-surface/40 backdrop-blur-sm z-40"></div>
+<!-- Navigation Drawer -->
+<aside class="fixed inset-y-0 left-0 z-50 flex flex-col py-6 overflow-y-auto bg-emerald-50 dark:bg-emerald-950 rounded-r-2xl h-full w-80 max-w-[80vw] shadow-lg dark:shadow-2xl">
+<!-- Profile Header -->
+<div class="px-6 mb-8 flex flex-col items-start space-y-4">
+<div class="relative">
+<div class="w-16 h-16 rounded-full overflow-hidden border-2 border-primary ring-4 ring-primary-fixed/30">
+<img alt="Usuario de Emerald Harvest" class="w-full h-full object-cover" data-alt="portrait of a friendly latin american man with a short beard smiling, soft natural outdoor lighting, professional quality" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqLN4O0JKNYGKRa8ahgHAQ_gcNj4NH80GfLLihrSEfh_C4A__FQHE8KVpV-DuDFhXTKkU64jmkrRtC8WWdkpjCYzyEsaPmknFlTirWfpakOxmFQE0_Hsg1A2gxqjeUMa_SbS7NDuQ-Dc3GbF7LtdEG_6ODS3nm0VZ_f1XRTaZS-huvvdCGmIc_uOFTK6RE3oGruJxsNPHWp2lE57IwP97SapTfRVygpCmeOnCZctMgZSy2FFVMupBamcZAsA9GpjA3CmxmrvSAj58"/>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-primary text-white p-1 rounded-full shadow-md">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<div class="space-y-1">
+<h2 class="text-xl font-extrabold text-emerald-900 dark:text-emerald-50 tracking-tight">Juan Pérez</h2>
+<div class="flex flex-col gap-0.5">
+<span class="text-[0.75rem] font-bold text-emerald-800/60 dark:text-emerald-100/60 tracking-wider">ID: EH-2023-9942</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed text-[10px] font-black uppercase tracking-widest">
+                        Miembro Premium
+                    </span>
+</div>
+</div>
+</div>
+<!-- Navigation Items -->
+<nav class="flex-1 px-2 space-y-1 divide-y divide-emerald-100/20 dark:divide-emerald-800/20">
+<div class="pb-4">
+<a class="bg-emerald-800 dark:bg-emerald-100 text-white dark:text-emerald-950 rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 active:scale-[0.98] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="sell">sell</span>
+<span class="font-bold text-[0.875rem] tracking-tight">Descuentos</span>
+</a>
+<a class="text-emerald-800/70 dark:text-emerald-100/70 hover:bg-emerald-100 dark:hover:bg-emerald-800/50 rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 active:scale-[0.98] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="handshake">handshake</span>
+<span class="font-bold text-[0.875rem] tracking-tight">Negociaciones</span>
+</a>
+<a class="text-emerald-800/70 dark:text-emerald-100/70 hover:bg-emerald-100 dark:hover:bg-emerald-800/50 rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 active:scale-[0.98] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="bookmark_check">bookmark_check</span>
+<span class="font-bold text-[0.875rem] tracking-tight">Mercados seguidos</span>
+</a>
+<a class="text-emerald-800/70 dark:text-emerald-100/70 hover:bg-emerald-100 dark:hover:bg-emerald-800/50 rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 active:scale-[0.98] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+<span class="font-bold text-[0.875rem] tracking-tight">Proveedores favoritos</span>
+</a>
+<a class="text-emerald-800/70 dark:text-emerald-100/70 hover:bg-emerald-100 dark:hover:bg-emerald-800/50 rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 active:scale-[0.98] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-bold text-[0.875rem] tracking-tight">Dashboard</span>
+</a>
+</div>
+<div class="pt-4 pb-4">
+<a class="text-emerald-800/70 dark:text-emerald-100/70 hover:bg-emerald-100 dark:hover:bg-emerald-800/50 rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 active:scale-[0.98] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-bold text-[0.875rem] tracking-tight">Configuración</span>
+</a>
+<a class="text-emerald-800/70 dark:text-emerald-100/70 hover:bg-emerald-100 dark:hover:bg-emerald-800/50 rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 active:scale-[0.98] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-bold text-[0.875rem] tracking-tight">Ayuda</span>
+</a>
+</div>
+<div class="pt-4">
+<a class="text-error/80 dark:text-error-container/80 hover:bg-error-container/20 rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 active:scale-[0.98] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-bold text-[0.875rem] tracking-tight">Cerrar sesión</span>
+</a>
+</div>
+</nav>
+<!-- Footer Brand -->
+<div class="px-6 mt-auto">
+<div class="flex items-center gap-2 pt-6 opacity-40">
+<span class="text-xl font-extrabold text-emerald-900 dark:text-emerald-50">Emerald Harvest</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-widest text-emerald-800/40 dark:text-emerald-100/40 mt-1">v2.4.0 • El Mercadito</p>
+</div>
+</aside>
+<!-- Main Content Canvas (Behind Drawer) -->
+<main class="min-h-screen p-6 md:ml-80">
+<header class="flex justify-between items-center mb-8">
+<h1 class="text-2xl font-extrabold text-primary tracking-tight">Mercadito Digital</h1>
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">search</span>
+</div>
+</header>
+<!-- Bento Grid Example for background context -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="col-span-1 md:col-span-2 bg-surface-container-lowest p-6 rounded-xl shadow-sm relative overflow-hidden h-48 group">
+<div class="relative z-10">
+<span class="text-[10px] font-black uppercase tracking-widest text-primary/60">Cosecha del día</span>
+<h3 class="text-xl font-bold text-primary mt-1">Aguacates Hass Premium</h3>
+<p class="text-on-surface-variant text-sm mt-2 max-w-[200px]">Directo desde Michoacán. Calidad de exportación.</p>
+</div>
+<img alt="Avocados" class="absolute top-0 right-0 w-1/2 h-full object-cover rounded-l-3xl transition-transform group-hover:scale-105" data-alt="pile of fresh ripe avocados with dark textured skin on a neutral minimalist background with soft shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaSRbe5MQNlZ6bDux5r7eSwX8q91UD3aRRD9guOxXbDaoLft_lpzwYbntbPpFlUzSRZJYBwVADE-u2i5r9UayREnBJVpunNB27qfYyDT05Kj_BT3O3F_wK9xxUbYkkGNnJK2GT7TV5e0DjBkZEp9_0RDoqkl-6beOMBrcKt3j9181AGXNbqL09prADozABhsoScHzMnPuV7KW976ShAINVW3d6M_fWUeACcUvp5HKDeCzI2EISok7HMtCnq4xplQiVhMjPjISDJg0"/>
+</div>
+<div class="bg-primary-container p-6 rounded-xl shadow-sm text-on-primary-container flex flex-col justify-between">
+<div>
+<span class="material-symbols-outlined mb-2">trending_up</span>
+<h4 class="font-bold text-lg">Tendencias</h4>
+<p class="text-[10px] font-bold uppercase opacity-70 tracking-tighter">Mercado Mayorista</p>
+</div>
+<div class="text-2xl font-black">+14%</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl flex items-center gap-4">
+<div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-secondary">local_shipping</span>
+</div>
+<div>
+<p class="text-[10px] font-black text-secondary/60 uppercase tracking-widest">En Camino</p>
+<p class="font-bold text-sm">3 Entregas programadas</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl flex items-center gap-4">
+<div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-secondary">payments</span>
+</div>
+<div>
+<p class="text-[10px] font-black text-secondary/60 uppercase tracking-widest">Saldo</p>
+<p class="font-bold text-sm">$12,450.00 MXN</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl flex items-center gap-4">
+<div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-secondary">eco</span>
+</div>
+<div>
+<p class="text-[10px] font-black text-secondary/60 uppercase tracking-widest">Impacto</p>
+<p class="font-bold text-sm">82 Productores locales</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button - The Anchor -->
+<button class="fixed bottom-8 right-8 w-16 h-16 bg-primary text-white rounded-full shadow-lg flex items-center justify-center active:scale-95 transition-transform z-30">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</body></html>

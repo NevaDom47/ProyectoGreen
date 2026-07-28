@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Paso 2: Dirección de Entrega</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#e0e3df",
+                        "on-background": "#181d1a",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#186b4c",
+                        "secondary-fixed": "#caead7",
+                        "secondary-container": "#caead7",
+                        "surface-container-low": "#f1f4f0",
+                        "tertiary-fixed-dim": "#ffb3ae",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#486456",
+                        "on-primary-fixed-variant": "#005137",
+                        "inverse-surface": "#2d312e",
+                        "on-surface-variant": "#3f4943",
+                        "tertiary-fixed": "#ffdad7",
+                        "on-tertiary": "#ffffff",
+                        "surface-variant": "#e0e3df",
+                        "on-primary-fixed": "#002114",
+                        "on-tertiary-fixed": "#3c0708",
+                        "on-secondary-fixed": "#042015",
+                        "on-error": "#ffffff",
+                        "on-surface": "#181d1a",
+                        "on-primary-container": "#8bd8b2",
+                        "error": "#ba1a1a",
+                        "surface": "#f7faf5",
+                        "secondary-fixed-dim": "#afcebb",
+                        "background": "#f7faf5",
+                        "inverse-primary": "#89d6b0",
+                        "outline": "#6f7a73",
+                        "on-secondary-container": "#4e6b5b",
+                        "primary": "#00462f",
+                        "tertiary": "#682826",
+                        "primary-fixed": "#a5f3cb",
+                        "on-secondary-fixed-variant": "#314c3f",
+                        "on-tertiary-fixed-variant": "#75322f",
+                        "primary-container": "#036042",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#d7dbd6",
+                        "surface-container-high": "#e6e9e4",
+                        "surface-bright": "#f7faf5",
+                        "surface-container": "#ebefea",
+                        "inverse-on-surface": "#eef2ed",
+                        "on-error-container": "#93000a",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#89d6b0",
+                        "on-tertiary-container": "#ffb5b0",
+                        "outline-variant": "#bec9c1",
+                        "tertiary-container": "#853e3b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans", "sans-serif"],
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "body": ["Plus Jakarta Sans", "sans-serif"],
+                        "label": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    "animation": {
+                        "fade-in-up": "fade-in-up 0.6s ease-out forwards"
+                    },
+                    "keyframes": {
+                        "fade-in-up": {
+                            "0%": { opacity: "0", transform: "translateY(20px)" },
+                            "100%": { opacity: "1", transform: "translateY(0)" }
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            min-height: max(884px, 100dvh);
+        }
+
+        .stagger-1 { animation-delay: 100ms; }
+        .stagger-2 { animation-delay: 200ms; }
+        .stagger-3 { animation-delay: 300ms; }
+        .stagger-4 { animation-delay: 400ms; }
+        .stagger-5 { animation-delay: 500ms; }
+        .stagger-6 { animation-delay: 600ms; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Mobile Screen Container -->
+<div class="relative w-full max-w-md mx-auto min-h-screen bg-background flex flex-col overflow-x-hidden shadow-2xl sm:border sm:border-surface-variant sm:my-8 sm:rounded-[2rem] sm:min-h-[850px]">
+<!-- Functional Asymmetry Decorative Element -->
+<div class="absolute top-0 right-0 w-72 h-72 bg-primary-fixed/20 rounded-full blur-3xl -z-10 translate-x-1/3 -translate-y-1/3 pointer-events-none"></div>
+<!-- Custom Transactional Header -->
+<header class="px-6 pt-12 pb-4 flex items-center justify-between z-10 animate-fade-in-up">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-lowest shadow-sm text-primary hover:bg-surface-container transition-all focus:outline-none focus:ring-2 focus:ring-primary active:scale-90">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+<div class="text-right">
+<h1 class="font-headline font-extrabold text-xl text-primary tracking-tight">Perfil de Comprador</h1>
+<span class="font-label font-black text-[10px] uppercase tracking-widest text-secondary mt-1 block opacity-0 animate-fade-in-up stagger-1">Paso 2</span>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow flex flex-col px-6 z-10">
+<!-- Contextual Hero Icon -->
+<div class="flex flex-col items-center justify-center py-8">
+<h2 class="font-headline font-bold text-[1.125rem] text-on-background text-center opacity-0 animate-fade-in-up stagger-2">Dirección</h2>
+<p class="font-body text-sm text-on-surface-variant text-center mt-2 max-w-[240px] opacity-0 animate-fade-in-up stagger-3">Completa la informacion para mostrar proveedores locales.</p>
+</div>
+<!-- Bento Grid Form Card -->
+<div class="bg-surface-container-lowest rounded-[1.5rem] shadow-sm space-y-6 relative isolate p-4 opacity-0 animate-fade-in-up stagger-4">
+<!-- Input: País -->
+<div class="flex flex-col group">
+<label class="font-label font-black text-[10px] uppercase tracking-widest text-primary mb-2 ml-1" for="pais">País</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low border-none rounded-xl py-4 px-5 text-sm font-medium text-on-background appearance-none transition-all shadow-inner hover:bg-surface-container focus:ring-2 focus:ring-primary/40 focus:bg-surface-container-lowest focus:-translate-y-0.5" id="pais">
+<option class="text-outline-variant" disabled="" selected="" value="">Selecciona tu país</option>
+<option value="mx">México</option>
+<option value="co">Colombia</option>
+<option value="ar">Argentina</option>
+<option value="pe">Perú</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none transition-transform duration-300 group-focus-within:rotate-180 group-focus-within:text-primary">expand_more</span>
+</div>
+</div>
+<!-- Input: Provincia o Estado -->
+<div class="flex flex-col group opacity-0 animate-fade-in-up stagger-5">
+<label class="font-label font-black text-[10px] uppercase tracking-widest text-primary mb-2 ml-1" for="provincia">Provincia o Estado</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low border-none rounded-xl py-4 px-5 text-sm font-medium text-on-background appearance-none transition-all shadow-inner hover:bg-surface-container focus:ring-2 focus:ring-primary/40 focus:bg-surface-container-lowest focus:-translate-y-0.5" id="provincia">
+<option class="text-outline-variant" disabled="" selected="" value="">Selecciona provincia</option>
+<option value="jal">Jalisco</option>
+<option value="cdmx">Ciudad de México</option>
+<option value="nl">Nuevo León</option>
+<option value="ant">Antioquia</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none transition-transform duration-300 group-focus-within:rotate-180 group-focus-within:text-primary">expand_more</span>
+</div>
+</div>
+<!-- Input: Calle y Número de Local -->
+<div class="flex flex-col group opacity-0 animate-fade-in-up stagger-6">
+<label class="font-label font-black text-[10px] uppercase tracking-widest text-primary mb-2 ml-1" for="calle">Calle y Número de Local</label>
+<input class="w-full bg-surface-container-low border-none rounded-xl py-4 px-5 text-sm font-medium text-on-background transition-all shadow-inner placeholder:text-outline-variant hover:bg-surface-container focus:ring-2 focus:ring-primary/40 focus:bg-surface-container-lowest focus:-translate-y-0.5" id="calle" placeholder="Ej. Av. Siempreviva 742, Local B" type="text"/>
+</div>
+</div>
+</main>
+<!-- Bottom Anchored Action Area -->
+<div class="px-6 pb-8 pt-6 mt-auto z-10 bg-gradient-to-t from-background via-background to-transparent">
+<button class="group w-full bg-primary text-on-primary py-4 font-label font-black text-[10px] uppercase tracking-[0.2em] shadow-lg hover:bg-primary-container hover:text-on-primary-container hover:shadow-primary/30 hover:shadow-xl focus:ring-4 focus:ring-primary-fixed transition-all active:scale-95 flex items-center justify-center gap-3 rounded-xl">
+<span class="">CONTINUAR</span>
+<span class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1" style="font-variation-settings: 'wght' 700;">arrow_forward</span>
+</button>
+</div>
+</div>
+</body></html>

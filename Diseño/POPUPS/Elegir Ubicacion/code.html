@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "outline": "#6f7a73",
+              "surface-dim": "#d7dbd6",
+              "surface-container-low": "#f1f4f0",
+              "on-tertiary-fixed": "#3c0708",
+              "outline-variant": "#bec9c1",
+              "surface": "#f7faf5",
+              "on-secondary-container": "#4e6b5b",
+              "on-error-container": "#93000a",
+              "tertiary-fixed-dim": "#ffb3ae",
+              "surface-container-lowest": "#ffffff",
+              "on-background": "#181d1a",
+              "surface-variant": "#e0e3df",
+              "on-surface-variant": "#3f4943",
+              "on-secondary": "#ffffff",
+              "primary-container": "#036042",
+              "background": "#f7faf5",
+              "primary": "#00462f",
+              "on-tertiary-container": "#ffb5b0",
+              "on-secondary-fixed-variant": "#314c3f",
+              "secondary": "#486456",
+              "surface-container": "#ebefea",
+              "error-container": "#ffdad6",
+              "surface-tint": "#186b4c",
+              "inverse-primary": "#89d6b0",
+              "primary-fixed-dim": "#89d6b0",
+              "surface-bright": "#f7faf5",
+              "primary-fixed": "#a5f3cb",
+              "on-error": "#ffffff",
+              "tertiary": "#682826",
+              "error": "#ba1a1a",
+              "on-tertiary": "#ffffff",
+              "on-secondary-fixed": "#042015",
+              "inverse-surface": "#2d312e",
+              "on-primary": "#ffffff",
+              "tertiary-fixed": "#ffdad7",
+              "surface-container-high": "#e6e9e4",
+              "inverse-on-surface": "#eef2ed",
+              "secondary-fixed": "#caead7",
+              "secondary-container": "#caead7",
+              "on-surface": "#181d1a",
+              "surface-container-highest": "#e0e3df",
+              "on-tertiary-fixed-variant": "#75322f",
+              "on-primary-fixed-variant": "#005137",
+              "on-primary-fixed": "#002114",
+              "tertiary-container": "#853e3b",
+              "secondary-fixed-dim": "#afcebb",
+              "on-primary-container": "#8bd8b2"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "3xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-40 bg-surface-container-low dark:bg-slate-900/50">
+<div class="flex items-center justify-between px-4 h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<button class="p-2 hover:bg-slate-200/50 rounded-full transition-colors duration-200">
+<span class="material-symbols-outlined text-[#00462f]">menu</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-extrabold text-xl tracking-tight text-[#00462f]">El Mercadito</h1>
+</div>
+<button class="p-2 hover:bg-slate-200/50 rounded-full transition-colors duration-200 flex items-center gap-1">
+<span class="material-symbols-outlined text-[#00462f]">location_on</span>
+<span class="text-xs font-bold text-[#00462f]">Distrito Nacional</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas (Background Feed) -->
+<main class="pt-20 pb-24 px-4 max-w-7xl mx-auto space-y-8 opacity-40">
+<!-- Search Area -->
+<section class="bg-surface-container-low rounded-3xl p-6">
+<h2 class="text-2xl font-extrabold text-primary mb-4">¡Cosecha fresca hoy!</h2>
+<div class="bg-surface-container-lowest flex items-center px-4 py-3 rounded-2xl shadow-sm">
+<span class="material-symbols-outlined text-outline mr-3">search</span>
+<span class="text-outline-variant text-sm">¿Qué buscas para tu mesa?</span>
+</div>
+</section>
+<!-- Bento Grid Categories -->
+<section class="grid grid-cols-2 gap-4">
+<div class="bg-primary-container h-48 rounded-3xl p-4 flex flex-col justify-between text-white relative overflow-hidden">
+<span class="text-lg font-bold leading-tight z-10">Frutas de<br/>Temporada</span>
+<div class="absolute -right-4 -bottom-4 opacity-50">
+<img class="w-32 h-32 object-cover rounded-full" data-alt="Fresh tropical fruits in a pile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcGi7GMxhqWJOjv-sMHS9QoJdSmHmF_L49JN8Mqqsfi6roc5VdvRFdJmrm2Y_KpGhF_pN28WQbTOOp0_dCiqkyafUBIiqEIlrmZa5k9eC7q4MogFBQNYKGbsjTcedz8SzdwhRH03mOCES8sKG9RjwJk8gqkpN5852gmVupt9E0d1-xzW1z2tSpNfDeyz5klBgjdMZSyCds0Jip6rwnSB74qEzju1acC0DuY1r0kxqGF1zHZuc9QZg84_S6lg6NDL2wc2HSS_Eev7s"/>
+</div>
+</div>
+<div class="bg-secondary-container h-48 rounded-3xl p-4 flex flex-col justify-between text-on-secondary-container relative overflow-hidden">
+<span class="text-lg font-bold leading-tight z-10">Vegetales<br/>Orgánicos</span>
+<div class="absolute -right-4 -bottom-4 opacity-50">
+<img class="w-32 h-32 object-cover rounded-full" data-alt="Fresh green vegetables assortment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5Vl1w1LSmr7DqW5HGoRVOax0Rw1DgI67YVIPhhqrWihrfTEgkjGNHwU-HRVRt-C1n_vUWHCyqNckpjSqgP_iAAn1sBFg6VbMv68Z8vCCidoC83SEfX9nUEvyHSrJwcZ3aexVKVJy3HAD5DnYvzx3p2ZoxE3yyKnOOTO2ZbIHpAQbPHKDOcRDetxU7O_mnCcX2HJKS5SuxCQLIlAkHkgFf1XZpAmsmnShZNi2R8W6vCBMlsX1s47MubU8cseiu7WVAKID38RObaGk"/>
+</div>
+</div>
+</section>
+<!-- Product Cards (Horizontal Scroll) -->
+<section>
+<div class="flex justify-between items-end mb-4">
+<h3 class="font-bold text-lg text-primary">Recomendados</h3>
+<span class="text-xs font-black text-primary uppercase tracking-widest">Ver todo</span>
+</div>
+<div class="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 no-scrollbar">
+<div class="min-w-[160px] bg-surface-container-lowest rounded-xl shadow-sm p-3">
+<div class="h-32 bg-surface-container rounded-lg mb-3 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Ripe red tomatoes on vine" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASy_31U5FPKXDvkOqnr0p2pLyyfJkXwkcRK2KQToSX5FecNhnSLzWGKhzCVAJdJwo-GSYBESSTitjhsx_fcldyeaCTG1kheQIJJkL5a5kC0oo7xktbZI_bqj5bL8pe3lF10gfwYl-7qyLwQPW6ppn17yrqIu_aXPpbETttRBsTDk8ZN6q4STg2sazEnTnigZznYCvDhjNr2NRLJ5OGJ2Uj_a7ZY9wfjwQA13lYjKpQgS63stttKxRzUNFaHr5EVbjAKcBJtp4feVI"/>
+</div>
+<span class="text-[8px] font-black text-secondary uppercase tracking-widest">Hortalizas</span>
+<h4 class="text-sm font-bold text-on-surface">Tomate Bugalú</h4>
+<p class="text-primary font-bold mt-1">RD$ 45.00 <span class="text-[10px] text-outline font-normal">/ lb</span></p>
+</div>
+<div class="min-w-[160px] bg-surface-container-lowest rounded-xl shadow-sm p-3">
+<div class="h-32 bg-surface-container rounded-lg mb-3 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Fresh yellow bananas bundle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9ryA8iTxKRs2D0n6HYsefTtRY2O6zP_sYPaCq6wOuktrhZwucwfiOpfAnzdUqzV8GW04AjDFeX3_mtkNNkxq2zfQaqDg1zFzczIkysW4KbpyAuh61hDiBwveB4AC5rEvhKpTnEzCZv7PCiZy2plfuHqakTO7HsRlVZ7Y6EiPZ6XkSu58HTKQlXLNzH9PHN54SBMyjkoifiJCWyfvF7m-T0K3rvN6AXyhbSzYU93Npm6YkGhX_FjrOE62EEMvi5XnLNGMbNUu3poQ"/>
+</div>
+<span class="text-[8px] font-black text-secondary uppercase tracking-widest">Frutas</span>
+<h4 class="text-sm font-bold text-on-surface">Guineo Maduro</h4>
+<p class="text-primary font-bold mt-1">RD$ 7.00 <span class="text-[10px] text-outline font-normal">/ ud</span></p>
+</div>
+</div>
+</section>
+</main>
+<!-- Modal Backdrop Overlay -->
+<div class="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-50 flex items-center justify-center p-4">
+<!-- Selection Modal -->
+<div class="bg-surface-container-lowest w-full max-w-md rounded-[2.5rem] shadow-2xl relative overflow-hidden flex flex-col max-h-[795px]">
+<!-- Modal Header -->
+<div class="p-6 pb-0 flex justify-between items-start">
+<div class="pr-8">
+<h2 class="text-2xl font-extrabold text-on-background tracking-tight">Selecciona tu Ubicación</h2>
+<p class="text-on-surface-variant text-sm mt-1">Encuentra los mejores productos cerca de ti.</p>
+</div>
+<button class="absolute top-6 right-6 p-2 bg-surface-container-low rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant text-lg">close</span>
+</button>
+</div>
+<!-- Modal Content -->
+<div class="p-6 space-y-6 overflow-y-auto">
+<!-- Use Current Location Button -->
+<button class="w-full bg-[#016142] hover:bg-[#00462f] text-white py-4 px-6 rounded-full flex items-center justify-center gap-3 shadow-lg active:scale-95 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">my_location</span>
+<span class="font-bold tracking-wide text-sm uppercase">Usar mi ubicación actual</span>
+</button>
+<!-- Divider with Search -->
+<div class="space-y-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-2xl py-4 pl-12 pr-4 text-on-surface placeholder:text-outline-variant focus:ring-2 focus:ring-primary/20 text-sm" placeholder="Busca tu ciudad o sector..." type="text"/>
+</div>
+</div>
+<!-- Popular Locations -->
+<div>
+<h3 class="text-[10px] font-black text-outline uppercase tracking-[0.2em] mb-4 ml-1">Ubicaciones Populares</h3>
+<div class="space-y-1">
+<!-- Location Item -->
+<button class="w-full flex items-center justify-between p-4 hover:bg-surface-container-low rounded-2xl transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl">location_on</span>
+</div>
+<span class="font-bold text-on-surface">Santo Domingo</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-lg">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 hover:bg-surface-container-low rounded-2xl transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl">location_on</span>
+</div>
+<span class="font-bold text-on-surface">Santiago</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-lg">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 hover:bg-surface-container-low rounded-2xl transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl">location_on</span>
+</div>
+<span class="font-bold text-on-surface">La Vega</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-lg">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 hover:bg-surface-container-low rounded-2xl transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl">location_on</span>
+</div>
+<span class="font-bold text-on-surface">Puerto Plata</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-lg">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Modal Footer Decorative Decoration -->
+<div class="h-2 w-full bg-gradient-to-r from-primary/5 via-primary to-primary/5"></div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-lg border-t border-[#00462f]/10 dark:border-white/10 pb-safe">
+<div class="flex justify-around items-center px-4 py-3 h-16">
+<div class="flex flex-col items-center justify-center text-[#00462f] scale-110">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-['Plus_Jakarta_Sans'] font-black text-[10px] uppercase tracking-widest mt-1">Inicio</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400">
+<span class="material-symbols-outlined">search</span>
+<span class="font-['Plus_Jakarta_Sans'] font-black text-[10px] uppercase tracking-widest mt-1">Explorar</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span class="font-['Plus_Jakarta_Sans'] font-black text-[10px] uppercase tracking-widest mt-1">Pedidos</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Plus_Jakarta_Sans'] font-black text-[10px] uppercase tracking-widest mt-1">Perfil</span>
+</div>
+</div>
+</nav>
+</body></html>

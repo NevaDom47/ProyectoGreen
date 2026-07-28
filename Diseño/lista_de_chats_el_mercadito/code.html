@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>El Mercadito - Mensajes</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#016042",
+                        "background-light": "#f5f8f7",
+                        "background-dark": "#0f231d",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .filled-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+<div class="relative flex min-h-screen w-full flex-col max-w-md mx-auto bg-white dark:bg-background-dark shadow-xl overflow-x-hidden">
+<!-- Header -->
+<div class="sticky top-0 z-10 flex items-center bg-white dark:bg-background-dark p-4 pb-2 justify-between border-b border-primary/10">
+<div class="text-primary flex size-10 shrink-0 items-center justify-center cursor-pointer">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</div>
+<h1 class="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight tracking-tight flex-1 text-center">Mensajes</h1>
+<div class="flex w-10 items-center justify-end">
+<button class="flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">edit_square</span>
+</button>
+</div>
+</div>
+<!-- Search Bar -->
+<div class="px-4 py-4 bg-white dark:bg-background-dark">
+<label class="flex flex-col min-w-40 h-11 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-xl h-full bg-primary/5 dark:bg-primary/20">
+<div class="text-primary/60 flex items-center justify-center pl-4">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 border-none bg-transparent focus:outline-0 focus:ring-0 h-full placeholder:text-primary/50 px-4 pl-2 text-base font-normal" placeholder="Buscar conversaciones..." value=""/>
+</div>
+</label>
+</div>
+<!-- Chat List -->
+<div class="flex-1 overflow-y-auto pb-24">
+<!-- Chat Item 1 (Unread) -->
+<div class="flex items-center gap-4 bg-white dark:bg-background-dark px-4 py-3 hover:bg-primary/5 cursor-pointer transition-colors">
+<div class="relative">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-14 border-2 border-primary/20" data-alt="Portrait of a smiling local farmer" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCGuFo9_dIrTJvjBz1GYvz2Wpxc521_2X88Rtn2m1l_qmdhc3Z9Sb-q4M3RNuqHnWe4IdWIHbivhrpD59rc4RD7sGh7tBebS9LdzzpdKCBNmhHraRQbYrOz52Clp8znVUxpgC4lVwLn9RbZLd1Uky7h633hiqMs8Oq_zMmfOXITUtR_M9vbkzLm01bUK1XUPeBvBn_LD-VeSNKn_kYh5KT56Cc9QOz89hTKtcnnldxupg7u_8ChyacxxldqlzZxbyElxJflDdR4WSQ");'></div>
+<div class="absolute bottom-0 right-0 size-3.5 rounded-full bg-green-500 border-2 border-white dark:border-background-dark"></div>
+</div>
+<div class="flex flex-1 flex-col justify-center min-w-0">
+<div class="flex justify-between items-baseline">
+<p class="text-slate-900 dark:text-slate-100 text-base font-bold truncate">Don Pedro - Frutas frescas</p>
+<p class="text-primary text-xs font-semibold">10:24 AM</p>
+</div>
+<div class="flex justify-between items-center gap-2">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium line-clamp-1">¿A qué hora pasas por los tomates, joven? Ya los tengo listos.</p>
+<div class="shrink-0 flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-primary">
+<span class="text-white text-[10px] font-bold">2</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Chat Item 2 -->
+<div class="flex items-center gap-4 bg-white dark:bg-background-dark px-4 py-3 hover:bg-primary/5 cursor-pointer transition-colors">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-14 border-2 border-primary/10" data-alt="Portrait of a female buyer wearing a hat" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCX5G1nhnoXAU7aQGOBig4iwQHlfeJWyRWRmY64OlcG2pIE16BQY1y8kBx6WCJ_zFhjv1bsf9a_oesznF20DowvOdFbCOsuGXXYw1mizU_s2G9Dtu4qaFBNzBfIysdPFDcgKJSYnazbAJjQ30K5ddsz5h-YCDpwShhKfulA2Tja_mfOSRN2vq8gA2Upjc4Gb4irlxNPiaHpF6947RvPvOmX2E4M7WOTMYc5da_-x8u4toHqmkSCWSYcxBBfTOr3uTvXDzC2dj1VoUc");'></div>
+<div class="flex flex-1 flex-col justify-center min-w-0">
+<div class="flex justify-between items-baseline">
+<p class="text-slate-900 dark:text-slate-100 text-base font-medium truncate">María García</p>
+<p class="text-slate-400 text-xs font-normal">9:45 AM</p>
+</div>
+<div class="flex justify-between items-center">
+<p class="text-slate-400 dark:text-slate-500 text-sm font-normal line-clamp-1">¡Gracias! Los aguacates estaban deliciosos.</p>
+<span class="material-symbols-outlined text-primary/40 text-lg filled-icon">done_all</span>
+</div>
+</div>
+</div>
+<!-- Chat Item 3 (Group/Business) -->
+<div class="flex items-center gap-4 bg-white dark:bg-background-dark px-4 py-3 hover:bg-primary/5 cursor-pointer transition-colors">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-14 border-2 border-primary/10" data-alt="Close up of various fresh colorful vegetables" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAgz5g6cO60H4oV7mpZ_kDdiq1sWud0kJlOTvurvjZUMPjaPfCU5PWeYS-jXQ3i31jCW_j5UAC70BeI-lcvS3B1npugnrVSt-_wjHtSPEhpNXKxcQ9JsiI9jZOjO6aHUYL0KEulc3_2i_ldERJz4pCIvwekdzWZl5Vl8_KvLmoE6yd4mSLD0qeWg1EMnJtAMzfPOHBWQMpSlU56GwkObZSWOptrUdPZsJwfePE5p6NmyATlHXslUl--tQyj0UG68ldIEKpBniIH0CQ");'></div>
+<div class="flex flex-1 flex-col justify-center min-w-0">
+<div class="flex justify-between items-baseline">
+<p class="text-slate-900 dark:text-slate-100 text-base font-medium truncate">Cooperativa El Sol</p>
+<p class="text-slate-400 text-xs font-normal">Ayer</p>
+</div>
+<div class="flex justify-between items-center">
+<p class="text-slate-400 dark:text-slate-500 text-sm font-normal line-clamp-1">Nueva cosecha de fresas orgánicas disponible hoy.</p>
+</div>
+</div>
+</div>
+<!-- Chat Item 4 -->
+<div class="flex items-center gap-4 bg-white dark:bg-background-dark px-4 py-3 hover:bg-primary/5 cursor-pointer transition-colors">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-14 border-2 border-primary/10" data-alt="Portrait of a young male chef" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBrX6HakXsPO-387Kg_WLgXG1gen-45o4vNRSJpV3juD_RpOzCWX7bZjACszvHIkuNtOoUIIDPJVU93qzDksablZhBStoy1CuIMusKoQsZWKB0Z3GfPnSenvecIqLTR1HlRpeea_31VmdDVByM5HBPrc_h66Bm-ADLxxS_KZXRlqtn1ixhTFb3lq43mWEs67RS7ygForRYG4htdfsq7vAvumaMu8EUoZhh4I3OUMhGpcGlhK83OU2ukt1ydZzfykXOXcikqNgf7cR0");'></div>
+<div class="flex flex-1 flex-col justify-center min-w-0">
+<div class="flex justify-between items-baseline">
+<p class="text-slate-900 dark:text-slate-100 text-base font-medium truncate">Carlos Chef</p>
+<p class="text-slate-400 text-xs font-normal">Ayer</p>
+</div>
+<div class="flex justify-between items-center">
+<p class="text-slate-400 dark:text-slate-500 text-sm font-normal line-clamp-1">¿Tienes disponibilidad de hierbabuena para el viernes?</p>
+</div>
+</div>
+</div>
+<!-- Chat Item 5 -->
+<div class="flex items-center gap-4 bg-white dark:bg-background-dark px-4 py-3 hover:bg-primary/5 cursor-pointer transition-colors">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-14 border-2 border-primary/10" data-alt="Portrait of an middle aged man" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBr6lsQBpyGkmrOmibFxdtreYR_N1QBny2eq8ARD28jriKMKKbKMmd6BSKnlwwnjBtfKPEdUTIpL0VPCykBnM3eZI-zUMLXQm2sbDy1_uvTkggBaXUm5xn44TDpXA8cvkGqlN6HueRmJxg4Bw9lCxGljwCYps74DgKWFJRL-Zx5xt5dIkrXned66b-FRlZ4MQLEqZBU1KlI4ZD59QMG1_VM9jC2S2IgpRCfSv4AA-KvgHoUEa8HbU_xOg2bx4-jJiEo76NK_9vXMaE");'></div>
+<div class="flex flex-1 flex-col justify-center min-w-0">
+<div class="flex justify-between items-baseline">
+<p class="text-slate-900 dark:text-slate-100 text-base font-medium truncate">Ricardo V.</p>
+<p class="text-slate-400 text-xs font-normal">Lunes</p>
+</div>
+<div class="flex justify-between items-center">
+<p class="text-slate-400 dark:text-slate-500 text-sm font-normal line-clamp-1">Entregado en la dirección acordada.</p>
+<span class="material-symbols-outlined text-primary/40 text-lg filled-icon">done_all</span>
+</div>
+</div>
+</div>
+<!-- Chat Item 6 -->
+<div class="flex items-center gap-4 bg-white dark:bg-background-dark px-4 py-3 hover:bg-primary/5 cursor-pointer transition-colors">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-14 border-2 border-primary/10" data-alt="Portrait of a young woman with curly hair" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBti6amJ4eJfxhCDQe77P0YaNXur4W2gruKKOSf4-SJJM2E-XqPQBbHR6BnqHk1J0HNz0EXDSE6mtAZTjnylh6TR7aMypdVu0imNbiwdL72pi0GBzS5CNGL6Hl_XJBDarIr4JIEnEopmC-6pDP2SI_xzfrm5VeOTdduZwwj4z9k3QSLEGkYIhtlsjc0j3gKoc_fSVVdPNX1Wh87qr6NeqfjtHt7gu17R2ZgRFSCV4jHUgAX5rwmk8ZcddZevRis9st7cL8jWQVYOBA");'></div>
+<div class="flex flex-1 flex-col justify-center min-w-0">
+<div class="flex justify-between items-baseline">
+<p class="text-slate-900 dark:text-slate-100 text-base font-medium truncate">Lucía M.</p>
+<p class="text-slate-400 text-xs font-normal">Lunes</p>
+</div>
+<div class="flex justify-between items-center">
+<p class="text-slate-400 dark:text-slate-500 text-sm font-normal line-clamp-1">Envié el comprobante de pago por correo.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white dark:bg-background-dark border-t border-primary/10 px-4 pb-4 pt-2 shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
+<div class="flex gap-2 items-end justify-between">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[26px]">home</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Inicio</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[26px]">shopping_cart</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Carrito</p>
+</a>
+<!-- Central Mercado Button -->
+<a class="flex flex-1 flex-col items-center justify-center -translate-y-4" href="#">
+<div class="bg-primary size-14 rounded-full flex items-center justify-center shadow-lg shadow-primary/30 border-4 border-white dark:border-background-dark">
+<span class="material-symbols-outlined text-white text-3xl filled-icon">storefront</span>
+</div>
+<p class="text-primary text-[10px] font-bold uppercase tracking-wider mt-1">Mercado</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[26px]">favorite</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Favoritos</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined text-[26px] filled-icon">chat_bubble</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Perfil</p>
+</a>
+</div>
+</div>
+<!-- Floating Action Button (Optional for messages) -->
+<button class="fixed bottom-28 right-8 bg-primary text-white size-14 rounded-full flex items-center justify-center shadow-xl md:hidden">
+<span class="material-symbols-outlined text-2xl">add_comment</span>
+</button>
+</div>
+</body></html>

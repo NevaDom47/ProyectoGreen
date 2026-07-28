@@ -1,0 +1,160 @@
+<html class="light" lang="es" style=""><head></head><body class="bg-background text-on-background min-h-screen antialiased selection:bg-primary-container selection:text-on-primary-container">```html
+
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Perfil de Comprador - Estilo Tarjeta</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f1f4f0",
+                        "surface-variant": "#e0e3df",
+                        "primary": "#00462f",
+                        "secondary-fixed": "#caead7",
+                        "surface-tint": "#186b4c",
+                        "on-secondary-container": "#4e6b5b",
+                        "outline-variant": "#bec9c1",
+                        "on-surface": "#181d1a",
+                        "background": "#f7faf5",
+                        "surface-container-high": "#e6e9e4",
+                        "tertiary-fixed": "#ffdad7",
+                        "inverse-primary": "#89d6b0",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#005137",
+                        "inverse-on-surface": "#eef2ed",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e0e3df",
+                        "on-tertiary-container": "#ffb5b0",
+                        "tertiary": "#682826",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f7faf5",
+                        "tertiary-fixed-dim": "#ffb3ae",
+                        "on-background": "#181d1a",
+                        "inverse-surface": "#2d312e",
+                        "on-tertiary-fixed-variant": "#75322f",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#042015",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#3f4943",
+                        "primary-fixed": "#a5f3cb",
+                        "primary-container": "#036042",
+                        "error-container": "#ffdad6",
+                        "surface-container": "#ebefea",
+                        "secondary": "#486456",
+                        "on-tertiary-fixed": "#3c0708",
+                        "on-primary-fixed": "#002114",
+                        "secondary-container": "#caead7",
+                        "secondary-fixed-dim": "#afcebb",
+                        "tertiary-container": "#853e3b",
+                        "surface-bright": "#f7faf5",
+                        "on-secondary-fixed-variant": "#314c3f",
+                        "primary-fixed-dim": "#89d6b0",
+                        "on-primary-container": "#8bd8b2",
+                        "outline": "#6f7a73",
+                        "surface-dim": "#d7dbd6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans", "sans-serif"],
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "body": ["Plus Jakarta Sans", "sans-serif"],
+                        "label": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    "keyframes": {
+                        "slide-up-fade": {
+                            "0%": { opacity: "0", transform: "translateY(20px)" },
+                            "100%": { opacity: "1", transform: "translateY(0)" }
+                        }
+                    },
+                    "animation": {
+                        "slide-up-fade": "slide-up-fade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards"
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        
+        .animate-delay-100 { animation-delay: 100ms; }
+        .animate-delay-200 { animation-delay: 200ms; }
+        .animate-delay-300 { animation-delay: 300ms; }
+        .animate-delay-400 { animation-delay: 400ms; }
+        .animate-delay-500 { animation-delay: 500ms; }
+
+        .form-input-focus:focus-within {
+            transform: scale(1.01);
+            box-shadow: 0 0 0 2px rgba(0, 70, 47, 0.1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<!-- Main Content Canvas -->
+<main class="w-full mx-auto pt-12 pb-40 px-6 sm:px-12 flex flex-col min-h-screen justify-center">
+<!-- Page Header -->
+<div class="mb-12 pl-1 animate-slide-up-fade opacity-0">
+<h2 class="text-4xl sm:text-5xl font-headline font-extrabold text-on-surface tracking-tight"><span class="text-primary">Perfil de Comprador</span></h2>
+<p class="text-lg font-body text-on-surface-variant mt-4 font-medium">Comencemos con tus datos esenciales para mejorar tu experiencia en el mercado.</p>
+</div>
+<form class="space-y-12 w-full flex-grow flex flex-col">
+<!-- Card 1: Información Personal -->
+<section class="bg-surface-container-lowest rounded-3xl shadow-sm border border-outline-variant/30 p-8 sm:p-12 relative overflow-hidden group flex-grow flex flex-col justify-center animate-slide-up-fade opacity-0 animate-delay-100">
+<!-- Decorative subtle element -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary-container/5 rounded-bl-full -z-10 transition-transform group-hover:scale-110 duration-500"></div>
+<div class="flex items-center gap-5 mb-10">
+<div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[32px]">id_card</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-on-surface text-2xl leading-tight">1. Información Personal</h3>
+<p class="text-sm font-label text-on-surface-variant uppercase tracking-wider font-semibold mt-1">Paso 1</p>
+</div>
+</div>
+<div class="space-y-8">
+<div class="flex flex-col gap-2 animate-slide-up-fade opacity-0 animate-delay-200 transition-all duration-300 form-input-focus">
+<label class="font-label text-base font-bold text-on-surface-variant ml-2" for="name">Nombre Completo</label>
+<input class="w-full bg-surface-container-low text-on-surface rounded-xl px-6 py-5 font-body text-lg placeholder:text-outline border-none focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all" id="name" placeholder="Ej. Ana García" type="text"/>
+</div>
+<div class="flex flex-col gap-2 animate-slide-up-fade opacity-0 animate-delay-300 transition-all duration-300 form-input-focus">
+<label class="font-label text-base font-bold text-on-surface-variant ml-2" for="email">Correo Electrónico</label>
+<input class="w-full bg-surface-container-low text-on-surface rounded-xl px-6 py-5 font-body text-lg placeholder:text-outline border-none focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all" id="email" placeholder="ana@ejemplo.com" type="email"/>
+</div>
+<div class="flex flex-col gap-2 animate-slide-up-fade opacity-0 animate-delay-400 transition-all duration-300 form-input-focus">
+<label class="font-label text-base font-bold text-on-surface-variant ml-2" for="phone">Teléfono</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 flex items-center pl-6 text-on-surface-variant font-body text-lg font-medium">
+                                +52
+                            </span>
+<input class="w-full bg-surface-container-low text-on-surface rounded-xl pl-20 pr-6 py-5 font-body text-lg placeholder:text-outline border-none focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all" id="phone" placeholder="55 1234 5678" type="tel"/>
+</div>
+</div>
+</div>
+</section>
+</form>
+</main>
+<!-- Fixed Bottom Action Area -->
+<div class="fixed bottom-0 left-0 w-full bg-surface-container-lowest/90 backdrop-blur-md border-t border-surface-variant pb-safe pt-6 px-6 z-50 flex justify-center pb-8 sm:pb-10">
+<div class="w-full max-w-2xl animate-slide-up-fade opacity-0 animate-delay-500">
+<button class="w-full bg-primary text-on-primary font-headline font-black text-sm sm:text-base uppercase tracking-[0.2em] py-6 rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-1 hover:bg-primary-container transition-all active:scale-[0.96] duration-300 flex items-center justify-center gap-3" type="button">
+                Continuar
+                <span class="material-symbols-outlined text-[24px]">arrow_forward</span>
+</button>
+</div>
+</div>
+```</body></html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#016042",
+              "accent": "#f97316",
+              "background-light": "#f5f8f7",
+              "background-dark": "#0f231d",
+            },
+            fontFamily: {
+              "display": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+<div class="relative flex min-h-screen w-full flex-col max-w-md mx-auto bg-background-light dark:bg-background-dark shadow-xl">
+<!-- Header -->
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+<div class="flex items-center p-4 justify-between">
+<button class="text-primary p-2 hover:bg-primary/10 rounded-full transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-primary text-xl font-bold leading-tight tracking-tight flex-1 text-center pr-10">Proveedores</h1>
+</div>
+<!-- Search Bar -->
+<div class="px-4 pb-4">
+<label class="flex flex-col w-full">
+<div class="flex w-full items-stretch rounded-xl h-12 bg-white dark:bg-slate-800 border border-primary/20 shadow-sm focus-within:border-primary transition-all">
+<div class="text-primary flex items-center justify-center pl-4">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full border-none bg-transparent focus:ring-0 placeholder:text-slate-400 dark:placeholder:text-slate-500 px-4 text-base font-normal" placeholder="Buscar proveedor..." value=""/>
+</div>
+</label>
+</div>
+<!-- Chips / Filters -->
+<div class="flex gap-2 px-4 pb-4 overflow-x-auto no-scrollbar">
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary text-white px-4 cursor-pointer">
+<span class="material-symbols-outlined text-sm">near_me</span>
+<p class="text-sm font-semibold">Cercanos</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-slate-800 border border-primary/20 text-slate-700 dark:text-slate-200 px-4 cursor-pointer hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-sm text-accent">star</span>
+<p class="text-sm font-medium">Mejor Valorados</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-slate-800 border border-primary/20 text-slate-700 dark:text-slate-200 px-4 cursor-pointer hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-sm text-blue-500">verified</span>
+<p class="text-sm font-medium">Verificados</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-slate-800 border border-primary/20 text-slate-700 dark:text-slate-200 px-4 cursor-pointer hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-sm text-green-600">eco</span>
+<p class="text-sm font-medium">Orgánicos</p>
+</div><div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-slate-800 border border-primary/20 text-slate-700 dark:text-slate-200 px-4 cursor-pointer hover:bg-primary/5 transition-colors"><span class="material-symbols-outlined text-sm text-primary">distance</span><p class="text-sm font-medium">Distancia</p></div>
+</div><div class="px-4 pb-4 animate-in fade-in slide-in-from-top-2 duration-300"><div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-primary/10 shadow-sm space-y-3"><div class="flex justify-between items-center"><span class="text-sm font-semibold text-slate-700 dark:text-slate-200">Rango de búsqueda</span><span class="text-sm font-bold text-primary px-2 py-1 bg-primary/10 rounded-lg tracking-tight">Hasta 10 km</span></div><div class="relative w-full h-6 flex items-center"><div class="absolute w-full h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full"></div><div class="absolute h-1.5 bg-primary rounded-full" style="width: 40%"></div><input class="absolute w-full h-1.5 bg-transparent appearance-none cursor-pointer accent-primary [&amp;::-webkit-slider-thumb]:appearance-none [&amp;::-webkit-slider-thumb]:w-5 [&amp;::-webkit-slider-thumb]:h-5 [&amp;::-webkit-slider-thumb]:rounded-full [&amp;::-webkit-slider-thumb]:bg-white [&amp;::-webkit-slider-thumb]:border-2 [&amp;::-webkit-slider-thumb]:border-primary [&amp;::-webkit-slider-thumb]:shadow-md" max="50" min="1" type="range" value="10"/></div><div class="flex justify-between text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest"><span>1 km</span><span>10 km</span><span>25 km</span><span>50+ km</span></div></div></div><div class="px-4 pb-4 animate-in fade-in slide-in-from-top-2 duration-300">
+<div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-primary/10 shadow-sm space-y-3">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-xl">schedule</span>
+<span class="text-sm font-semibold text-slate-700 dark:text-slate-200">Horario de Atención</span>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 py-2 px-3 rounded-lg border border-primary bg-primary text-white text-xs font-bold transition-colors">Abierto ahora</button>
+<button class="flex-1 py-2 px-3 rounded-lg border border-primary/20 bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-medium hover:bg-primary/5 transition-colors">Cualquier horario</button>
+</div>
+</div>
+</div>
+</header>
+<!-- Provider List -->
+<main class="flex-1 p-4 space-y-6 pb-24">
+<!-- Card 1 -->
+<div class="flex flex-col rounded-xl overflow-hidden bg-white dark:bg-slate-800 shadow-md border border-primary/10 group">
+<div class="relative w-full aspect-[16/9] bg-center bg-no-repeat bg-cover" data-alt="Fresh vegetables at a local farm market stand" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCl3R0zfscm_ensMXfhtcKoG4PoMuw7dkNM9rbF1A9m1aPbcM2SQi-5rLPa0PMisZU8ff6WBjFdIt0EemQ98Fr3WsVvlPo7ltA1i6tfd4xOYxfDPABchNBA-nB-Z0daj9xl5QYUSlBIci0cVa5Yn8927oejDen77fMOePxQNJrU58jofgAYxWbDiHmrN7Fq4VfHeiIFlv84KEWaJMNGsV1VbynAEDkWLVMSaNjvQQ9nw_FxXUbSldwKJ5Yg_DZmWEFn4JJFVy_L3Fg");'>
+<div class="absolute top-3 left-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-blue-500 text-[18px] fill-1">verified</span>
+<span class="text-[10px] font-bold text-slate-900 dark:text-slate-100 tracking-wider">VERIFICADO</span>
+</div>
+<div class="absolute bottom-3 right-3 bg-primary text-white px-3 py-1 rounded-full text-xs font-bold">
+                        A 5 km
+                    </div>
+</div>
+<div class="p-4">
+<div class="flex justify-between items-start mb-1">
+<h3 class="text-slate-900 dark:text-slate-100 text-lg font-bold">Huerta Los Arcos</h3>
+<div class="flex items-center gap-1 bg-accent/10 px-2 py-0.5 rounded-md">
+<span class="material-symbols-outlined text-accent text-sm fill-1">star</span>
+<span class="text-accent font-bold text-sm">4.8</span>
+</div>
+</div><div class="flex items-center gap-1.5 mt-1">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span class="text-[11px] font-bold text-green-600 uppercase tracking-tight">Abierto ahora</span>
+<span class="text-[11px] text-slate-400 font-medium">• Cierra 18:00</span>
+</div>
+<p class="text-primary dark:text-primary/80 text-sm font-medium mb-2">Frutas y Verduras Orgánicas</p>
+<div class="flex items-center justify-between mt-4">
+<p class="text-slate-500 dark:text-slate-400 text-xs">120 reseñas de clientes</p>
+<button class="bg-primary text-white text-sm font-bold py-2 px-5 rounded-lg hover:bg-primary/90 transition-colors">Ver perfil</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="flex flex-col rounded-xl overflow-hidden bg-white dark:bg-slate-800 shadow-md border border-primary/10 group">
+<div class="relative w-full aspect-[16/9] bg-center bg-no-repeat bg-cover" data-alt="Ranch cows in a green pasture field" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDyFwoT9n5UV8Hvq0YMpZyKOoZiL4zKTs3X_t_rNHNu2NzEHeSgpxA9Op3GdRZS6VNYYHpCITC_UyvmeteeqcLrD42hNJjD_FM6dvylpUVhIm9MWEFRzV4oja3AZqceb84EdfWLPTqQnLs_kjz-p5M5wSwPiiZmAfIAH9fSSjKKBtuD8ZtX1B3PwHdDG8oYlHwlLhJr-Rjwi7Ye4a6Mv0F0V93U45B5HTLqhPQyZ-KUPAGAfsQw0fzAXdDmedzxd3k0ttiNGprLdfc");'>
+<div class="absolute bottom-3 right-3 bg-primary text-white px-3 py-1 rounded-full text-xs font-bold">
+                        A 12 km
+                    </div>
+</div>
+<div class="p-4">
+<div class="flex justify-between items-start mb-1">
+<h3 class="text-slate-900 dark:text-slate-100 text-lg font-bold">Rancho San José</h3>
+<div class="flex items-center gap-1 bg-accent/10 px-2 py-0.5 rounded-md">
+<span class="material-symbols-outlined text-accent text-sm fill-1">star</span>
+<span class="text-accent font-bold text-sm">4.9</span>
+</div>
+</div><div class="flex items-center gap-1.5 mt-1">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span class="text-[11px] font-bold text-green-600 uppercase tracking-tight">Abierto ahora</span>
+<span class="text-[11px] text-slate-400 font-medium">• Cierra 19:00</span>
+</div>
+<p class="text-primary dark:text-primary/80 text-sm font-medium mb-2">Lácteos y Quesos Artesanales</p>
+<div class="flex items-center justify-between mt-4">
+<p class="text-slate-500 dark:text-slate-400 text-xs">85 reseñas de clientes</p>
+<button class="bg-primary text-white text-sm font-bold py-2 px-5 rounded-lg hover:bg-primary/90 transition-colors">Ver perfil</button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="flex flex-col rounded-xl overflow-hidden bg-white dark:bg-slate-800 shadow-md border border-primary/10 group">
+<div class="relative w-full aspect-[16/9] bg-center bg-no-repeat bg-cover" data-alt="Local farmer holding a crate of tomatoes" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAfcBrpb-iHdRfRIPLQEcou3A2-13P2u29lMz9hPL0t_5TXmS3c0sdhBiNRbVjqwJDydPDv0gzw03nEqr1E6XCC88BXiO7qPB3183kDJ6fk8Huo_xOdsr7wRpEQpUnMyYD1-Oz7-_T3__ANbmZUM3vedKINSBNuJALfjB2PG4GFG9xsCa7RwVkFEe8-HXmX5JE5OOOT7uXYg5XkONQ4CBNnQ2B13DMzEM19o69BgbQ6FTPCn6SRrA_1G0tbQHzcY7IWLRnIVOoFw_w");'>
+<div class="absolute top-3 left-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-blue-500 text-[18px] fill-1">verified</span>
+<span class="text-[10px] font-bold text-slate-900 dark:text-slate-100 tracking-wider">VERIFICADO</span>
+</div>
+<div class="absolute bottom-3 right-3 bg-primary text-white px-3 py-1 rounded-full text-xs font-bold">
+                        A 8 km
+                    </div>
+</div>
+<div class="p-4">
+<div class="flex justify-between items-start mb-1">
+<h3 class="text-slate-900 dark:text-slate-100 text-lg font-bold">La Granja de Toño</h3>
+<div class="flex items-center gap-1 bg-accent/10 px-2 py-0.5 rounded-md">
+<span class="material-symbols-outlined text-accent text-sm fill-1">star</span>
+<span class="text-accent font-bold text-sm">4.7</span>
+</div>
+</div><div class="flex items-center gap-1.5 mt-1">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span class="text-[11px] font-bold text-green-600 uppercase tracking-tight">Abierto ahora</span>
+<span class="text-[11px] text-slate-400 font-medium">• Cierra 17:30</span>
+</div>
+<p class="text-primary dark:text-primary/80 text-sm font-medium mb-2">Huevos de rancho y Aves</p>
+<div class="flex items-center justify-between mt-4">
+<p class="text-slate-500 dark:text-slate-400 text-xs">210 reseñas de clientes</p>
+<button class="bg-primary text-white text-sm font-bold py-2 px-5 rounded-lg hover:bg-primary/90 transition-colors">Ver perfil</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom NavBar -->
+<nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white dark:bg-slate-900 border-t border-primary/10 px-4 pb-6 pt-2 flex justify-between items-center z-20">
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Inicio</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="text-[10px] font-medium">Carrito</span>
+</a>
+<!-- Highlighted Central Button -->
+<a class="relative -top-6 flex flex-col items-center gap-1" href="#">
+<div class="bg-primary text-white size-14 rounded-full flex items-center justify-center shadow-lg shadow-primary/30 border-4 border-background-light dark:border-background-dark">
+<span class="material-symbols-outlined text-3xl">storefront</span>
+</div>
+<span class="text-[10px] font-bold text-primary mt-1">Mercado</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="text-[10px] font-medium">Favoritos</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Perfil</span>
+</a>
+</nav>
+</div>
+</body></html>

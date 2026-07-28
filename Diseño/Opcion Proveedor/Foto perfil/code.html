@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es" style=""><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Registro de Proveedor - Foto de perfil</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#ffffff",
+                        "on-background": "#181d1a",
+                        "surface-container-low": "#f1f4f0",
+                        "surface-container-highest": "#e0e3df",
+                        "primary": "#00462f",
+                        "on-secondary-fixed": "#042015",
+                        "on-primary-fixed": "#002114",
+                        "tertiary": "#682826",
+                        "surface-container": "#ebefea",
+                        "on-primary-fixed-variant": "#005137",
+                        "background": "#f7faf5",
+                        "inverse-on-surface": "#eef2ed",
+                        "tertiary-fixed-dim": "#ffb3ae",
+                        "surface": "#f7faf5",
+                        "on-tertiary-fixed-variant": "#75322f",
+                        "on-secondary-fixed-variant": "#314c3f",
+                        "inverse-surface": "#2d312e",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#a5f3cb",
+                        "surface-bright": "#f7faf5",
+                        "primary-container": "#036042",
+                        "on-secondary-container": "#4e6b5b",
+                        "surface-container-high": "#e6e9e4",
+                        "on-tertiary-container": "#ffb5b0",
+                        "on-tertiary-fixed": "#3c0708",
+                        "surface-variant": "#e0e3df",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#3f4943",
+                        "secondary-fixed": "#caead7",
+                        "on-surface": "#181d1a",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#afcebb",
+                        "on-primary-container": "#8bd8b2",
+                        "surface-tint": "#186b4c",
+                        "outline": "#6f7a73",
+                        "tertiary-container": "#853e3b",
+                        "inverse-primary": "#89d6b0",
+                        "tertiary-fixed": "#ffdad7",
+                        "outline-variant": "#bec9c1",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed-dim": "#89d6b0",
+                        "surface-dim": "#d7dbd6",
+                        "secondary": "#486456",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#caead7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans", "sans-serif"],
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "body": ["Plus Jakarta Sans", "sans-serif"],
+                        "label": ["Plus Jakarta Sans", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+    
+    @keyframes slideUpFade {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .animate-slide-up {
+      opacity: 0;
+      animation: slideUpFade 0.6s ease-out forwards;
+    }
+    
+    .delay-100 { animation-delay: 100ms; }
+    .delay-200 { animation-delay: 200ms; }
+    .delay-300 { animation-delay: 300ms; }
+    .delay-400 { animation-delay: 400ms; }
+    .delay-500 { animation-delay: 500ms; }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="docked full-width top-0 bg-background dark:bg-background bg-surface-container-low dark:bg-surface-container-low flat no shadows">
+</header>
+<main class="flex-grow w-full max-w-md mx-auto px-4 py-6 flex flex-col gap-8">
+<!-- Header & Progress -->
+<section class="flex flex-col gap-2">
+<div class="flex justify-between items-center text-sm font-label text-primary font-bold">
+<span class="">Paso 5 de registro</span>
+<span class="">100%</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-2 overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 100%;"></div>
+</div>
+<div class="animate-slide-up delay-100">
+<h2 class="font-display text-2xl font-extrabold text-on-surface mt-4">Foto de perfil</h2>
+<p class="text-on-surface-variant text-sm">Personaliza el perfil de tu negocio agregando imágenes que representen tu marca.</p>
+</div>
+</section>
+<!-- Upload Areas -->
+<section class="flex flex-col gap-6">
+<!-- Banner Upload -->
+<div class="flex flex-col gap-2 animate-slide-up delay-200">
+<label class="font-label font-bold text-sm text-on-surface">Foto de banner</label>
+<div class="w-full h-32 border-2 border-dashed border-outline-variant rounded-xl flex flex-col items-center justify-center gap-2 bg-surface-container-low cursor-pointer hover:bg-surface-container transition-colors group">
+<span class="material-symbols-outlined text-primary text-3xl transition-transform duration-300 group-hover:scale-125 group-active:scale-110" data-icon="upload">upload</span>
+<span class="text-xs text-on-surface-variant text-center px-4">Sube una imagen para el banner de tu negocio</span>
+</div>
+</div>
+<!-- Profile Photo Upload -->
+<div class="flex flex-col gap-2 animate-slide-up delay-300">
+<label class="font-label font-bold text-sm text-on-surface">Foto de perfil</label>
+<div class="flex items-center gap-4">
+<div class="w-20 h-20 rounded-full bg-surface-container-low border-2 border-dashed border-outline-variant flex items-center justify-center cursor-pointer hover:bg-surface-container transition-colors group">
+<span class="material-symbols-outlined text-primary text-2xl transition-transform duration-300 group-hover:scale-125 group-active:scale-110" data-icon="photo_camera">photo_camera</span>
+</div>
+<span class="text-xs text-on-surface-variant max-w-[200px]">Puedes colocar el logo de tu negocio o una foto que pueda  representar.</span>
+</div>
+</div>
+</section>
+<!-- Profile Preview Card -->
+<section class="flex flex-col gap-2 animate-slide-up delay-400">
+<label class="font-label font-bold text-sm text-on-surface">Vista previa de tu perfil</label>
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-outline-variant/20 relative transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+<!-- Banner Placeholder -->
+<div class="h-24 bg-surface-variant w-full relative">
+<img alt="Banner placeholder" class="w-full h-full object-cover opacity-60 mix-blend-multiply" data-alt="A lush, verdant agricultural field stretching towards the horizon under a bright, sunny sky. The scene is shot from a slightly elevated angle, showcasing neat rows of vibrant green crops. The lighting is natural and bright, highlighting the organic textures and earthy tones of the soil. The overall mood is fresh, abundant, and agrarian, fitting a premium, functional asymmetry design aesthetic with deep green accents and an organic feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtacoUmVbIJoIJHXrhQ91xOlVDGDBUPHER_SJxIuP2CPBXkl22sG6zOZ-48ZrFcXlVjVjRgndPYmcqFNvx3GTW3AP9FVmaNgZBMlqVM6jGIlVKWq5Oc2tMfIv6R74qJMeQT_neylvGPu2OKUjOjJxgK393Cp19VOVBKNJHoaGHtRXVTWmIAzMK-Q1mha1T47V8MN2IMykWR15nfC5Ft07enLxuo_E-l60ejRoaMhnWkwrEFkXPCDyGfIu9Mq_FQ8aTV4S6jHgzv0c"/>
+</div>
+<!-- Profile Pic Placeholder (Overlapping) -->
+<div class="absolute top-12 left-4 w-16 h-16 rounded-full bg-surface-container-lowest p-1 shadow-sm">
+<div class="w-full h-full rounded-full bg-surface-variant flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-outline" data-icon="storefront">storefront</span>
+</div>
+</div>
+<div class="pt-6 px-4 pb-4 flex flex-col gap-1">
+<h3 class="font-headline font-bold text-lg text-on-surface">Nombre de tu Negocio</h3>
+</div>
+</div>
+</section>
+<!-- Action Buttons -->
+<div class="flex gap-4 mt-4 mb-8 animate-slide-up delay-500">
+<button class="flex-1 py-3 px-4 rounded-full border border-outline text-on-surface font-label font-bold text-sm text-center hover:bg-surface-container-low transition-colors">
+                Atrás
+            </button>
+<button class="flex-[2] py-3 px-4 rounded-full bg-primary-container text-on-primary-container font-label font-bold text-sm text-center uppercase tracking-widest hover:opacity-90 transition-opacity">
+                Finalizar registro
+            </button>
+</div>
+</main>
+</body></html>

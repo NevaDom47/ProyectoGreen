@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Confirm Order - Mercadito</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-fixed-variant": "#314c3f",
+              "on-secondary": "#ffffff",
+              "surface-tint": "#186b4c",
+              "inverse-on-surface": "#eef2ed",
+              "surface-variant": "#e0e3df",
+              "tertiary": "#682826",
+              "secondary-fixed": "#caead7",
+              "primary-fixed": "#a5f3cb",
+              "error": "#ba1a1a",
+              "surface-container-low": "#f1f4f0",
+              "primary": "#00462f",
+              "tertiary-container": "#853e3b",
+              "on-error-container": "#93000a",
+              "tertiary-fixed-dim": "#ffb3ae",
+              "on-tertiary-fixed-variant": "#75322f",
+              "on-primary-fixed": "#002114",
+              "on-background": "#181d1a",
+              "secondary-fixed-dim": "#afcebb",
+              "secondary-container": "#caead7",
+              "on-secondary-container": "#4e6b5b",
+              "surface-container-high": "#e6e9e4",
+              "tertiary-fixed": "#ffdad7",
+              "secondary": "#486456",
+              "surface": "#f7faf5",
+              "on-primary-container": "#8bd8b2",
+              "on-error": "#ffffff",
+              "primary-container": "#036042",
+              "on-primary": "#ffffff",
+              "outline-variant": "#bec9c1",
+              "on-tertiary-fixed": "#3c0708",
+              "on-surface": "#181d1a",
+              "surface-container-highest": "#e0e3df",
+              "inverse-surface": "#2d312e",
+              "surface-bright": "#f7faf5",
+              "outline": "#6f7a73",
+              "primary-fixed-dim": "#89d6b0",
+              "on-secondary-fixed": "#042015",
+              "on-primary-fixed-variant": "#005137",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary": "#ffffff",
+              "on-tertiary-container": "#ffb5b0",
+              "surface-container": "#ebefea",
+              "on-surface-variant": "#3f4943",
+              "inverse-primary": "#89d6b0",
+              "error-container": "#ffdad6",
+              "background": "#f7faf5",
+              "surface-dim": "#d7dbd6"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex items-center px-4 h-16 w-full bg-white dark:bg-emerald-950">
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-neutral-100 dark:hover:bg-emerald-900/50 transition-colors duration-200 text-emerald-900 dark:text-emerald-50">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-plus-jakarta text-lg font-bold tracking-tight text-emerald-900 dark:text-emerald-50">Confirm Order</h1>
+</div>
+</header>
+<main class="mt-20 px-4 space-y-8">
+<!-- Vendor Group 1 -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<h2 class="text-on-surface font-extrabold text-base tracking-tight">Granja El Sol</h2>
+<span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div class="flex items-center gap-1.5 px-3 py-1 bg-secondary-container rounded-full">
+<span class="material-symbols-outlined text-[14px] text-on-secondary-container">schedule</span>
+<span class="text-[10px] font-black uppercase tracking-widest text-on-secondary-container">Delivery: 30-45 min</span>
+</div>
+</div>
+<!-- Product Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-4 flex flex-col gap-4">
+<div class="flex gap-4">
+<div class="w-24 h-24 rounded-lg overflow-hidden bg-surface-container flex-shrink-0">
+<img alt="Heirloom Tomatoes" class="w-full h-full object-cover" data-alt="Close-up of fresh heirloom tomatoes with vibrant red and orange colors sitting on a rustic wooden table with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4sULAhp9YqBiPpU_UsNJMi5SPnhYJlSmBy0iMWtO9RVDaUIRTA3dejYii8fPww71NzRSmNBQ0EquzAsRETI-WQ8tY69GSl31vBdhwDjfh0ZrXUSeJdUBSm_GoKKiMAIIwPV7Uqqmguf0Xhq5MB3hpQnh-AqEoaeBQuEZPcmYR2zB2JW4ra9ttK53wR0Dh08F9EdW6plsqxBZE6O-7BI3XnpsDfUggqfRdhB_xhze2phSlmxyZop1Bw57nRXePWBfLhMgveXwxr5s"/>
+</div>
+<div class="flex-grow flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-on-surface text-sm">Organic Heirloom Tomatoes</h3>
+<span class="text-primary font-extrabold text-sm">$4.50</span>
+</div>
+<span class="text-[10px] font-black uppercase tracking-widest text-secondary mt-1">First Quality</span>
+</div>
+<div class="flex items-center justify-between mt-2">
+<!-- Unit Selector -->
+<div class="flex bg-surface-container rounded-full p-0.5">
+<button class="px-3 py-1 text-[8px] font-black rounded-full bg-primary text-white uppercase tracking-wider">Unit</button>
+<button class="px-3 py-1 text-[8px] font-black rounded-full text-on-surface-variant uppercase tracking-wider">lb</button>
+</div>
+<!-- Quantity Selector -->
+<div class="flex items-center bg-surface-container rounded-full border border-outline-variant/20">
+<button class="w-8 h-8 flex items-center justify-center text-on-surface"><span class="material-symbols-outlined text-sm">remove</span></button>
+<input class="w-8 bg-transparent text-center border-none focus:ring-0 text-xs font-bold font-body p-0" type="number" value="2"/>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface"><span class="material-symbols-outlined text-sm">add</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Vendor Coupon -->
+<div class="flex items-center gap-2 bg-surface-container-low p-2 rounded-lg">
+<span class="material-symbols-outlined text-sm text-tertiary">local_offer</span>
+<input class="flex-grow bg-transparent border-none text-[10px] font-bold uppercase tracking-widest focus:ring-0 placeholder:text-outline p-0" placeholder="Coupon for Granja El Sol" type="text"/>
+<button class="text-[10px] font-black text-primary uppercase tracking-widest px-2">Apply</button>
+</div>
+</div>
+</section>
+<!-- Vendor Group 2 -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<h2 class="text-on-surface font-extrabold text-base tracking-tight">Huerto Los Andes</h2>
+<span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div class="flex items-center gap-1.5 px-3 py-1 bg-secondary-container rounded-full">
+<span class="material-symbols-outlined text-[14px] text-on-secondary-container">schedule</span>
+<span class="text-[10px] font-black uppercase tracking-widest text-on-secondary-container">Delivery: 60 min</span>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-4 flex flex-col gap-4">
+<div class="flex gap-4">
+<div class="w-24 h-24 rounded-lg overflow-hidden bg-surface-container flex-shrink-0 relative">
+<img alt="Creamy Avocados" class="w-full h-full object-cover" data-alt="Macro photo of sliced ripe avocados with a smooth creamy texture and vibrant green center, bright high-key lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCx_eRxHSK6aT1dCBg3UZ21drqrz2a64dmGPr8oTG0AwxQg0tDHVh4AtgkqDL9nFU3WpSX7wpX-mqCzxe8EVd07TtoyRnGyMKSGzfqVdkh_j7V_WDyzIsqHtCn4ZTDR6b7aC1H3c0x9tVl_JkgdHXVc331TsEehHQuMybFAM2rM-_9QQlVy3Su13zKGeSWfPfrF5gFM-iyyAGPQc-_F_W34y3Acj64mtVxWzV11ufTeMWIzML5WRRVceAYqKkB1F4P_yYDKiV2M4QA"/>
+</div>
+<div class="flex-grow flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-on-surface text-sm">Premium Hass Avocado</h3>
+<span class="text-primary font-extrabold text-sm">$2.75</span>
+</div>
+<span class="text-[10px] font-black uppercase tracking-widest text-secondary mt-1">Second Quality</span>
+</div>
+<div class="flex items-center justify-between mt-2">
+<!-- Unit Selector -->
+<div class="flex bg-surface-container rounded-full p-0.5">
+<button class="px-3 py-1 text-[8px] font-black rounded-full text-on-surface-variant uppercase tracking-wider">Unit</button>
+<button class="px-3 py-1 text-[8px] font-black rounded-full bg-primary text-white uppercase tracking-wider">lb</button>
+</div>
+<!-- Quantity Selector -->
+<div class="flex items-center bg-surface-container rounded-full border border-outline-variant/20">
+<button class="w-8 h-8 flex items-center justify-center text-on-surface"><span class="material-symbols-outlined text-sm">remove</span></button>
+<input class="w-8 bg-transparent text-center border-none focus:ring-0 text-xs font-bold font-body p-0" type="number" value="5"/>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface"><span class="material-symbols-outlined text-sm">add</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Vendor Coupon -->
+<div class="flex items-center gap-2 bg-surface-container-low p-2 rounded-lg">
+<span class="material-symbols-outlined text-sm text-tertiary">local_offer</span>
+<input class="flex-grow bg-transparent border-none text-[10px] font-bold uppercase tracking-widest focus:ring-0 placeholder:text-outline p-0" placeholder="Apply ANDES10" type="text"/>
+<button class="text-[10px] font-black text-primary uppercase tracking-widest px-2">Apply</button>
+</div>
+</div>
+</section>
+<!-- Payment Method -->
+<section class="space-y-4">
+<h2 class="text-on-surface font-extrabold text-base tracking-tight">Payment Method</h2>
+<div class="grid grid-cols-3 gap-3">
+<button class="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-primary text-white shadow-sm transition-transform active:scale-95">
+<span class="material-symbols-outlined text-2xl">payments</span>
+<span class="text-[8px] font-black uppercase tracking-widest">Cash</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-surface-container-lowest text-on-surface-variant border border-outline-variant/20 transition-transform active:scale-95">
+<span class="material-symbols-outlined text-2xl">credit_card</span>
+<span class="text-[8px] font-black uppercase tracking-widest">Card</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-surface-container-lowest text-on-surface-variant border border-outline-variant/20 transition-transform active:scale-95">
+<span class="material-symbols-outlined text-2xl">account_balance</span>
+<span class="text-[8px] font-black uppercase tracking-widest">Transfer</span>
+</button>
+</div>
+</section>
+<!-- Order Summary -->
+<section class="bg-surface-container-high rounded-xl p-6 space-y-3">
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="text-[10px] font-black uppercase tracking-widest">Subtotal (3 items)</span>
+<span class="font-bold text-sm">$22.75</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="text-[10px] font-black uppercase tracking-widest">Delivery Fee</span>
+<span class="font-bold text-sm">$2.50</span>
+</div>
+<div class="flex justify-between items-center text-tertiary">
+<span class="text-[10px] font-black uppercase tracking-widest">Discounts</span>
+<span class="font-bold text-sm">-$1.00</span>
+</div>
+<div class="h-px bg-outline-variant/30 my-2"></div>
+<div class="flex justify-between items-center text-on-surface">
+<span class="text-[12px] font-black uppercase tracking-widest">Total Order</span>
+<span class="font-extrabold text-xl text-primary">$24.25</span>
+</div>
+</section>
+</main>
+<!-- BottomNavBar as Checkout Button -->
+<nav class="fixed bottom-0 left-0 w-full z-50 px-6 pt-4 pb-8 flex flex-col items-center gap-2 bg-white/80 dark:bg-emerald-950/80 backdrop-blur-md border-t border-emerald-100/20 dark:border-emerald-800/20">
+<button class="bg-emerald-800 text-white dark:bg-emerald-600 rounded-full px-8 py-4 flex items-center justify-center w-full max-w-xs mx-auto mb-4 hover:opacity-90 active:scale-95 transition-all shadow-lg gap-3">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_cart_checkout</span>
+<span class="font-plus-jakarta text-[10px] font-black uppercase tracking-widest">Confirm Purchase</span>
+</button>
+</nav>
+</body></html>

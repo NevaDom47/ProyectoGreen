@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#016042",
+                        "background-light": "#f5f8f7",
+                        "background-dark": "#0f231d",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>Políticas Legales - El Mercadito</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header / Top Navigation -->
+<header class="sticky top-0 z-10 bg-background-light dark:bg-background-dark border-b border-primary/10 px-4 py-4 flex items-center gap-4">
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-primary/10 text-primary transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold text-primary flex-1">Políticas Legales</h1>
+<div class="size-10"></div> <!-- Spacer for symmetry -->
+</header>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto px-4 py-6 max-w-2xl mx-auto w-full">
+<div class="mb-8 text-center">
+<div class="inline-flex items-center justify-center size-16 bg-primary/10 rounded-full mb-4">
+<span class="material-symbols-outlined text-primary text-3xl">gavel</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">
+                Última actualización: 24 de mayo de 2024
+            </p>
+</div>
+<section class="space-y-4">
+<!-- Accordion Section: Términos y Condiciones -->
+<details class="group bg-white dark:bg-slate-800/50 border border-primary/10 rounded-xl overflow-hidden shadow-sm" open="">
+<summary class="flex cursor-pointer items-center justify-between p-4 list-none">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">description</span>
+<h2 class="font-semibold text-slate-900 dark:text-white">Términos y Condiciones</h2>
+</div>
+<span class="material-symbols-outlined text-primary transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<div class="px-4 pb-4 text-slate-600 dark:text-slate-300 text-sm leading-relaxed space-y-3">
+<p>Bienvenido a El Mercadito. Al utilizar nuestra aplicación, usted acepta cumplir con estos términos. El uso de la plataforma está destinado únicamente a mayores de edad con capacidad legal para contratar.</p>
+<p>Nos reservamos el derecho de modificar o retirar servicios en cualquier momento. Usted es responsable de mantener la confidencialidad de su cuenta y contraseña.</p>
+</div>
+</details>
+<!-- Accordion Section: Política de Privacidad -->
+<details class="group bg-white dark:bg-slate-800/50 border border-primary/10 rounded-xl overflow-hidden shadow-sm">
+<summary class="flex cursor-pointer items-center justify-between p-4 list-none">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">lock</span>
+<h2 class="font-semibold text-slate-900 dark:text-white">Política de Privacidad</h2>
+</div>
+<span class="material-symbols-outlined text-primary transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<div class="px-4 pb-4 text-slate-600 dark:text-slate-300 text-sm leading-relaxed space-y-3">
+<p>En El Mercadito, la privacidad de sus datos es nuestra prioridad. Recopilamos información personal solo con el fin de mejorar su experiencia de compra y gestionar sus pedidos.</p>
+<p>Sus datos no serán compartidos con terceros sin su consentimiento explícito, excepto cuando sea necesario para procesar pagos o realizar entregas.</p>
+</div>
+</details>
+<!-- Accordion Section: Uso de Cookies -->
+<details class="group bg-white dark:bg-slate-800/50 border border-primary/10 rounded-xl overflow-hidden shadow-sm">
+<summary class="flex cursor-pointer items-center justify-between p-4 list-none">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">cookie</span>
+<h2 class="font-semibold text-slate-900 dark:text-white">Uso de Cookies</h2>
+</div>
+<span class="material-symbols-outlined text-primary transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<div class="px-4 pb-4 text-slate-600 dark:text-slate-300 text-sm leading-relaxed space-y-3">
+<p>Utilizamos cookies propias y de terceros para analizar el tráfico de la aplicación y recordar sus preferencias de navegación.</p>
+<p>Puede gestionar la configuración de cookies en los ajustes de su dispositivo móvil, aunque esto podría afectar la funcionalidad de algunas partes de la app.</p>
+</div>
+</details>
+</section>
+<!-- Help/Contact Footer -->
+<div class="mt-10 p-6 bg-primary/5 rounded-2xl border border-primary/10 text-center">
+<h3 class="font-bold text-primary mb-2">¿Tienes alguna duda?</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm mb-4">
+                Si necesitas más información sobre nuestras políticas, contacta con nuestro equipo legal.
+            </p>
+<a class="inline-flex items-center gap-2 text-primary font-semibold hover:underline" href="mailto:legal@elmercadito.com">
+<span class="material-symbols-outlined text-sm">mail</span>
+                legal@elmercadito.com
+            </a>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="sticky bottom-0 bg-white dark:bg-slate-900 border-t border-primary/10 px-2 pb-safe pt-2">
+<div class="flex justify-around items-end">
+<a class="flex flex-col items-center gap-1 py-1 px-3 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Inicio</span>
+</a>
+<a class="flex flex-col items-center gap-1 py-1 px-3 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="text-[10px] font-medium">Carrito</span>
+</a>
+<a class="flex flex-col items-center justify-center -translate-y-4" href="#">
+<div class="bg-primary size-14 rounded-full flex items-center justify-center shadow-lg shadow-primary/30 text-white">
+<span class="material-symbols-outlined text-3xl">storefront</span>
+</div>
+<span class="text-[10px] font-semibold text-primary mt-1">Mercado</span>
+</a>
+<a class="flex flex-col items-center gap-1 py-1 px-3 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="text-[10px] font-medium">Favoritos</span>
+</a>
+<a class="flex flex-col items-center gap-1 py-1 px-3 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">person</span>
+<span class="text-[10px] font-medium">Perfil</span>
+</a>
+</div>
+</nav>
+</body></html>

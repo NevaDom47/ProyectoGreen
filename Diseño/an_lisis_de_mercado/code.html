@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#016042",
+              "background-light": "#f5f8f7",
+              "background-dark": "#0f231d",
+            },
+            fontFamily: {
+              "display": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header -->
+<header class="sticky top-0 z-10 bg-background-light dark:bg-background-dark border-b border-primary/10 px-4 py-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center p-2 rounded-lg hover:bg-primary/10 text-primary">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight">Análisis de Mercado</h1>
+</div>
+<button class="p-2 text-primary">
+<span class="material-symbols-outlined">search</span>
+</button>
+</header>
+<main class="flex-1 overflow-y-auto pb-24">
+<!-- Tabs -->
+<div class="px-4 mt-2">
+<div class="flex gap-6 border-b border-primary/10">
+<button class="pb-3 border-b-2 border-primary text-primary font-bold text-sm">Precios</button>
+<button class="pb-3 border-b-2 border-transparent text-slate-500 dark:text-slate-400 font-medium text-sm">Noticias</button>
+<button class="pb-3 border-b-2 border-transparent text-slate-500 dark:text-slate-400 font-medium text-sm">Tendencias</button>
+</div>
+</div>
+<!-- Section: Market Prices -->
+<section class="px-4 py-6">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-lg font-bold">Precios Certificados</h2>
+<span class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-full uppercase tracking-wider">Hoy</span>
+</div>
+<div class="space-y-3">
+<!-- Price Card 1 -->
+<div class="bg-white dark:bg-primary/5 p-4 rounded-lg shadow-sm border border-primary/5 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Fresh red tomatoes on white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMuT9JbRfKYPLoclSGVVLM4CnSbvblT3pl5k0UaSJS3W2GXOi5gnU_hkSlAVtsPw9XMvqynGv8Gwbsl6Ayb7D4o2TGcm9lJ02q7AQWs0WgaqOtpHUeIBnuBuxIt5GBogGhhiVlVEFvmqxXYhWclUtiZZGPMz7XIrdUIfY7yjr703fZfwsHQscpOCL9J-nfr3n4dRRY0-gX3X-t8Yz4sYaxN2u7yEH9mNMq7OQ0_ZRjyPRDJ8tFyQ-MzTEcb3rZvKcMLBprSZxQU0A"/>
+</div>
+<div>
+<p class="font-bold text-base">Tomate Bola</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Sinaloa • Mayorista</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-bold text-primary">$24.50/kg</p>
+<div class="flex items-center justify-end text-emerald-600 text-xs font-bold">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+2.4%</span>
+</div>
+</div>
+</div>
+<!-- Price Card 2 -->
+<div class="bg-white dark:bg-primary/5 p-4 rounded-lg shadow-sm border border-primary/5 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Potatoes in a rustic wooden basket" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHugHRh1lohx6ZR5a0klWtzvQEy7rkrX7RpSRA9tBYa0OHdzIIDPePD9W77HknCW8wwzOFMp5XQnHqRGH2Ag4pGwPg6L91faJLNpam3AoHHZik91qLUSIt1X1PPSvZv6vLzTBRdDYLpI1CZRJn9BHJWeSN_dRFdt224TpWaIkKlWqH7SF0zPzNgKiwtKYNrKEBvjP2D-LFYrROXJn_yR0bCvMUeI_qLj7CDnwl7TrYhRqSYjmH401ZfJZ99e9gw33gZlUjnqLnG98"/>
+</div>
+<div>
+<p class="font-bold text-base">Papa Blanca</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Estado de México • Local</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-bold text-primary">$18.20/kg</p>
+<div class="flex items-center justify-end text-rose-600 text-xs font-bold">
+<span class="material-symbols-outlined text-sm">trending_down</span>
+<span>-1.1%</span>
+</div>
+</div>
+</div>
+<!-- Price Card 3 -->
+<div class="bg-white dark:bg-primary/5 p-4 rounded-lg shadow-sm border border-primary/5 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Sliced green avocado on a table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsRs95R78bB5ICVDibRfGwPp9vQ_V_O5yJ39oDALclMvCboaQ8T48-aAfaJ7vtI24prD9nBW2VPlTVuc9pJ0mB892zemHzjw0fq4l4oZjCQkJ93vw2rKYJg7STLJ8fJJ0MY9I6NHqf5-RzMvYk3NDvF75kWTBphxXjwuIJnVMmRVGiFi8yob-ACvS6shhzI7n5DnbK3aGsvc-KecDvz6bPBDAKnDNCE6rYGts82ELPkqaLVDRo2UKgJ8-3mHMxH4QEzuTv5ABUi6M"/>
+</div>
+<div>
+<p class="font-bold text-base">Aguacate Hass</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Michoacán • Exportación</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-bold text-primary">$72.00/kg</p>
+<div class="flex items-center justify-end text-slate-400 text-xs font-bold">
+<span class="material-symbols-outlined text-sm">horizontal_rule</span>
+<span>0.0%</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Market News -->
+<section class="px-4 py-2">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-lg font-bold">Noticias Relevantes</h2>
+<button class="text-primary text-sm font-semibold">Ver todo</button>
+</div>
+<div class="space-y-4">
+<!-- News Card 1 -->
+<div class="bg-white dark:bg-primary/5 rounded-lg overflow-hidden shadow-sm border border-primary/5">
+<div class="h-32 bg-slate-200">
+<img class="w-full h-full object-cover" data-alt="Farmer inspecting corn crops in field" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwuYgLQ8edJ0Kfw0ZvY4h3pff_cnhzA1OPEHDbpe_dXOyOpcO_i-LOr0oEGw96rCOWGRsJcGN9M8h5F3sUBsbYGgBg-_9zUxPyFHL_h-6POwEZpxTaiz5m6mqHdOxRRTPwuBRQK4Nc9SEmaR9eg-8EtCsByvY5If6sMSeDNRHF3fWeqDZXYnt3NO7uZamMkx52XjD1sXAP2oB3_swAUd2zxQ64s4H8-XQkCeQ_VWTUAsYMY7V5imxZ18gJ3X2Mmqrn32OHcL6TRRc"/>
+</div>
+<div class="p-4">
+<div class="flex items-center gap-2 mb-2">
+<span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded uppercase">Cosecha</span>
+<span class="text-[10px] text-slate-400">Hace 3h</span>
+</div>
+<h3 class="font-bold text-base leading-tight mb-2">Inicia temporada de cosecha en el Bajío</h3>
+<p class="text-sm text-slate-600 dark:text-slate-300 line-clamp-2">
+                            Productores reportan un incremento del 15% en la calidad del grano comparado con el año anterior debido a las lluvias tardías...
+                        </p>
+</div>
+</div>
+<!-- News Card 2 -->
+<div class="bg-white dark:bg-primary/5 rounded-lg overflow-hidden shadow-sm border border-primary/5 flex h-28">
+<div class="w-28 shrink-0">
+<img class="w-full h-full object-cover" data-alt="Global shipping containers in a port" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsTiibrGGC4GRLVGi5IY_hvojJbff1rye5Kf-x7pxFHDcMmkG6gF10Km4uZDtnGw0DlOo3BzkpQ__l5Hop3FmEBrZALzLeX_Fv9z3JPUw4z--JZRWV626bSi4-UClL3LJ7cOw8C3fxjzimMeQQrvORUbwUTIaIVcjPinMq7epenaOJpLkEZK-MoacE58FhVd7szZFo1zA-9lWRySVHkm1MXnui5jrbeX1oV49c2ZBTqtMRefNel2pGMezoG4zH3aC3Y7A14bIOn48"/>
+</div>
+<div class="p-3 flex flex-col justify-center">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-[10px] font-bold text-amber-600 bg-amber-100 px-2 py-0.5 rounded uppercase">Mercados</span>
+<span class="text-[10px] text-slate-400">Hace 6h</span>
+</div>
+<h3 class="font-bold text-sm leading-tight mb-1">Cambios en aranceles afectan exportación</h3>
+<p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-1">Nuevas regulaciones entran en vigor este lunes para productos perecederos.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-background-dark border-t border-primary/10 px-2 pb-6 pt-2">
+<div class="flex justify-around items-end">
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Inicio</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="text-[10px] font-medium">Carrito</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined fill">leaderboard</span>
+<span class="text-[10px] font-bold">Mercado</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="text-[10px] font-medium">Favoritos</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Perfil</span>
+</a>
+</div>
+</nav>
+</body></html>

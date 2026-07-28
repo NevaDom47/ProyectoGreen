@@ -1,0 +1,191 @@
+<!DOCTYPE html><html lang="es" data-lt-installed="true"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#016042",
+                        "background-light": "#f5f8f7",
+                        "background-dark": "#0f231d",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<title>Perfil de Vendedor - El Mercadito</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="relative mx-auto max-w-md min-h-screen bg-background-light dark:bg-background-dark shadow-xl overflow-x-hidden pb-24">
+<!-- Top Navigation -->
+<div class="sticky top-0 z-50 flex items-center bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md p-4 justify-between border-b border-primary/10">
+<div class="text-primary flex size-10 shrink-0 items-center justify-center cursor-pointer">
+<span class="material-symbols-outlined" style="">arrow_back</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 text-center" style="">Perfil Proveedor</h2>
+<div class="flex w-10 items-center justify-end">
+<button class="text-primary/70 hover:text-red-600 transition-colors" style="">
+<span class="material-symbols-outlined" style="">report</span>
+</button>
+</div>
+</div>
+<!-- Hero Banner -->
+<div class="relative h-48 w-full overflow-hidden">
+<div class="w-full h-full bg-center bg-cover" data-alt="Vista panorámica de cultivos verdes en una finca" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuCnW6_MorKLz7ezxkGcHG6rQjhSFNPk8HPgeIsUbUJgp9DUy5kB2jUbGf4NDVs02rHGeJ4ro5fC_o-CVgZdBbzfhnoIX6Oz-YBKAMbwvBnKt0DUNJfnQJ-4cR8YhjFg7n2YTsCUja9uRWf099e4MF7xhxHmzFwjLCdCgywatNoUU6oNbjKVFR4AvgIv8s4ecmGAnIR2EtLvlghaKIOjsvzYQBd-K2z9jJ0Zk9LsA0e7JsmFHImz82G7W_vMJG5zDP64iTEgJpRLJF0&quot;);">
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+</div>
+<!-- Profile Section -->
+<div class="relative px-4 -mt-16">
+<div class="flex flex-col items-center">
+<div class="relative">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full border-4 border-background-light dark:border-background-dark shadow-lg h-32 w-32 overflow-hidden" data-alt="Retrato de un granjero sonriente frente a su granja" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuDcbPIxgoaZQ1vFQexFclOOP0G7gyajXmo1Mz0mrojnc9BUI0f5h-8npBK3hTMwgYhVnNgWhzKF1N9U9MIMBD1upRv0zzeAEMhDVXaXzh3R88D1DkHy_Q_XSI0lcDceVxoh73fTGKXI3KQ_L5ZyS7yXIUKRnaAKiDjqblhbSYmtmrmibCmBsSlS3BTptjWP86bXHsMNYhVBbA1kDpYuurrA7TF1VxBF7CtgxmaINBs1HHB5Bqi1IZ3CJ-IXoLW0ER6uwTh43h_uSp0&quot;);">
+</div>
+<div class="absolute bottom-1 right-1 bg-primary text-white p-1 rounded-full border-2 border-background-light dark:border-background-dark flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]" style="">verified</span>
+</div>
+</div>
+<div class="mt-4 text-center">
+<h1 class="text-slate-900 dark:text-slate-100 text-2xl font-bold tracking-tight" style="">Finca La Esperanza</h1>
+<p class="text-primary font-medium flex items-center justify-center gap-1 mt-1" style="">
+<span class="material-symbols-outlined text-sm" style="">location_on</span>
+                        Villa de Leyva
+                    </p>
+<p class="text-slate-600 dark:text-slate-400 text-sm mt-2 max-w-[280px]" style="">
+                        Especialistas en fresas y hortalizas orgánicas de alta montaña.
+                    </p>
+</div>
+<!-- Stats -->
+<div class="flex gap-6 mt-6 w-full max-w-sm justify-center">
+<div class="text-center">
+<div class="flex items-center justify-center gap-1 text-primary font-bold text-xl" style="">
+                            4.8 <span class="material-symbols-outlined text-yellow-500 fill-1" style="">star</span>
+</div>
+<p class="text-slate-500 text-xs uppercase tracking-wider font-semibold" style="">Valoración</p>
+</div>
+<div class="w-px h-10 bg-primary/10"></div>
+<div class="text-center">
+<p class="text-slate-900 dark:text-slate-100 font-bold text-xl" style="">1.2k</p>
+<p class="text-slate-500 text-xs uppercase tracking-wider font-semibold" style="">Ventas</p>
+</div>
+<div class="w-px h-10 bg-primary/10"></div>
+<div class="text-center">
+<p class="text-slate-900 dark:text-slate-100 font-bold text-xl" style="">15</p>
+<p class="text-slate-500 text-xs uppercase tracking-wider font-semibold" style="">Productos</p>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex w-full gap-3 mt-8">
+<button class="flex-1 h-12 rounded-xl bg-primary/10 text-primary font-bold flex items-center justify-center gap-2 hover:bg-primary/20 transition-all" style="">
+<span class="material-symbols-outlined" style="">person_add</span>
+<span class="" style="">Seguir</span>
+</button>
+<button class="flex-1 h-12 rounded-xl bg-primary text-white font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/30 hover:opacity-90 transition-all" style="">
+<span class="material-symbols-outlined" style="">chat_bubble</span>
+<span class="" style="">Chat</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Tabbed Navigation -->
+<div class="mt-8 border-b border-primary/10 px-4">
+<div class="flex gap-8 overflow-x-auto no-scrollbar">
+<button class="pb-3 border-b-2 border-primary text-primary font-bold text-sm whitespace-nowrap" style="">Productos</button>
+<button class="pb-3 border-b-2 border-transparent text-slate-500 font-medium text-sm whitespace-nowrap" style="">Reseñas</button>
+<button class="pb-3 border-b-2 border-transparent text-slate-500 font-medium text-sm whitespace-nowrap" style="">Información</button>
+</div>
+</div>
+<!-- Product Sections by Quality -->
+<div class="p-4 space-y-8">
+<!-- Primera Calidad -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100" style="">Calidad: Primera</h3>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest" style="">Premium</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- Product Card -->
+<div class="bg-white dark:bg-background-dark/50 rounded-xl overflow-hidden shadow-sm border border-primary/5">
+<div class="h-32 bg-center bg-cover" data-alt="Fresas rojas brillantes de gran tamaño" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuD-z7VnITVcdycvaR0mMW0mQ3rwKoSX976UaYhctnBcYlYheIE3X8wRAXfdZMRmn6btGHnVgCFJMv4iBdGdydRwtDeTxkSxObfgZ_0pQmPbJEzjI41IFcVE3QsORM4qdOnSGWGLPV7xNPzopmRugi8uycGx7dOHgpt2G7yz_JHkf5aK4MCqNwnpouNk3Pl_aYFerq5tMSINp6Hau-PkD6adxb-TQA2XytTBG8AmNbRh_sp7nBrshFeERqfrUutgm6yY8-7scsnrgeU&quot;);"></div>
+<div class="p-3">
+<p class="text-sm font-bold truncate" style="">Fresas Extra</p>
+<p class="text-primary font-bold text-md" style="">$8.500 <span class="text-[10px] text-slate-400 font-normal" style="">/lb</span></p>
+</div>
+</div>
+<div class="bg-white dark:bg-background-dark/50 rounded-xl overflow-hidden shadow-sm border border-primary/5">
+<div class="h-32 bg-center bg-cover" data-alt="Zanahorias frescas con tallo verde" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuAUP07pMS-fkGRl_e-A_ksfxKmrKWa-uMZFZ7hvjE42DscxBHwUsx6fScNLD5TRZrw8Uh6fGNy9JYfNt6iISLHMW5-uMUFqybHPkrQwig52Qn0dn7Rix-GwCC_XihkPXq3G1-sGNzsnk3yb8ZB3mcXS7lnPrYUf_ovpd-ND9zD970NSGVKIzVbzFZiEz2lcIUcI03Ezq9NjBZrvVnut5BAKWvqPARC1Cef9NKXci0FArJHZlt8dqNTLc9Zl80YSPAtDKDEH0cl8mEw&quot;);"></div>
+<div class="p-3">
+<p class="text-sm font-bold truncate" style="">Zanahoria Orgánica</p>
+<p class="text-primary font-bold text-md" style="">$3.200 <span class="text-[10px] text-slate-400 font-normal" style="">/kg</span></p>
+</div>
+</div>
+</div>
+</section>
+<!-- Segunda Calidad -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100" style="">Calidad: Segunda</h3>
+<span class="bg-slate-100 dark:bg-slate-800 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest" style="">Estándar</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white dark:bg-background-dark/50 rounded-xl overflow-hidden shadow-sm border border-primary/5">
+<div class="h-32 bg-center bg-cover" data-alt="Fresas de tamaño mediano para jugo" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuDLO18sR3kyXsTpkfxxUo4sj8tqVc7N2dP_uoGCvZYFSHbkkyDdyKKOxI5Gq46MuIK9cKwrjbtSYKc11nZoZ3-1Wf_P8fxERDc4zRo-xJsRsIBGZUMQOUXwbvTzIad678BOsEiGblUbmRn2kUykOwHQrRhtEdZioG7WbK6B5bys5uQuC1-MsSFXBzlg2EHekFeyRJjV8zm-UjiHDS8p2khagh6iqKYp-XYcXTn-D3HSzhahnIYUsXsb8kmH-DPUArYNcsSkx2-TIuQ&quot;);"></div>
+<div class="p-3">
+<p class="text-sm font-bold truncate" style="">Fresa Mediana</p>
+<p class="text-primary font-bold text-md" style="">$5.500 <span class="text-[10px] text-slate-400 font-normal" style="">/lb</span></p>
+</div>
+</div>
+</div>
+</section>
+<!-- Tercera Calidad -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100" style="">Calidad: Tercera</h3>
+<span class="bg-amber-100 text-amber-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest" style="">Oferta</span>
+</div>
+<div class="bg-white dark:bg-background-dark/50 rounded-xl overflow-hidden shadow-sm border border-primary/5 p-4 flex gap-4">
+<div class="h-20 w-20 bg-center bg-cover rounded-lg shrink-0" data-alt="Mezcla de hortalizas para sopa" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuAwcbyyXj63DhlDhvAd4pY8Z43tTGFUOEl_5O3YBBfWIeqoJMMrogB873lkwQWnSAa5qQM3eWJMJoD9cFuq0zwCJyWFKSsQmwWbbKwQ5pkwtjVrQvqMI72Vhjs509Ob1t15QbZLfy5CM4g7FkoguI0R3AVDLushIknTedSv9GywIhzF6cWAB-2-ffGubZ2M2Wy6w7VSAutZDBXX0FKcCzOImFZ5WoPeYuY-qzdPLhxYd5njzOV-Smf8RWb44NCVGx2Y10TghtPzDs8&quot;);"></div>
+<div class="flex-1 flex flex-col justify-center">
+<p class="text-sm font-bold truncate" style="">Hortalizas para Caldo</p>
+<p class="text-xs text-slate-500 mb-1" style="">Mezcla surtida (tamaño irregular)</p>
+<p class="text-primary font-bold text-md" style="">$2.000 <span class="text-[10px] text-slate-400 font-normal" style="">/atado</span></p>
+</div>
+</div>
+</section>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="fixed bottom-0 left-0 right-0 mx-auto max-w-md bg-background-light dark:bg-background-dark border-t border-primary/10 px-4 py-3 flex justify-between items-center z-50">
+<a class="flex flex-col items-center gap-1 text-primary" href="#" style="">
+<span class="material-symbols-outlined" style="">home</span>
+<p class="text-[10px] font-bold" style="">Inicio</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#" style="">
+<span class="material-symbols-outlined" style="">search</span>
+<p class="text-[10px] font-medium" style="">Explorar</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#" style="">
+<span class="material-symbols-outlined" style="">shopping_bag</span>
+<p class="text-[10px] font-medium" style="">Pedidos</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#" style="">
+<span class="material-symbols-outlined" style="">person</span>
+<p class="text-[10px] font-medium" style="">Mi Perfil</p>
+</a>
+</div>
+</div>
+</body></html>

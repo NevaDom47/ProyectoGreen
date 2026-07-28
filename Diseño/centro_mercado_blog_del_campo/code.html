@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Centro Mercado - El Mercadito</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#016042",
+                        "background-light": "#f5f8f7",
+                        "background-dark": "#0f231d",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<!-- Header Section -->
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+<div class="flex items-center p-4 justify-between max-w-2xl mx-auto">
+<div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">menu</span>
+</div>
+<h1 class="text-primary text-xl font-bold leading-tight tracking-tight flex-1 text-center">Centro Mercado</h1>
+<div class="flex w-10 items-center justify-end">
+<button class="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</div>
+<!-- Tabs -->
+<div class="max-w-2xl mx-auto">
+<div class="flex border-b border-primary/10 px-4 gap-8">
+<a class="flex flex-col items-center justify-center border-b-2 border-primary text-primary pb-3 pt-4" href="#">
+<p class="text-sm font-bold">Recientes</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-2 border-transparent text-slate-500 dark:text-slate-400 pb-3 pt-4" href="#">
+<p class="text-sm font-bold">Siguiendo</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-2 border-transparent text-slate-500 dark:text-slate-400 pb-3 pt-4" href="#">
+<p class="text-sm font-bold">Historias</p>
+</a>
+</div>
+</div>
+</header>
+<!-- Main Content: Feed -->
+<main class="max-w-2xl mx-auto pb-24">
+<!-- Story/Live Section -->
+<div class="flex gap-4 p-4 overflow-x-auto no-scrollbar">
+<div class="flex flex-col items-center gap-1 shrink-0">
+<div class="size-16 rounded-full border-2 border-primary p-0.5">
+<div class="size-full rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">add</span>
+</div>
+</div>
+<span class="text-[10px] font-medium">Tu Cosecha</span>
+</div>
+<div class="flex flex-col items-center gap-1 shrink-0">
+<div class="size-16 rounded-full border-2 border-primary p-0.5">
+<img class="size-full rounded-full object-cover" data-alt="Finca profile picture organic farm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlRdath6NFbuJhMYjMhvtWG4JRj9ZGc28WSaKq5quRwDSJ-_ZBn7MB9sk31ZdFkr9VjxQOHFVDxxigRTH0S0hAJPu1yodfrs1JiHqS2iH6IbqAY55sIpNpUvD4KZEzc3FqqsvIpNLhENZPAreJHldO7egMLj5MS-KIWuJqcJcmz3GXhIpNgOuSx90miY2eraV7MpvtYqOKxdM1k77iHLiJN8KtCcb8M8pGyIcvO5CgA80vcH1mO6QzZkM4F4u6zkV9GyDyVyxnTvM"/>
+</div>
+<span class="text-[10px] font-medium">La Esperanza</span>
+</div>
+<div class="flex flex-col items-center gap-1 shrink-0">
+<div class="size-16 rounded-full border-2 border-red-500 p-0.5">
+<img class="size-full rounded-full object-cover" data-alt="Farmer smiling in a field" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCwrklTDy7yUQzcg5xrNyEzE6XkdmOtb2Ao_lGi0M9Mj_1u6KAhDfSIQSCFTjgicqiSh5k0Z6W2alc0DMZkYBitmW2xTMnFCJP5aLFKRdWiFGGtAJoaziTQF2F6gk8A4xnkcjXFZwvi7Of3nZNa18-TVPKn7OT1wCzrZEYo2MkXnPXgRJD9N8A0RT311KDzA44kSjEr3R7BNNalVuEQCteuqHtY3u7dL3teuCxbf03GaIX5xvpcEURmDOBWjJF-wc01qiPy-UsXYE"/>
+</div>
+<span class="text-[10px] font-medium text-red-500 font-bold">EN VIVO</span>
+</div>
+</div>
+<!-- Post 1: Image Feed -->
+<article class="bg-white dark:bg-background-dark/50 mb-4 border-y border-primary/5">
+<div class="flex items-center justify-between p-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-primary/10 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Profile of a flower farmer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5iFI5cvZ0LkJJhE5FFeZGdwnwxp59JuHERV84aG0MNP8IhfMOWZC6QmsHR7Riv8rG-Le_UhVXedmKubnZAu3xTZvl_JRLJKWkN3-pcXGRJUBsN7IndGHHdWSDmoRbGVBIs6Cw9x8FrDfxzE8WoBh9qQuduT9L7E6rRfPkHgRbms3LOmTlx9UZ8oxlPDViKqbCyWfQ2ouED0HwVsEr2PinqOwaT8uWVF5lX0Frhc4qu-sbK6Up7oH8-ORvTDX7vq61r2WeBWHqOCg"/>
+</div>
+<div>
+<h3 class="font-bold text-sm">Finca La Esperanza</h3>
+<p class="text-xs text-slate-500">Hace 15 minutos • Villa de Leyva</p>
+</div>
+</div>
+<button class="bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold">Seguir</button>
+</div>
+<p class="px-4 pb-3 text-sm leading-relaxed">
+                ¡Nuevas fresas disponibles esta mañana! Directo del campo a su mesa. Dulces, jugosas y 100% orgánicas. #frescas #organicas #ElMercadito
+            </p>
+<div class="aspect-square w-full bg-slate-200 dark:bg-slate-800">
+<img class="w-full h-full object-cover" data-alt="Close up of fresh organic strawberries" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2zBK9rJCiyUXy4jHFxGoSlHDcHF8hk17Blm15yiWVO-JulFXpjf79zuiK2Syi_4CbY9E8N3Jip3yhIhWS7V8cRx0lK8LdAuITyO3om9AEqz2RtN2Doa6UxFZ3RZRWY_OISWypjCLM5CXizCnD0-7bfk5jDrZPgL1kLsA9jddy6pgSsFglVqDh7vJMe1z4PotmG3T5M35IgGxJiuR_51iMJtquYWMvNHyv-JSDZ-_dV1mHHTJrZW_5D8LB3c5cFDP6P-aAQbHWYCg"/>
+</div>
+<div class="p-4 flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined fill-1">favorite</span>
+<span class="text-xs font-bold">124</span>
+</button>
+<button class="flex items-center gap-1 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="text-xs font-bold">18</span>
+</button>
+<button class="flex items-center text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+<button class="flex items-center text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Post 2: Video/Reel Preview -->
+<article class="bg-white dark:bg-background-dark/50 mb-4 border-y border-primary/5">
+<div class="flex items-center justify-between p-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-primary/10 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Profile of a young farmer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACZQuPc45LMVjsZWLWKkxjUHd1fpT9nICbAhxfFsPx5Yj7dsm3WwoKKhamR3Z3Qrhy95Phf61m1FWoXQf4Hu9HBxT35syV8T3O9C7GLRSBdiWtfPZecvZuQDWh2GRC94yO9Mg5H3Pcae-uHXGKoWKS3NDL9lrx_mRBNmIRzvbfxh7gRWO1ytmy36z56x3WDw6UkZCMx6c7RJLbkJ-0Jw_p-9y4SLZswPGi-JDCK1BCVC9qI2-7eHryS6QOODg2xm-wpf4ZT1YbIU0"/>
+</div>
+<div>
+<h3 class="font-bold text-sm">Huerto Don José</h3>
+<p class="text-xs text-slate-500">Hace 2 horas • Cosecha en curso</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400">more_horiz</span>
+</div>
+<div class="relative aspect-[9/16] max-h-[500px] w-full bg-slate-900 overflow-hidden flex items-center justify-center">
+<img class="w-full h-full object-cover opacity-60" data-alt="Video preview of lettuce harvest" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC27IpPn67MgoXg3GXzg4bnRjEtUuEgO3qZ2RhZOGyRIBqT0Oe4Q3pPLK-DeAoSweUDzp01fruMHJBorsn7uEB2O2s1F1id6FP_rJw3_W3GaBA8ieUxTHSxeE-nxnbZr_BIk2ZLGvy2av8UiJm4lTANu_k0vS5bfULItK0OOTm1Rc9aintlKxCEMWf4IN3FXD8r1HfX4PCebocoI8w6G_AWzdFE7glrF-UGWr-DDBm_JV4-DH3KH4VjCVstnAVWlCXCePkzYtjkdpI"/>
+<div class="absolute inset-0 flex flex-col items-center justify-center text-white bg-gradient-to-t from-black/60 to-transparent">
+<div class="size-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/40">
+<span class="material-symbols-outlined text-4xl">play_arrow</span>
+</div>
+<p class="mt-4 font-bold tracking-wide uppercase text-xs">Cosecha en curso</p>
+</div>
+<div class="absolute bottom-4 left-4 right-4">
+<div class="flex items-center gap-2">
+<span class="bg-red-600 text-[10px] font-bold px-2 py-0.5 rounded text-white uppercase tracking-wider">Live</span>
+<p class="text-white text-sm font-medium">Recogiendo lechugas para el pedido de hoy.</p>
+</div>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-1 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined">favorite</span>
+<span class="text-xs font-bold">89</span>
+</button>
+<button class="flex items-center gap-1 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="text-xs font-bold">5</span>
+</button>
+</div>
+<button class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-lg">Ver Productos</button>
+</div>
+</div>
+</article>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-background-light dark:bg-background-dark border-t border-primary/10 px-4 pb-6 pt-2 z-50">
+<div class="max-w-2xl mx-auto flex justify-between items-center">
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Inicio</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="text-[10px] font-medium">Buscar</span>
+</a>
+<!-- Central Prominent Button -->
+<a class="flex flex-col items-center gap-1 -translate-y-4" href="#">
+<div class="size-14 bg-primary text-white rounded-full flex items-center justify-center shadow-lg shadow-primary/40 border-4 border-background-light dark:border-background-dark">
+<span class="material-symbols-outlined text-3xl">storefront</span>
+</div>
+<span class="text-[10px] font-bold text-primary translate-y-1">Mercado</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="text-[10px] font-medium">Pedidos</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Perfil</span>
+</a>
+</div>
+</nav>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .fill-1 {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</body></html>

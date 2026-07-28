@@ -1,0 +1,174 @@
+<!DOCTYPE html><html class="light" lang="es"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .verification-input:focus {
+            outline: none;
+            border-color: #00462f;
+            box-shadow: 0 0 0 2px rgba(0, 70, 47, 0.1);
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#d7dbd6",
+                    "on-tertiary-fixed-variant": "#75322f",
+                    "on-error": "#ffffff",
+                    "inverse-primary": "#89d6b0",
+                    "outline-variant": "#bec9c1",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-container": "#ffb5b0",
+                    "primary-fixed-dim": "#89d6b0",
+                    "tertiary": "#682826",
+                    "on-primary-fixed-variant": "#005137",
+                    "primary-fixed": "#a5f3cb",
+                    "on-tertiary-fixed": "#3c0708",
+                    "inverse-surface": "#2d312e",
+                    "surface-variant": "#e0e3df",
+                    "surface-bright": "#f7faf5",
+                    "background": "#f7faf5",
+                    "primary-container": "#036042",
+                    "on-primary": "#ffffff",
+                    "secondary": "#486456",
+                    "on-primary-fixed": "#002114",
+                    "error": "#ba1a1a",
+                    "secondary-fixed": "#caead7",
+                    "surface-tint": "#186b4c",
+                    "surface-container-low": "#f1f4f0",
+                    "inverse-on-surface": "#eef2ed",
+                    "tertiary-container": "#853e3b",
+                    "surface-container-high": "#e6e9e4",
+                    "secondary-container": "#caead7",
+                    "on-secondary-fixed-variant": "#314c3f",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-fixed": "#042015",
+                    "tertiary-fixed": "#ffdad7",
+                    "on-surface": "#181d1a",
+                    "surface-container-highest": "#e0e3df",
+                    "on-background": "#181d1a",
+                    "on-surface-variant": "#3f4943",
+                    "surface-container-lowest": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#8bd8b2",
+                    "primary": "#00462f",
+                    "surface": "#f7faf5",
+                    "tertiary-fixed-dim": "#ffb3ae",
+                    "surface-container": "#ebefea",
+                    "on-secondary-container": "#4e6b5b",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#afcebb",
+                    "outline": "#6f7a73"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-[#f7faf5] z-50">
+<div class="flex items-center justify-between px-4 h-16 w-full bg-gradient-to-b from-stone-100/50 to-transparent">
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-stone-200/50 transition-colors active:scale-95 duration-150 flex items-center justify-center" style="">
+<span class="material-symbols-outlined text-[#00462f]" style="">arrow_back</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold text-[1.125rem] tracking-tight text-[#00462f]" style="">Mensaje de texto</h1>
+</div>
+<div class="w-10"></div> <!-- Spacer for centering -->
+</div>
+</header>
+<main class="flex-grow flex flex-col items-center px-6 pt-8 max-w-md mx-auto w-full">
+<!-- Security Illustration / Icon Section -->
+<div class="relative mb-10 mt-4 flex justify-center items-center">
+<div class="absolute w-24 h-24 bg-primary/5 rounded-full blur-2xl"></div>
+<div class="relative bg-surface-container-lowest p-6 rounded-[2rem] shadow-sm flex items-center justify-center">
+<span class="material-symbols-outlined text-[3.5rem] text-primary" style="font-variation-settings: &quot;FILL&quot; 1;">shield_lock</span>
+</div>
+</div>
+<!-- Text Content -->
+<div class="text-center space-y-3 mb-10">
+<h2 class="text-xl font-extrabold text-on-background tracking-tight" style="">Verificación en dos pasos</h2>
+<p class="text-sm text-on-surface-variant leading-relaxed" style="">
+                Hemos enviado un código de 6 dígitos a tu teléfono <span class="font-semibold text-on-background" style="">+52 55 **** 5678</span>. Por favor, introdúcelo para continuar.
+            </p>
+</div>
+<!-- Verification Code Inputs -->
+<div class="w-full flex justify-between gap-2 mb-8" id="otp-container">
+<input class="w-12 h-16 text-center text-xl font-bold rounded-xl bg-surface-container-lowest border-outline-variant/30 verification-input transition-all" maxlength="1" placeholder="•" type="text">
+<input class="w-12 h-16 text-center text-xl font-bold rounded-xl bg-surface-container-lowest border-outline-variant/30 verification-input transition-all" maxlength="1" placeholder="•" type="text">
+<input class="w-12 h-16 text-center text-xl font-bold rounded-xl bg-surface-container-lowest border-outline-variant/30 verification-input transition-all" maxlength="1" placeholder="•" type="text">
+<input class="w-12 h-16 text-center text-xl font-bold rounded-xl bg-surface-container-lowest border-outline-variant/30 verification-input transition-all" maxlength="1" placeholder="•" type="text">
+<input class="w-12 h-16 text-center text-xl font-bold rounded-xl bg-surface-container-lowest border-outline-variant/30 verification-input transition-all" maxlength="1" placeholder="•" type="text">
+<input class="w-12 h-16 text-center text-xl font-bold rounded-xl bg-surface-container-lowest border-outline-variant/30 verification-input transition-all" maxlength="1" placeholder="•" type="text">
+</div>
+<!-- Countdown & Resend -->
+<div class="flex items-center gap-2 mb-10">
+<p class="text-xs font-['Plus_Jakarta_Sans'] text-stone-500 font-bold uppercase tracking-widest" style="">Reenviar código en</p>
+<div class="px-3 py-1 bg-secondary-container rounded-full">
+<span class="text-xs font-black text-on-secondary-container" style="">00:54</span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="w-full space-y-6">
+<button class="w-full py-4 bg-primary text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg hover:opacity-90 active:scale-95 transition-all" style="">
+                Verificar
+            </button>
+<div class="flex flex-col items-center gap-4">
+<button class="text-xs font-bold text-primary hover:underline transition-all" style="">
+                    Usar otro método de verificación
+                </button>
+<div class="h-[1px] w-12 bg-outline-variant/30"></div>
+<button class="text-xs font-bold text-stone-400 cursor-not-allowed" style="">
+                    ¿No recibiste el código? Reenviar
+                </button>
+</div>
+</div>
+</main>
+<!-- Supplemental Info Card (Bento Style) -->
+<section class="max-w-md mx-auto w-full px-6 mb-12 mt-auto">
+<div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/10 flex items-start gap-4">
+<div class="bg-white p-2 rounded-lg shadow-sm">
+<span class="material-symbols-outlined text-secondary text-[20px]" style="">info</span>
+</div>
+<div>
+<h4 class="text-[10px] font-black uppercase tracking-widest text-secondary mb-1" style="">Nota de seguridad</h4>
+<p class="text-[11px] text-on-surface-variant leading-tight" style="">
+                    Nunca compartas este código con nadie. El personal de Mercadito nunca te pedirá tu código de verificación por teléfono o correo.
+                </p>
+</div>
+</div>
+</section>
+<!-- Image for Context (Decorative Backdrop) -->
+<div class="fixed bottom-0 left-0 w-full h-1/4 -z-10 overflow-hidden opacity-10">
+<img alt="Organic Texture Background" class="w-full h-full object-cover" data-alt="top-down artistic view of fresh organic vegetables including leafy greens and tomatoes with soft natural morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5ZPc0HC6ZshDEJOwcpuSAD4FToRZ1dNwSBa0I751OwM_Y_29tRfkdVam2YaPOAiz5YDF_iovypUgF4cVtSckPmQoUTchyqNT9Kauz_ScNh_vt3eKVMhu2Bxyj_OIIGXKx0wyzkr2ygI7H_gDM48xGE4kZYLrImNxywdnijQk0-nBy3s7Xt3ggJbjM_KKHvwc2pfJ0CvZXENK8cKC4SK05dwpFrPhF6hFM2Xet2Ha2dQkzF32CEV5iKIZupXtdYg27htJo4J057ng" style="">
+</div>
+</body></html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ubicación - Registro de Proveedor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#042015",
+                        "on-background": "#181d1a",
+                        "surface-container": "#ebefea",
+                        "surface-bright": "#f7faf5",
+                        "on-tertiary-fixed": "#3c0708",
+                        "background": "#f7faf5",
+                        "on-secondary-fixed-variant": "#314c3f",
+                        "surface-container-low": "#f1f4f0",
+                        "tertiary-fixed-dim": "#ffb3ae",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#ffdad7",
+                        "secondary-fixed-dim": "#afcebb",
+                        "on-surface": "#181d1a",
+                        "on-secondary-container": "#4e6b5b",
+                        "surface-container-high": "#e6e9e4",
+                        "outline-variant": "#bec9c1",
+                        "on-surface-variant": "#3f4943",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2d312e",
+                        "inverse-on-surface": "#eef2ed",
+                        "tertiary-container": "#853e3b",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "secondary-container": "#caead7",
+                        "surface-dim": "#d7dbd6",
+                        "outline": "#6f7a73",
+                        "primary-fixed": "#a5f3cb",
+                        "tertiary": "#682826",
+                        "surface-container-highest": "#e0e3df",
+                        "inverse-primary": "#89d6b0",
+                        "primary": "#00462f",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#75322f",
+                        "secondary-fixed": "#caead7",
+                        "primary-fixed-dim": "#89d6b0",
+                        "on-tertiary-container": "#ffb5b0",
+                        "primary-container": "#036042",
+                        "on-primary-fixed-variant": "#005137",
+                        "surface-tint": "#186b4c",
+                        "surface": "#f7faf5",
+                        "secondary": "#486456",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e0e3df",
+                        "on-primary-fixed": "#002114",
+                        "on-primary-container": "#8bd8b2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+  @keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes progressBarGrow {
+    from { width: 50%; }
+    to { width: 75%; }
+  }
+  @keyframes pinPulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(186, 26, 26, 0)); }
+    50% { transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(186, 26, 26, 0.4)); }
+  }
+  @keyframes mapFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+  @keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(3, 96, 66, 0); }
+    50% { box-shadow: 0 0 12px 2px rgba(3, 96, 66, 0.2); }
+  }
+  @keyframes tagSlideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-slide-up-fade { animation: slideUpFade 0.6s ease-out forwards; opacity: 0; }
+  .animate-progress-fill { animation: progressBarGrow 1.5s ease-in-out forwards; }
+  .animate-pin-pulse { animation: pinPulse 2s infinite ease-in-out; }
+  .animate-map-float { animation: mapFloat 4s infinite ease-in-out; }
+  .animate-glow-pulse { animation: glowPulse 2.5s infinite ease-in-out; }
+  .animate-tag-slide { animation: tagSlideIn 0.8s ease-out 1.2s forwards; opacity: 0; }
+  .active\:scale-95:active { transform: scale(0.98); }
+</style></head>
+<body class="bg-background text-on-background min-h-screen pb-24 md:pb-8 flex flex-col items-center">
+<!-- TopAppBar -->
+<main class="w-full max-w-md mx-auto px-4 pt-6 flex-grow flex flex-col gap-8">
+<!-- Header & Progress -->
+<div class="flex flex-col gap-4 animate-slide-up-fade" style="animation-delay: 0ms">
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center text-sm font-label text-on-surface-variant font-bold">
+<span class="">Paso 3 de registro</span>
+<span class="">75%</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-3/4 animate-progress-fill"></div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<h2 class="text-2xl font-display font-bold text-primary">Ubicación</h2>
+<p class="text-sm font-body text-on-surface-variant leading-relaxed">Indica dónde se encuentra tu negocio para poder mostrarlo a los clientes cercanos.</p>
+</div>
+</div>
+<!-- Form Fields -->
+<form class="flex flex-col gap-5">
+<!-- País -->
+<div class="flex flex-col gap-2 animate-slide-up-fade" style="animation-delay: 200ms">
+<label class="text-xs font-label font-bold text-on-surface uppercase tracking-wider" for="country">País</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline" data-icon="globe">public</span>
+</div>
+<select class="block w-full pl-11 pr-10 py-3.5 bg-surface-container-lowest border-0 rounded-xl text-sm font-body text-on-surface shadow-sm focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all appearance-none focus:ring-offset-2" id="country">
+<option disabled="" selected="" value="">Selecciona un país</option>
+<option value="dr">República Dominicana</option>
+<option value="us">Estados Unidos</option>
+</select>
+<div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Provincia / Estado -->
+<div class="flex flex-col gap-2 animate-slide-up-fade" style="animation-delay: 400ms">
+<label class="text-xs font-label font-bold text-on-surface uppercase tracking-wider" for="state">Provincia o Estado</label>
+<div class="relative">
+<select class="block w-full pl-4 pr-10 py-3.5 bg-surface-container-lowest border-0 rounded-xl text-sm font-body text-on-surface shadow-sm focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all appearance-none focus:ring-offset-2" id="state">
+<option disabled="" selected="" value="">Selecciona una provincia o estado</option>
+<option value="dn">Distrito Nacional</option>
+<option value="sd">Santo Domingo</option>
+</select>
+<div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Calle y número -->
+<div class="flex flex-col gap-2 animate-slide-up-fade" style="animation-delay: 600ms">
+<label class="text-xs font-label font-bold text-on-surface uppercase tracking-wider" for="street">Calle y número del local</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline" data-icon="location_on">location_on</span>
+</div>
+<input class="block w-full pl-11 pr-4 py-3.5 bg-surface-container-lowest border-0 rounded-xl text-sm font-body text-on-surface placeholder:text-outline shadow-sm focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all focus:ring-offset-2" id="street" placeholder="Ejemplo: Calle Duarte #25, Local 3" type="text"/>
+</div>
+</div>
+</form>
+<!-- GPS & Map Section -->
+<div class="flex flex-col gap-4 mt-2 animate-slide-up-fade" style="animation-delay: 0ms">
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm border border-outline-variant/20 flex flex-col gap-4 animate-slide-up-fade" style="animation-delay: 800ms">
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="my_location">my_location</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-display font-bold text-sm text-on-surface">Confirmar ubicación con GPS</span>
+<span class="font-body text-xs text-on-surface-variant">Permite acceder a tu ubicación para una ubicación más precisa.</span>
+</div>
+</div>
+<button class="w-full py-3 px-4 bg-primary-container text-on-primary-container rounded-xl font-label font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-90 transition-opacity animate-glow-pulse active:scale-95" type="button">
+<span class="material-symbols-outlined text-lg" data-icon="location_searching">location_searching</span>
+                    Usar Mi Ubicación Actual
+                </button>
+</div>
+<!-- Map Preview Card -->
+<div class="w-full h-40 rounded-xl overflow-hidden shadow-sm relative border border-outline-variant/20 group animate-slide-up-fade animate-map-float" style="animation-delay: 1000ms">
+<div class="relative w-full h-full"><img alt="Map view" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="..." src="https://lh3.googleusercontent.com/aida-public/AB6AXuALQrwOMoIrDLIYNucBRoIqXquuJz48CCVLNwJ37Z87mwv3HA3IoU79-hUijom1ftX8vfYB_5yH1nKkBuG9M6qvH-H7lWTtX7LLJQgEaI2baxtd99hDtV21DWptz8t7PAm5TTJ62aQ0GQKbJvvUNq3GPSOvxbxR8DZQAhknMSiaq9jmn71BpKQzCIGyxjZLY6Sk08QaOYaAV430jiF3qzDdVhpGn4OwDgFO62XYeD6DhuU8i33uBSLyaUgkRZvSy5uooCGt8Uzfc44"/><div class="absolute inset-0 flex items-center justify-center pointer-events-none"><span class="material-symbols-outlined text-4xl text-error animate-pin-pulse" style="font-variation-settings: 'FILL' 1">location_on</span></div></div>
+<!-- Overlay Gradient for contrast -->
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/80 to-transparent flex items-end p-3">
+<div class="bg-surface-container-lowest/90 backdrop-blur-md px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-sm border border-outline-variant/20 animate-tag-slide">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="push_pin">push_pin</span>
+<span class="font-label font-bold text-[10px] uppercase tracking-wider text-on-surface">Ubicación Aproximada</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Actions -->
+<footer class="w-full max-w-md mx-auto p-4 bg-surface-bright flex gap-4 mt-8 md:mt-12 sticky bottom-0 z-40 border-t border-surface-container-high/50">
+<button class="flex-1 py-4 px-6 bg-surface-container text-on-surface rounded-xl font-label font-bold text-[10px] uppercase tracking-widest flex items-center justify-center shadow-sm hover:bg-surface-container-high transition-colors active:scale-95" type="button">
+            Atrás
+        </button>
+<button class="flex-[2] py-4 px-6 bg-primary text-on-primary rounded-xl font-label font-bold text-[10px] uppercase tracking-widest flex items-center justify-center shadow-md hover:bg-primary-fixed-variant hover:text-on-primary-fixed-variant transition-colors active:scale-95" type="button">
+            Continuar
+        </button>
+</footer>
+</body></html>

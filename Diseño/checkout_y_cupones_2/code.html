@@ -1,0 +1,157 @@
+<!DOCTYPE html><html lang="es" data-lt-installed="true"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#016042",
+                        "background-light": "#f5f8f7",
+                        "background-dark": "#0f231d",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<title>Checkout - El Mercadito</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10 px-4 py-4 flex items-center justify-between">
+<button class="flex items-center justify-center p-2 rounded-full hover:bg-primary/10 transition-colors" style="">
+<span class="material-symbols-outlined text-primary" style="">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold tracking-tight" style="">Confirmar Pedido</h1>
+<div class="w-10"></div> <!-- Spacer for centering -->
+</header>
+<main class="max-w-md mx-auto pb-32 px-4 space-y-6 pt-4">
+<!-- Delivery Details Section -->
+<section>
+<h2 class="text-sm font-bold uppercase tracking-wider text-primary/70 mb-3 px-1" style="">Detalles de Entrega</h2>
+<div class="bg-white dark:bg-slate-800/50 rounded-xl p-4 shadow-sm border border-primary/5 flex items-center gap-4">
+<div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary" style="">location_on</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold truncate" style="">Calle Principal #123, Sector Agrícola</p>
+<p class="text-xs text-slate-500 dark:text-slate-400" style="">Entregar a Juan Pérez • Casa Verde</p>
+</div>
+<button class="material-symbols-outlined text-slate-400" style="">chevron_right</button>
+</div>
+</section>
+<!-- Order Summary Section -->
+<section>
+<div class="flex items-center justify-between mb-3 px-1">
+<h2 class="text-sm font-bold uppercase tracking-wider text-primary/70" style="">Resumen del Pedido</h2>
+<span class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-full" style="">2 items</span>
+</div>
+<div class="bg-white dark:bg-slate-800/50 rounded-xl shadow-sm border border-primary/5 overflow-hidden">
+<!-- Item 1 -->
+<div class="flex items-center gap-4 p-4 border-b border-slate-100 dark:border-slate-700/50">
+<div class="size-14 rounded-lg bg-slate-100 bg-center bg-cover" data-alt="Cesta de tomates rojos frescos" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuCVwnjXWsi4PYAGFw1-v0GbZNS2O6f1uAHui0PAMk41YOcCPLLYTvaKnhBkHRjCXRI-Ctp-LHeVD4GJk7tn3dxwvcyaiy7Nuazq95vdS8kXk5767dpBQVIG53lTnNFsirYCMjVWFbPjubzP3MGOmx4H3YK2pY0ZsIvEqqKGXOcaPUDP-idbEL8hlcrVHKmVhnP4ni3mw08-JfqiLVLGbSKyvThTuG1cC_wQclqcS_eAGcJwJ6k4aJkF3C14ChShiIEFzlWKUbTC7Cs&quot;);"></div>
+<div class="flex-1">
+<p class="font-medium" style="">Tomates Frescos</p>
+<p class="text-xs text-slate-500" style="">2.0 kg • $2.25/kg</p>
+</div>
+<p class="font-bold text-primary" style="">$4.50</p>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center gap-4 p-4">
+<div class="size-14 rounded-lg bg-slate-100 bg-center bg-cover" data-alt="Aguacates Hass maduros cortados" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuDKrnASLaOWnm2m3lmZBVEB9Y23G9k-8p-6Ila4fBDEnA2giATgn7B03wZBqFOX5-s-njR7BYTKaSTFrFsgy1v5cA4obnC-FE7sCPpLM3mCQ9kGWzgjcUymPLEybiwI5zlTX9vOm6cc8WGoPB_guLXA8vIzqTPrFuhPMijwzeh619WHu3Hj1VZ-vzxNo2C0gtsbROXzagtj5oR3oINYTe2O6l2k_UKwtePJJplaPyF8NgicUXNLHdmpa0V1pobdnshNEK_iVZNrfL0&quot;);"></div>
+<div class="flex-1">
+<p class="font-medium" style="">Aguacate Hass</p>
+<p class="text-xs text-slate-500" style="">3 unidades • $1.50/u</p>
+</div>
+<p class="font-bold text-primary" style="">$4.50</p>
+</div>
+</div>
+</section>
+<!-- Apply Coupon Section -->
+<section>
+<h2 class="text-sm font-bold uppercase tracking-wider text-primary/70 mb-3 px-1" style="">Cupón de Descuento</h2>
+<div class="bg-white dark:bg-slate-800/50 rounded-xl p-4 shadow-sm border border-primary/5 space-y-3">
+<div class="flex gap-2">
+<div class="relative flex-1">
+<input class="w-full bg-slate-50 dark:bg-slate-900 border-primary/20 rounded-lg py-2.5 px-4 text-sm font-medium focus:ring-primary focus:border-primary" readonly="" type="text" value="COSECHA2024">
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-green-500 text-lg" style="">check_circle</span>
+</div>
+<button class="px-4 py-2 text-primary font-bold text-sm hover:bg-primary/5 transition-colors rounded-lg" style="">Cambiar</button>
+</div>
+<div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 p-3 rounded-lg flex items-center gap-3">
+<span class="material-symbols-outlined text-green-600 dark:text-green-400" style="">celebration</span>
+<p class="text-xs text-green-700 dark:text-green-400 font-medium" style="">¡Cupón aplicado! Has ahorrado un 15% en tu compra de hoy.</p>
+</div>
+</div>
+</section>
+<!-- Payment Method Section -->
+<section>
+<h2 class="text-sm font-bold uppercase tracking-wider text-primary/70 mb-3 px-1" style="">Método de Pago</h2>
+<div class="space-y-2">
+<label class="flex items-center gap-4 bg-white dark:bg-slate-800/50 p-4 rounded-xl border border-primary/5 shadow-sm cursor-pointer hover:border-primary/30 transition-all" style="">
+<input checked="" class="text-primary focus:ring-primary size-5" name="payment" type="radio">
+<span class="material-symbols-outlined text-slate-500" style="">payments</span>
+<span class="flex-1 font-medium" style="">Efectivo</span>
+</label>
+<label class="flex items-center gap-4 bg-white dark:bg-slate-800/50 p-4 rounded-xl border border-primary/5 shadow-sm cursor-pointer hover:border-primary/30 transition-all" style="">
+<input class="text-primary focus:ring-primary size-5" name="payment" type="radio">
+<span class="material-symbols-outlined text-slate-500" style="">credit_card</span>
+<span class="flex-1 font-medium" style="">Tarjeta (Verifone)</span>
+</label>
+<label class="flex items-center gap-4 bg-white dark:bg-slate-800/50 p-4 rounded-xl border border-primary/5 shadow-sm cursor-pointer hover:border-primary/30 transition-all" style="">
+<input class="text-primary focus:ring-primary size-5" name="payment" type="radio">
+<span class="material-symbols-outlined text-slate-500" style="">account_balance</span>
+<span class="flex-1 font-medium" style="">Transferencia Bancaria</span>
+</label>
+</div>
+</section>
+<!-- Order Totals Section -->
+<section class="bg-primary/5 rounded-2xl p-6 border border-primary/10 space-y-3">
+<div class="flex justify-between text-sm text-slate-600 dark:text-slate-400">
+<span class="" style="">Subtotal</span>
+<span class="" style="">$9.00</span>
+</div>
+<div class="flex justify-between text-sm text-green-600 font-medium">
+<span class="" style="">Descuento (15%)</span>
+<span class="" style="">-$1.35</span>
+</div>
+<div class="flex justify-between text-sm text-slate-600 dark:text-slate-400">
+<span class="" style="">Costo de Envío</span>
+<span class="" style="">$2.00</span>
+</div>
+<div class="h-px bg-primary/10 my-2"></div>
+<div class="flex justify-between items-center">
+<span class="text-base font-bold" style="">Total a Pagar</span>
+<span class="text-2xl font-extrabold text-primary" style="">$9.65</span>
+</div>
+</section>
+</main>
+<!-- Fixed Bottom Action Button -->
+<div class="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-background-dark/80 backdrop-blur-xl border-t border-primary/10 p-4 pb-8">
+<div class="max-w-md mx-auto">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2" style="">
+<span class="" style="">Negociar!</span>
+<span class="material-symbols-outlined" style="">chevron_right</span>
+</button>
+</div>
+</div>
+</body></html>

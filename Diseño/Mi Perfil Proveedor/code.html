@@ -1,0 +1,372 @@
+<!DOCTYPE html><html lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Supplier Profile - El Mercadito</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-container": "#853e3b",
+                    "on-tertiary-fixed-variant": "#75322f",
+                    "secondary-container": "#caead7",
+                    "on-secondary-fixed": "#042015",
+                    "on-tertiary-container": "#ffb5b0",
+                    "on-secondary-container": "#4e6b5b",
+                    "tertiary": "#682826",
+                    "tertiary-fixed-dim": "#ffb3ae",
+                    "on-primary-fixed-variant": "#005137",
+                    "surface-container-high": "#e6e9e4",
+                    "on-primary-container": "#8bd8b2",
+                    "inverse-on-surface": "#eef2ed",
+                    "surface": "#f7faf5",
+                    "primary-fixed-dim": "#89d6b0",
+                    "inverse-surface": "#2d312e",
+                    "surface-variant": "#e0e3df",
+                    "background": "#f7faf5",
+                    "inverse-primary": "#89d6b0",
+                    "on-secondary-fixed-variant": "#314c3f",
+                    "on-secondary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed": "#ffdad7",
+                    "surface-container-highest": "#e0e3df",
+                    "surface-container": "#ebefea",
+                    "outline-variant": "#bec9c1",
+                    "primary-fixed": "#a5f3cb",
+                    "on-primary-fixed": "#002114",
+                    "surface-dim": "#d7dbd6",
+                    "error": "#ba1a1a",
+                    "secondary-fixed": "#caead7",
+                    "on-surface-variant": "#3f4943",
+                    "surface-bright": "#f7faf5",
+                    "primary": "#00462f",
+                    "secondary-fixed-dim": "#afcebb",
+                    "primary-container": "#036042",
+                    "on-surface": "#181d1a",
+                    "surface-tint": "#186b4c",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "secondary": "#486456",
+                    "surface-container-low": "#f1f4f0",
+                    "on-tertiary-fixed": "#3c0708",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-error": "#ffffff",
+                    "outline": "#6f7a73",
+                    "on-background": "#181d1a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans", "sans-serif"],
+                    "display": ["Plus Jakarta Sans", "sans-serif"],
+                    "body": ["Plus Jakarta Sans", "sans-serif"],
+                    "label": ["Plus Jakarta Sans", "sans-serif"]
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body antialiased pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="w-full sticky top-0 z-50 bg-surface dark:bg-surface-dim bg-surface-container-low dark:bg-surface-container-high shadow-none">
+<div class="flex items-center justify-between px-4 py-2 w-full">
+<button class="text-primary dark:text-primary-fixed-dim p-2 rounded-full hover:bg-surface-variant/50 transition-colors active:scale-95 duration-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h1 class="font-headline font-bold text-headline-md tracking-tight text-lg font-extrabold text-primary dark:text-primary-fixed-dim">
+                El Mercadito
+            </h1>
+<button class="text-on-surface-variant dark:text-on-surface-variant p-2 rounded-full hover:bg-surface-variant/50 transition-colors active:scale-95 duration-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">more_vert</span>
+</button>
+</div>
+<!-- Desktop Nav Cluster (Hidden on Mobile) -->
+<nav class="hidden md:flex justify-center bg-surface-container-lowest border-t border-surface-variant/20 py-2 w-full gap-8">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-xl mb-1">storefront</span>
+<span class="font-label font-black text-[10px] tracking-widest uppercase">Market</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-3 py-1 transition-colors" href="#">
+<span class="material-symbols-outlined filled text-xl mb-1">agriculture</span>
+<span class="font-label font-black text-[10px] tracking-widest uppercase">Suppliers</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-xl mb-1">handshake</span>
+<span class="font-label font-black text-[10px] tracking-widest uppercase">Negotiate</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-xl mb-1">trending_up</span>
+<span class="font-label font-black text-[10px] tracking-widest uppercase">Trends</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-xl mb-1">person</span>
+<span class="font-label font-black text-[10px] tracking-widest uppercase">Account</span>
+</a>
+</nav>
+</header>
+<main class="max-w-4xl mx-auto md:mt-6 md:px-4">
+<!-- Banner & Profile Header -->
+<section class="relative bg-surface-container-lowest md:rounded-2xl overflow-hidden shadow-sm md:shadow-md mb-6">
+<!-- Banner Image -->
+<div class="h-48 md:h-64 w-full bg-surface-variant relative">
+<img alt="Farm Field Banner" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0f8i6gAUC6lZoFgBhG_4D6gxiBJCmqyBhJlw-MBVqmC-A0cubQM4YpVOOZbUX6TOqjnFGXeesM7EukfXI9c6Ipc45Ks8uDdAXqajsDL9hPLE9xQfknUmDSpdKU1m9_sBQTw5RCdJpx2x1FCpsxMN1tHvHGe6oMIGWv6JiE7LdTTQmfWhKYWeBuH83jLO-c0_q7pzmsdN9QhF2AHaqVMjgSGwX9Rtozw3fR0t9MaxfdrKM7MT8fHppJ6050lahiGFtwhfXXUtPTds">
+<div class="absolute inset-0 bg-gradient-to-b from-transparent to-surface-container-lowest/80 md:to-surface-container-lowest/60"></div>
+<!-- Action Buttons on Banner -->
+
+</div>
+<!-- Profile Info Overlapping -->
+<div class="relative px-4 pb-6 pt-0 md:px-8">
+<div class="flex flex-col md:flex-row items-center md:items-end -mt-16 md:-mt-20 gap-4 mb-4">
+<div class="relative">
+<img alt="Ricardo Mendoza" class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-surface-container-lowest object-cover shadow-md z-10 relative" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyGriz_t_zDCkIsibhE7zQeiThfpHJORYtHkcx1eZ0YvZElDsVJMB2d40V-oEMdtSv6upHpBQ_U4tbuA7Q81gjQ5Nw10LRlI5OttRl4EkYICs0YxvBcto734iLjoeGqIw8PuafCe3e9aIUBhFpPrpbK89wROQHehW0e5AmCKoDkp8BNjtCBz8i2iKw0emfEJft8e0FGnAdLYtQxlhzcLH2KayFvFYIU0q4z6BpT90wW7KNZEXPCNnFD5_e1Me43bEgE0tEwNsKosQ">
+<div class="absolute bottom-1 right-1 bg-primary text-on-primary rounded-full p-1 border-2 border-surface-container-lowest shadow-sm z-20 flex items-center justify-center h-8 w-8" title="Verified Producer">
+<span class="material-symbols-outlined filled text-sm">verified</span>
+</div>
+</div>
+<div class="text-center md:text-left flex-1 pb-2 md:pb-4">
+<div class="flex items-center justify-center md:justify-start gap-2 mb-1">
+<h2 class="font-headline font-bold text-2xl text-on-surface">Ricardo Mendoza</h2>
+</div>
+<div class="flex items-center justify-center md:justify-start gap-2 text-on-surface-variant text-sm mb-2">
+<span class="font-label font-bold tracking-wide">#PRO-88291</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="">Miembro desde Enero 2022</span>
+</div>
+<div class="flex flex-wrap justify-center md:justify-start gap-2">
+<span class="inline-flex items-center gap-1 bg-secondary-container text-on-secondary-container px-2 py-1 rounded-md text-xs font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-[14px]">eco</span> Orgánico
+                            </span>
+
+</div>
+</div>
+<div class="pb-2 md:pb-4 w-full md:w-auto">
+
+</div>
+</div>
+<!-- Summary Stats -->
+<div class="grid grid-cols-3 gap-2 md:gap-4 border-t border-surface-variant/30 pt-6">
+<div class="flex flex-col items-center justify-center p-3 rounded-xl bg-surface">
+<div class="flex items-center gap-1 text-primary mb-1">
+<span class="font-headline font-extrabold text-xl">4.9</span>
+<span class="material-symbols-outlined filled text-lg">star</span>
+</div>
+<span class="font-label font-black text-[10px] uppercase tracking-widest text-on-surface-variant text-center">Calificación</span>
+</div>
+<div class="flex flex-col items-center justify-center p-3 rounded-xl bg-surface">
+<div class="flex items-center gap-1 text-on-surface mb-1">
+<span class="font-headline font-extrabold text-xl">124</span>
+<span class="material-symbols-outlined text-lg text-outline">reviews</span>
+</div>
+<span class="font-label font-black text-[10px] uppercase tracking-widest text-on-surface-variant text-center">Reseñas</span>
+</div>
+<div class="flex flex-col items-center justify-center p-3 rounded-xl bg-surface">
+<div class="flex items-center gap-1 text-on-surface mb-1">
+<span class="font-headline font-extrabold text-xl">312</span>
+<span class="material-symbols-outlined text-lg text-outline">handshake</span>
+</div>
+<span class="font-label font-black text-[10px] uppercase tracking-widest text-on-surface-variant text-center">Negociaciones</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Content Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 px-4 md:px-0 mb-8">
+<!-- Left Column: Bio & Metrics -->
+<div class="lg:col-span-1 flex flex-col gap-6">
+<!-- Bio -->
+<section class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm">
+<h3 class="font-headline font-bold text-lg mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">info</span>
+                        Sobre el Productor
+                    </h3>
+<p class="text-sm text-on-surface-variant leading-relaxed mb-4">
+                        Con más de 15 años de experiencia en la agricultura tradicional y 5 años especializados en cultivos orgánicos certificados. Ubicados en los fértiles valles de Guanajuato, nuestro enfoque es la sostenibilidad y la calidad premium para mercados exigentes.
+                    </p>
+<div class="space-y-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-sm">local_shipping</span>
+</div>
+<div class="flex-1">
+<div class="text-xs font-bold text-on-surface">Capacidad de Envío</div>
+<div class="text-[10px] text-on-surface-variant">Nacional (México)</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-sm">workspace_premium</span>
+</div>
+<div class="flex-1">
+<div class="text-xs font-bold text-on-surface">Certificaciones</div>
+<div class="text-[10px] text-on-surface-variant">GlobalG.A.P, Orgánico SAGARPA</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Metrics Bento -->
+
+</div>
+<!-- Right Column: Products -->
+<div class="lg:col-span-2">
+<section>
+<div class="flex items-center justify-between mb-4 px-1">
+<h3 class="font-headline font-bold text-xl text-on-surface">Productos en Venta</h3>
+<button class="text-primary text-sm font-bold flex items-center gap-1 hover:underline">
+                            Ver todos <span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<!-- Product Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm flex flex-col relative group">
+<div class="h-40 bg-surface-variant relative overflow-hidden">
+<div class="w-full h-full bg-[url('https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&amp;fit=crop&amp;q=80&amp;w=600')] bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="Close up photography of vibrant red, freshly harvested organic tomatoes still attached to their green vines, sitting in a rustic wooden crate. Soft natural daylight illuminates the glossy skin of the tomatoes, creating a fresh, appetizing, and premium agricultural aesthetic. Rich reds and natural earthy greens dominate the palette."></div>
+
+<button class="absolute top-2 right-2 bg-white/80 backdrop-blur-md p-1.5 rounded-full text-on-surface-variant hover:text-tertiary transition-colors">
+
+</button>
+</div>
+<div class="p-4 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-headline font-bold text-base text-on-surface">Tomate Saladette Orgánico</h4>
+</div>
+<p class="text-xs text-on-surface-variant line-clamp-2 mb-3 flex-1">
+                                    Cultivado en invernadero, libre de pesticidas. Calidad de exportación, calibre grande y color rojo intenso uniforme.
+                                </p>
+<div class="flex items-end justify-between mt-auto pt-3 border-t border-surface-variant/30">
+<div>
+<div class="text-[10px] text-outline font-medium mb-0.5">Precio por Tonelada</div>
+<div class="font-headline font-extrabold text-lg text-primary">$12,500 <span class="text-xs font-normal text-on-surface-variant">MXN</span></div>
+</div>
+<button aria-label="Añadir a cotización" class="bg-surface-container-high text-on-surface p-2 rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm flex flex-col relative group">
+<div class="h-40 bg-surface-variant relative overflow-hidden">
+<div class="w-full h-full bg-[url('https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?auto=format&amp;fit=crop&amp;q=80&amp;w=600')] bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="Macro food photography showing a halved ripe Hass avocado with the pit still inside, alongside several whole avocados with dark, pebbly skin. The background is a clean, slightly rustic wooden surface. The lighting is bright and directional, emphasizing the creamy green texture of the avocado flesh and creating a fresh, healthy culinary vibe."></div>
+
+<button class="absolute top-2 right-2 bg-white/80 backdrop-blur-md p-1.5 rounded-full text-on-surface-variant hover:text-tertiary transition-colors">
+
+</button>
+</div>
+<div class="p-4 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-headline font-bold text-base text-on-surface">Aguacate Hass Premium</h4>
+</div>
+<p class="text-xs text-on-surface-variant line-clamp-2 mb-3 flex-1">
+                                    Calibre 48, maduración controlada. Ideal para mercado gourmet y restaurantes de alta gama.
+                                </p>
+<div class="flex items-end justify-between mt-auto pt-3 border-t border-surface-variant/30">
+<div>
+<div class="text-[10px] text-outline font-medium mb-0.5">Precio por Tonelada</div>
+<div class="font-headline font-extrabold text-lg text-primary">$45,000 <span class="text-xs font-normal text-on-surface-variant">MXN</span></div>
+</div>
+<button aria-label="Añadir a cotización" class="bg-surface-container-high text-on-surface p-2 rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Secondary Info Section -->
+<section class="mt-6 bg-surface rounded-xl p-5 border border-surface-variant/50">
+<h4 class="font-headline font-bold text-sm mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-lg">policy</span>
+                        Políticas del Vendedor
+                    </h4>
+<ul class="space-y-2 text-sm text-on-surface-variant">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-outline mt-0.5">check_circle</span>
+<span class="">Muestra disponible para órdenes mayores a 5 toneladas.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-outline mt-0.5">check_circle</span>
+<span class="">Negociación de precios habilitada para compras recurrentes.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-outline mt-0.5">check_circle</span>
+<span class="">Garantía de calidad Mercadito (Reembolso parcial si la merma supera el 5%).</span>
+</li>
+</ul>
+</section>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden bg-surface dark:bg-surface-dim fixed bottom-0 w-full z-50 bg-surface-container-lowest dark:bg-surface-container shadow-lg shadow-lg fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-4 pt-2">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-3 py-1 hover:text-primary dark:hover:text-primary-fixed-dim active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined text-2xl mb-1">storefront</span>
+<span class="font-label font-black text-[10px] tracking-widest uppercase">Market</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-xl px-3 py-1 hover:text-primary dark:hover:text-primary-fixed-dim active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined filled text-2xl mb-1">agriculture</span>
+<span class="font-label font-black text-[10px] tracking-widest uppercase">Suppliers</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-3 py-1 hover:text-primary dark:hover:text-primary-fixed-dim active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined text-2xl mb-1">handshake</span>
+<span class="font-label font-black text-[10px] tracking-widest uppercase">Negotiate</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-3 py-1 hover:text-primary dark:hover:text-primary-fixed-dim active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined text-2xl mb-1">trending_up</span>
+<span class="font-label font-black text-[10px] tracking-widest uppercase">Trends</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-3 py-1 hover:text-primary dark:hover:text-primary-fixed-dim active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined text-2xl mb-1">person</span>
+<span class="font-label font-black text-[10px] tracking-widest uppercase">Account</span>
+</a>
+</nav>
+<script>
+        // Simple interactions (e.g., favorite toggle)
+        document.querySelectorAll('button:has(span.material-symbols-outlined:contains("favorite"))').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const icon = this.querySelector('span');
+                if (icon.classList.contains('filled')) {
+                    icon.classList.remove('filled');
+                    icon.classList.remove('text-tertiary-container');
+                    if(this.closest('.h-40')) { // if on product card
+                         this.classList.remove('text-tertiary');
+                         this.classList.add('text-on-surface-variant');
+                    }
+                } else {
+                    icon.classList.add('filled');
+                    if(this.closest('.h-40')) {
+                        this.classList.add('text-tertiary');
+                        this.classList.remove('text-on-surface-variant');
+                    } else {
+                        icon.classList.add('text-tertiary-container');
+                    }
+                }
+            });
+        });
+        
+        // Polyfill for :contains selector in JS
+        Element.prototype.containsText = function(text) {
+             return this.textContent.trim() === text;
+        };
+    </script>
+
+
+</body></html>

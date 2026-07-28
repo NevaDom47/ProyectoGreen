@@ -1,0 +1,117 @@
+<!DOCTYPE html><html lang="es" data-lt-installed="true"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Usuarios Bloqueados</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f20d0d",
+                        "background-light": "#f8f5f5",
+                        "background-dark": "#221010",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full max-w-md mx-auto flex-col shadow-lg sm:rounded-xl sm:my-4 sm:min-h-[800px] bg-background-light dark:bg-background-dark border border-primary/10 dark:border-primary/20 overflow-hidden">
+<!-- Top App Bar -->
+<div class="flex items-center p-4 pb-2 justify-between sticky top-0 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md z-10 border-b border-primary/10 dark:border-primary/20">
+<button aria-label="Volver" class="flex size-12 shrink-0 items-center text-slate-900 dark:text-slate-100 hover:text-primary transition-colors cursor-pointer" style="">
+<span class="material-symbols-outlined text-2xl" style="">arrow_back_ios_new</span>
+</button>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12 text-slate-900 dark:text-slate-100" style="">Usuarios Reportados</h2>
+</div>
+<!-- Search Bar -->
+<div class="px-4 py-3">
+<label class="flex flex-col min-w-40 h-12 w-full" style="">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-primary/5 dark:bg-primary/10 border border-transparent focus-within:border-primary/30 transition-colors">
+<div class="text-primary/70 flex items-center justify-center pl-4 rounded-l-lg">
+<span class="material-symbols-outlined text-2xl" style="">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg focus:outline-0 focus:ring-0 border-none bg-transparent h-full placeholder:text-slate-500 dark:placeholder:text-slate-400 px-4 rounded-l-none pl-2 text-base font-normal leading-normal text-slate-900 dark:text-slate-100" placeholder="Buscar usuarios..." type="text">
+</div>
+</label>
+</div>
+<!-- Info Text -->
+<p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-relaxed pb-4 pt-1 px-4" style="">Aqui podras visualizar los usuarios que han sido reportados por algun comportamiento inusual por los demas proveedores y compradores.</p>
+<!-- Blocked Users List -->
+<div class="flex-1 overflow-y-auto pb-6">
+<!-- User Item 1 -->
+<div class="flex items-center gap-4 px-4 py-3 hover:bg-primary/5 transition-colors group border-b border-primary/5 dark:border-primary/10 last:border-0">
+<div class="flex items-center gap-4 flex-1 min-w-0">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-12 w-12 shrink-0 bg-slate-200 dark:bg-slate-800" data-alt="Avatar de usuario bloqueado 1" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuDxR-tTvofHs7EW1hrxLfqxCE0mTPe2ktF0N7c-jprcKipHeVdW5A-fVJq9iCDI69VElEIZiSLclFW0jwd3iJnv2QadWiePbNHouciTeEhA1HBne9FEAwDGe3YDyNYm5Qa8YaFqCxoUklHVnHDXBgO21vTvHg_HUCZVp0mU-fnFrK6mi6bHNRpfiwwGYh7BTZcG5fDFTP7NQSByoloChPECia7uznqEXwEtI-Dlhl5RwKbdlO_YrV1sAiV2vNvTUJGXkvlU42O2dxk&quot;);"></div>
+<div class="flex-1 truncate">
+<p class="text-base font-semibold leading-tight text-slate-900 dark:text-slate-100 truncate" style="">Carlos Rodríguez</p>
+<p class="text-sm text-slate-500 dark:text-slate-400 truncate" style="">@carlos_rod89</p>
+</div>
+</div>
+<div class="shrink-0">
+<button class="flex items-center justify-center rounded-lg h-8 px-4 bg-primary text-white text-sm font-medium leading-normal hover:bg-primary/90 transition-colors active:scale-95 shadow-sm shadow-primary/20" style="">
+                        Ver Reporte</button>
+</div>
+</div>
+<!-- User Item 2 -->
+<div class="flex items-center gap-4 px-4 py-3 hover:bg-primary/5 transition-colors group border-b border-primary/5 dark:border-primary/10 last:border-0">
+<div class="flex items-center gap-4 flex-1 min-w-0">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-12 w-12 shrink-0 bg-slate-200 dark:bg-slate-800" data-alt="Avatar de usuario bloqueado 2" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuByux425rMx_QRugZgCDhXLZo6a_NDNI6692XvUyXiNY2PtfmoaCxu7JbM2l0AF6SdWygFs-gJYGBq-sYT5R8T6LhJkECEElSMuQ6zcL22h4FWSz64FFiTQzelE7UvNAnQTbJXmyf-kpBF_z9D4yMr5iWLKxVVrzC-wOTH-UAxrjQhEgh0mAaQeJcWbmF08OGt3gnUCBebQbEDnxzGk1c_BSsCnQcstrkIeqeIqwhJBMwpt2wNhSfVoJ47cbqfuqZWjlq0P0MDknCs&quot;);"></div>
+<div class="flex-1 truncate">
+<p class="text-base font-semibold leading-tight text-slate-900 dark:text-slate-100 truncate" style="">Ana María López</p>
+<p class="text-sm text-slate-500 dark:text-slate-400 truncate" style="">@ana_mx_7</p>
+</div>
+</div>
+<div class="shrink-0">
+<button class="flex items-center justify-center rounded-lg h-8 px-4 bg-primary text-white text-sm font-medium leading-normal hover:bg-primary/90 transition-colors active:scale-95 shadow-sm shadow-primary/20" style="">
+                        Ver Reporte</button>
+</div>
+</div>
+<!-- User Item 3 -->
+<div class="flex items-center gap-4 px-4 py-3 hover:bg-primary/5 transition-colors group border-b border-primary/5 dark:border-primary/10 last:border-0">
+<div class="flex items-center gap-4 flex-1 min-w-0">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-12 w-12 shrink-0 bg-slate-200 dark:bg-slate-800" data-alt="Avatar de usuario bloqueado 3" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuDkEaMzqNjrFO62wvHc7P82FFfDphC3UUMl-QtQOgsVhYEICh7LghJhbj5fVLdcrgcMZMrm2EiKxhvwdji5nFoBNaO0T8UuxWiG5aIGEogBJoQjN3nPxEC3JoFc6wD1AeGJqzHUR3rIk7X_XCWSWWDAolP_3bODVbh3VYzJel4TFV5u0ppcYCEBKKJqsxI0MIsjOzAT4IWoPXJWTs5tflO7IwpMFBONaq2n1JKEl-mxPdVjorLJWwzgh7JuUQbBX8XSjgZm0wr5leg&quot;);"></div>
+<div class="flex-1 truncate">
+<p class="text-base font-semibold leading-tight text-slate-900 dark:text-slate-100 truncate" style="">Spam Bot 2024</p>
+<p class="text-sm text-slate-500 dark:text-slate-400 truncate" style="">@crypto_king_bot</p>
+</div>
+</div>
+<div class="shrink-0">
+<button class="flex items-center justify-center rounded-lg h-8 px-4 bg-primary text-white text-sm font-medium leading-normal hover:bg-primary/90 transition-colors active:scale-95 shadow-sm shadow-primary/20" style="">
+                        Ver Reporte</button>
+</div>
+</div>
+<!-- User Item 4 -->
+<div class="flex items-center gap-4 px-4 py-3 hover:bg-primary/5 transition-colors group border-b border-primary/5 dark:border-primary/10 last:border-0">
+<div class="flex items-center gap-4 flex-1 min-w-0">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-12 w-12 shrink-0 bg-slate-200 dark:bg-slate-800 flex items-center justify-center bg-primary/10 text-primary">
+<span class="text-lg font-bold" style="">J</span>
+</div>
+<div class="flex-1 truncate">
+<p class="text-base font-semibold leading-tight text-slate-900 dark:text-slate-100 truncate" style="">Juan Pérez</p>
+<p class="text-sm text-slate-500 dark:text-slate-400 truncate" style="">@juanperez</p>
+</div>
+</div>
+<div class="shrink-0">
+<button class="flex items-center justify-center rounded-lg h-8 px-4 bg-primary text-white text-sm font-medium leading-normal hover:bg-primary/90 transition-colors active:scale-95 shadow-sm shadow-primary/20" style="">
+                        Ver Reporte</button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

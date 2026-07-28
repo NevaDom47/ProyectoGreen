@@ -1,0 +1,158 @@
+<!DOCTYPE html><html lang="es" data-lt-installed="true"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#016142",
+                        "danger": "#fc424d",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex h-auto min-h-screen w-full flex-col max-w-md mx-auto bg-background-light dark:bg-background-dark shadow-xl">
+<!-- Header -->
+<header class="sticky top-0 z-10 flex items-center bg-background-light dark:bg-background-dark p-4 border-b border-primary/10">
+<button class="text-primary flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-primary/10 transition-colors" style="">
+<span class="material-symbols-outlined" style="">arrow_back</span>
+</button>
+<h1 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 ml-2" style="">Privacidad del Perfil</h1>
+<div class="size-10"></div> <!-- Spacer for symmetry -->
+</header>
+<main class="flex-1 overflow-y-auto pb-24">
+<!-- Section 1: VISIBILIDAD DEL PERFIL -->
+<div class="px-4 pt-6">
+<h3 class="text-primary text-xs font-bold leading-tight tracking-widest uppercase mb-3" style="">Visibilidad del Perfil</h3>
+<div class="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm border border-primary/5">
+<!-- Toggle: Perfil público -->
+<div class="flex items-center gap-4 px-4 py-4 justify-between border-b border-slate-100 dark:border-slate-700">
+<div class="flex flex-col justify-center">
+<p class="text-slate-900 dark:text-slate-100 text-base font-medium leading-tight" style="">Perfil público</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal mt-1" style="">Permitir que otros me encuentren</p>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[28px] w-[48px] cursor-pointer items-center rounded-full border-none bg-slate-200 dark:bg-slate-700 p-1 has-[:checked]:justify-end has-[:checked]:bg-primary transition-all duration-200" style="">
+<div class="h-full aspect-square rounded-full bg-white shadow-md"></div>
+<input checked="" class="invisible absolute" type="checkbox">
+</label>
+</div>
+</div>
+<!-- Toggle: Ubicación -->
+<div class="flex items-center gap-4 px-4 py-4 justify-between border-b border-slate-100 dark:border-slate-700">
+<p class="text-slate-900 dark:text-slate-100 text-base font-medium flex-1 truncate" style="">Mostrar mi ubicación exacta</p>
+<div class="shrink-0">
+<label class="relative flex h-[28px] w-[48px] cursor-pointer items-center rounded-full border-none bg-slate-200 dark:bg-slate-700 p-1 has-[:checked]:justify-end has-[:checked]:bg-primary transition-all duration-200" style="">
+<div class="h-full aspect-square rounded-full bg-white shadow-md"></div>
+<input class="invisible absolute" type="checkbox">
+</label>
+</div>
+</div>
+<!-- Toggle: Fecha Registro -->
+<div class="flex items-center gap-4 px-4 py-4 justify-between">
+<p class="text-slate-900 dark:text-slate-100 text-base font-medium flex-1 truncate" style="">Mostrar fecha de registro</p>
+<div class="shrink-0">
+<label class="relative flex h-[28px] w-[48px] cursor-pointer items-center rounded-full border-none bg-slate-200 dark:bg-slate-700 p-1 has-[:checked]:justify-end has-[:checked]:bg-primary transition-all duration-200" style="">
+<div class="h-full aspect-square rounded-full bg-white shadow-md"></div>
+<input checked="" class="invisible absolute" type="checkbox">
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 2: ACTIVIDAD Y NEGOCIACIONES -->
+<div class="px-4 pt-8">
+<h3 class="text-primary text-xs font-bold leading-tight tracking-widest uppercase mb-3" style="">Actividad y Negociaciones</h3>
+<div class="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm border border-primary/5">
+<!-- Toggle: Historial Compras -->
+<div class="flex items-center gap-4 px-4 py-4 justify-between border-b border-slate-100 dark:border-slate-700">
+<p class="text-slate-900 dark:text-slate-100 text-base font-medium flex-1 truncate" style="">Mostrar mi historial de compras</p>
+<div class="shrink-0">
+<label class="relative flex h-[28px] w-[48px] cursor-pointer items-center rounded-full border-none bg-slate-200 dark:bg-slate-700 p-1 has-[:checked]:justify-end has-[:checked]:bg-primary transition-all duration-200" style="">
+<div class="h-full aspect-square rounded-full bg-white shadow-md"></div>
+<input class="invisible absolute" type="checkbox">
+</label>
+</div>
+</div>
+<!-- Toggle: Seguidores -->
+<div class="flex items-center gap-4 px-4 py-4 justify-between border-b border-slate-100 dark:border-slate-700">
+<p class="text-slate-900 dark:text-slate-100 text-base font-medium flex-1 truncate" style="">Mostrar vendedores que sigo</p>
+<div class="shrink-0">
+<label class="relative flex h-[28px] w-[48px] cursor-pointer items-center rounded-full border-none bg-slate-200 dark:bg-slate-700 p-1 has-[:checked]:justify-end has-[:checked]:bg-primary transition-all duration-200" style="">
+<div class="h-full aspect-square rounded-full bg-white shadow-md"></div>
+<input checked="" class="invisible absolute" type="checkbox">
+</label>
+</div>
+</div>
+<!-- Toggle: Reseñas -->
+<div class="flex items-center gap-4 px-4 py-4 justify-between">
+<p class="text-slate-900 dark:text-slate-100 text-base font-medium flex-1 truncate" style="">Mostrar mis reseñas a otros</p>
+<div class="shrink-0">
+<label class="relative flex h-[28px] w-[48px] cursor-pointer items-center rounded-full border-none bg-slate-200 dark:bg-slate-700 p-1 has-[:checked]:justify-end has-[:checked]:bg-primary transition-all duration-200" style="">
+<div class="h-full aspect-square rounded-full bg-white shadow-md"></div>
+<input checked="" class="invisible absolute" type="checkbox">
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 3: SEGURIDAD -->
+<div class="px-4 pt-8">
+<h3 class="text-primary text-xs font-bold leading-tight tracking-widest uppercase mb-3" style="">Seguridad</h3>
+<div class="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm border border-primary/5">
+<!-- Option: Bloquear usuarios -->
+<button class="w-full flex items-center gap-4 px-4 py-4 justify-between border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors" style="">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-400" style="">block</span>
+<p class="text-slate-900 dark:text-slate-100 text-base font-medium" style="">Usuarios Reportados</p>
+</div>
+<span class="material-symbols-outlined text-slate-400" style="">chevron_right</span>
+</button>
+<!-- Option: Eliminar mi cuenta -->
+<button class="w-full flex items-center gap-4 px-4 py-4 justify-between hover:bg-danger/5 transition-colors group" style="">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-danger" style="">delete_forever</span>
+<p class="text-danger text-base font-semibold" style="">Eliminar mi cuenta</p>
+</div>
+<span class="material-symbols-outlined text-danger/50 group-hover:text-danger" style="">chevron_right</span>
+</button>
+</div>
+<p class="px-2 pt-4 text-slate-500 dark:text-slate-400 text-xs leading-relaxed italic text-center" style="">
+                    Tus datos son procesados siguiendo nuestra política de protección de datos personales de El Mercadito.
+                </p>
+</div>
+</main>
+<!-- Bottom Action Bar -->
+<div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-4 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-t border-primary/10">
+<button class="w-full h-14 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2" style="">
+<span class="material-symbols-outlined" style="">save</span>
+                Guardar Configuración
+            </button>
+</div>
+</div>
+</body></html>

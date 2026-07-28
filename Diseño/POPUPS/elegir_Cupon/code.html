@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mercadito - Cupones Disponibles</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#ffffff",
+                    "tertiary": "#682826",
+                    "outline": "#6f7a73",
+                    "on-secondary-fixed-variant": "#314c3f",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-dim": "#d7dbd6",
+                    "on-tertiary-fixed": "#3c0708",
+                    "on-primary": "#ffffff",
+                    "on-primary-container": "#8bd8b2",
+                    "surface-variant": "#e0e3df",
+                    "on-surface": "#181d1a",
+                    "inverse-surface": "#2d312e",
+                    "on-secondary-container": "#4e6b5b",
+                    "secondary-fixed-dim": "#afcebb",
+                    "outline-variant": "#bec9c1",
+                    "surface-container-low": "#f1f4f0",
+                    "primary-fixed-dim": "#89d6b0",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#ffdad7",
+                    "on-primary-fixed": "#002114",
+                    "inverse-primary": "#89d6b0",
+                    "on-background": "#181d1a",
+                    "surface-bright": "#f7faf5",
+                    "on-secondary-fixed": "#042015",
+                    "inverse-on-surface": "#eef2ed",
+                    "on-secondary": "#ffffff",
+                    "surface-container": "#ebefea",
+                    "secondary-fixed": "#caead7",
+                    "on-primary-fixed-variant": "#005137",
+                    "on-error": "#ffffff",
+                    "on-tertiary-fixed-variant": "#75322f",
+                    "tertiary-container": "#853e3b",
+                    "surface-tint": "#186b4c",
+                    "primary-container": "#036042",
+                    "error": "#ba1a1a",
+                    "secondary-container": "#caead7",
+                    "secondary": "#486456",
+                    "background": "#f7faf5",
+                    "primary-fixed": "#a5f3cb",
+                    "on-tertiary-container": "#ffb5b0",
+                    "on-error-container": "#93000a",
+                    "surface-container-highest": "#e0e3df",
+                    "surface-container-high": "#e6e9e4",
+                    "surface": "#f7faf5",
+                    "primary": "#00462f",
+                    "on-surface-variant": "#3f4943",
+                    "tertiary-fixed-dim": "#ffb3ae"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .ticket-cutout {
+            mask-image: radial-gradient(circle at 0 50%, transparent 12px, black 12px), 
+                        radial-gradient(circle at 100% 50%, transparent 12px, black 12px);
+            mask-composite: intersect;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background font-body text-on-background min-h-screen overflow-hidden">
+<!-- Blurred Background (Simulating Checkout Screen) -->
+<div class="fixed inset-0 z-0 blur-md opacity-40 scale-105 pointer-events-none">
+<div class="h-16 flex items-center px-4 bg-emerald-50">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+<h1 class="ml-4 font-bold text-lg">Resumen de Compra</h1>
+</div>
+<div class="p-6 space-y-8">
+<div class="flex items-center space-x-4">
+<div class="w-20 h-20 bg-surface-container rounded-xl overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Close up of fresh green organic kale and spinach leaves in a rustic wooden basket with soft natural morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0Ib8FcSBfKzJHTXyBeScVNKqNC4rZBLzBNTwpFXKcRuWMiJHlp0ihgBj5V4HfGTGyJaSao4KaeJagIauoSm_hUSPCdHM_qqAPKekFYpA8p-2gOxiZEexxXGxfNw1wKv_umErBYdsQz9ab6ERnN_bpajFY7_th2a3bXBpbS7XrfU_CgEYlNoEGtwYsWxioe5lveSHv9TpX4XSE3Gx4ZNSS7sWlI3c3THgqJ3YfZS2gHoIFPFwKQKOdgeO-zYFQzDVXIaD9GfO3EWE"/>
+</div>
+<div class="flex-1">
+<div class="h-4 w-32 bg-surface-container rounded mb-2"></div>
+<div class="h-6 w-20 bg-surface-container rounded"></div>
+</div>
+</div>
+<div class="space-y-4 pt-10">
+<div class="h-12 w-full bg-surface-container rounded-xl"></div>
+<div class="h-12 w-full bg-surface-container rounded-xl"></div>
+</div>
+</div>
+</div>
+<!-- Overlay Scrim -->
+<div class="fixed inset-0 bg-primary/20 backdrop-blur-[2px] z-10"></div>
+<!-- Bottom Sheet Popup -->
+<div class="fixed inset-x-0 bottom-0 z-50 transform transition-transform duration-300">
+<div class="bg-surface-bright rounded-t-[2rem] shadow-2xl max-w-md mx-auto min-h-[751px] flex flex-col border-x border-t border-outline-variant/10">
+<!-- Handle -->
+<div class="flex justify-center pt-3 pb-1">
+<div class="w-10 h-1.5 bg-outline-variant/40 rounded-full"></div>
+</div>
+<!-- Header -->
+<div class="flex items-center justify-between px-6 py-4">
+<h2 class="text-xl font-extrabold text-primary tracking-tight">Cupones Disponibles</h2>
+<button class="w-10 h-10 flex items-center justify-center bg-surface-container-low rounded-full hover:bg-surface-container transition-colors active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant">close</span>
+</button>
+</div>
+<!-- Coupon List Container -->
+<div class="flex-1 overflow-y-auto px-6 space-y-4 pb-32">
+<!-- Coupon 1: Selected -->
+<div class="relative group active:scale-[0.98] transition-transform duration-150">
+<div class="absolute -inset-0.5 bg-primary/10 rounded-xl blur opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
+<div class="relative flex bg-surface-container-lowest border-2 border-primary rounded-xl overflow-hidden ticket-cutout">
+<div class="w-1/3 bg-primary-container p-4 flex flex-col justify-center items-center text-center space-y-1">
+<span class="text-white text-2xl font-black leading-none">15%</span>
+<span class="text-white text-[10px] font-bold uppercase tracking-widest leading-none">OFF</span>
+</div>
+<div class="flex-1 p-4 flex flex-col justify-between">
+<div>
+<h3 class="font-bold text-on-surface text-sm">Válido en Frutas y Verduras</h3>
+<p class="text-secondary text-[10px] mt-1 font-medium">Vence en 3 días</p>
+</div>
+<div class="flex items-center justify-between mt-3">
+<span class="bg-primary text-white text-[9px] font-black px-2 py-1 rounded-full uppercase tracking-tighter">Seleccionado</span>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Coupon 2: Applicable -->
+<div class="relative group active:scale-[0.98] transition-transform duration-150">
+<div class="relative flex bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden ticket-cutout shadow-sm">
+<div class="w-1/3 bg-surface-container p-4 flex flex-col justify-center items-center text-center space-y-1">
+<span class="text-on-surface text-xl font-black leading-none">$5.000</span>
+<span class="text-on-surface-variant text-[10px] font-bold uppercase tracking-widest leading-none">DTO</span>
+</div>
+<div class="flex-1 p-4 flex flex-col justify-between">
+<div>
+<h3 class="font-bold text-on-surface text-sm">Compra mínima $20.000</h3>
+<p class="text-tertiary text-[10px] mt-1 font-semibold">Vence mañana</p>
+</div>
+<div class="flex items-center justify-between mt-3">
+<span class="text-on-surface-variant text-[10px] font-bold uppercase tracking-widest">Aplicable</span>
+<div class="w-5 h-5 rounded-full border-2 border-outline-variant group-hover:border-primary transition-colors"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Coupon 3: Applicable -->
+<div class="relative group active:scale-[0.98] transition-transform duration-150">
+<div class="relative flex bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden ticket-cutout shadow-sm">
+<div class="w-1/3 bg-surface-container p-4 flex flex-col justify-center items-center text-center space-y-1">
+<span class="text-on-surface text-2xl font-black leading-none">2x1</span>
+<span class="text-on-surface-variant text-[10px] font-bold uppercase tracking-widest leading-none">PROMO</span>
+</div>
+<div class="flex-1 p-4 flex flex-col justify-between">
+<div>
+<h3 class="font-bold text-on-surface text-sm">En Pan artesanal</h3>
+<p class="text-secondary text-[10px] mt-1 font-medium">Vence en 5 días</p>
+</div>
+<div class="flex items-center justify-between mt-3">
+<span class="text-on-surface-variant text-[10px] font-bold uppercase tracking-widest">Aplicable</span>
+<div class="w-5 h-5 rounded-full border-2 border-outline-variant group-hover:border-primary transition-colors"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bento Style Promo Card -->
+<div class="bg-secondary-container p-4 rounded-xl flex items-center justify-between">
+<div class="space-y-1">
+<p class="text-[10px] font-black uppercase tracking-widest text-on-secondary-fixed-variant">¿Tienes un código?</p>
+<p class="text-sm font-bold text-primary">Ingresa tu cupón aquí</p>
+</div>
+<span class="material-symbols-outlined text-primary">chevron_right</span>
+</div>
+</div>
+<!-- Fixed Bottom Action Area -->
+<div class="absolute bottom-0 inset-x-0 bg-white/80 backdrop-blur-md p-6 border-t border-outline-variant/20">
+<button class="w-full h-14 bg-primary-container text-white rounded-xl flex items-center justify-center space-x-3 active:scale-95 transition-transform duration-150 shadow-lg">
+<span class="text-[10px] font-black uppercase tracking-[0.2em]">Confirmar Selección</span>
+<span class="material-symbols-outlined text-xl">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Hidden Nav Shell (Required by Design System but suppressed per contextual rule) -->
+<nav class="hidden md:flex fixed top-0 w-full z-50 justify-between items-center px-4 h-16 bg-emerald-50/10 pointer-events-none">
+<div class="text-lg font-extrabold text-emerald-900 opacity-20">Mercadito</div>
+</nav>
+</body></html>

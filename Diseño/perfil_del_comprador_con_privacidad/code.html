@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html data-lt-installed="true" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Perfil del Comprador - El Mercadito</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#016042",
+                        "accent": "#f97316",
+                        "background-light": "#f5f8f7",
+                        "background-dark": "#0f231d",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen pb-24">
+<!-- Header Section -->
+<header class="bg-white dark:bg-slate-900 px-4 pt-6 pb-8 rounded-b-[2rem] shadow-sm">
+<div class="flex justify-between items-start mb-6">
+<div class="flex-1"></div>
+<button class="flex items-center gap-1 text-slate-400 hover:text-red-500 transition-colors" style="">
+<span class="material-symbols-outlined text-[20px]" style="">report</span>
+<span class="text-xs font-medium" style="">Reportar</span>
+</button>
+</div>
+<div class="flex flex-col items-center">
+<div class="relative">
+<div class="w-28 h-28 rounded-full border-4 border-primary/10 p-1">
+<div class="w-full h-full rounded-full bg-cover bg-center" data-alt="Foto de perfil de un hombre joven sonriendo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBjICzybPKvS5Xqs5EgqqAa5omMklKIYUcyKDaRL_07LUHApmJPULuU_BJ1BSfuxjDNuOJN4_BUJ78BS5ynmTkM1oYFgbZ6NpSZmRSNZ8eBgQybBhxe1cfxRN2suyyZ71WQq-Oodoe2-TigzReePlYj8obUTsbIptPvEXrgcyCW0lwCNDwVDjN3iDhSNbGWZ2ogRZYyPAvoOhZG-PRqCeIecaAhdGT_irbaIDi_hGq2eLMhZurCKAf8wh4KNUDW7KrBSGkxU582zB4");'></div>
+</div>
+<div class="absolute bottom-1 right-1 bg-primary text-white p-1.5 rounded-full border-2 border-white">
+<span class="material-symbols-outlined text-[16px] block" style="">verified</span>
+</div>
+</div>
+<h1 class="mt-4 text-2xl font-bold" style="">Juan Pérez</h1>
+<div class="flex flex-col items-center mt-1">
+<span class="text-primary font-semibold text-sm" style="">ID: #BUY-88291</span>
+<span class="text-slate-500 text-xs mt-1" style="">Miembro desde Enero 2023</span>
+</div>
+</div>
+<!-- Quick Stats -->
+<div class="flex gap-3 mt-8">
+<div class="flex-1 bg-white dark:bg-slate-900 rounded-xl p-3 text-center border border-slate-100 dark:border-slate-800 shadow-sm">
+<p class="text-slate-900 dark:text-white text-xl font-bold">198</p>
+<p class="text-slate-500 text-[10px] uppercase tracking-wider font-semibold mt-1">Reseñas</p>
+</div>
+<div class="flex-1 bg-white dark:bg-slate-900 rounded-xl p-3 text-center border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center">
+<div class="flex items-center gap-1">
+<span class="text-slate-900 dark:text-white text-xl font-bold">4.5</span>
+</div>
+<div class="flex gap-0.5 mt-0.5">
+<span class="material-symbols-outlined text-[14px] fill-1 text-[#00c853]">star</span>
+<span class="material-symbols-outlined text-[14px] fill-1 text-[#00c853]">star</span>
+<span class="material-symbols-outlined text-[14px] fill-1 text-[#00c853]">star</span>
+<span class="material-symbols-outlined text-[14px] fill-1 text-[#00c853]">star</span>
+<span class="material-symbols-outlined text-[14px] text-[#00c853]" style="font-variation-settings: 'FILL' 0, 'wght' 400;">star_half</span>
+</div>
+<p class="text-slate-500 text-[10px] uppercase tracking-wider font-semibold mt-1">Calificación</p>
+</div>
+<div class="flex-1 bg-white dark:bg-slate-900 rounded-xl p-3 text-center border border-slate-100 dark:border-slate-800 shadow-sm">
+<p class="text-slate-900 dark:text-white text-xl font-bold">15</p>
+<p class="text-slate-500 text-[10px] uppercase tracking-wider font-semibold mt-1">Negociaciones</p>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="px-4 mt-6 space-y-8">
+<!-- Order History -->
+<section>
+<div class="flex justify-between items-center mb-4">
+<h2 class="text-lg font-bold" style="">Historial de Pedidos</h2>
+<button class="text-primary text-sm font-semibold" style="">Ver todo</button>
+</div>
+<div class="space-y-3">
+<!-- Order Card 1 -->
+<div class="bg-white dark:bg-slate-900 p-3 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 flex gap-3">
+<div class="w-16 h-16 rounded-lg bg-cover bg-center shrink-0" data-alt="Cesta de aguacates frescos verdes" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD2ZIB05xpVqKmcAF9RrIklerMhV-2ElP_Ylbv5Atdu4NTuCoG3V30iMDwUk1T3ZSP6fOqLSrRQOa3iyzVmUeHJs5Kj8fviLwFJRzKKvF0VWruRgt9XqpnYo1kEQlLt2ypJT0mjuAjS_s6iXVlDe1fkqYr0km8Ju_vFeJJ7LXRuEQTR8fqWHZix0C_lP6PEbBPPnfBCF46oMVI8Im35b00BhCcmRk5xQHdTk4AFXFLjPwO_VX2q_g0AncbtgDW07A5Pyjy7DaN5JDU");'></div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-sm" style="">Caja de Aguacate Hass</h3>
+<span class="text-primary font-bold text-sm" style="">$45.00</span>
+</div>
+<p class="text-slate-500 text-xs mt-0.5" style="">Vendido por: Huerta Los Arcos</p>
+<div class="flex justify-between items-center mt-2">
+<span class="text-[10px] text-slate-400" style="">12 Oct 2023</span>
+<span class="bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded-full font-bold" style="">Entregado</span>
+</div>
+</div>
+</div>
+<!-- Order Card 2 -->
+<div class="bg-white dark:bg-slate-900 p-3 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 flex gap-3">
+<div class="w-16 h-16 rounded-lg bg-cover bg-center shrink-0" data-alt="Papas orgánicas en saco de yute" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAAmYjLRMiY7WyNMucxG4CWhBqDjld4g1fh3sa0Zz99DUAVWn3ONFY5gGQocSt_dZb09JIMot022OqJmPmZRk5IrEaKqK6zRHPRtYZhTpMdrsqsQDp5z_fmahRSTk3cvy6CXe_gRlq_UxhKPPQRtVIq1jTiG863BYq5UW1yD4V52_bTc_nLqMH94qXEj8XOmrF-6L3s2la6xa9zQiYCXaaWorrIl9K5a5wTWI6Ofw8I3ZrHIKViB7qFXPm6_LM1kBryMX2Tvt7D6Pw");'></div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-sm" style="">Papas Orgánicas (5kg)</h3>
+<span class="text-primary font-bold text-sm" style="">$12.50</span>
+</div>
+<p class="text-slate-500 text-xs mt-0.5" style="">Vendido por: Rancho San José</p>
+<div class="flex justify-between items-center mt-2">
+<span class="text-[10px] text-slate-400" style="">Hoy, 10:30 AM</span>
+<span class="bg-accent/10 text-accent text-[10px] px-2 py-0.5 rounded-full font-bold" style="">En camino</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Favorites Carousel -->
+<section>
+<div class="flex justify-between items-center mb-4">
+<h2 class="text-lg font-bold" style="">Mis Favoritos</h2>
+<button class="text-primary text-sm font-semibold" style="">Explorar</button>
+</div>
+<div class="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+<div class="min-w-[140px] bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="h-24 bg-cover bg-center" data-alt="Miel de abeja pura en frasco" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDkCka26hO9tiQ35fLciUjWxrdtaCXZ_wSjPafxym1d62FSZSX1OIetFHlvbc7iOPVSPuSIskedgwGBkp4Z3H9NVsvEYxR5oBHU7JUu8gtnNv5kn0k3HdJtGY_7JNEYvze48-SttRxn1uqeYoOcrUrJ9qDjVybfW9aEBmFz6DnMnv-NFRVG93-64e108t8YU8nrvjCzF6cGrq56jMaR9G3eW8cenSOkMKI_tgpIxvG5HkzBZTUsRotxFRSVDqljrGQ1WLGFwDDx8g4");'></div>
+<div class="p-2">
+<p class="font-bold text-xs truncate" style="">Miel de Abeja Pura</p>
+<p class="text-primary font-bold text-xs mt-1" style="">$8.00</p>
+</div>
+</div>
+<div class="min-w-[140px] bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="h-24 bg-cover bg-center" data-alt="Hortalizas frescas variadas" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBmT2DikqIdzNnHiRPkh7Rw-nd47UewHOjJDyhr0vl6ZjemKChb0bkFN4h_MuKNe18zJhfZSjdMOkWdkymFf4CAAZVTu_JfF_fvGJdN9LYSKW5kQFJo2E2EHjZDC2RqynjUyozR0yLj5GBMMonKdOsYS9Kk0izE9Z6jMnLabYxTqpXvPyS1Qbz3d-0hyJkzWGsWJTlrEjp3TVsGbRmtlSDnuoD6xe5E2v9nwiEjLEgk9RFFewRwUpRkwuZgEPi3kl7dptIrElyKC5k");'></div>
+<div class="p-2">
+<p class="font-bold text-xs truncate" style="">Pack Vegetales Mix</p>
+<p class="text-primary font-bold text-xs mt-1" style="">$15.00</p>
+</div>
+</div>
+<div class="min-w-[140px] bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="h-24 bg-cover bg-center" data-alt="Fresas rojas brillantes" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBB2iNXOtVWBw71g63nZTyjLVKp8VJ1bilgmgleQP_I5T8zsM5KAZpUjl8YsLiJ6Y-jC1xDxWjqUWKB2O6J1G6U6VcL9o9Sb9bjDOaOINi81UfIdPHOZCqksn0a7WRGG0FowDMK21JdMc5pJZsJiUm0R6PXiTpRqMwT9MKaknKXJ_QPD8eErtEpzXqyztvjG6P-CqSD-CDBsGaalsFmtXZOzZsHMvX6-G76fzqbGl7lAvRwVIaxX0veXOQJue_2AcGGORsrWEvFsPo");'></div>
+<div class="p-2">
+<p class="font-bold text-xs truncate" style="">Fresas de Temporada</p>
+<p class="text-primary font-bold text-xs mt-1" style="">$6.50</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Settings Menu -->
+<section class="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800">
+<button class="w-full flex items-center justify-between p-4 border-b border-slate-50 dark:border-slate-800 hover:bg-slate-50 transition-colors" style="">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" style="">location_on</span>
+<span class="text-sm font-medium" style="">Direcciones de entrega</span>
+</div>
+<span class="material-symbols-outlined text-slate-300" style="">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 border-b border-slate-50 dark:border-slate-800 hover:bg-slate-50 transition-colors" style="">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" style="">payments</span>
+<span class="text-sm font-medium" style="">Métodos de pago</span>
+</div>
+<span class="material-symbols-outlined text-slate-300" style="">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 border-b border-slate-50 dark:border-slate-800 hover:bg-slate-50 transition-colors" style="">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" style="">group</span>
+<span class="text-sm font-medium" style="">Vendedores seguidos</span>
+</div>
+<span class="material-symbols-outlined text-slate-300" style="">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 border-b border-slate-50 dark:border-slate-800 hover:bg-slate-50 transition-colors" style="">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" style="">reviews</span>
+<span class="text-sm font-medium" style="">Mis Reseñas</span>
+</div>
+<span class="material-symbols-outlined text-slate-300" style="">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 border-b border-slate-50 dark:border-slate-800 hover:bg-slate-50 transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">lock</span>
+<span class="text-sm font-medium">Privacidad del perfil</span>
+</div>
+<span class="material-symbols-outlined text-slate-300">chevron_right</span>
+</button><button class="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors" style="">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" style="">settings</span>
+<span class="text-sm font-medium" style="">Configuración de cuenta</span>
+</div>
+<span class="material-symbols-outlined text-slate-300" style="">chevron_right</span>
+</button>
+</section>
+<!-- Contact & Location -->
+<section class="bg-primary/10 dark:bg-primary/20 p-4 rounded-2xl mb-8">
+<h3 class="font-bold mb-3" style="">Información de contacto</h3>
+<div class="space-y-3">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-sm" style="">mail</span>
+<span class="text-xs" style="">juan.perez@email.com</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-sm" style="">call</span>
+<span class="text-xs" style="">+52 (555) 123-4567</span>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-sm mt-0.5" style="">map</span>
+<span class="text-xs" data-location="Ciudad de México, México" style="">Ciudad de México, México - Zona Norte</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-100 dark:border-slate-800 px-4 pb-6 pt-2 z-50">
+<div class="flex justify-between items-end max-w-md mx-auto relative">
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#" style="">
+<span class="material-symbols-outlined" style="">home</span>
+<span class="text-[10px] font-bold" style="">Inicio</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#" style="">
+<span class="material-symbols-outlined" style="">shopping_cart</span>
+<span class="text-[10px] font-bold" style="">Carrito</span>
+</a>
+<!-- Central Active Button -->
+<div class="relative -top-6">
+<div class="bg-primary p-4 rounded-full shadow-lg shadow-primary/30 border-4 border-background-light dark:border-background-dark">
+<span class="material-symbols-outlined text-white text-3xl block" style="">storefront</span>
+</div>
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-primary" style="">Mercado</span>
+</div>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#" style="">
+<span class="material-symbols-outlined" style="">favorite</span>
+<span class="text-[10px] font-bold" style="">Favoritos</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#" style="">
+<span class="material-symbols-outlined fill-1" style="">person</span>
+<span class="text-[10px] font-bold" style="">Perfil</span>
+</a>
+</div>
+</nav>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .fill-1 {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</body></html>

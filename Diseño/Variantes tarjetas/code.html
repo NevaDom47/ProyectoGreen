@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-high": "#e6e9e4",
+              "tertiary": "#682826",
+              "on-surface": "#181d1a",
+              "on-tertiary-fixed-variant": "#75322f",
+              "secondary-fixed-dim": "#afcebb",
+              "on-secondary": "#ffffff",
+              "surface-container": "#ebefea",
+              "on-background": "#181d1a",
+              "surface-dim": "#d7dbd6",
+              "on-secondary-fixed-variant": "#314c3f",
+              "error": "#ba1a1a",
+              "on-tertiary-container": "#ffb5b0",
+              "on-tertiary": "#ffffff",
+              "on-surface-variant": "#3f4943",
+              "surface-container-highest": "#e0e3df",
+              "error-container": "#ffdad6",
+              "outline": "#6f7a73",
+              "primary-fixed-dim": "#89d6b0",
+              "on-primary-fixed-variant": "#005137",
+              "inverse-primary": "#89d6b0",
+              "surface-variant": "#e0e3df",
+              "secondary-fixed": "#caead7",
+              "surface": "#f7faf5",
+              "inverse-surface": "#2d312e",
+              "outline-variant": "#bec9c1",
+              "secondary-container": "#caead7",
+              "secondary": "#486456",
+              "primary-fixed": "#a5f3cb",
+              "inverse-on-surface": "#eef2ed",
+              "tertiary-container": "#853e3b",
+              "on-error-container": "#93000a",
+              "background": "#f7faf5",
+              "on-primary": "#ffffff",
+              "surface-container-low": "#f1f4f0",
+              "on-secondary-fixed": "#042015",
+              "on-primary-container": "#8bd8b2",
+              "primary": "#00462f",
+              "tertiary-fixed-dim": "#ffb3ae",
+              "surface-bright": "#f7faf5",
+              "surface-tint": "#186b4c",
+              "primary-container": "#036042",
+              "on-primary-fixed": "#002114",
+              "on-secondary-container": "#4e6b5b",
+              "on-tertiary-fixed": "#3c0708",
+              "tertiary-fixed": "#ffdad7",
+              "surface-container-lowest": "#ffffff",
+              "on-error": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.25rem", "3xl": "1.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background font-body text-on-background min-h-screen pb-24 pt-20">
+<!-- Top Navigation -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-emerald-50/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-emerald-100 dark:border-slate-800 shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-emerald-800 dark:text-emerald-400 p-2 hover:bg-emerald-100 dark:hover:bg-slate-800 transition-colors rounded-full active:scale-95 duration-200">menu</span>
+<h1 class="text-xl font-black tracking-tight text-emerald-900 dark:text-emerald-50 font-headline">AgroMercado</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden border-2 border-primary-fixed active:scale-95 duration-200">
+<img class="w-full h-full object-cover" data-alt="User profile photo avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-VBTEjZr_piC0lPz75xmrQvo31CEVw_vSznyc6ethT5CRonCR-059rzBBwNjEaarsM_IkS3C_paPsLwPvNsEauLLxwH5eOlyprSUVV3NDBwsgSxMkSyDQOCLgGp4xl0LtlSgqxZt_3BXhAkJ4Y0cIC41lEEnjx7vl37n53rVdxvMtGPMykUJF_R9QWic8fxItGH4FzsUKdlYZHiNnRC_67V_DJvZpPpM8OhwjCOcZPiHBuq1qMBeojle1kbryvkDYZiNknYnWssY"/>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-4 py-8">
+<div class="mb-8">
+<h2 class="text-3xl font-black text-primary mb-2 font-headline">Catálogo de Productos</h2>
+<p class="text-on-surface-variant font-medium">Calidad directa del campo a tu mesa.</p>
+</div>
+<!-- Grid of Product Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Card 1: Primera Calidad -->
+<div class="group bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-primary-fixed">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Fresh organic red tomatoes in sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtAscBsS2QmZU8CGN1aAM7YczhKfYE2dBe-HDw7Sd0in9bl3w0vRS_-sSDGfgPmMF-WRyqWF2DZ6sLgeBgncFPgPzT2ynAEuGWTtmMGUsar2Mw216I3DQ4IPmW0hxxq_GbiQKIN544LbTxawFpEYjPCESbllfkqY8NKiwEx1dyV4oBSiRwS5yGBt2eQ5aMgI1929dVBRgs3vm8PIowCueGgE_NXkowZbmTJzobvDaZjGSxBMOmwcLy1AeFpnLIfbOO87DazGrakS4"/>
+<div class="absolute top-4 right-4">
+<button class="bg-white/90 backdrop-blur-md p-2 rounded-full text-tertiary-container shadow-md hover:bg-white transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div><div class="absolute bottom-4 right-4">
+<div class="bg-primary text-white p-1.5 rounded-lg shadow-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="text-xl font-bold text-on-surface font-headline leading-tight">Tomate Saladette Selección</h3>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-amber-500 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-sm font-bold text-on-surface">4.9</span>
+<span class="text-sm text-outline">(128 reseñas)</span>
+</div>
+</div>
+<div class="text-right">
+<p class="text-2xl font-black text-primary font-headline">$28.50</p>
+<p class="text-xs font-bold text-outline uppercase tracking-tighter">por kilo</p>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-4 bg-primary/5 w-fit px-3 py-1 rounded-full border border-primary/10">
+<span class="material-symbols-outlined text-primary text-sm">military_tech</span>
+<span class="text-[10px] font-black text-primary uppercase tracking-widest">Primera Calidad</span>
+</div><div class="flex flex-col gap-3 mt-6 pt-4 border-t border-surface-container-high">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-lg">potted_plant</span>
+</div>
+<div>
+<p class="text-xs text-outline font-semibold uppercase">Proveedor</p>
+<p class="text-sm font-bold text-on-surface">Granja El Sol</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-lg">location_on</span>
+</div>
+<div>
+<p class="text-xs text-outline font-semibold uppercase">Ubicación</p>
+<p class="text-sm font-medium text-on-surface-variant">Valle de Santiago, GTO</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2: Segunda Calidad -->
+<div class="group bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-tertiary-fixed">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Fresh yellow lemons background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC32hZb6oQo7t0wf8ajgrZvnHKUFmzcSZaP4axbFMp-8G-seBE74GPVXDBADbi7_9jnyukHxsf4nYWCgIsI04cG39ANOkfeCdT43KRw2aSN4ssBnFf3k7eTpVdeuGMvT7RzekA64wcMI6787VB5fqBwvB_vueBJzKubmMarT3W9qC5KsEAxKZK0ih9v8OODtwtaU-BR89iqrR3jWV72M0o-I6pNGZTe8rW5VnMFVGrg7xgxd8W3U9EkRo3gHQmVTXQ7n0CPPBH8cu0"/>
+<div class="absolute top-4 left-4">
+<span class="bg-orange-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-lg">Segunda Calidad</span>
+</div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="text-xl font-bold text-on-surface font-headline leading-tight">Limón Colima Estándar</h3>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-amber-500 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-sm font-bold text-on-surface">4.5</span>
+<span class="text-sm text-outline">(84 reseñas)</span>
+</div>
+</div>
+<div class="text-right">
+<p class="text-2xl font-black text-primary font-headline">$18.00</p>
+<p class="text-xs font-bold text-outline uppercase tracking-tighter">por kilo</p>
+</div>
+</div>
+<div class="flex flex-col gap-3 mt-6 pt-4 border-t border-surface-container-high">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-lg">agriculture</span>
+</div>
+<div>
+<p class="text-xs text-outline font-semibold uppercase">Proveedor</p>
+<p class="text-sm font-bold text-on-surface">Don Pedro H.</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-lg">location_on</span>
+</div>
+<div>
+<p class="text-xs text-outline font-semibold uppercase">Ubicación</p>
+<p class="text-sm font-medium text-on-surface-variant">Tecomán, Colima</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 bg-secondary text-white py-3.5 rounded-2xl font-bold text-sm hover:bg-secondary-container hover:text-on-secondary-container transition-all active:scale-95 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+                        Agregar al Carrito
+                    </button>
+</div>
+</div>
+<!-- Card 3: Tercera Calidad -->
+<div class="group bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-slate-200">
+<div class="relative h-64 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Raw organic potatoes in a pile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwk25Q6fKePzHvNegBp01A40ynKMbgMec2chR9wDrqqwKR-3TArHi3ekPfapykOLORLZ5XPy38kKk0mG1wUa5QkF-PWS_fqsbIfTFBegGd4SFVMMyUqikmbb4pl_tjnKqpyAjjWzvA9mV0nz1Y5ruiKo9Qw_schGvaSvHcn0L37ZGNEbWFPSA0Srh4vgjuwl9dazQSm-ZXLw5nfB4LZtZ1QoDjBpivNAK-L_1EG7AcjUfWGA45TFRP9cQUki042oqjVPmNfZ6zf_I"/>
+<div class="absolute top-4 left-4">
+<span class="bg-slate-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-lg">Tercera Calidad</span>
+</div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="text-xl font-bold text-on-surface font-headline leading-tight">Papa Blanca Granel</h3>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-amber-500 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-sm font-bold text-on-surface">4.1</span>
+<span class="text-sm text-outline">(42 reseñas)</span>
+</div>
+</div>
+<div class="text-right">
+<p class="text-2xl font-black text-primary font-headline">$12.50</p>
+<p class="text-xs font-bold text-outline uppercase tracking-tighter">por kilo</p>
+</div>
+</div>
+<div class="flex flex-col gap-3 mt-6 pt-4 border-t border-surface-container-high">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-lg">storefront</span>
+</div>
+<div>
+<p class="text-xs text-outline font-semibold uppercase">Proveedor</p>
+<p class="text-sm font-bold text-on-surface">Central de Abastos</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-lg">location_on</span>
+</div>
+<div>
+<p class="text-xs text-outline font-semibold uppercase">Ubicación</p>
+<p class="text-sm font-medium text-on-surface-variant">Ciudad de México, CDMX</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 border-2 border-outline-variant text-on-surface-variant py-3.5 rounded-2xl font-bold text-sm hover:bg-surface-container transition-all active:scale-95 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+                        Agregar al Carrito
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-3 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] rounded-t-2xl">
+<a class="flex flex-col items-center justify-center bg-emerald-100 dark:bg-emerald-900/50 text-emerald-900 dark:text-emerald-50 rounded-xl px-4 py-1.5 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">storefront</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold mt-0.5">Mercado</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-4 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">local_offer</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold mt-0.5">Ofertas</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-4 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold mt-0.5">Pedidos</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-4 py-1.5 hover:text-emerald-600 dark:hover:text-emerald-300 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold mt-0.5">Perfil</span>
+</a>
+</nav>
+<!-- Floating Action Button Contextual (Show only on primary screen) -->
+<button class="fixed bottom-24 right-6 w-14 h-14 bg-primary-container text-white rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform duration-150 z-40">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'wght' 600;">search</span>
+</button>
+</body></html>

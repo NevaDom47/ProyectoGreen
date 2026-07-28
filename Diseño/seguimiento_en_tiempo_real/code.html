@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#016142",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>Seguimiento de Pedido - El Mercadito</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="relative flex min-h-screen flex-col max-w-md mx-auto bg-background-light dark:bg-background-dark shadow-2xl">
+<!-- Header -->
+<div class="sticky top-0 z-10 flex items-center bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md p-4 justify-between border-b border-slate-200 dark:border-slate-800">
+<div class="text-primary flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Rastreo de Pedido</h2>
+<div class="flex w-10 items-center justify-end">
+<button class="text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Main Content Scrollable Area -->
+<div class="flex-1 overflow-y-auto pb-24">
+<!-- Map Component -->
+<div class="p-4">
+<div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800">
+<div class="absolute inset-0 bg-slate-200 dark:bg-slate-700 bg-center bg-cover" data-alt="Mapa de ruta de entrega desde granja a ciudad" data-location="Guatemala City" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDakLwi4iPXKG0W3DFOK9lbdrUrzxAaWESWVZhWioXzdrisp-hxzDidwc9K1KjL3nRPXh3xadlLorCGGPX34TYktk6Hh7i1VL-F8PsB11eO3nY4zViNIkSz7JHVk_JPFyh_MLnVMIGFCa-X2TKMz3LpO9BssCjt9wD9FyS_cdt1nGHhG04aGj0g0cvZ7_MvMkrUoyyjwx8lcbSkmdr_oKlebFOby6OcG8uKbEZ5M7hy15T32fQmiZt8tF3y2-lpdyuwyA8vKCs1Ztk');">
+<!-- Route Overlay Simulation -->
+<div class="absolute inset-0 bg-primary/5"></div>
+</div>
+<!-- Delivery Indicators -->
+<div class="absolute top-1/4 left-1/4 flex flex-col items-center">
+<div class="bg-white dark:bg-slate-800 p-1 rounded-lg shadow-md border border-primary/20">
+<span class="material-symbols-outlined text-primary text-xl">agriculture</span>
+</div>
+</div>
+<div class="absolute bottom-1/3 right-1/4 flex flex-col items-center">
+<div class="bg-primary p-2 rounded-full shadow-lg animate-pulse">
+<span class="material-symbols-outlined text-white text-base">delivery_dining</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Order Status Stepper -->
+<div class="px-6 py-4 bg-white dark:bg-slate-900/50 mx-4 rounded-xl border border-slate-200 dark:border-slate-800">
+<div class="grid grid-cols-[40px_1fr] gap-x-3">
+<!-- Step 1: Completed -->
+<div class="flex flex-col items-center">
+<div class="flex size-8 items-center justify-center rounded-full bg-primary text-white">
+<span class="material-symbols-outlined text-lg">check_circle</span>
+</div>
+<div class="w-[2px] bg-primary h-8"></div>
+</div>
+<div class="flex flex-col pb-6">
+<p class="text-slate-900 dark:text-slate-100 text-sm font-bold">Pedido Recibido</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Ayer, 08:45 PM</p>
+</div>
+<!-- Step 2: Active -->
+<div class="flex flex-col items-center">
+<div class="flex size-8 items-center justify-center rounded-full bg-primary/20 text-primary border-2 border-primary">
+<span class="material-symbols-outlined text-lg">restaurant</span>
+</div>
+<div class="w-[2px] bg-slate-300 dark:bg-slate-700 h-8"></div>
+</div>
+<div class="flex flex-col pb-6">
+<div class="flex items-center gap-2">
+<p class="text-primary text-sm font-bold">En Preparación</p>
+<span class="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">ACTUAL</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Tu pedido está siendo empacado con cuidado.</p>
+</div>
+<!-- Step 3: Pending -->
+<div class="flex flex-col items-center">
+<div class="flex size-8 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400">
+<span class="material-symbols-outlined text-lg">local_shipping</span>
+</div>
+<div class="w-[2px] bg-slate-200 dark:bg-slate-800 h-8"></div>
+</div>
+<div class="flex flex-col pb-6">
+<p class="text-slate-400 dark:text-slate-600 text-sm font-medium">En Camino</p>
+<p class="text-slate-400 dark:text-slate-600 text-xs">Pendiente de salida</p>
+</div>
+<!-- Step 4: Pending -->
+<div class="flex flex-col items-center">
+<div class="flex size-8 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400">
+<span class="material-symbols-outlined text-lg">home</span>
+</div>
+</div>
+<div class="flex flex-col">
+<p class="text-slate-400 dark:text-slate-600 text-sm font-medium">Entregado</p>
+<p class="text-slate-400 dark:text-slate-600 text-xs">Estimado hoy, 11:45 AM</p>
+</div>
+</div>
+</div>
+<!-- Order Details Card -->
+<div class="p-4">
+<div class="bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex p-4 gap-4">
+<div class="w-24 h-24 rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0 overflow-hidden">
+<img alt="Tomates y aguacates" class="w-full h-full object-cover" data-alt="Cesta fresca de tomates rojos y aguacates hass" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVrxjveO71X62QUrEz9acm0Ss-C7Sj6tNKS5pWgYcPkojAOa6XGHRmW7IEulks5VnNUx_lsHwhRP4ogOnzvc0Ij-uSMYCrqvuhlZhw3EbYIFqojmGOLlj_XDhcNYwBaGhpdRPa8YZJbjGHv545ECEYMK3Hh3wVlNjER6X-4rnqnjXwrxrtpS3Tfd6hfvRWhNXqSOQxs78MmztzAKmsg5hZbb-Vs9ogNa40yP4g42nUv6o1Za5QYjvDa7-W6AWnz2j2XYOJE2P7jtM"/>
+</div>
+<div class="flex flex-col justify-center flex-1">
+<p class="text-primary text-xs font-bold uppercase tracking-wider">#MERC-9928</p>
+<h3 class="text-slate-900 dark:text-slate-100 font-bold text-lg leading-tight">Canasta del Huerto</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Tomates orgánicos y aguacates Hass</p>
+<div class="flex items-center gap-1 mt-2 text-primary font-medium text-sm">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span>Entrega: 11:45 AM</span>
+</div>
+</div>
+</div>
+<div class="px-4 pb-4 grid grid-cols-2 gap-3">
+<button class="flex items-center justify-center gap-2 rounded-lg bg-primary/10 py-2.5 text-primary text-sm font-bold border border-primary/20 hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-sm">chat</span>
+                            Contactar
+                        </button>
+<button class="flex items-center justify-center gap-2 rounded-lg bg-slate-100 dark:bg-slate-800 py-2.5 text-slate-700 dark:text-slate-300 text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-200 transition-colors">
+<span class="material-symbols-outlined text-sm">receipt</span>
+                            Ver Recibo
+                        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg px-4 pb-4 pt-2">
+<div class="flex gap-2">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-[10px] font-medium">Inicio</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined">shopping_bag</span>
+<p class="text-[10px] font-bold">Pedidos</p>
+<div class="h-1 w-1 rounded-full bg-primary"></div>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<p class="text-[10px] font-medium">Favoritos</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">person</span>
+<p class="text-[10px] font-medium">Perfil</p>
+</a>
+</div>
+</div>
+</div>
+</body></html>

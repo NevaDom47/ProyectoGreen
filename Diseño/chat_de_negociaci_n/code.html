@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#016042",
+                        "background-light": "#f5f8f7",
+                        "background-dark": "#0f231d",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>Chat de Negociación - El Mercadito</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="relative flex h-screen w-full flex-col max-w-md mx-auto bg-white dark:bg-background-dark shadow-xl overflow-hidden">
+<!-- Header -->
+<div class="flex items-center bg-white dark:bg-background-dark border-b border-primary/10 p-4 justify-between sticky top-0 z-10">
+<div class="flex items-center gap-3">
+<div class="text-primary cursor-pointer">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<div class="flex flex-col">
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight">Finca La Esperanza</h2>
+<div class="flex items-center gap-1.5">
+<span class="size-2 rounded-full bg-emerald-500"></span>
+<span class="text-primary text-xs font-semibold uppercase tracking-wider">En línea</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-slate-600 dark:text-slate-400 p-2 hover:bg-primary/5 rounded-full transition-colors">
+<span class="material-symbols-outlined">call</span>
+</button>
+<button class="text-slate-600 dark:text-slate-400 p-2 hover:bg-primary/5 rounded-full transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto p-4 space-y-6">
+<!-- Product Reference Card -->
+<div class="sticky top-0 z-10 py-2">
+<div class="flex items-stretch justify-between gap-4 rounded-xl bg-white dark:bg-slate-800 p-3 shadow-sm border border-primary/10">
+<div class="flex flex-1 flex-col justify-between py-1">
+<div class="flex flex-col">
+<p class="text-slate-900 dark:text-slate-100 text-sm font-bold">Saco de Papas</p>
+<p class="text-primary text-xs font-medium">$2.00 por unidad</p>
+</div>
+<button class="flex items-center justify-center rounded-lg h-7 px-3 bg-primary/10 text-primary text-xs font-semibold w-fit hover:bg-primary/20 transition-colors mt-2">
+                            Ver Producto
+                        </button>
+</div>
+<div class="w-20 h-20 bg-center bg-no-repeat bg-cover rounded-lg shrink-0" data-alt="Saco de papas frescas en mercado" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBdOrqWuBFawImokgw7aX4L0qj7thCEzuBv9_58c_qq_VHRaRgCk6Mdx08Hnv8ygoNk3uBHysg750fc4pl7lLgQlqo9iCjrf-nftrhS_NLlHpyeu1oAdXYgpR-PuGErGXKt28TrVGL2arbyQ-mm3Nq6qJiGc4B4uHS8Yi_iSiT_gwrQIsRr4j2penpybXR1s8ieA7YKs277sSdLmlV4wEwJcnsW0PJz9S2uIL01AqgZsZOBinWZZ4yReKTfrU6jCpFNlqS_VnSceaY");'></div>
+</div>
+</div>
+<!-- Date Separator -->
+<div class="flex justify-center">
+<span class="bg-primary/5 text-primary text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">Hoy</span>
+</div>
+<!-- Buyer Message -->
+<div class="flex items-end gap-2 max-w-[85%]">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 shrink-0 border border-primary/10" data-alt="Retrato de perfil de comprador masculino" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBEQ2ncSmK-un9cbsUJEZ52pAPBKVaHAqBxuhb_Ush3pPrUi89-Ee3bTVaR_gnw_31BqzHFwdHhOwh7MIOBEPPlsdjYbJPdbuwGJm5VQboZUJzoPwcV3Z1FhXfM9MaUGr_2E1_-uPJ37qjitJO4bz8nsMjV6KNRyGDg7eUrdJPyWDC53DAiDkdhTilBDb6iR5dDGxJdFDr-JCN5wFn6q23mD2NxIYqM47hXYM1GSdA8BifA_C7979xmHHbcP5Wu-wYZtjedm1SbtPg");'></div>
+<div class="flex flex-col gap-1">
+<div class="text-base font-normal leading-relaxed rounded-2xl rounded-bl-none px-4 py-3 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-sm">
+                        Hola, ¿qué precio me dejas por 10 sacos?
+                    </div>
+<p class="text-slate-400 text-[10px] ml-1">10:42 AM</p>
+</div>
+</div>
+<!-- Seller Message (Primary Accent) -->
+<div class="flex items-end gap-2 max-w-[85%] ml-auto flex-row-reverse">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 shrink-0 border border-primary/20" data-alt="Logo de la granja productora" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB1-y62nOYyFJ87wJ8XFk4QalbfUVPOWB0Eo3ft82Kz8cCrvoW2OKvmm0tWikghVu0SiZD63IGVwe1Z68hWKVgLfFCGLZSj4q1G4kJNdQ9eJ1mer0RAA-8wAKGb3FWW_R7mvTRDQnxAA9aPbrnIQYDKHs5gpb17cjjifu7lwpgh6r1i6VUk5RsfzbkFVMhQJFSf5Vg8Exy7zAuGqJETv1ccQWXdu_oyrUnSiDBFvoiyr1MOCaJo6XJitj7IyKcK7pcjdxKJ_jbn9VE");'></div>
+<div class="flex flex-col items-end gap-1">
+<div class="text-base font-normal leading-relaxed rounded-2xl rounded-br-none px-4 py-3 bg-primary text-white shadow-md">
+                        Buen día, podemos negociar a $1.80 por esa cantidad si coordinamos el retiro hoy mismo.
+                    </div>
+<div class="flex items-center gap-1 mr-1">
+<p class="text-slate-400 text-[10px]">10:45 AM</p>
+<span class="material-symbols-outlined text-primary text-xs" style="font-size: 14px;">done_all</span>
+</div>
+</div>
+</div>
+<!-- Buyer Message -->
+<div class="flex items-end gap-2 max-w-[85%]">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 shrink-0 border border-primary/10" data-alt="Retrato de perfil de comprador masculino" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAXggH86phig6OKM106Ggozi7mYA4RA3kEwYtFfp4W6f-y5aTb5hzw3UJk7PP2UPiye56ZXAze-6C2rP9uOJYDldXBO1KDZDS9qKynTkQwB98q3EU1HThDU0zhVqsWfZIHuntqfxUOTSkWppSmAvxgpXe2Um72xFwq0BTv9O1cbE_Cw27C2tArGWNeWCWQcMgCzmNs-KxXsfLmBaXMoVcBJGfmGtN_58A0yFHew_KoAoKxloVPe8H1YEvCnn3CjJjKsqr3LC1nbVL0");'></div>
+<div class="flex flex-col gap-1">
+<div class="text-base font-normal leading-relaxed rounded-2xl rounded-bl-none px-4 py-3 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-sm">
+                        Me parece excelente trato. ¿Podría enviarme una foto de la cosecha actual para confirmar calidad?
+                    </div>
+<p class="text-slate-400 text-[10px] ml-1">10:48 AM</p>
+</div>
+</div>
+</div>
+<!-- Input Area -->
+<div class="p-4 bg-white dark:bg-background-dark border-t border-primary/10">
+<div class="flex items-center gap-2">
+<button class="flex items-center justify-center rounded-full size-10 bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined">photo_camera</span>
+</button>
+<button class="flex items-center justify-center rounded-full size-10 bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined">attach_file</span>
+</button>
+<div class="relative flex-1">
+<input class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-full px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-slate-100 placeholder-slate-500" placeholder="Escribe un mensaje..." type="text"/>
+</div>
+<button class="flex items-center justify-center rounded-full size-10 bg-primary text-white shadow-lg hover:brightness-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+<!-- Quick Options -->
+<div class="flex gap-2 mt-3 overflow-x-auto pb-1 no-scrollbar">
+<button class="whitespace-nowrap px-3 py-1.5 rounded-full border border-primary/20 text-[11px] font-bold text-primary hover:bg-primary/5 transition-colors">
+                    Aceptar oferta
+                </button>
+<button class="whitespace-nowrap px-3 py-1.5 rounded-full border border-primary/20 text-[11px] font-bold text-primary hover:bg-primary/5 transition-colors">
+                    Contraoferta
+                </button>
+<button class="whitespace-nowrap px-3 py-1.5 rounded-full border border-primary/20 text-[11px] font-bold text-primary hover:bg-primary/5 transition-colors">
+                    Solicitar ubicación
+                </button>
+</div>
+</div>
+</div>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>

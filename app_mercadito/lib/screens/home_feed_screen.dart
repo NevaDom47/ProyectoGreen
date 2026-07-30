@@ -414,13 +414,25 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
             children: [
               ClipRRect(
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                child: Image.network(
-                  data['img']!,
-                  height: 180,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (c, e, s) => Container(height: 180, color: Colors.grey[300]),
-                ),
+                child: Builder(builder: (context) {
+                  final imgSrc = data['img']!.toString();
+                  if (imgSrc.startsWith('assets/')) {
+                    return Image.asset(
+                      imgSrc,
+                      height: 180,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (c, e, s) => Container(height: 180, color: Colors.grey[300]),
+                    );
+                  }
+                  return Image.network(
+                    imgSrc,
+                    height: 180,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (c, e, s) => Container(height: 180, color: Colors.grey[300]),
+                  );
+                }),
               ),
               Positioned(
                 top: 16,
@@ -667,8 +679,8 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
 
   Widget _buildFlashOffers(ThemeData theme, Color surfaceColor, bool isDark) {
     final offers = [
-      {'name': 'Papa Blanca Alpha', 'price': '\$18.00', 'oldPrice': '\$22.50', 'rating': '4.8', 'badge': 'PRIMERA CALIDAD', 'supplier': 'Don Pedro H.', 'location': 'Tecomán, Colima', 'tags': ['Tubérculos', 'Oferta', 'Cosecha Hoy'], 'img': 'https://lh3.googleusercontent.com/aida-public/AB6AXuDJguOM6PeLJVC8unnC-iYmBBhvgHK-1ZsR0FXT6aQhRsKX2DBN5VBnBPXugBGvywWHCBakIHKEIYWdK1vhdl0WImf3512eR_casF7pktBrWKlFxrE-WViYAeRlVnWTIZ8ZvMMGl1SmEZmSqCOQLw2EKJ7D36EgJJkzc7E5xowJkyqqdAmGh5YafaVhKn54cfsr3sMmJXfJZjox6IhdhSkzZWmOkvdioyjEvMByW--WNcj6dtRTvaKQlg4wP30dUOWd5rlGv2NPUE0'},
-      {'name': 'Zanahoria Orgánica', 'price': '\$12.50', 'oldPrice': '\$16.00', 'rating': '4.9', 'badge': 'TERCERA CALIDAD', 'supplier': 'Granja Sol', 'location': 'Valle Verde, Puebla', 'tags': ['Raíces', 'Orgánico'], 'img': 'https://lh3.googleusercontent.com/aida-public/AB6AXuADAAHPoTD3bP8ZZ9iGDE-2bpw5sgQbBEthiGYxahJI1T-iVWl80OedQjYnGc3byjJWdDDLoakAs0WFzwQppv8GdwySVHCZ6m0XFr2T0CPQzUhO2LHcpc13QvevvrM7Bz3s-C_2Uip2mshypQaFwXTaAE32F6b3cxlPI01ARMFUEs3L3WbhBnTSgdK9eWpsHvj3Vwy9MloBgNxKwFgJZRNX5FI-lRI3DtkavkENIzBYcm6sDoMs-QjKo_9K9rOSLmxoOLG0uNDKZ8s'},
+      {'name': 'Papa Blanca Alpha', 'price': '\$18.00', 'oldPrice': '\$22.50', 'rating': '4.8', 'badge': 'PRIMERA CALIDAD', 'supplier': 'Don Pedro H.', 'location': 'Tecomán, Colima', 'tags': ['Tubérculos', 'Oferta', 'Cosecha Hoy'], 'img': 'assets/images/PapaGemini.png'},
+      {'name': 'Zanahoria Orgánica', 'price': '\$12.50', 'oldPrice': '\$16.00', 'rating': '4.9', 'badge': 'TERCERA CALIDAD', 'supplier': 'Granja Sol', 'location': 'Valle Verde, Puebla', 'tags': ['Raíces', 'Orgánico'], 'img': 'assets/images/ZanahoriaGemini.png'},
       {'name': 'Fresas de Campo', 'price': '\$45.00', 'oldPrice': '\$60.00', 'rating': '4.9', 'badge': 'PRIMERA CALIDAD', 'supplier': 'AgroFresas', 'location': 'Zamora, Michoacán', 'tags': ['Frutas', 'Frescas'], 'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250620_1233_Fresas%20en%20Fondo%20Rosado_simple_compose_01jy72ypjmeccafrqb33rfm1q8.png'},
       {'name': 'Saco de Papas Blancas', 'price': '\$280.00', 'oldPrice': '\$320.00', 'rating': '4.6', 'badge': 'SEGUNDA CALIDAD', 'supplier': 'Hermanos Ruiz', 'location': 'Galeana, Nuevo León', 'tags': ['Por Mayor', 'Tubérculos'], 'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1556_Sacos%20de%20Papas_simple_compose_01jwvnskaee6evykbzreq6j8wm.png'},
       {'name': 'Mix de Ajíes Frescos', 'price': '\$35.00', 'oldPrice': '\$45.00', 'rating': '4.7', 'badge': 'PRIMERA CALIDAD', 'supplier': 'Picantes del Sur', 'location': 'Oaxaca, Oaxaca', 'tags': ['Hortalizas', 'Mix'], 'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1549_Variedad%20de%20Aj%C3%ADes_simple_compose_01jwvncbmqfpvb7qv6rs3vh22x.png'},

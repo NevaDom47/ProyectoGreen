@@ -72,15 +72,49 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
                   LayoutBuilder(
                     builder: (context, constraints) {
                       final isWide = constraints.maxWidth > 550;
-                      return Flex(
-                        direction: isWide ? Axis.horizontal : Axis.vertical,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // Comprador Card
-                          Expanded(
-                            flex: isWide ? 1 : 0,
-                            child: _buildRoleCard(
+                      if (isWide) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Comprador Card
+                            Expanded(
+                              child: _buildRoleCard(
+                                roleId: 'comprador',
+                                title: 'Comprador',
+                                description:
+                                    'Busca productos frescos directamente de la granja, negocia precios en tiempo real y recibe tu cosecha en casa.',
+                                icon: Icons.shopping_basket_outlined,
+                                isDarkMode: isDarkMode,
+                                actualCardBg: actualCardBg,
+                                actualPrimary: actualPrimary,
+                                actualTextVariant: actualTextVariant,
+                              ),
+                            ),
+                            const SizedBox(width: 24),
+                            // Proveedor Card
+                            Expanded(
+                              child: _buildRoleCard(
+                                roleId: 'proveedor',
+                                title: 'Proveedor / Negociante',
+                                description:
+                                    'Publica tus cosechas, gestiona negociaciones con compradores y accede a herramientas de análisis para hacer crecer tu negocio.',
+                                icon: Icons.agriculture_outlined,
+                                isDarkMode: isDarkMode,
+                                actualCardBg: actualCardBg,
+                                actualPrimary: actualPrimary,
+                                actualTextVariant: actualTextVariant,
+                              ),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            // Comprador Card
+                            _buildRoleCard(
                               roleId: 'comprador',
                               title: 'Comprador',
                               description:
@@ -91,12 +125,9 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
                               actualPrimary: actualPrimary,
                               actualTextVariant: actualTextVariant,
                             ),
-                          ),
-                          if (isWide) const SizedBox(width: 24) else const SizedBox(height: 20),
-                          // Proveedor Card
-                          Expanded(
-                            flex: isWide ? 1 : 0,
-                            child: _buildRoleCard(
+                            const SizedBox(height: 20),
+                            // Proveedor Card
+                            _buildRoleCard(
                               roleId: 'proveedor',
                               title: 'Proveedor / Negociante',
                               description:
@@ -107,9 +138,9 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
                               actualPrimary: actualPrimary,
                               actualTextVariant: actualTextVariant,
                             ),
-                          ),
-                        ],
-                      );
+                          ],
+                        );
+                      }
                     },
                   ),
                   const SizedBox(height: 48),

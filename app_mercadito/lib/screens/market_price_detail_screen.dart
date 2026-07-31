@@ -556,7 +556,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                   ? Image.network(
                       imageUrl,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) =>
+                      errorBuilder: (_, _, _) =>
                           const Icon(Icons.grain, size: 36, color: _primaryContainer),
                     )
                   : const Icon(Icons.grain, size: 36, color: _primaryContainer),
@@ -717,7 +717,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                               onTapUp: (_) => _onChartPanEnd(),
                               child: AnimatedBuilder(
                                 animation: _chartAnimation,
-                                builder: (_, __) => CustomPaint(
+                                builder: (_, _) => CustomPaint(
                                   painter: _ChartPainter(
                                     values: _currentValues,
                                     progress: _chartAnimation.value,

@@ -1,0 +1,344 @@
+<!DOCTYPE html><html class="h-full" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Market Variation - Arroz Campo</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary": "#00415f",
+                      "inverse-primary": "#8bd6b6",
+                      "background": "#f8f9ff",
+                      "on-tertiary-container": "#8bcfff",
+                      "on-secondary-fixed-variant": "#6e3900",
+                      "on-tertiary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "surface-container": "#e5eeff",
+                      "on-tertiary-fixed-variant": "#004c6e",
+                      "outline-variant": "#bec9c2",
+                      "on-secondary-container": "#663500",
+                      "error-container": "#ffdad6",
+                      "on-secondary-fixed": "#2f1500",
+                      "on-primary-fixed-variant": "#00513b",
+                      "surface-container-highest": "#d9e3f4",
+                      "on-surface": "#121c28",
+                      "tertiary-fixed": "#c9e6ff",
+                      "on-secondary": "#ffffff",
+                      "secondary-fixed": "#ffdcc3",
+                      "primary-fixed-dim": "#8bd6b6",
+                      "on-tertiary-fixed": "#001e2f",
+                      "on-error-container": "#93000a",
+                      "on-background": "#121c28",
+                      "surface": "#f8f9ff",
+                      "on-primary": "#ffffff",
+                      "tertiary-fixed-dim": "#89ceff",
+                      "surface-tint": "#1b6b51",
+                      "inverse-on-surface": "#eaf1ff",
+                      "tertiary-container": "#005980",
+                      "surface-variant": "#d9e3f4",
+                      "surface-container-low": "#eef4ff",
+                      "primary-container": "#065f46",
+                      "secondary-container": "#fe932c",
+                      "on-primary-fixed": "#002116",
+                      "secondary": "#904d00",
+                      "surface-container-high": "#dfe9fa",
+                      "inverse-surface": "#27313e",
+                      "outline": "#6f7973",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-container": "#8bd6b7",
+                      "primary": "#004532",
+                      "on-surface-variant": "#3f4944",
+                      "secondary-fixed-dim": "#ffb77d",
+                      "on-error": "#ffffff",
+                      "surface-bright": "#f8f9ff",
+                      "primary-fixed": "#a6f2d1",
+                      "surface-dim": "#d1dbec"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xl": "32px",
+                      "md": "16px",
+                      "lg": "24px",
+                      "margin-mobile": "16px",
+                      "margin-desktop": "48px",
+                      "gutter": "16px",
+                      "unit": "4px",
+                      "sm": "8px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Manrope"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Manrope"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-sm": [
+                              "Manrope"
+                      ],
+                      "data-mono": [
+                              "JetBrains Mono"
+                      ],
+                      "label-caps": [
+                              "JetBrains Mono"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-sm": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "data-mono": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .sparkline {
+            fill: none;
+            stroke: #065f46;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .sparkline-area {
+            fill: url(#gradient);
+            opacity: 0.2;
+        }
+        .data-point {
+            fill: #ffffff;
+            stroke: #065f46;
+            stroke-width: 2;
+        }
+      </style>
+</head>
+<body class="bg-background h-full antialiased text-on-surface">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface shadow-sm z-50">
+<div class="flex items-center justify-between px-margin-mobile h-16 w-full z-50">
+<button class="text-primary hover:bg-surface-container-high transition-colors active:scale-95 duration-150 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 0;">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm text-primary font-bold tracking-tight">Arroz Campo</h1>
+<button class="text-primary hover:bg-surface-container-high transition-colors active:scale-95 duration-150 p-2 rounded-full flex items-center justify-center">
+
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="pb-24 pt-4 px-margin-mobile md:px-margin-desktop max-w-4xl mx-auto space-y-6">
+<!-- Summary Header Card -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 flex items-center gap-4 shadow-[0_2px_4px_rgba(0,0,0,0.04)]">
+<div class="w-20 h-20 rounded-lg overflow-hidden shrink-0 border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="Close up macro photography of high quality raw white rice grains in a burlap sack, well lit, earthy tones, organic agrarian aesthetic, sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCziyqVoeBeUE7tRL-6jkKOeEk2427M9B6Uy1m2ua9YozRkp830XpUKPkeFFJS8X50z2y4M0hHyY9-Dj7kI23ADDiyTumIatfBZ74cSM4rF6aIZi_sKma57XZh1Z0BoYbgQnDOmrfdCTgyLF76uxBIa4eNmjcmXbg8AwlDYptJTQvxBiZqTjwuVu-weSzb_XYEdCM29ZP7Fnmt_BtfM3-K7ecu28dD8-k2Xf0oWjZof26nkwXOXofBs">
+</div>
+<div class="flex-1">
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-1">Precio promedio del mercado</p>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg text-primary">$20.88</span>
+<span class="font-body-md text-body-md text-on-surface-variant">/ kg</span>
+</div>
+</div>
+</section>
+<!-- Market Comparison List -->
+<section>
+<h2 class="font-headline-sm text-headline-sm mb-4">Precio en Mercados</h2>
+<div class="space-y-3">
+<!-- Market 1: Drop -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 flex items-center justify-between shadow-[0_2px_4px_rgba(0,0,0,0.04)]">
+<div>
+<h3 class="font-body-lg text-body-lg font-semibold">Merca Santo Domingo</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Precio mas bajo</p>
+</div>
+<div class="flex items-center gap-3 text-right">
+<span class="font-data-mono text-data-mono text-primary-container font-semibold">$19.00</span>
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-sm">arrow_downward</span>
+</div>
+</div>
+</div>
+<!-- Market 2: Stable -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 flex items-center justify-between shadow-[0_2px_4px_rgba(0,0,0,0.04)]">
+<div>
+<h3 class="font-body-lg text-body-lg font-semibold">Mercado Nuevo</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Venta Promedio</p>
+</div>
+<div class="flex items-center gap-3 text-right">
+<span class="font-data-mono text-data-mono text-on-surface font-semibold">$20.50</span>
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">remove</span>
+</div>
+</div>
+</div>
+<!-- Market 3: Increase -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 flex items-center justify-between shadow-[0_2px_4px_rgba(0,0,0,0.04)]">
+<div>
+<h3 class="font-body-lg text-body-lg font-semibold">Mercado Los Minas</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Precio elevado</p>
+</div>
+<div class="flex items-center gap-3 text-right">
+<span class="font-data-mono text-data-mono text-error font-semibold">$21.00</span>
+<div class="w-8 h-8 rounded-full bg-error-container flex items-center justify-center text-on-error-container">
+<span class="material-symbols-outlined text-sm">arrow_upward</span>
+</div>
+</div>
+</div>
+<!-- Market 4: Highest -->
+<div class="bg-surface-container-lowest rounded-xl border-2 border-error p-4 flex items-center justify-between shadow-[0_4px_12px_rgba(0,0,0,0.08)] relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-error"></div>
+<div class="pl-2">
+<h3 class="font-body-lg text-body-lg font-semibold">La Duarte</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Precio mas alto</p>
+</div>
+<div class="flex items-center gap-3 text-right">
+<div class="flex flex-col items-end">
+<span class="font-label-caps text-label-caps text-error mb-1">Elevado</span>
+<span class="font-data-mono text-data-mono text-error font-semibold text-lg">$25.00</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Daily Trend Graph Section -->
+<section>
+<h2 class="font-headline-sm text-headline-sm mb-4">7-Day Trend (Merca Santo Domingo)</h2>
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-6 shadow-[0_2px_4px_rgba(0,0,0,0.04)]">
+<div class="w-full h-48 relative">
+<svg class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 400 150">
+<defs>
+<linearGradient id="gradient" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#065f46" stop-opacity="0.4"></stop>
+<stop offset="100%" stop-color="#065f46" stop-opacity="0"></stop>
+</linearGradient>
+</defs>
+<!-- Grid Lines -->
+<line stroke="#e5eeff" stroke-width="1" x1="0" x2="400" y1="25" y2="25"></line>
+<line stroke="#e5eeff" stroke-dasharray="4" stroke-width="1" x1="0" x2="400" y1="75" y2="75"></line>
+<line stroke="#e5eeff" stroke-width="1" x1="0" x2="400" y1="125" y2="125"></line>
+<!-- Area -->
+<path class="sparkline-area" d="M0,150 L0,50 C50,40 100,70 150,60 C200,50 250,90 300,80 C350,70 400,100 400,100 L400,150 Z"></path>
+<!-- Line -->
+<path class="sparkline" d="M0,50 C50,40 100,70 150,60 C200,50 250,90 300,80 C350,70 400,100 400,100"></path>
+<!-- Data Points -->
+<circle class="data-point" cx="0" cy="50" r="4"></circle>
+<circle class="data-point" cx="66.6" cy="45" r="4"></circle>
+<circle class="data-point" cx="133.2" cy="65" r="4"></circle>
+<circle class="data-point" cx="199.8" cy="55" r="4"></circle>
+<circle class="data-point" cx="266.4" cy="85" r="4"></circle>
+<circle class="data-point" cx="333" cy="75" r="4"></circle>
+<circle class="data-point" cx="400" cy="100" r="6" style="stroke-width: 3;"></circle>
+</svg>
+</div>
+<!-- X-Axis Labels -->
+<div class="flex justify-between mt-4 px-2 font-label-caps text-label-caps text-on-surface-variant">
+<span class="">L</span>
+<span class="">M</span>
+<span class="">M</span>
+<span class="">J</span>
+<span class="">V</span>
+<span class="">S</span>
+<span class="text-primary font-bold">D</span>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 bg-surface-container-lowest border-t border-outline-variant shadow-lg md:hidden">
+<!-- Active Tab: Market -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-3 py-1 hover:bg-surface-container-highest transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">storefront</span>
+<span class="font-label-caps text-label-caps mt-1">Market</span>
+</a>
+<!-- Inactive Tab: Prices -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-all active:scale-90 duration-200 px-3 py-1 rounded-xl" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 0;">trending_up</span>
+<span class="font-label-caps text-label-caps mt-1">Prices</span>
+</a>
+<!-- Inactive Tab: Alerts -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-all active:scale-90 duration-200 px-3 py-1 rounded-xl" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 0;">notifications</span>
+<span class="font-label-caps text-label-caps mt-1">Alerts</span>
+</a>
+<!-- Inactive Tab: Profile -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-all active:scale-90 duration-200 px-3 py-1 rounded-xl" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 0;">person</span>
+<span class="font-label-caps text-label-caps mt-1">Profile</span>
+</a>
+</nav>
+
+
+</body></html>

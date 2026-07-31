@@ -57,7 +57,7 @@ class QualityInfoBottomSheet extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     
     final Color bgColor = isDark ? const Color(0xFF1c2c26) : Colors.white;
-    final Color surfaceColor = isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFf1f4f0);
+    final Color surfaceColor = isDark ? Colors.white.withValues(alpha: 0.05) : const Color(0xFFf1f4f0);
     final Color textColor = isDark ? Colors.white : const Color(0xFF181d1a);
     final Color subTextColor = isDark ? Colors.white70 : const Color(0xFF3f4943);
 
@@ -86,7 +86,7 @@ class QualityInfoBottomSheet extends StatelessWidget {
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: mainColor.withOpacity(0.1),
+              color: mainColor.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(data['icon'], color: mainColor, size: 32),
@@ -127,7 +127,7 @@ class QualityInfoBottomSheet extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: surfaceColor,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: isDark ? Colors.white10 : Colors.black.withOpacity(0.05)),
+                      border: Border.all(color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05)),
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,7 +136,7 @@ class QualityInfoBottomSheet extends StatelessWidget {
                           width: 32,
                           height: 32,
                           decoration: BoxDecoration(
-                            color: mainColor.withOpacity(0.1),
+                            color: mainColor.withValues(alpha: 0.1),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(point['icon'], color: mainColor, size: 18),

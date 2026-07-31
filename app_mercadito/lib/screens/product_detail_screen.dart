@@ -116,13 +116,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   void _handleAddToCart() {
-    // Parse price
-    double basePrice = 0.0;
-    if (widget.product['price'] != null) {
-      String priceStr = widget.product['price'].toString().replaceAll('\$', '');
-      basePrice = double.tryParse(priceStr) ?? 0.0;
-    }
-
     // Map the selected unit back to the format globalCart expects
     String mappedUnit;
     if (_selectedUnit == 'Por Libra') {
@@ -289,9 +282,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       begin: Alignment.topCenter,
                                       end: Alignment.bottomCenter,
                                       colors: [
-                                        Colors.black.withOpacity(0.5),
+                                        Colors.black.withValues(alpha: 0.5),
                                         Colors.transparent,
-                                        Colors.black.withOpacity(0.4),
+                                        Colors.black.withValues(alpha: 0.4),
                                       ],
                                       stops: const [0.0, 0.5, 1.0],
                                     ),
@@ -668,7 +661,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             ),
                             Positioned.fill(
                               child: Container(
-                                color: Colors.black.withOpacity(0.1),
+                                color: Colors.black.withValues(alpha: 0.1),
                               ),
                             ),
                           ],
@@ -697,7 +690,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 color: bgColor,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, -4),
                   ),
@@ -754,7 +747,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: primary.withOpacity(0.3),
+                              color: primary.withValues(alpha: 0.3),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
@@ -902,7 +895,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ],
                       ),
                       const SizedBox(height: 24),
-                      Divider(color: Colors.grey.withOpacity(0.2)),
+                      Divider(color: Colors.grey.withValues(alpha: 0.2)),
                       const SizedBox(height: 16),
                       // Metrics
                       Row(
@@ -910,7 +903,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         children: List.generate(3, (index) => const SkeletonContainer(width: 80, height: 40, borderRadius: 8)),
                       ),
                       const SizedBox(height: 16),
-                      Divider(color: Colors.grey.withOpacity(0.2)),
+                      Divider(color: Colors.grey.withValues(alpha: 0.2)),
                       const SizedBox(height: 24),
                       // Description
                       const SkeletonContainer(width: 150, height: 20, borderRadius: 4),
@@ -958,8 +951,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     Navigator.of(context).push(
       PageRouteBuilder(
         opaque: false,
-        barrierColor: Colors.black.withOpacity(0.9),
-        pageBuilder: (context, _, __) => FullScreenImageViewer(
+        barrierColor: Colors.black.withValues(alpha: 0.9),
+        pageBuilder: (context, _, _) => FullScreenImageViewer(
           images: images,
           initialIndex: initialIndex,
         ),
@@ -1112,7 +1105,7 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black.withOpacity(0.7),
+                    Colors.black.withValues(alpha: 0.7),
                     Colors.transparent,
                   ],
                 ),
@@ -1125,7 +1118,7 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
                     child: Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
+                        color: Colors.white.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(Icons.close, color: Colors.white, size: 24),
@@ -1134,7 +1127,7 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
+                      color: Colors.white.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(

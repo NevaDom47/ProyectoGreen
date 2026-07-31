@@ -16,7 +16,6 @@ class _AccountConfigScreenState extends State<AccountConfigScreen> {
   String _userName = '@mateo_cosecha';
   String _email = 'm.estrada@agro-mail.com';
   String _phone = '+52 55 1234 5678';
-  bool _is2FAEnabled = true;
 
   void _showEditModal({
     required String label,
@@ -53,7 +52,7 @@ class _AccountConfigScreenState extends State<AccountConfigScreen> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.grey.withOpacity(0.3),
+                    color: Colors.grey.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -158,7 +157,7 @@ class _AccountConfigScreenState extends State<AccountConfigScreen> {
     final surfaceColor = isDark ? const Color(0xFF1c2c26) : Colors.white;
     final onSurfaceColor = isDark ? const Color(0xFFeef2ed) : const Color(0xFF181d1a);
     final secondaryTextColor = isDark ? const Color(0xFF89d6b0) : const Color(0xFF486456);
-    final outlineColor = isDark ? Colors.white.withOpacity(0.1) : const Color(0xFF6f7a73).withOpacity(0.1);
+    final outlineColor = isDark ? Colors.white.withValues(alpha: 0.1) : const Color(0xFF6f7a73).withValues(alpha: 0.1);
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -219,7 +218,7 @@ class _AccountConfigScreenState extends State<AccountConfigScreen> {
                 border: Border.all(color: surfaceColor, width: 4),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 10,
                   )
                 ],
@@ -243,7 +242,7 @@ class _AccountConfigScreenState extends State<AccountConfigScreen> {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: Colors.black.withValues(alpha: 0.2),
                       blurRadius: 4,
                     )
                   ],
@@ -375,7 +374,7 @@ class _AccountConfigScreenState extends State<AccountConfigScreen> {
           border: Border.all(color: outlineColor),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.02),
+              color: Colors.black.withValues(alpha: 0.02),
               blurRadius: 4,
               offset: const Offset(0, 2),
             )
@@ -416,7 +415,7 @@ class _AccountConfigScreenState extends State<AccountConfigScreen> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF00462f).withOpacity(0.1),
+                            color: const Color(0xFF00462f).withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(99),
                           ),
                           child: Text(

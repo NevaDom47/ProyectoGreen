@@ -21,7 +21,7 @@ class CouponsScreen extends StatelessWidget {
         final surfaceColor = isDark ? const Color(0xFF1E293B) : Colors.white; 
         final textColor = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0f172a);
         final subtextColor = isDark ? const Color(0xFF94a3b8) : const Color(0xFF64748b);
-        final borderColor = primaryColor.withOpacity(0.1);
+        final borderColor = primaryColor.withValues(alpha: 0.1);
 
         return Scaffold(
           backgroundColor: bgColor,
@@ -62,19 +62,19 @@ class CouponsScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: borderColor),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 4, offset: const Offset(0, 2))
+                      BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 4, offset: const Offset(0, 2))
                     ]
                   ),
                   child: Row(
                     children: [
                       const SizedBox(width: 16),
-                      Icon(Icons.confirmation_number, color: primaryColor.withOpacity(0.6), size: 20),
+                      Icon(Icons.confirmation_number, color: primaryColor.withValues(alpha: 0.6), size: 20),
                       const SizedBox(width: 12),
                       Expanded(
                         child: TextField(
                           decoration: InputDecoration(
                             hintText: 'Ingresar código de cupón',
-                            hintStyle: TextStyle(color: subtextColor.withOpacity(0.6), fontSize: 14),
+                            hintStyle: TextStyle(color: subtextColor.withValues(alpha: 0.6), fontSize: 14),
                             border: InputBorder.none,
                           ),
                           style: TextStyle(color: textColor, fontSize: 14),

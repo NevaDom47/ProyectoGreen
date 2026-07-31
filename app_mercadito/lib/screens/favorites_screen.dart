@@ -93,7 +93,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> with TickerProviderSt
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.heart_broken, size: 48, color: Colors.grey.withOpacity(0.5)),
+                          Icon(Icons.heart_broken, size: 48, color: Colors.grey.withValues(alpha: 0.5)),
                           const SizedBox(height: 16),
                           const Text('No hay favoritos en esta categoría', style: TextStyle(color: Colors.grey)),
                         ],
@@ -174,7 +174,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> with TickerProviderSt
           Container(
             height: 48,
             decoration: BoxDecoration(
-              color: primaryColor.withOpacity(0.05),
+              color: primaryColor.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(12),
             ),
             child: TextField(
@@ -186,8 +186,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> with TickerProviderSt
               },
               decoration: InputDecoration(
                 hintText: 'Buscar en mis favoritos',
-                hintStyle: TextStyle(color: primaryColor.withOpacity(0.4)),
-                prefixIcon: Icon(Icons.search, color: primaryColor.withOpacity(0.6)),
+                hintStyle: TextStyle(color: primaryColor.withValues(alpha: 0.4)),
+                prefixIcon: Icon(Icons.search, color: primaryColor.withValues(alpha: 0.6)),
                 border: InputBorder.none,
                 contentPadding: const EdgeInsets.symmetric(vertical: 14),
               ),
@@ -212,10 +212,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> with TickerProviderSt
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     decoration: BoxDecoration(
-                      color: isSelected ? primaryColor : primaryColor.withOpacity(0.1),
+                      color: isSelected ? primaryColor : primaryColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(18),
                       boxShadow: isSelected
-                          ? [BoxShadow(color: primaryColor.withOpacity(0.2), blurRadius: 4, offset: const Offset(0, 2))]
+                          ? [BoxShadow(color: primaryColor.withValues(alpha: 0.2), blurRadius: 4, offset: const Offset(0, 2))]
                           : null,
                     ),
                     alignment: Alignment.center,
@@ -251,10 +251,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> with TickerProviderSt
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     decoration: BoxDecoration(
-                      color: isSelected ? Colors.orange.shade700 : Colors.orange.shade700.withOpacity(0.1),
+                      color: isSelected ? Colors.orange.shade700 : Colors.orange.shade700.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(18),
                       border: Border.all(
-                        color: isSelected ? Colors.transparent : Colors.orange.shade700.withOpacity(0.3),
+                        color: isSelected ? Colors.transparent : Colors.orange.shade700.withValues(alpha: 0.3),
                       ),
                     ),
                     alignment: Alignment.center,
@@ -411,14 +411,14 @@ class _FavoritesScreenState extends State<FavoritesScreen> with TickerProviderSt
       onTap: () => context.push('/product_detail', extra: data),
       child: Container(
         decoration: BoxDecoration(
-        color: isDark ? primaryColor.withOpacity(0.05) : Colors.white,
+        color: isDark ? primaryColor.withValues(alpha: 0.05) : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: primaryColor.withOpacity(0.05)),
+        border: Border.all(color: primaryColor.withValues(alpha: 0.05)),
         boxShadow: isDark
             ? []
             : [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.03),
+                  color: Colors.black.withValues(alpha: 0.03),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -471,7 +471,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> with TickerProviderSt
                       margin: const EdgeInsets.only(bottom: 6),
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: badgeColor.withOpacity(0.1),
+                        color: badgeColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
@@ -502,7 +502,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> with TickerProviderSt
                         return Container(
                           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                           decoration: BoxDecoration(
-                            color: primaryColor.withOpacity(0.1),
+                            color: primaryColor.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
@@ -531,7 +531,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> with TickerProviderSt
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w500,
-                                  color: primaryColor.withOpacity(0.7),
+                                  color: primaryColor.withValues(alpha: 0.7),
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -545,7 +545,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> with TickerProviderSt
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                         decoration: BoxDecoration(
-                          color: primaryColor.withOpacity(0.05),
+                          color: primaryColor.withValues(alpha: 0.05),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Row(
@@ -608,7 +608,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> with TickerProviderSt
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 elevation: inCart ? 0 : 2,
-                                shadowColor: primaryColor.withOpacity(0.4),
+                                shadowColor: primaryColor.withValues(alpha: 0.4),
                               ),
                             );
                           }

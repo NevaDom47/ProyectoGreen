@@ -29,7 +29,6 @@ import '../screens/provider_profile_screen.dart';
 import '../screens/account_config_screen.dart';
 import '../screens/active_devices_screen.dart';
 import '../screens/two_factor_auth_screen.dart';
-import '../screens/providers_screen.dart';
 import '../screens/sms_verification_screen.dart';
 import '../screens/email_verification_screen.dart';
 import '../screens/authenticator_verification_screen.dart';
@@ -68,15 +67,37 @@ final GoRouter appRouter = GoRouter(
       path: '/provider-onboarding',
       builder: (context, state) => const ProviderOnboardingScreen(),
     ),
+    GoRoute(
+      path: '/home-feed',
+      builder: (context, state) => const HomeFeedScreen(),
+    ),
+    GoRoute(
+      path: '/cart-screen',
+      builder: (context, state) => const CartScreen(),
+    ),
+    GoRoute(
+      path: '/providers-screen',
+      builder: (context, state) => const ProvidersScreen(),
+    ),
+    GoRoute(
+      path: '/chat-list',
+      builder: (context, state) => const ChatListScreen(),
+    ),
     ShellRoute(
       builder: (context, state, child) {
         int currentIndex = 0;
         final path = state.uri.path;
-        if (path.startsWith('/home')) currentIndex = 0;
-        else if (path.startsWith('/cart')) currentIndex = 1;
-        else if (path.startsWith('/providers')) currentIndex = 2; // mercado
-        else if (path.startsWith('/favorites')) currentIndex = 3;
-        else if (path.startsWith('/chats')) currentIndex = 4;
+        if (path.startsWith('/home')) {
+          currentIndex = 0;
+        } else if (path.startsWith('/cart')) {
+          currentIndex = 1;
+        } else if (path.startsWith('/providers')) {
+          currentIndex = 2; // mercado
+        } else if (path.startsWith('/favorites')) {
+          currentIndex = 3;
+        } else if (path.startsWith('/chats')) {
+          currentIndex = 4;
+        }
         
         return Scaffold(
           body: child,

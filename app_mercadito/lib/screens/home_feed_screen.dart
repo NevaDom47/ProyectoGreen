@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'my_reviews_screen.dart';
 import '../widgets/location_selector_modal.dart';
-import '../widgets/custom_bottom_nav_bar.dart';
 import '../data/global_state.dart';
 import '../widgets/animated_favorite_button.dart';
 import '../widgets/product_reviews_modal.dart';
@@ -262,7 +261,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                   width: 200,
                   child: Text(
                     'Tendencias de cosecha y pronósticos de precios para el próximo trimestre.',
-                    style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 12),
+                    style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontSize: 12),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -284,7 +283,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
               child: Icon(
                 Icons.bar_chart,
                 size: 140,
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
               ),
             ),
           ],
@@ -321,7 +320,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,
             itemCount: _isLoading ? 5 : suppliers.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 16),
+            separatorBuilder: (_, _) => const SizedBox(width: 16),
             itemBuilder: (context, index) {
               if (_isLoading) {
                 return SkeletonShimmer(
@@ -404,7 +403,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
         color: isDark ? const Color(0xFF1f2937) : Colors.white,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4)),
         ],
       ),
       child: Column(
@@ -485,7 +484,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.65),
+                      color: Colors.black.withValues(alpha: 0.65),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
@@ -525,9 +524,9 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                                 return Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: theme.colorScheme.primary.withOpacity(0.1),
+                                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(4),
-                                    border: Border.all(color: theme.colorScheme.primary.withOpacity(0.3)),
+                                    border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.3)),
                                   ),
                                   child: Text(
                                     tag.toString(),
@@ -596,7 +595,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                         width: 36,
                         height: 36,
                         decoration: BoxDecoration(
-                          color: badgeColor.withOpacity(0.15),
+                          color: badgeColor.withValues(alpha: 0.15),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(Icons.workspace_premium, color: badgeColor, size: 18),
@@ -629,7 +628,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                         width: 36,
                         height: 36,
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.primary.withOpacity(0.15),
+                          color: theme.colorScheme.primary.withValues(alpha: 0.15),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(Icons.local_florist, color: theme.colorScheme.primary, size: 18),
@@ -710,7 +709,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,
             itemCount: _isLoading ? 3 : offers.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 24),
+            separatorBuilder: (_, _) => const SizedBox(width: 24),
             itemBuilder: (context, index) {
               if (_isLoading) {
                 return const SkeletonProductCard();
@@ -756,7 +755,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,
             itemCount: _isLoading ? 3 : traded.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 24),
+            separatorBuilder: (_, _) => const SizedBox(width: 24),
             itemBuilder: (context, index) {
               if (_isLoading) {
                 return const SkeletonProductCard();
@@ -884,7 +883,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                               Text(item['name'] as String, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                decoration: BoxDecoration(color: badgeColor.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+                                decoration: BoxDecoration(color: badgeColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
                                 child: Text(badge, style: TextStyle(color: badgeColor, fontSize: 10, fontWeight: FontWeight.bold)),
                               ),
                             ],
@@ -900,7 +899,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                                 return Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: theme.colorScheme.primary.withOpacity(0.1),
+                                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: Text(
@@ -988,19 +987,15 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
   Widget _buildDrawer(BuildContext context, bool isDark, Color primaryColor) {
     final bgColor = isDark ? const Color(0xFF022c22) : const Color(0xFFecfdf5); // emerald-950 and emerald-50
     final textHeaderColor = isDark ? const Color(0xFFecfdf5) : const Color(0xFF064e3b); // emerald-50 and emerald-900
-    final subtextColor = isDark ? const Color(0xFFd1fae5).withOpacity(0.6) : const Color(0xFF065f46).withOpacity(0.6); // emerald-100/60 and emerald-800/60
-    final dividerColor = isDark ? const Color(0xFF065f46).withOpacity(0.2) : const Color(0xFFd1fae5).withOpacity(0.2); // emerald-800/20 and emerald-100/20
+    final subtextColor = isDark ? const Color(0xFFd1fae5).withValues(alpha: 0.6) : const Color(0xFF065f46).withValues(alpha: 0.6); // emerald-100/60 and emerald-800/60
+    final dividerColor = isDark ? const Color(0xFF065f46).withValues(alpha: 0.2) : const Color(0xFFd1fae5).withValues(alpha: 0.2); // emerald-800/20 and emerald-100/20
     
     // Normal items
-    final itemTextColor = isDark ? const Color(0xFFd1fae5).withOpacity(0.7) : const Color(0xFF065f46).withOpacity(0.7);
-    final itemHoverBg = isDark ? const Color(0xFF065f46).withOpacity(0.5) : const Color(0xFFd1fae5).withOpacity(0.5);
-
-    // Selected item
-    final selectedBg = isDark ? const Color(0xFFd1fae5) : const Color(0xFF065f46);
-    final selectedTextColor = isDark ? const Color(0xFF022c22) : Colors.white;
+    final itemTextColor = isDark ? const Color(0xFFd1fae5).withValues(alpha: 0.7) : const Color(0xFF065f46).withValues(alpha: 0.7);
+    final itemHoverBg = isDark ? const Color(0xFF065f46).withValues(alpha: 0.5) : const Color(0xFFd1fae5).withValues(alpha: 0.5);
 
     // Logout
-    final logoutColor = isDark ? const Color(0xFFffdad6).withOpacity(0.8) : const Color(0xFFba1a1a).withOpacity(0.8);
+    final logoutColor = isDark ? const Color(0xFFffdad6).withValues(alpha: 0.8) : const Color(0xFFba1a1a).withValues(alpha: 0.8);
 
     final avatarUrl = UserSession.profilePictureUrl ??
         (UserSession.selectedRole == 'proveedor'
@@ -1191,7 +1186,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                   Text(
                     'Emerald Harvest',
                     style: TextStyle(
-                      color: textHeaderColor.withOpacity(0.4),
+                      color: textHeaderColor.withValues(alpha: 0.4),
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
                     ),
@@ -1200,7 +1195,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                   Text(
                     'v2.4.0 • El Mercadito',
                     style: TextStyle(
-                      color: subtextColor.withOpacity(0.6),
+                      color: subtextColor.withValues(alpha: 0.6),
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1,

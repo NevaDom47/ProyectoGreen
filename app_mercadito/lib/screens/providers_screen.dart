@@ -131,8 +131,8 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
     return Container(
       padding: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF0f231d).withOpacity(0.9) : const Color(0xFFf5f8f7).withOpacity(0.9),
-        border: Border(bottom: BorderSide(color: theme.colorScheme.primary.withOpacity(0.1))),
+        color: isDark ? const Color(0xFF0f231d).withValues(alpha: 0.9) : const Color(0xFFf5f8f7).withValues(alpha: 0.9),
+        border: Border(bottom: BorderSide(color: theme.colorScheme.primary.withValues(alpha: 0.1))),
       ),
       child: Column(
         children: [
@@ -162,7 +162,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
               decoration: BoxDecoration(
                 color: isDark ? Colors.grey[800] : Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: theme.colorScheme.primary.withOpacity(0.2)),
+                border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.2)),
               ),
               child: Row(
                 children: [
@@ -190,7 +190,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               scrollDirection: Axis.horizontal,
               itemCount: chips.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              separatorBuilder: (_, _) => const SizedBox(width: 8),
               itemBuilder: (context, index) {
                 final isSelected = selectedChips.contains(index);
                 IconData icon;
@@ -227,7 +227,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                     decoration: BoxDecoration(
                       color: isSelected ? theme.colorScheme.primary : (isDark ? Colors.grey[800] : Colors.white),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: isSelected ? Colors.transparent : theme.colorScheme.primary.withOpacity(0.2)),
+                      border: Border.all(color: isSelected ? Colors.transparent : theme.colorScheme.primary.withValues(alpha: 0.2)),
                     ),
                     child: Row(
                       children: [
@@ -257,7 +257,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                 decoration: BoxDecoration(
                   color: isDark ? Colors.grey[800] : Colors.white,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: theme.colorScheme.primary.withOpacity(0.1)),
+                  border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.1)),
                 ),
                 child: Column(
                   children: [
@@ -268,7 +268,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.primary.withOpacity(0.1),
+                            color: theme.colorScheme.primary.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text('Hasta ${_distance.toInt()} km', style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 12)),
@@ -308,7 +308,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
               decoration: BoxDecoration(
                 color: isDark ? Colors.grey[800] : Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: theme.colorScheme.primary.withOpacity(0.1)),
+                border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.1)),
               ),
               child: Column(
                 children: [
@@ -331,7 +331,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                             decoration: BoxDecoration(
                               color: _isOpenNow ? theme.colorScheme.primary : Colors.transparent,
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: _isOpenNow ? theme.colorScheme.primary : theme.colorScheme.primary.withOpacity(0.2)),
+                              border: Border.all(color: _isOpenNow ? theme.colorScheme.primary : theme.colorScheme.primary.withValues(alpha: 0.2)),
                             ),
                             child: Text('Abierto ahora', style: TextStyle(color: _isOpenNow ? Colors.white : (isDark ? Colors.grey[300] : Colors.grey[600]), fontSize: 12, fontWeight: FontWeight.bold)),
                           ),
@@ -347,7 +347,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                             decoration: BoxDecoration(
                               color: !_isOpenNow ? theme.colorScheme.primary : Colors.transparent,
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: !_isOpenNow ? theme.colorScheme.primary : theme.colorScheme.primary.withOpacity(0.2)),
+                              border: Border.all(color: !_isOpenNow ? theme.colorScheme.primary : theme.colorScheme.primary.withValues(alpha: 0.2)),
                             ),
                             child: Text('Cualquier horario', style: TextStyle(color: !_isOpenNow ? Colors.white : (isDark ? Colors.grey[300] : Colors.grey[600]), fontSize: 12, fontWeight: FontWeight.bold)),
                           ),
@@ -369,7 +369,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
       decoration: BoxDecoration(
         color: isDark ? Colors.grey[800] : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.colorScheme.primary.withOpacity(0.1)),
+        border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.1)),
         boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))],
       ),
       child: Column(
@@ -431,7 +431,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF0f172a).withOpacity(0.9) : Colors.white.withOpacity(0.9),
+                      color: isDark ? const Color(0xFF0f172a).withValues(alpha: 0.9) : Colors.white.withValues(alpha: 0.9),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
@@ -486,7 +486,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.orange.withOpacity(0.1),
+                        color: Colors.orange.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Row(
@@ -532,7 +532,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                         color: isDark ? const Color(0xFF16251E) : const Color(0xFFEAF2E8),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: isDark ? const Color(0xFF23352B) : theme.colorScheme.primary.withOpacity(0.2),
+                          color: isDark ? const Color(0xFF23352B) : theme.colorScheme.primary.withValues(alpha: 0.2),
                         ),
                       ),
                       child: Row(

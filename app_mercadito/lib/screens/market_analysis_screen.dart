@@ -81,7 +81,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                   Tab(text: 'Tendencias'),
                 ],
               ),
-              Divider(height: 1, color: primaryColor.withOpacity(0.1)),
+              Divider(height: 1, color: primaryColor.withValues(alpha: 0.1)),
             ],
           ),
         ),
@@ -126,7 +126,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: primaryColor.withOpacity(0.1),
+                  color: primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
@@ -206,12 +206,12 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? primaryColor.withOpacity(0.05) : surfaceColor,
+        color: isDark ? primaryColor.withValues(alpha: 0.05) : surfaceColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: primaryColor.withOpacity(0.05)),
+        border: Border.all(color: primaryColor.withValues(alpha: 0.05)),
         boxShadow: isDark ? [] : [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -223,7 +223,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: primaryColor.withOpacity(0.1),
+              color: primaryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: ClipRRect(
@@ -314,11 +314,11 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
           // News Card 1
           Container(
             decoration: BoxDecoration(
-              color: isDark ? primaryColor.withOpacity(0.05) : surfaceColor,
+              color: isDark ? primaryColor.withValues(alpha: 0.05) : surfaceColor,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: primaryColor.withOpacity(0.05)),
+              border: Border.all(color: primaryColor.withValues(alpha: 0.05)),
               boxShadow: isDark ? [] : [
-                BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 4, offset: const Offset(0, 2)),
+                BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 4, offset: const Offset(0, 2)),
               ],
             ),
             clipBehavior: Clip.antiAlias,
@@ -344,7 +344,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: primaryColor.withOpacity(0.1),
+                              color: primaryColor.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
@@ -386,11 +386,11 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
           Container(
             height: 112, // approx h-28
             decoration: BoxDecoration(
-              color: isDark ? primaryColor.withOpacity(0.05) : surfaceColor,
+              color: isDark ? primaryColor.withValues(alpha: 0.05) : surfaceColor,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: primaryColor.withOpacity(0.05)),
+              border: Border.all(color: primaryColor.withValues(alpha: 0.05)),
               boxShadow: isDark ? [] : [
-                BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 4, offset: const Offset(0, 2)),
+                BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 4, offset: const Offset(0, 2)),
               ],
             ),
             clipBehavior: Clip.antiAlias,
@@ -416,7 +416,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
-                                color: Colors.orange.withOpacity(0.15),
+                                color: Colors.orange.withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: const Text(

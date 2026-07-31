@@ -36,7 +36,7 @@ class SupplierQuickViewBottomSheet extends StatelessWidget {
     final primary = theme.colorScheme.primary;
     
     final Color bgColor = isDark ? const Color(0xFF1c2c26) : Colors.white;
-    final Color surfaceColor = isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFf1f4f0);
+    final Color surfaceColor = isDark ? Colors.white.withValues(alpha: 0.05) : const Color(0xFFf1f4f0);
     final Color textColor = isDark ? Colors.white : const Color(0xFF181d1a);
     final Color subTextColor = isDark ? Colors.white70 : const Color(0xFF3f4943);
 
@@ -54,7 +54,7 @@ class SupplierQuickViewBottomSheet extends StatelessWidget {
             height: 80,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: primary.withOpacity(0.1),
+              color: primary.withValues(alpha: 0.1),
               borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
             ),
             child: Stack(
@@ -66,7 +66,7 @@ class SupplierQuickViewBottomSheet extends StatelessWidget {
                     onPressed: () => Navigator.pop(context),
                     icon: const Icon(Icons.close, size: 20),
                     style: IconButton.styleFrom(
-                      backgroundColor: bgColor.withOpacity(0.8),
+                      backgroundColor: bgColor.withValues(alpha: 0.8),
                       padding: const EdgeInsets.all(8),
                     ),
                   ),
@@ -100,7 +100,7 @@ class SupplierQuickViewBottomSheet extends StatelessWidget {
                         border: Border.all(color: bgColor, width: 4),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: Colors.black.withValues(alpha: 0.1),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           ),
@@ -229,7 +229,7 @@ class SupplierQuickViewBottomSheet extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 24),
                         scrollDirection: Axis.horizontal,
                         itemCount: featuredProducts.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 12),
+                        separatorBuilder: (_, _) => const SizedBox(width: 12),
                         itemBuilder: (context, index) {
                           final product = featuredProducts[index];
                           return Container(
@@ -398,7 +398,7 @@ class SupplierQuickViewBottomSheet extends StatelessWidget {
     return Container(
       height: 20,
       width: 1,
-      color: Colors.black.withOpacity(0.05),
+      color: Colors.black.withValues(alpha: 0.05),
     );
   }
 }

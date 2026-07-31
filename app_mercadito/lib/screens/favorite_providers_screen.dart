@@ -144,11 +144,11 @@ class _FavoriteProvidersScreenState extends State<FavoriteProvidersScreen> with 
       decoration: BoxDecoration(
         color: surfaceColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFbec9c1).withOpacity(0.2)),
+        border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.05) : const Color(0xFFbec9c1).withValues(alpha: 0.2)),
         boxShadow: [
           if (!isDark)
             BoxShadow(
-              color: Colors.black.withOpacity(0.02),
+              color: Colors.black.withValues(alpha: 0.02),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -166,7 +166,7 @@ class _FavoriteProvidersScreenState extends State<FavoriteProvidersScreen> with 
           hintText: 'Buscar en mis favoritos...',
           hintStyle: GoogleFonts.plusJakartaSans(
             fontSize: 14,
-            color: isDark ? Colors.white38 : const Color(0xFF3f4943).withOpacity(0.6),
+            color: isDark ? Colors.white38 : const Color(0xFF3f4943).withValues(alpha: 0.6),
           ),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(vertical: 16),
@@ -179,7 +179,6 @@ class _FavoriteProvidersScreenState extends State<FavoriteProvidersScreen> with 
     final textColor = isDark ? Colors.white : const Color(0xFF181d1a);
     final secondaryTextColor = isDark ? Colors.grey[400] : const Color(0xFF3f4943);
     final isVerified = provider['verified'] ?? true;
-    final primaryGreen = isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f);
 
     // Default mock data for testing UI based on the new design
     final List<String> tags = provider['tags'] != null && provider['tags'].toString().isNotEmpty
@@ -195,12 +194,12 @@ class _FavoriteProvidersScreenState extends State<FavoriteProvidersScreen> with 
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.02),
+              color: Colors.black.withValues(alpha: 0.02),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
           ],
-          border: Border.all(color: isDark ? Colors.white.withOpacity(0.05) : Colors.transparent),
+          border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.transparent),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -301,12 +300,12 @@ class _FavoriteProvidersScreenState extends State<FavoriteProvidersScreen> with 
                       Container(
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
-                          color: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.8),
+                          color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.white.withValues(alpha: 0.8),
                           shape: BoxShape.circle,
                           boxShadow: [
                             if (!isDark)
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
+                                color: Colors.black.withValues(alpha: 0.05),
                                 blurRadius: 4,
                                 offset: const Offset(0, 2),
                               ),
@@ -360,7 +359,7 @@ class _FavoriteProvidersScreenState extends State<FavoriteProvidersScreen> with 
                     children: tags.take(3).map((tag) => Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFebefea),
+                        color: isDark ? Colors.white.withValues(alpha: 0.05) : const Color(0xFFebefea),
                         border: Border.all(color: isDark ? Colors.white24 : const Color(0xFFbec9c1)),
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -393,17 +392,17 @@ class _FavoriteProvidersScreenState extends State<FavoriteProvidersScreen> with 
       margin: const EdgeInsets.only(top: 24),
       padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
       decoration: BoxDecoration(
-        color: isDark ? Colors.white.withOpacity(0.02) : const Color(0xFFebefea).withOpacity(0.3), // surface-container/30
+        color: isDark ? Colors.white.withValues(alpha: 0.02) : const Color(0xFFebefea).withValues(alpha: 0.3), // surface-container/30
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: isDark ? Colors.white.withOpacity(0.1) : const Color(0xFFbec9c1).withOpacity(0.4),
+          color: isDark ? Colors.white.withValues(alpha: 0.1) : const Color(0xFFbec9c1).withValues(alpha: 0.4),
           style: BorderStyle.solid,
         ),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.person_add_alt_1, size: 48, color: isDark ? Colors.white24 : const Color(0xFF00462f).withOpacity(0.3)),
+          Icon(Icons.person_add_alt_1, size: 48, color: isDark ? Colors.white24 : const Color(0xFF00462f).withValues(alpha: 0.3)),
           const SizedBox(height: 16),
           Text(
             'Descubre más productores',
@@ -418,7 +417,7 @@ class _FavoriteProvidersScreenState extends State<FavoriteProvidersScreen> with 
             'Explora el mercado para encontrar proveedores y agregalos a tus favoritos para acceso rapido.',
             textAlign: TextAlign.center,
             style: GoogleFonts.plusJakartaSans(
-              color: isDark ? Colors.white54 : const Color(0xFF3f4943).withOpacity(0.7),
+              color: isDark ? Colors.white54 : const Color(0xFF3f4943).withValues(alpha: 0.7),
               fontSize: 12,
               height: 1.5,
             ),

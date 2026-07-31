@@ -18,7 +18,7 @@ class SettingsScreen extends StatelessWidget {
         final primaryColor = const Color(0xFF00462f);
         final textColor = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0f172a); // slate-100 / slate-900
         final subtextColor = isDark ? const Color(0xFF64748b) : const Color(0xFF64748b);
-        final borderColor = isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05);
+        final borderColor = isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.05);
 
         return Scaffold(
           backgroundColor: bgColor,
@@ -57,7 +57,7 @@ class SettingsScreen extends StatelessWidget {
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF10B981).withOpacity(0.15), // vibrant emerald light
+                            color: const Color(0xFF10B981).withValues(alpha: 0.15), // vibrant emerald light
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: const Icon(Icons.palette, color: Color(0xFF10B981)), // vivid green
@@ -70,7 +70,7 @@ class SettingsScreen extends StatelessWidget {
                             const SizedBox(width: 12),
                             Switch(
                               value: isDark,
-                              activeColor: primaryColor,
+                              activeThumbColor: primaryColor,
                               onChanged: (val) {
                                 // Toggle globally
                                 appThemeMode.value = val ? ThemeMode.dark : ThemeMode.light;
@@ -147,7 +147,7 @@ class SettingsScreen extends StatelessWidget {
                     child: Text(
                       'EL MERCADITO V2.4.1 (EMERALD HARVEST EDITION)',
                       style: TextStyle(
-                        color: subtextColor.withOpacity(0.5),
+                        color: subtextColor.withValues(alpha: 0.5),
                         fontSize: 8,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 1.5,
@@ -185,7 +185,7 @@ class SettingsScreen extends StatelessWidget {
         border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -209,7 +209,7 @@ class SettingsScreen extends StatelessWidget {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: const Color(0xFF10B981).withOpacity(0.15), // vibrant emerald light
+          color: const Color(0xFF10B981).withValues(alpha: 0.15), // vibrant emerald light
           borderRadius: BorderRadius.circular(20),
         ),
         child: Icon(icon, color: const Color(0xFF10B981)), // vivid green

@@ -18,7 +18,7 @@ class _SearchScreenState extends State<SearchScreen> {
   String _activeFilter = 'Todos';
   String _activeCategory = 'Frutas y Verduras';
   String _activeQuery = '';
-  List<String> _searchHistory = [];
+  final List<String> _searchHistory = [];
   bool _isLoading = true;
 
   final Map<String, String> _selectedUnits = {};
@@ -291,7 +291,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                               side: BorderSide(
-                                color: isSelected ? theme.colorScheme.primary : Colors.grey.withOpacity(0.2),
+                                color: isSelected ? theme.colorScheme.primary : Colors.grey.withValues(alpha: 0.2),
                               ),
                             ),
                             showCheckmark: false,
@@ -357,7 +357,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: ActionChip(
                   label: Text(term, style: const TextStyle(fontSize: 12)),
                   backgroundColor: Colors.transparent,
-                  side: BorderSide(color: Colors.grey.withOpacity(0.3)),
+                  side: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   onPressed: () {
                     _searchController.text = term;
@@ -422,13 +422,13 @@ class _SearchScreenState extends State<SearchScreen> {
                         width: 60,
                         height: 60,
                         decoration: BoxDecoration(
-                          color: isSelected ? theme.colorScheme.primary.withOpacity(0.1) : surfaceColor,
+                          color: isSelected ? theme.colorScheme.primary.withValues(alpha: 0.1) : surfaceColor,
                           shape: BoxShape.circle,
                           border: isSelected ? Border.all(color: theme.colorScheme.primary, width: 2) : null,
                           boxShadow: [
                             if (!isSelected)
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
+                                color: Colors.black.withValues(alpha: 0.05),
                                 blurRadius: 4,
                                 offset: const Offset(0, 2),
                               ),
@@ -540,12 +540,19 @@ class _SearchScreenState extends State<SearchScreen> {
     double basePrice = double.tryParse(p['price'].toString()) ?? 0.0;
     double displayPrice = basePrice;
     if (selectedUnit != p['unit']) {
-      if (selectedUnit == 'LB' && p['unit'] == 'KG') displayPrice = basePrice * 0.45;
-      else if (selectedUnit == 'KG' && p['unit'] == 'SACO') displayPrice = basePrice / 50;
-      else if (selectedUnit == 'SACO' && p['unit'] == 'KG') displayPrice = basePrice * 50;
-      else if (selectedUnit == 'CAJA' && p['unit'] == 'DOCENA') displayPrice = basePrice * 2.5;
-      else if (selectedUnit == 'DOCENA' && p['unit'] == 'CAJA') displayPrice = basePrice / 2.5;
-      else displayPrice = basePrice * 1.5; // fallback
+      if (selectedUnit == 'LB' && p['unit'] == 'KG') {
+        displayPrice = basePrice * 0.45;
+      } else if (selectedUnit == 'KG' && p['unit'] == 'SACO') {
+        displayPrice = basePrice / 50;
+      } else if (selectedUnit == 'SACO' && p['unit'] == 'KG') {
+        displayPrice = basePrice * 50;
+      } else if (selectedUnit == 'CAJA' && p['unit'] == 'DOCENA') {
+        displayPrice = basePrice * 2.5;
+      } else if (selectedUnit == 'DOCENA' && p['unit'] == 'CAJA') {
+        displayPrice = basePrice / 2.5;
+      } else {
+        displayPrice = basePrice * 1.5; // fallback
+      }
     }
 
     return GestureDetector(
@@ -557,7 +564,7 @@ class _SearchScreenState extends State<SearchScreen> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -599,7 +606,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           return AnimatedFavoriteButton(
                             isFavorite: isFav,
                             size: 18,
-                            backgroundColor: Colors.white.withOpacity(0.8),
+                            backgroundColor: Colors.white.withValues(alpha: 0.8),
                             onTap: () {
                               final productForFav = {
                                 'id': p['id'],

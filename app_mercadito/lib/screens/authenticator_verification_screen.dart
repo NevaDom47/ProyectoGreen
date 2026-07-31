@@ -34,9 +34,8 @@ class _AuthenticatorVerificationScreenState extends State<AuthenticatorVerificat
     final primaryGreen = const Color(0xFF00462f);
     final primaryContainer = const Color(0xFF036042);
     final onSurfaceVariant = isDark ? const Color(0xFFa0afa6) : const Color(0xFF3f4943);
-    final secondary = isDark ? const Color(0xFF89d6b0) : const Color(0xFF486456);
     final surfaceContainerLow = isDark ? const Color(0xFF18241e) : const Color(0xFFf1f4f0);
-    final outlineVariant = isDark ? Colors.white.withOpacity(0.1) : const Color(0xFFbec9c1).withOpacity(0.2);
+    final outlineVariant = isDark ? Colors.white.withValues(alpha: 0.1) : const Color(0xFFbec9c1).withValues(alpha: 0.2);
     final surfaceContainerHigh = isDark ? const Color(0xFF26362e) : const Color(0xFFe6e9e4);
     final secondaryContainer = const Color(0xFFcaead7);
 
@@ -91,7 +90,7 @@ class _AuthenticatorVerificationScreenState extends State<AuthenticatorVerificat
                     border: Border.all(color: outlineVariant),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.02),
+                        color: Colors.black.withValues(alpha: 0.02),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       )
@@ -106,7 +105,7 @@ class _AuthenticatorVerificationScreenState extends State<AuthenticatorVerificat
                         child: Icon(
                           Icons.shield_outlined,
                           size: 100,
-                          color: outlineVariant.withOpacity(isDark ? 0.05 : 0.2),
+                          color: outlineVariant.withValues(alpha: isDark ? 0.05 : 0.2),
                         ),
                       ),
                       Column(
@@ -243,7 +242,7 @@ class _AuthenticatorVerificationScreenState extends State<AuthenticatorVerificat
           counterText: '',
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
           hintText: '•',
-          hintStyle: TextStyle(color: Colors.grey.withOpacity(0.5)),
+          hintStyle: TextStyle(color: Colors.grey.withValues(alpha: 0.5)),
           contentPadding: const EdgeInsets.symmetric(vertical: 14),
         ),
         onChanged: (value) {

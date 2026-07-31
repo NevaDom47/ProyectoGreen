@@ -32,7 +32,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
         final primaryColor = const Color(0xFF00462f);
         final textColor = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0f172a);
         final surfaceColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-        final borderColor = isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05);
+        final borderColor = isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.05);
         final vividGreen = const Color(0xFF10B981);
         final dangerColor = const Color(0xFFfc424d);
         final subtextColor = isDark ? const Color(0xFF64748b) : const Color(0xFF64748b);
@@ -218,7 +218,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         elevation: 4,
-                        shadowColor: primaryColor.withOpacity(0.4),
+                        shadowColor: primaryColor.withValues(alpha: 0.4),
                       ),
                     ),
                   ),
@@ -251,7 +251,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
         border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -289,7 +289,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
         ),
       ) : null,
       value: value,
-      activeColor: activeColor,
+      activeThumbColor: activeColor,
       onChanged: onChanged,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
     );
@@ -312,7 +312,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
           fontSize: 15,
         ),
       ),
-      trailing: Icon(Icons.chevron_right, color: iconColor.withOpacity(0.5)),
+      trailing: Icon(Icons.chevron_right, color: iconColor.withValues(alpha: 0.5)),
       onTap: onTap,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
     );

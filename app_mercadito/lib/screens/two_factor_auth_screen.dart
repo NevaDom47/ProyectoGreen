@@ -23,10 +23,7 @@ class _TwoFactorAuthScreenState extends State<TwoFactorAuthScreen> {
     final surfaceColor = isDark ? const Color(0xFF1c2c26) : Colors.white;
     final onSurfaceColor = isDark ? const Color(0xFFeef2ed) : const Color(0xFF181d1a);
     final secondaryTextColor = isDark ? const Color(0xFF89d6b0) : const Color(0xFF486456);
-    final outlineColor = isDark ? Colors.white.withOpacity(0.1) : const Color(0xFFbec9c1).withOpacity(0.2);
-    final accentGreen = const Color(0xFF10B981);
-
-    const avatarUrl = 'https://lh3.googleusercontent.com/aida-public/AB6AXuBsIZyjU5mngGZVEHpehZnqLVn6gyd1kdzZNZHsiz7vXNJjiy5tPJ3Sh1HDtSAqwIrXET6t6AyIQB_JPZ5ab6IaEwqNl5W6g2qIP6JDYJJRRCqN04QcIYkR7uHXnesSDIClo2z9HlmZUNwsGGg2kFDzbCuDPGPs850rYWNJjfjiJ5h4-lZ9ZWHskxaDKZ61BPMJjHTU68qbM1zlyh8egGJuh3F9yKIms7grS7M-eyV46-rmWPkzmtTXJ__o7QrUUhU0mnCEcQ6RNzI';
+    final outlineColor = isDark ? Colors.white.withValues(alpha: 0.1) : const Color(0xFFbec9c1).withValues(alpha: 0.2);
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -159,13 +156,13 @@ class _TwoFactorAuthScreenState extends State<TwoFactorAuthScreen> {
               boxShadow: [
                 if (isSelected)
                   BoxShadow(
-                    color: primaryGreen.withOpacity(0.05),
+                    color: primaryGreen.withValues(alpha: 0.05),
                     blurRadius: 20,
                     offset: const Offset(0, 8),
                   )
                 else
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
+                    color: Colors.black.withValues(alpha: 0.02),
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   )
@@ -204,7 +201,7 @@ class _TwoFactorAuthScreenState extends State<TwoFactorAuthScreen> {
                         subtitle,
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 12,
-                          color: isDark ? const Color(0xFF89d6b0).withOpacity(0.7) : Colors.grey[600],
+                          color: isDark ? const Color(0xFF89d6b0).withValues(alpha: 0.7) : Colors.grey[600],
                         ),
                       ),
                     ],
@@ -216,7 +213,7 @@ class _TwoFactorAuthScreenState extends State<TwoFactorAuthScreen> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: isSelected ? primaryGreen : Colors.grey.withOpacity(0.3),
+                      color: isSelected ? primaryGreen : Colors.grey.withValues(alpha: 0.3),
                       width: 2,
                     ),
                   ),
@@ -242,7 +239,7 @@ class _TwoFactorAuthScreenState extends State<TwoFactorAuthScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF00462f).withOpacity(0.08),
+        color: const Color(0xFF00462f).withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -272,7 +269,7 @@ class _TwoFactorAuthScreenState extends State<TwoFactorAuthScreen> {
         color: isDark ? const Color(0xFF0f231d) : Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, -4),
           )

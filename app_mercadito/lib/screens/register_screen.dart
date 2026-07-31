@@ -121,7 +121,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     
     final primaryColor = const Color(0xFF016042);
     final bgColor = isDark ? const Color(0xFF0f231d) : const Color(0xFFf5f8f7);
-    final surfaceColor = isDark ? const Color(0xFF1e293b).withOpacity(0.5) : Colors.white;
+    final surfaceColor = isDark ? const Color(0xFF1e293b).withValues(alpha: 0.5) : Colors.white;
     final textColor = isDark ? Colors.white : const Color(0xFF0f172a); 
     final hintColor = isDark ? Colors.grey.shade500 : Colors.grey.shade400;
 
@@ -143,7 +143,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -171,7 +171,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             height: 48,
                             margin: const EdgeInsets.only(bottom: 8),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white.withValues(alpha: 0.2),
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(Icons.storefront, color: Colors.white, size: 28),
@@ -213,7 +213,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       fit: BoxFit.cover,
                     ),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2)),
+                      BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: const Offset(0, 2)),
                     ],
                   ),
                   alignment: Alignment.bottomLeft,
@@ -229,7 +229,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         begin: Alignment.bottomCenter,
                         end: Alignment.topCenter,
                         colors: [
-                          primaryColor.withOpacity(0.8),
+                          primaryColor.withValues(alpha: 0.8),
                           Colors.transparent,
                         ],
                       ),
@@ -338,7 +338,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         elevation: 4,
-                        shadowColor: primaryColor.withOpacity(0.4),
+                        shadowColor: primaryColor.withValues(alpha: 0.4),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -438,7 +438,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Text(
             label,
             style: TextStyle(
-              color: isDark ? primaryColor.withOpacity(0.9) : primaryColor,
+              color: isDark ? primaryColor.withValues(alpha: 0.9) : primaryColor,
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
@@ -449,11 +449,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
           decoration: BoxDecoration(
             color: surfaceColor,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: primaryColor.withOpacity(0.2)),
+            border: Border.all(color: primaryColor.withValues(alpha: 0.2)),
             boxShadow: [
               if (!isDark)
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.02),
+                  color: Colors.black.withValues(alpha: 0.02),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -464,7 +464,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               Container(
                 width: 48,
                 alignment: Alignment.center,
-                child: Icon(icon, color: primaryColor.withOpacity(0.6), size: 20),
+                child: Icon(icon, color: primaryColor.withValues(alpha: 0.6), size: 20),
               ),
               Expanded(
                 child: TextField(
@@ -490,7 +490,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     alignment: Alignment.center,
                     child: Icon(
                       obscureText ? Icons.visibility : Icons.visibility_off,
-                      color: primaryColor.withOpacity(0.4),
+                      color: primaryColor.withValues(alpha: 0.4),
                       size: 20,
                     ),
                   ),

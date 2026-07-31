@@ -81,7 +81,6 @@ class _BuyerOnboardingScreenState extends State<BuyerOnboardingScreen> {
   // Step 3 variables
   String _selectedAvatarUrl = 'assets/images/Foto sin perfil.png';
 
-  File? _localAvatarFile;
   String? _pickedImagePath;
   final ImagePicker _picker = ImagePicker();
 
@@ -91,24 +90,13 @@ class _BuyerOnboardingScreenState extends State<BuyerOnboardingScreen> {
       if (image != null) {
         setState(() {
           _pickedImagePath = image.path;
-          if (!kIsWeb) {
-            _localAvatarFile = File(image.path);
-          }
+          _selectedAvatarUrl = image.path;
         });
       }
     } catch (e) {
       debugPrint("Error picking image: $e");
     }
   }
-
-  final List<String> _simulatedAvatars = [
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuBjICzybPKvS5Xqs5EgqqAa5omMklKIYUcyKDaRL_07LUHApmJPULuU_BJ1BSfuxjDNuOJN4_BUJ78BS5ynmTkM1oYFgbZ6NpSZmRSNZ8eBgQybBhxe1cfxRN2suyyZ71WQq-Oodoe2-TigzReePlYj8obUTsbIptPvEXrgcyCW0lwCNDwVDjN3iDhSNbGWZ2ogRZYyPAvoOhZG-PRqCeIecaAhdGT_irbaIDi_hGq2eLMhZurCKAf8wh4KNUDW7KrBSGkxU582zB4', // Juan
-    'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150', // Profile A
-    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', // Profile B
-    'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', // Profile C
-    'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150', // Profile D
-    'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150', // Profile E
-  ];
 
   @override
   void dispose() {
@@ -197,7 +185,7 @@ class _BuyerOnboardingScreenState extends State<BuyerOnboardingScreen> {
                                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16),
-                                  borderSide: BorderSide(color: primary.withOpacity(0.5)),
+                                  borderSide: BorderSide(color: primary.withValues(alpha: 0.5)),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16),
@@ -493,86 +481,6 @@ class _BuyerOnboardingScreenState extends State<BuyerOnboardingScreen> {
     context.go('/home');
   }
 
-  void _openAvatarPicker() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(28),
-              topRight: Radius.circular(28),
-            ),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Selecciona una Foto de Perfil',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: _colorPrimary,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Elige entre estas fotos premium preparadas para ti.',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: _colorOnSurfaceVariant,
-                ),
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                height: 100,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _simulatedAvatars.length,
-                  separatorBuilder: (c, i) => const SizedBox(width: 16),
-                  itemBuilder: (context, index) {
-                    final avatar = _simulatedAvatars[index];
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedAvatarUrl = avatar;
-                        });
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: _selectedAvatarUrl == avatar
-                                ? _colorPrimary
-                                : Colors.transparent,
-                            width: 3,
-                          ),
-                        ),
-                        padding: const EdgeInsets.all(2),
-                        child: CircleAvatar(
-                          backgroundImage: NetworkImage(avatar),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 24),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -732,7 +640,7 @@ class _BuyerOnboardingScreenState extends State<BuyerOnboardingScreen> {
               color: cardBg,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                color: isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withOpacity(0.3),
+                color: isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withValues(alpha: 0.3),
                 width: 1.5,
               ),
             ),
@@ -909,7 +817,7 @@ class _BuyerOnboardingScreenState extends State<BuyerOnboardingScreen> {
               color: cardBg,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                color: isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withOpacity(0.3),
+                color: isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withValues(alpha: 0.3),
                 width: 1.5,
               ),
             ),
@@ -1044,7 +952,7 @@ class _BuyerOnboardingScreenState extends State<BuyerOnboardingScreen> {
               color: cardBg,
               borderRadius: BorderRadius.circular(28),
               border: Border.all(
-                color: isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withOpacity(0.3),
+                color: isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withValues(alpha: 0.3),
                 width: 1.5,
               ),
             ),
@@ -1086,7 +994,7 @@ class _BuyerOnboardingScreenState extends State<BuyerOnboardingScreen> {
                           border: Border.all(color: cardBg, width: 4),
                           boxShadow: [
                             BoxShadow(
-                              color: primary.withOpacity(0.3),
+                              color: primary.withValues(alpha: 0.3),
                               blurRadius: 8,
                               offset: const Offset(0, 4),
                             ),

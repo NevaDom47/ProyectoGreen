@@ -42,7 +42,7 @@ class CouponCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectivePrimary = isFaded ? subtextColor.withOpacity(0.6) : primaryColor;
+    final effectivePrimary = isFaded ? subtextColor.withValues(alpha: 0.6) : primaryColor;
     final effectiveText = isFaded ? subtextColor : textColor;
 
     return Opacity(
@@ -58,7 +58,7 @@ class CouponCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: borderColor),
               boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 4, offset: const Offset(0, 2))
+                BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 4, offset: const Offset(0, 2))
               ],
             ),
             child: Row(
@@ -68,7 +68,7 @@ class CouponCard extends StatelessWidget {
                   width: 96,
                   height: double.infinity,
                   decoration: BoxDecoration(
-                    color: effectivePrimary.withOpacity(0.1),
+                    color: effectivePrimary.withValues(alpha: 0.1),
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(11),
                       bottomLeft: Radius.circular(11),
@@ -109,7 +109,7 @@ class CouponCard extends StatelessWidget {
                             width: 2,
                             height: dashHeight,
                             child: DecoratedBox(
-                              decoration: BoxDecoration(color: effectivePrimary.withOpacity(0.3)),
+                              decoration: BoxDecoration(color: effectivePrimary.withValues(alpha: 0.3)),
                             ),
                           );
                         }),
@@ -145,7 +145,7 @@ class CouponCard extends StatelessWidget {
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                     decoration: BoxDecoration(
-                                      color: effectivePrimary.withOpacity(0.2),
+                                      color: effectivePrimary.withValues(alpha: 0.2),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
@@ -165,7 +165,7 @@ class CouponCard extends StatelessWidget {
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: effectivePrimary.withOpacity(0.1),
+                                  color: effectivePrimary.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(6),
                                 ),
                                 child: Row(
@@ -197,7 +197,7 @@ class CouponCard extends StatelessWidget {
                               children: [
                                 Text(
                                   'VENCE EL',
-                                  style: TextStyle(color: subtextColor.withOpacity(0.6), fontSize: 10, fontWeight: FontWeight.bold),
+                                  style: TextStyle(color: subtextColor.withValues(alpha: 0.6), fontSize: 10, fontWeight: FontWeight.bold),
                                 ),
                                 Text(
                                   expiry,
@@ -210,7 +210,7 @@ class CouponCard extends StatelessWidget {
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color: isFaded ? effectivePrimary.withOpacity(0.2) : effectivePrimary,
+                                  color: isFaded ? effectivePrimary.withValues(alpha: 0.2) : effectivePrimary,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Row(

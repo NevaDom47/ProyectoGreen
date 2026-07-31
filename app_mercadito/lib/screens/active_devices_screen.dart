@@ -43,7 +43,7 @@ class _ActiveDevicesScreenState extends State<ActiveDevicesScreen> with SingleTi
     final surfaceColor = isDark ? const Color(0xFF1c2c26) : Colors.white;
     final onSurfaceColor = isDark ? const Color(0xFFeef2ed) : const Color(0xFF181d1a);
     final secondaryTextColor = isDark ? const Color(0xFF89d6b0) : const Color(0xFF486456);
-    final outlineColor = isDark ? Colors.white.withOpacity(0.1) : const Color(0xFFbec9c1).withOpacity(0.2);
+    final outlineColor = isDark ? Colors.white.withValues(alpha: 0.1) : const Color(0xFFbec9c1).withValues(alpha: 0.2);
     final errorColor = const Color(0xFFba1a1a);
 
     return Scaffold(
@@ -99,7 +99,7 @@ class _ActiveDevicesScreenState extends State<ActiveDevicesScreen> with SingleTi
         border: Border.all(color: outlineColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           )
@@ -115,7 +115,7 @@ class _ActiveDevicesScreenState extends State<ActiveDevicesScreen> with SingleTi
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF00462f).withOpacity(0.1),
+                    color: const Color(0xFF00462f).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(99),
                   ),
                   child: Text(
@@ -155,7 +155,7 @@ class _ActiveDevicesScreenState extends State<ActiveDevicesScreen> with SingleTi
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF00462f).withOpacity(0.05),
+                    color: const Color(0xFF00462f).withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(99),
                   ),
                   child: Row(
@@ -170,7 +170,7 @@ class _ActiveDevicesScreenState extends State<ActiveDevicesScreen> with SingleTi
                               width: 8,
                               height: 8,
                               decoration: BoxDecoration(
-                                color: const Color(0xFF00462f).withOpacity(0.4),
+                                color: const Color(0xFF00462f).withValues(alpha: 0.4),
                                 shape: BoxShape.circle,
                               ),
                             ),
@@ -204,7 +204,7 @@ class _ActiveDevicesScreenState extends State<ActiveDevicesScreen> with SingleTi
             width: 80,
             height: 120,
             decoration: BoxDecoration(
-              color: const Color(0xFF00462f).withOpacity(0.03),
+              color: const Color(0xFF00462f).withValues(alpha: 0.03),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: outlineColor),
             ),
@@ -236,7 +236,7 @@ class _ActiveDevicesScreenState extends State<ActiveDevicesScreen> with SingleTi
         style: OutlinedButton.styleFrom(
           foregroundColor: errorColor,
           padding: const EdgeInsets.symmetric(vertical: 20),
-          side: BorderSide(color: errorColor.withOpacity(0.2), width: 2),
+          side: BorderSide(color: errorColor.withValues(alpha: 0.2), width: 2),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         ),
       ),
@@ -307,7 +307,7 @@ class _ActiveDevicesScreenState extends State<ActiveDevicesScreen> with SingleTi
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: surfaceColor.withOpacity(isDark ? 0.7 : 0.8),
+              color: surfaceColor.withValues(alpha: isDark ? 0.7 : 0.8),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: outlineColor),
             ),
@@ -366,8 +366,8 @@ class _ActiveDevicesScreenState extends State<ActiveDevicesScreen> with SingleTi
                   onPressed: () {},
                   icon: Icon(Icons.logout, color: Colors.grey[400], size: 20),
                   style: IconButton.styleFrom(
-                    hoverColor: errorColor.withOpacity(0.1),
-                    highlightColor: errorColor.withOpacity(0.2),
+                    hoverColor: errorColor.withValues(alpha: 0.1),
+                    highlightColor: errorColor.withValues(alpha: 0.2),
                   ),
                 ),
               ],
@@ -386,7 +386,7 @@ class _ActiveDevicesScreenState extends State<ActiveDevicesScreen> with SingleTi
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF00462f).withOpacity(0.2),
+            color: const Color(0xFF00462f).withValues(alpha: 0.2),
             blurRadius: 20,
             offset: const Offset(0, 10),
           )

@@ -172,7 +172,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
             ),
             boxShadow: [
               BoxShadow(
-                color: primaryContainerColor.withOpacity(0.3),
+                color: primaryContainerColor.withValues(alpha: 0.3),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
@@ -195,8 +195,8 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    const Color(0xFFa5f3cb).withOpacity(0.2),
-                    const Color(0xFFa5f3cb).withOpacity(0.0),
+                    const Color(0xFFa5f3cb).withValues(alpha: 0.2),
+                    const Color(0xFFa5f3cb).withValues(alpha: 0.0),
                   ],
                 ),
               ),
@@ -244,10 +244,10 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
             decoration: BoxDecoration(
               color: surfaceContainerLowestColor,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: outlineVariantColor.withOpacity(0.2)),
+              border: Border.all(color: outlineVariantColor.withValues(alpha: 0.2)),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.02),
+                  color: Colors.black.withValues(alpha: 0.02),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -265,7 +265,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                     height: 128,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: secondaryContainerColor.withOpacity(0.5),
+                      color: secondaryContainerColor.withValues(alpha: 0.5),
                     ),
                     // Adding a blur effect in Flutter is tricky on containers directly,
                     // typically we use ImageFilter.blur in a BackdropFilter, but for a solid circle:
@@ -294,7 +294,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: primaryContainerColor.withOpacity(0.1),
+                        color: primaryContainerColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(
@@ -333,10 +333,10 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
           decoration: BoxDecoration(
             color: surfaceContainerLowestColor,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: outlineVariantColor.withOpacity(0.2)),
+            border: Border.all(color: outlineVariantColor.withValues(alpha: 0.2)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.02),
+                color: Colors.black.withValues(alpha: 0.02),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
@@ -496,19 +496,19 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
   }) {
     Color getTopBarColor() {
       switch (statusColorType) {
-        case TaskStatusColor.gray: return secondaryColor.withOpacity(0.2);
+        case TaskStatusColor.gray: return secondaryColor.withValues(alpha: 0.2);
         case TaskStatusColor.green: return primaryColor;
-        case TaskStatusColor.red: return tertiaryContainerColor.withOpacity(0.2);
+        case TaskStatusColor.red: return tertiaryContainerColor.withValues(alpha: 0.2);
         case TaskStatusColor.orange: return secondaryColor;
       }
     }
 
     Color getIconBgColor() {
       switch (statusColorType) {
-        case TaskStatusColor.gray: return secondaryContainerColor.withOpacity(0.4);
-        case TaskStatusColor.green: return primaryColor.withOpacity(0.2);
-        case TaskStatusColor.red: return tertiaryContainerColor.withOpacity(0.3);
-        case TaskStatusColor.orange: return secondaryContainerColor.withOpacity(0.5);
+        case TaskStatusColor.gray: return secondaryContainerColor.withValues(alpha: 0.4);
+        case TaskStatusColor.green: return primaryColor.withValues(alpha: 0.2);
+        case TaskStatusColor.red: return tertiaryContainerColor.withValues(alpha: 0.3);
+        case TaskStatusColor.orange: return secondaryContainerColor.withValues(alpha: 0.5);
       }
     }
 
@@ -545,7 +545,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
     final badgeBgColor = getBadgeBgColor();
     final badgeTextColor = getBadgeTextColor();
     
-    final borderColor = isCompleted ? primaryColor.withOpacity(0.2) : outlineVariantColor.withOpacity(0.1);
+    final borderColor = isCompleted ? primaryColor.withValues(alpha: 0.2) : outlineVariantColor.withValues(alpha: 0.1);
     final cardBgColor = isCompleted ? surfaceContainerLowColor : surfaceContainerLowestColor;
 
     return Container(
@@ -553,11 +553,11 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
         color: cardBgColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: statusColorType == TaskStatusColor.orange ? secondaryColor.withOpacity(0.3) : borderColor,
+          color: statusColorType == TaskStatusColor.orange ? secondaryColor.withValues(alpha: 0.3) : borderColor,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -594,7 +594,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                           decoration: BoxDecoration(
                             color: iconBgColor,
                             borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.white.withOpacity(0.5)),
+                            border: Border.all(color: Colors.white.withValues(alpha: 0.5)),
                           ),
                           child: Icon(icon, color: iconColor, size: 16),
                         ),
@@ -648,7 +648,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                           fontWeight: FontWeight.w600,
                           color: onBackgroundColor,
                           decoration: isCompleted ? TextDecoration.lineThrough : null,
-                          decorationColor: outlineVariantColor.withOpacity(0.5),
+                          decorationColor: outlineVariantColor.withValues(alpha: 0.5),
                         ),
                       ),
                       const SizedBox(height: 1),
@@ -702,7 +702,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
             const Color(0xFFebefea), // surface-container
           ],
         ),
-        border: Border.all(color: outlineVariantColor.withOpacity(0.1)),
+        border: Border.all(color: outlineVariantColor.withValues(alpha: 0.1)),
       ),
       child: Row(
         children: [
@@ -710,7 +710,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: primaryColor.withOpacity(0.1),
+              color: primaryColor.withValues(alpha: 0.1),
               shape: BoxShape.circle,
               border: Border.all(color: surfaceContainerLowestColor, width: 2),
             ),

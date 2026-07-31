@@ -74,7 +74,7 @@ class _AnimatedFavoriteButtonState extends State<AnimatedFavoriteButton> with Ti
         child: Container(
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: widget.backgroundColor ?? Colors.white.withOpacity(0.9),
+            color: widget.backgroundColor ?? Colors.white.withValues(alpha: 0.9),
             shape: BoxShape.circle,
             boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
           ),

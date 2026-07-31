@@ -167,7 +167,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Sing
                                           borderRadius: BorderRadius.circular(16),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.black.withOpacity(0.1),
+                                              color: Colors.black.withValues(alpha: 0.1),
                                               blurRadius: 8,
                                               offset: const Offset(0, 4),
                                             ),
@@ -236,7 +236,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Sing
                                         color: isDark ? const Color(0xFF16251E) : const Color(0xFFEAF2E8),
                                         borderRadius: BorderRadius.circular(20),
                                         border: Border.all(
-                                          color: isDark ? const Color(0xFF23352B) : theme.colorScheme.primary.withOpacity(0.2),
+                                          color: isDark ? const Color(0xFF23352B) : theme.colorScheme.primary.withValues(alpha: 0.2),
                                         ),
                                       ),
                                       child: Row(
@@ -312,7 +312,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Sing
                                                 style: ElevatedButton.styleFrom(
                                                   backgroundColor: isFollowing
                                                       ? const Color(0xFF00462f)
-                                                      : theme.colorScheme.primary.withOpacity(0.1),
+                                                      : theme.colorScheme.primary.withValues(alpha: 0.1),
                                                   foregroundColor: isFollowing
                                                       ? Colors.white
                                                       : theme.colorScheme.primary,
@@ -449,10 +449,10 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Sing
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: isPrimera 
-                    ? theme.colorScheme.primary.withOpacity(0.1)
+                    ? theme.colorScheme.primary.withValues(alpha: 0.1)
                     : isSegunda 
-                        ? const Color(0xFFFF8A5B).withOpacity(0.15) // Mamey
-                        : Colors.red.withOpacity(0.1), // Tercera/Red
+                        ? const Color(0xFFFF8A5B).withValues(alpha: 0.15) // Mamey
+                        : Colors.red.withValues(alpha: 0.1), // Tercera/Red
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -506,7 +506,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Sing
               decoration: BoxDecoration(
                 color: isDark ? const Color(0xFF1a2f26) : Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.withOpacity(0.2)),
+                border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
               ),
               child: ListTile(
                 contentPadding: const EdgeInsets.all(8),
@@ -579,7 +579,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Sing
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final surfaceColor = isDark ? const Color(0xFF1a2f26) : Colors.white;
-    final borderColor = Colors.grey.withOpacity(0.1);
+    final borderColor = Colors.grey.withValues(alpha: 0.1);
 
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -696,7 +696,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Sing
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.secondary.withOpacity(0.1),
+                        color: theme.colorScheme.secondary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text('8:00 AM - 6:00 PM', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: theme.colorScheme.primary)),
@@ -759,7 +759,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Sing
                             'https://lh3.googleusercontent.com/aida-public/AB6AXuBH7ADNB7QWvMbN33Gx_W3uAMM3kyaKNjbiBTi1fY3Sn5QlGIUG7Lfu93jpSklUVHqVn9uWyJrx-O7Kv6qwOzpFHvmeyi3gawpEQwgNo2qSJbINr_vDd-vX_eE51dy0VfjPJUd1hgMeFx3PKMmbJR4ZnDfevwnVv7g35h1NEG9lbvS3pvrQEruRanSbBeuKqi2unhwDtla0oV5ax8sxFHalcNqmYnSU_DgmqPp4VKU-sV1aO6TCrCo8PLcifbWHmKz8OaKVV_IyH7o',
                             fit: BoxFit.cover,
                           ),
-                          Container(color: Colors.black.withOpacity(0.1)),
+                          Container(color: Colors.black.withValues(alpha: 0.1)),
                           const Center(child: Icon(Icons.location_on, color: Colors.red, size: 40)),
                           Positioned(
                             bottom: 12,
@@ -767,7 +767,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Sing
                             child: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                 color: isDark ? Colors.grey[900]!.withOpacity(0.8) : Colors.white.withOpacity(0.8),
+                                 color: isDark ? Colors.grey[900]!.withValues(alpha: 0.8) : Colors.white.withValues(alpha: 0.8),
                                  borderRadius: BorderRadius.circular(8),
                               ),
                               child: Icon(Icons.open_in_new, size: 20, color: isDark ? Colors.white : Colors.black54),
@@ -844,7 +844,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Sing
                     decoration: BoxDecoration(
                       color: isDark ? const Color(0xFF1a2f26) : Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.withOpacity(0.2)),
+                      border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -977,7 +977,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Sing
           child: Container(
             height: 6,
             decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.2),
+              color: Colors.grey.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(3),
             ),
             alignment: Alignment.centerLeft,
@@ -1003,7 +1003,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Sing
       decoration: BoxDecoration(
         color: isSelected ? theme.colorScheme.primary : (theme.brightness == Brightness.dark ? const Color(0xFF1a2f26) : const Color(0xFFf1f4f0)),
         borderRadius: BorderRadius.circular(20),
-        border: isSelected ? null : Border.all(color: Colors.grey.withOpacity(0.2)),
+        border: isSelected ? null : Border.all(color: Colors.grey.withValues(alpha: 0.2)),
       ),
       child: Text(
         label,
@@ -1036,10 +1036,10 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Sing
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1a2f26) : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.withOpacity(0.1)),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 8,
             offset: const Offset(0, 4),
           )

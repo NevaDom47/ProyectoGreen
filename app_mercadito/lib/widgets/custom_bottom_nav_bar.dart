@@ -171,7 +171,7 @@ class CustomBottomNavBar extends StatelessWidget {
               border: Border.all(color: isActive ? Colors.transparent : (isDark ? const Color(0xFF616161) : const Color(0xFFE0E0E0)), width: 2),
               boxShadow: [
                 if (isActive) 
-                  BoxShadow(color: theme.colorScheme.primary.withOpacity(0.4), blurRadius: 12, offset: const Offset(0, 4))
+                  BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.4), blurRadius: 12, offset: const Offset(0, 4))
                 else 
                   const BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))
               ],

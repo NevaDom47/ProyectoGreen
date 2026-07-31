@@ -320,7 +320,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                             boxShadow: _selectedTabIndex == 0
                                 ? [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.05),
+                                      color: Colors.black.withValues(alpha: 0.05),
                                       blurRadius: 2,
                                       offset: const Offset(0, 1),
                                     )
@@ -351,7 +351,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                             boxShadow: _selectedTabIndex == 1
                                 ? [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.05),
+                                      color: Colors.black.withValues(alpha: 0.05),
                                       blurRadius: 2,
                                       offset: const Offset(0, 1),
                                     )
@@ -382,7 +382,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                             boxShadow: _selectedTabIndex == 2
                                 ? [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.05),
+                                      color: Colors.black.withValues(alpha: 0.05),
                                       blurRadius: 2,
                                       offset: const Offset(0, 1),
                                     )
@@ -440,7 +440,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.02),
+                          color: Colors.black.withValues(alpha: 0.02),
                           blurRadius: 2,
                           offset: const Offset(0, 1),
                         )
@@ -641,10 +641,10 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
       decoration: BoxDecoration(
         color: surfaceContainerLowestColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: outlineVariantColor.withOpacity(0.3)),
+        border: Border.all(color: outlineVariantColor.withValues(alpha: 0.3)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -757,7 +757,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                   isDark: isDark,
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFFEAEA).withOpacity(0.85),
+                  backgroundColor: const Color(0xFFFFEAEA).withValues(alpha: 0.85),
                   foregroundColor: const Color(0xFFD32F2F),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
@@ -789,7 +789,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                   isDark: isDark,
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0C6648).withOpacity(0.85),
+                  backgroundColor: const Color(0xFF0C6648).withValues(alpha: 0.85),
                   foregroundColor: const Color(0xFFFBFCFB),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -835,7 +835,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -892,7 +892,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFcaead7).withOpacity(0.5), // secondary-container / 50
+                      color: const Color(0xFFcaead7).withValues(alpha: 0.5), // secondary-container / 50
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Row(
@@ -1040,7 +1040,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                 borderRadius: BorderRadius.circular(32),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
+                    color: Colors.black.withValues(alpha: 0.15),
                     blurRadius: 30,
                     offset: const Offset(0, 15),
                   ),
@@ -1142,13 +1142,13 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: primaryColor.withOpacity(0.1),
+              color: primaryColor.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
               icon,
               size: 64,
-              color: primaryColor.withOpacity(0.5),
+              color: primaryColor.withValues(alpha: 0.5),
             ),
           ),
           const SizedBox(height: 24),
@@ -1195,10 +1195,10 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
       decoration: BoxDecoration(
         color: surfaceContainerLowestColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: outlineVariantColor.withOpacity(0.15)),
+        border: Border.all(color: outlineVariantColor.withValues(alpha: 0.15)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -1457,7 +1457,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
+                    color: Colors.black.withValues(alpha: 0.15),
                     blurRadius: 20,
                     offset: const Offset(0, -5),
                   )

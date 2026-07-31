@@ -44,7 +44,7 @@ class NegotiationDetailScreen extends StatelessWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: AppBar(
-              backgroundColor: surfaceColor.withOpacity(0.9),
+              backgroundColor: surfaceColor.withValues(alpha: 0.9),
               elevation: 0,
               scrolledUnderElevation: 0,
               centerTitle: true,
@@ -126,8 +126,8 @@ class NegotiationDetailScreen extends StatelessWidget {
                     bottom: MediaQuery.of(context).padding.bottom > 0 ? MediaQuery.of(context).padding.bottom + 16 : 16,
                   ),
                   decoration: BoxDecoration(
-                    color: surfaceColor.withOpacity(0.8),
-                    border: Border(top: BorderSide(color: outlineVariantColor.withOpacity(0.2))),
+                    color: surfaceColor.withValues(alpha: 0.8),
+                    border: Border(top: BorderSide(color: outlineVariantColor.withValues(alpha: 0.2))),
                   ),
                   child: Row(
                     children: [
@@ -160,7 +160,7 @@ class NegotiationDetailScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(16),
                             ),
                             elevation: 8,
-                            shadowColor: primaryColor.withOpacity(0.4),
+                            shadowColor: primaryColor.withValues(alpha: 0.4),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -220,7 +220,7 @@ class NegotiationDetailScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: primaryContainerColor.withOpacity(0.3),
+            color: primaryContainerColor.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -238,10 +238,10 @@ class NegotiationDetailScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
-                  colors: [
-                    primaryFixedColor.withOpacity(0.2),
-                    primaryFixedColor.withOpacity(0.0),
-                  ],
+                    colors: [
+                      primaryFixedColor.withValues(alpha: 0.2),
+                      primaryFixedColor.withValues(alpha: 0.0),
+                    ],
                 ),
               ),
             ),
@@ -274,7 +274,7 @@ class NegotiationDetailScreen extends StatelessWidget {
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: primaryFixedColor.withOpacity(0.9),
+                        color: primaryFixedColor.withValues(alpha: 0.9),
                         letterSpacing: 1.0,
                       ),
                     ),
@@ -287,7 +287,7 @@ class NegotiationDetailScreen extends StatelessWidget {
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 2.0,
-                    color: primaryFixedColor.withOpacity(0.8),
+                    color: primaryFixedColor.withValues(alpha: 0.8),
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -305,7 +305,7 @@ class NegotiationDetailScreen extends StatelessWidget {
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: primaryFixedColor.withOpacity(0.9),
+                    color: primaryFixedColor.withValues(alpha: 0.9),
                   ),
                 ),
               ],
@@ -334,7 +334,7 @@ class NegotiationDetailScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -349,7 +349,7 @@ class NegotiationDetailScreen extends StatelessWidget {
                 height: 80,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: outlineVariantColor.withOpacity(0.3)),
+                  border: Border.all(color: outlineVariantColor.withValues(alpha: 0.3)),
                   image: negotiation['image'] != null && negotiation['image'].toString().isNotEmpty
                       ? DecorationImage(
                           image: NetworkImage(negotiation['image']),
@@ -392,7 +392,7 @@ class NegotiationDetailScreen extends StatelessWidget {
           const SizedBox(height: 16),
           Container(
             decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: outlineVariantColor.withOpacity(0.2))),
+              border: Border(top: BorderSide(color: outlineVariantColor.withValues(alpha: 0.2))),
             ),
             padding: const EdgeInsets.only(top: 16),
             child: Row(
@@ -469,7 +469,7 @@ class NegotiationDetailScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: secondaryContainerColor.withOpacity(0.3),
+              color: secondaryContainerColor.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -482,7 +482,7 @@ class NegotiationDetailScreen extends StatelessWidget {
                     border: Border.all(color: Colors.white, width: 2),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 4,
                       )
                     ],
@@ -529,7 +529,7 @@ class NegotiationDetailScreen extends StatelessWidget {
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 4,
                       )
                     ],
@@ -594,7 +594,7 @@ class NegotiationDetailScreen extends StatelessWidget {
             ),
           ),
           bgColor: surfaceContainerLowestColor,
-          borderColor: outlineVariantColor.withOpacity(0.2),
+          borderColor: outlineVariantColor.withValues(alpha: 0.2),
         ),
         const SizedBox(height: 16),
         _buildTimelineItem(
@@ -614,13 +614,13 @@ class NegotiationDetailScreen extends StatelessWidget {
             ),
           ),
           bgColor: surfaceContainerLowestColor,
-          borderColor: outlineVariantColor.withOpacity(0.2),
+          borderColor: outlineVariantColor.withValues(alpha: 0.2),
         ),
         const SizedBox(height: 16),
         _buildTimelineItem(
           icon: Icons.chat_bubble,
           iconColor: primaryColor,
-          iconBgColor: secondaryContainerColor.withOpacity(0.5),
+          iconBgColor: secondaryContainerColor.withValues(alpha: 0.5),
           time: '10:30 AM',
           timeColor: primaryColor,
           content: Text(
@@ -633,16 +633,16 @@ class NegotiationDetailScreen extends StatelessWidget {
             ),
           ),
           bgColor: surfaceContainerLowestColor,
-          borderColor: outlineVariantColor.withOpacity(0.2),
+          borderColor: outlineVariantColor.withValues(alpha: 0.2),
           rightIndicatorColor: primaryFixedColor,
         ),
         const SizedBox(height: 16),
         _buildTimelineItem(
           icon: Icons.handshake,
           iconColor: Colors.white,
-          iconBgColor: Colors.white.withOpacity(0.2),
+          iconBgColor: Colors.white.withValues(alpha: 0.2),
           time: '10:45 AM',
-          timeColor: onPrimaryContainerColor.withOpacity(0.8),
+          timeColor: onPrimaryContainerColor.withValues(alpha: 0.8),
           content: Text(
             '¡Acuerdo aceptado! Ambos han cerrado el trato satisfactoriamente.',
             style: GoogleFonts.plusJakartaSans(
@@ -679,13 +679,13 @@ class NegotiationDetailScreen extends StatelessWidget {
         boxShadow: [
           if (!isSuccess)
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             )
           else
             BoxShadow(
-              color: bgColor.withOpacity(0.3),
+              color: bgColor.withValues(alpha: 0.3),
               blurRadius: 20,
               offset: const Offset(0, 8),
             )

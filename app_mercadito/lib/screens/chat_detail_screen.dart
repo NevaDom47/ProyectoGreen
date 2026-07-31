@@ -528,7 +528,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
                           color: isDark ? Colors.black26 : Colors.white,
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
-                            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2)),
+                            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: const Offset(0, 2)),
                           ]
                         ),
                         child: Row(
@@ -559,7 +559,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
                         decoration: BoxDecoration(
                           color: isDark ? Colors.black26 : Colors.white,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: theme.colorScheme.primary.withOpacity(0.5)),
+                          border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.5)),
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: TextField(
@@ -636,7 +636,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
                           color: isDark ? Colors.black26 : Colors.white,
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
-                            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2)),
+                            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: const Offset(0, 2)),
                           ]
                         ),
                         padding: const EdgeInsets.all(4),
@@ -699,9 +699,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.primary.withOpacity(0.05),
+                          color: theme.colorScheme.primary.withValues(alpha: 0.05),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: theme.colorScheme.primary.withOpacity(0.1)),
+                          border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.1)),
                         ),
                         child: Column(
                           children: [
@@ -873,7 +873,6 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
     final isDark = theme.brightness == Brightness.dark;
     
     final bgColor = isDark ? const Color(0xFF0f231d) : Colors.white;
-    final surfaceColor = isDark ? const Color(0xFF1f2937) : const Color(0xFFf5f8f7);
     final borderColor = theme.colorScheme.primary.withValues(alpha: 0.1);
 
     return KeyboardListener(
@@ -926,7 +925,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.2), 
+                            color: Colors.black.withValues(alpha: 0.2), 
                             blurRadius: 8, 
                             offset: const Offset(0, 4),
                           ),
@@ -1330,7 +1329,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
+                    color: Colors.black.withValues(alpha: 0.15),
                     blurRadius: 20,
                     offset: const Offset(0, -5),
                   )
@@ -1796,7 +1795,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
             border: Border.all(color: isDark ? const Color(0xFF8A3A3A) : const Color(0xFFFFC1C1), width: 1.5),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.04),
+                color: Colors.black.withValues(alpha: 0.04),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -1961,7 +1960,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
                         ),
                         boxShadow: [
                           if (!isDark && !isMe)
-                            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))
+                            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: const Offset(0, 2))
                         ]
                       ),
                       child: Text(
@@ -1976,9 +1975,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
                     decoration: BoxDecoration(
                       color: isDark ? const Color(0xFF1a1c19) : Colors.white,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: isDark ? Colors.white12 : theme.colorScheme.outline.withOpacity(0.2)),
+                      border: Border.all(color: isDark ? Colors.white12 : theme.colorScheme.outline.withValues(alpha: 0.2)),
                       boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8, offset: const Offset(0, 4)),
+                        BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 4)),
                       ]
                     ),
                     child: Column(
@@ -2424,11 +2423,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
                           padding: const EdgeInsets.all(24),
                           decoration: BoxDecoration(
                             color: isDark 
-                                ? Colors.white.withOpacity(0.05) 
-                                : Colors.white.withOpacity(0.7),
+                                ? Colors.white.withValues(alpha: 0.05) 
+                                : Colors.white.withValues(alpha: 0.7),
                             borderRadius: BorderRadius.circular(24),
                             border: Border.all(
-                              color: Colors.white.withOpacity(0.3),
+                              color: Colors.white.withValues(alpha: 0.3),
                             ),
                           ),
                           child: Column(
@@ -2442,7 +2441,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
                                   borderRadius: BorderRadius.circular(20),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: const Color(0xFFba1a1a).withOpacity(0.3),
+                                      color: const Color(0xFFba1a1a).withValues(alpha: 0.3),
                                       blurRadius: 8,
                                       offset: const Offset(0, 2),
                                     ),
@@ -2506,7 +2505,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
                                   minimumSize: const Size(double.infinity, 56),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                                   elevation: 8,
-                                  shadowColor: theme.colorScheme.primary.withOpacity(0.4),
+                                  shadowColor: theme.colorScheme.primary.withValues(alpha: 0.4),
                                 ),
                                 onPressed: () {},
                                 child: const Row(
@@ -2601,7 +2600,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
               Icon(Icons.lock, color: isDark ? Colors.grey[400] : const Color(0xFF6f7a73), size: 18),
               const SizedBox(width: 8),
               Text(
-                'ESTE CHAT ESTÁ CERRADO',
+                _cancellationReason != null ? 'ESTE CHAT ESTÁ CERRADO ($_cancellationReason)' : 'ESTE CHAT ESTÁ CERRADO',
                 style: GoogleFonts.plusJakartaSans(
                   fontWeight: FontWeight.w900,
                   fontSize: 12,

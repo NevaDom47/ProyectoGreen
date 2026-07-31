@@ -936,7 +936,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
         child: const Row(
           children: [
             Icon(Icons.cancel, color: Color(0xFFba1a1a), size: 20),
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
             Expanded(
               child: Text(
                 'Esta negociación fue cancelada y no pudo completarse.',

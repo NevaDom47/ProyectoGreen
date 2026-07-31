@@ -111,7 +111,7 @@ class _ReportedUsersScreenState extends State<ReportedUsersScreen> {
         final primaryColor = const Color(0xFFf20d0d); // Danger red tone
         final textColor = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0f172a);
         final subtextColor = isDark ? const Color(0xFF94a3b8) : const Color(0xFF475569);
-        final borderColor = isDark ? primaryColor.withOpacity(0.2) : primaryColor.withOpacity(0.1);
+        final borderColor = isDark ? primaryColor.withValues(alpha: 0.2) : primaryColor.withValues(alpha: 0.1);
 
         final filteredUsers = _allUsers.where((user) {
           final query = _searchQuery.toLowerCase();
@@ -158,7 +158,7 @@ class _ReportedUsersScreenState extends State<ReportedUsersScreen> {
                 child: Container(
                   height: 48,
                   decoration: BoxDecoration(
-                    color: isDark ? primaryColor.withOpacity(0.1) : primaryColor.withOpacity(0.05),
+                    color: isDark ? primaryColor.withValues(alpha: 0.1) : primaryColor.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: Colors.transparent),
                   ),
@@ -166,7 +166,7 @@ class _ReportedUsersScreenState extends State<ReportedUsersScreen> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Icon(Icons.search, color: primaryColor.withOpacity(0.7)),
+                        child: Icon(Icons.search, color: primaryColor.withValues(alpha: 0.7)),
                       ),
                       Expanded(
                         child: TextField(
@@ -185,7 +185,7 @@ class _ReportedUsersScreenState extends State<ReportedUsersScreen> {
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.calendar_month, color: primaryColor.withOpacity(0.7)),
+                        icon: Icon(Icons.calendar_month, color: primaryColor.withValues(alpha: 0.7)),
                         onPressed: _pickDate,
                         tooltip: 'Filtrar por fecha',
                       ),
@@ -204,9 +204,9 @@ class _ReportedUsersScreenState extends State<ReportedUsersScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: primaryColor.withOpacity(0.1),
+                          color: primaryColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: primaryColor.withOpacity(0.3)),
+                          border: Border.all(color: primaryColor.withValues(alpha: 0.3)),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -260,7 +260,7 @@ class _ReportedUsersScreenState extends State<ReportedUsersScreen> {
                     final user = filteredUsers[index];
                     return InkWell(
                       onTap: () {},
-                      hoverColor: primaryColor.withOpacity(0.05),
+                      hoverColor: primaryColor.withValues(alpha: 0.05),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
                         child: Row(
@@ -319,12 +319,12 @@ class _ReportedUsersScreenState extends State<ReportedUsersScreen> {
                                   const SizedBox(height: 4),
                                   Row(
                                     children: [
-                                      Icon(Icons.access_time, size: 12, color: primaryColor.withOpacity(0.8)),
+                                      Icon(Icons.access_time, size: 12, color: primaryColor.withValues(alpha: 0.8)),
                                       const SizedBox(width: 4),
                                       Text(
                                         'Reportado el ${_formatDate(user.reportedAt)}',
                                         style: TextStyle(
-                                          color: primaryColor.withOpacity(0.8),
+                                          color: primaryColor.withValues(alpha: 0.8),
                                           fontSize: 11,
                                           fontWeight: FontWeight.w500,
                                         ),

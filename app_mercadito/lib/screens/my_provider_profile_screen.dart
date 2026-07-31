@@ -59,117 +59,6 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
     return FileImage(File(path));
   }
 
-  void _showAddProductDialog() {
-    final nameController = TextEditingController();
-    final priceController = TextEditingController();
-    final unitController = TextEditingController(text: 'Tonelada');
-    final descController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        final theme = Theme.of(context);
-        final isDark = theme.brightness == Brightness.dark;
-        return AlertDialog(
-          backgroundColor: isDark ? const Color(0xFF0f172a) : Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: Text(
-            'Agregar Nuevo Producto',
-            style: TextStyle(
-              fontFamily: 'Plus Jakarta Sans',
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : const Color(0xFF00462f),
-            ),
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nombre del Producto',
-                    hintText: 'ej. Papas Blancas Alpha',
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: priceController,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          labelText: 'Precio (MXN)',
-                          hintText: 'ej. 15000',
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: TextField(
-                        controller: unitController,
-                        decoration: const InputDecoration(
-                          labelText: 'Unidad de Medida',
-                          hintText: 'ej. Tonelada, Saco',
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: descController,
-                  maxLines: 3,
-                  decoration: const InputDecoration(
-                    labelText: 'Descripción del Producto',
-                    hintText: 'Especificaciones del cultivo, calibre, calidad...',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar', style: TextStyle(color: Colors.grey)),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (nameController.text.isNotEmpty && priceController.text.isNotEmpty) {
-                  setState(() {
-                    _myProducts.add({
-                      'name': nameController.text.trim(),
-                      'price': priceController.text.trim(),
-                      'unit': unitController.text.trim(),
-                      'currency': 'MXN',
-                      'description': descController.text.trim(),
-                      'image': 'https://images.unsplash.com/photo-1601648764658-cf37e8c89b70?q=80&w=300&auto=format&fit=crop', // generic harvest image
-                    });
-                  });
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('¡Producto agregado exitosamente!', style: TextStyle(fontWeight: FontWeight.bold)),
-                      backgroundColor: Color(0xFF00462f),
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF00462f),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-              child: const Text('Agregar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -185,7 +74,6 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
     // Session Data with elegant defaults matching the Ricardo Mendoza design
     final String fullName = UserSession.fullName ?? 'Ricardo Mendoza';
     final String specialty = UserSession.specialty ?? 'Orgánico';
-    final String salesType = UserSession.salesType ?? 'Ambos';
     final String description = UserSession.businessDescription ??
         'Con más de 15 años de experiencia en la agricultura tradicional y 5 años especializados en cultivos orgánicos certificados. Ubicados en los fértiles valles de Guanajuato, nuestro enfoque es la sostenibilidad y la calidad premium para mercados exigentes.';
     
@@ -357,7 +245,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -380,7 +268,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                   ),
                 ),
                 child: Container(
-                  color: Colors.black.withOpacity(0.25),
+                  color: Colors.black.withValues(alpha: 0.25),
                 ),
               ),
               // Overlapping Profile Avatar
@@ -397,7 +285,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                         border: Border.all(color: cardBgColor, width: 4),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
+                            color: Colors.black.withValues(alpha: 0.08),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           )
@@ -468,7 +356,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             decoration: BoxDecoration(
-              color: const Color(0xFFcaead7).withOpacity(0.4),
+              color: const Color(0xFFcaead7).withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: const Color(0xFFcaead7), width: 1),
             ),
@@ -524,9 +412,9 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12.0),
         decoration: BoxDecoration(
-          color: cardBg.withOpacity(0.5),
+          color: cardBg.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: onSurfaceVariant.withOpacity(0.15)),
+          border: Border.all(color: onSurfaceVariant.withValues(alpha: 0.15)),
         ),
         child: Column(
           children: [
@@ -577,7 +465,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -631,7 +519,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -704,7 +592,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -744,7 +632,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: primaryColor.withOpacity(0.1),
+                  color: primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -813,7 +701,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -860,7 +748,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                     'https://lh3.googleusercontent.com/aida-public/AB6AXuBH7ADNB7QWvMbN33Gx_W3uAMM3kyaKNjbiBTi1fY3Sn5QlGIUG7Lfu93jpSklUVHqVn9uWyJrx-O7Kv6qwOzpFHvmeyi3gawpEQwgNo2qSJbINr_vDd-vX_eE51dy0VfjPJUd1hgMeFx3PKMmbJR4ZnDfevwnVv7g35h1NEG9lbvS3pvrQEruRanSbBeuKqi2unhwDtla0oV5ax8sxFHalcNqmYnSU_DgmqPp4VKU-sV1aO6TCrCo8PLcifbWHmKz8OaKVV_IyH7o',
                     fit: BoxFit.cover,
                   ),
-                  Container(color: Colors.black.withOpacity(0.1)),
+                  Container(color: Colors.black.withValues(alpha: 0.1)),
                   const Center(child: Icon(Icons.location_on, color: Colors.red, size: 32)),
                   Positioned(
                     bottom: 8,
@@ -868,7 +756,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: isDark ? Colors.grey[900]!.withOpacity(0.8) : Colors.white.withOpacity(0.8),
+                        color: isDark ? Colors.grey[900]!.withValues(alpha: 0.8) : Colors.white.withValues(alpha: 0.8),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Icon(Icons.open_in_new, size: 16, color: isDark ? Colors.white : Colors.black54),
@@ -880,54 +768,6 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildInfoRow(
-    IconData icon,
-    String title,
-    String desc,
-    Color primaryColor,
-    Color onSurface,
-    Color onSurfaceVariant,
-  ) {
-    return Row(
-      children: [
-        Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            color: primaryColor.withOpacity(0.1),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, color: primaryColor, size: 16),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontFamily: 'Plus Jakarta Sans',
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  color: onSurface,
-                ),
-              ),
-              Text(
-                desc,
-                style: TextStyle(
-                  fontFamily: 'Plus Jakarta Sans',
-                  fontSize: 10,
-                  color: onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 
@@ -967,7 +807,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                 boxShadow: [
                   if (!isMostSold)
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.02),
+                      color: Colors.black.withValues(alpha: 0.02),
                       blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),
@@ -1006,7 +846,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.15),
+                                  color: Colors.black.withValues(alpha: 0.15),
                                   blurRadius: 4,
                                   offset: const Offset(0, 2),
                                 ),
@@ -1046,10 +886,10 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
                                 color: p['quality'] == 'PRIMERA'
-                                    ? primaryColor.withOpacity(0.1)
+                                    ? primaryColor.withValues(alpha: 0.1)
                                     : p['quality'] == 'SEGUNDA'
-                                        ? const Color(0xFFFF8A5B).withOpacity(0.15)
-                                        : Colors.red.withOpacity(0.1),
+                                        ? const Color(0xFFFF8A5B).withValues(alpha: 0.15)
+                                        : Colors.red.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
@@ -1132,10 +972,10 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF00462f).withOpacity(0.07),
+                                color: const Color(0xFF00462f).withValues(alpha: 0.07),
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(
-                                  color: const Color(0xFF00462f).withOpacity(0.18),
+                                  color: const Color(0xFF00462f).withValues(alpha: 0.18),
                                   width: 1,
                                 ),
                               ),
@@ -1228,7 +1068,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -1297,7 +1137,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -1449,7 +1289,7 @@ class _AnimatedGlowingBorderState extends State<AnimatedGlowingBorder> with Sing
             borderRadius: widget.borderRadius,
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFFFF6F08).withOpacity(0.18 + 0.08 * glowPulse),
+                color: const Color(0xFFFF6F08).withValues(alpha: 0.18 + 0.08 * glowPulse),
                 blurRadius: 10 + 4 * glowPulse,
                 spreadRadius: 1 + 1 * glowPulse,
                 offset: const Offset(0, 4),

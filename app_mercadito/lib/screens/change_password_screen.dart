@@ -25,8 +25,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         final bgColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFf7faf5);
         final primaryColor = const Color(0xFF00462f);
         final textColor = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0f172a);
-        final surfaceColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-        final borderColor = isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.1);
+        final borderColor = isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.1);
         final subtextColor = isDark ? const Color(0xFF94a3b8) : const Color(0xFF475569);
         final inputFillColor = isDark ? const Color(0xFF1E293B) : Colors.white;
         
@@ -154,7 +153,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           borderRadius: BorderRadius.circular(30), // Rounded pill shape as in design
                         ),
                         elevation: 4,
-                        shadowColor: primaryColor.withOpacity(0.4),
+                        shadowColor: primaryColor.withValues(alpha: 0.4),
                       ),
                       child: const Text(
                         'Actualizar Contraseña',
@@ -203,7 +202,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           style: TextStyle(color: textColor),
           decoration: InputDecoration(
             hintText: '••••••••',
-            hintStyle: TextStyle(color: subtextColor.withOpacity(0.5)),
+            hintStyle: TextStyle(color: subtextColor.withValues(alpha: 0.5)),
             filled: true,
             fillColor: fillColor,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),

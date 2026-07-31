@@ -554,14 +554,14 @@ class ProfileScreen extends StatelessWidget {
     return Container(
       width: 200,
       decoration: BoxDecoration(
-        color: isDark ? primaryColor.withOpacity(0.05) : Colors.white,
+        color: isDark ? primaryColor.withValues(alpha: 0.05) : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: primaryColor.withOpacity(0.05)),
+        border: Border.all(color: primaryColor.withValues(alpha: 0.05)),
         boxShadow: isDark
             ? []
             : [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.03),
+                  color: Colors.black.withValues(alpha: 0.03),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -616,7 +616,7 @@ class ProfileScreen extends StatelessWidget {
                       margin: const EdgeInsets.only(bottom: 6),
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: badgeColor.withOpacity(0.1),
+                        color: badgeColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
@@ -647,7 +647,7 @@ class ProfileScreen extends StatelessWidget {
                         return Container(
                           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                           decoration: BoxDecoration(
-                            color: primaryColor.withOpacity(0.1),
+                            color: primaryColor.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
@@ -676,7 +676,7 @@ class ProfileScreen extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w500,
-                                  color: primaryColor.withOpacity(0.7),
+                                  color: primaryColor.withValues(alpha: 0.7),
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -690,7 +690,7 @@ class ProfileScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                         decoration: BoxDecoration(
-                          color: primaryColor.withOpacity(0.05),
+                          color: primaryColor.withValues(alpha: 0.05),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Row(
@@ -767,7 +767,7 @@ class ProfileScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             elevation: inCart ? 0 : 2,
-                            shadowColor: primaryColor.withOpacity(0.4),
+                            shadowColor: primaryColor.withValues(alpha: 0.4),
                           ),
                         );
                       }

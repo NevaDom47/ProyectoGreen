@@ -40,7 +40,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
         final primaryColor = const Color(0xFF00462f);
         final textColor = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0f172a);
         final subtextColor = isDark ? const Color(0xFF64748b) : const Color(0xFF64748b);
-        final borderColor = isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05);
+        final borderColor = isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.05);
         final vividGreen = const Color(0xFF10B981);
 
         final filteredLanguages = _languages.where((lang) {
@@ -80,7 +80,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                     child: Container(
                       height: 48,
                       decoration: BoxDecoration(
-                        color: isDark ? vividGreen.withOpacity(0.1) : vividGreen.withOpacity(0.1),
+                        color: vividGreen.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
@@ -101,7 +101,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText: 'Buscar idioma',
-                                hintStyle: TextStyle(color: primaryColor.withOpacity(0.6)),
+                                hintStyle: TextStyle(color: primaryColor.withValues(alpha: 0.6)),
                               ),
                             ),
                           ),
@@ -143,7 +143,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                            color: isSelected ? (isDark ? vividGreen.withOpacity(0.05) : vividGreen.withOpacity(0.05)) : null,
+                            color: isSelected ? vividGreen.withValues(alpha: 0.05) : null,
                             child: Row(
                               children: [
                                 Container(
@@ -151,8 +151,8 @@ class _LanguageScreenState extends State<LanguageScreen> {
                                   height: 40,
                                   decoration: BoxDecoration(
                                     color: isSelected
-                                        ? vividGreen.withOpacity(0.2)
-                                        : (isDark ? vividGreen.withOpacity(0.1) : vividGreen.withOpacity(0.1)),
+                                        ? vividGreen.withValues(alpha: 0.2)
+                                        : vividGreen.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Icon(

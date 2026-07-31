@@ -118,8 +118,6 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
   ];
 
   // Step 5 variables
-  File? _bannerFile;
-  File? _profileFile;
   String? _pickedBannerPath;
   String? _pickedProfilePath;
   final ImagePicker _picker = ImagePicker();
@@ -131,14 +129,8 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
         setState(() {
           if (isProfile) {
             _pickedProfilePath = image.path;
-            if (!kIsWeb) {
-              _profileFile = File(image.path);
-            }
           } else {
             _pickedBannerPath = image.path;
-            if (!kIsWeb) {
-              _bannerFile = File(image.path);
-            }
           }
         });
       }
@@ -180,7 +172,7 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: isDark ? Colors.white.withOpacity(0.75) : _colorOnSurfaceVariant,
+                  color: isDark ? Colors.white.withValues(alpha: 0.75) : _colorOnSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 24),
@@ -197,7 +189,7 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 20),
                         decoration: BoxDecoration(
                           border: Border.all(
-                            color: isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withOpacity(0.5),
+                            color: isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withValues(alpha: 0.5),
                           ),
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -229,7 +221,7 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 20),
                         decoration: BoxDecoration(
                           border: Border.all(
-                            color: isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withOpacity(0.5),
+                            color: isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withValues(alpha: 0.5),
                           ),
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -638,7 +630,7 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
                                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16),
-                                  borderSide: BorderSide(color: primary.withOpacity(0.5)),
+                                  borderSide: BorderSide(color: primary.withValues(alpha: 0.5)),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(16),
@@ -891,7 +883,7 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
               color: cardBg,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                color: isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withOpacity(0.3),
+                color: isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withValues(alpha: 0.3),
                 width: 1.5,
               ),
             ),
@@ -1065,7 +1057,7 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
               color: cardBg,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                color: isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withOpacity(0.3),
+                color: isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withValues(alpha: 0.3),
                 width: 1.5,
               ),
             ),
@@ -1100,7 +1092,7 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
-                  value: _selectedSpecialty,
+                  initialValue: _selectedSpecialty,
                   hint: Text(
                     'Selecciona tu especialidad principal',
                     style: GoogleFonts.plusJakartaSans(color: textVariant, fontSize: 14),
@@ -1134,7 +1126,7 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
-                  value: _selectedSalesType,
+                  initialValue: _selectedSalesType,
                   hint: Text(
                     '¿Cómo vendes tus productos?',
                     style: GoogleFonts.plusJakartaSans(color: textVariant, fontSize: 14),
@@ -1186,8 +1178,6 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
 
   // STEP 3: Ubicación
   Widget _buildStep3(Color cardBg, Color primary, Color textVariant, bool isDark) {
-    final stateOptions = _selectedCountry != null ? (excelCountriesAndStates[_selectedCountry] ?? <String>[]) : <String>[];
-
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
@@ -1222,7 +1212,7 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
               color: cardBg,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                color: isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withOpacity(0.3),
+                color: isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withValues(alpha: 0.3),
                 width: 1.5,
               ),
             ),
@@ -1412,7 +1402,7 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
                             borderRadius: BorderRadius.circular(8),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.green.withOpacity(0.4),
+                                color: Colors.green.withValues(alpha: 0.4),
                                 blurRadius: 8,
                                 spreadRadius: 2,
                               ),
@@ -1494,7 +1484,7 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-                side: BorderSide(color: _colorOutlineVariant.withOpacity(0.3)),
+                side: BorderSide(color: _colorOutlineVariant.withValues(alpha: 0.3)),
               ),
             ),
           ),
@@ -1515,7 +1505,7 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
                     color: day.isActive
-                        ? (isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withOpacity(0.4))
+                        ? (isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withValues(alpha: 0.4))
                         : Colors.transparent,
                   ),
                 ),
@@ -1543,8 +1533,8 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
                               day.isActive = val;
                             });
                           },
-                          activeColor: primary,
-                          activeTrackColor: primary.withOpacity(0.3),
+                          activeThumbColor: primary,
+                          activeTrackColor: primary.withValues(alpha: 0.3),
                         ),
                       ],
                     ),
@@ -1737,7 +1727,7 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
                           color: isDark ? const Color(0xFF1E2621) : const Color(0xFFF1F4F0),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: _colorOutlineVariant.withOpacity(0.5),
+                            color: _colorOutlineVariant.withValues(alpha: 0.5),
                             style: BorderStyle.solid,
                           ),
                         ),
@@ -1785,7 +1775,7 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
                         shape: BoxShape.circle,
                         color: isDark ? const Color(0xFF1E2621) : const Color(0xFFF1F4F0),
                         border: Border.all(
-                          color: _colorOutlineVariant.withOpacity(0.5),
+                          color: _colorOutlineVariant.withValues(alpha: 0.5),
                         ),
                       ),
                       child: _pickedProfilePath != null
@@ -1841,13 +1831,13 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
+                      color: Colors.black.withValues(alpha: 0.04),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
                   ],
                   border: Border.all(
-                    color: isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withOpacity(0.3),
+                    color: isDark ? const Color(0xFF2C3530) : _colorOutlineVariant.withValues(alpha: 0.3),
                   ),
                 ),
                 clipBehavior: Clip.antiAlias,
@@ -1893,7 +1883,7 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
                                 color: isDark ? const Color(0xFF1D2220) : Colors.white,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
+                                    color: Colors.black.withValues(alpha: 0.1),
                                     blurRadius: 4,
                                   ),
                                 ],

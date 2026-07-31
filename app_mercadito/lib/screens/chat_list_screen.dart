@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/skeleton_loading.dart';
 
 class ChatListScreen extends StatefulWidget {
@@ -111,7 +110,6 @@ class _ChatListScreenState extends State<ChatListScreen> {
     final isDark = theme.brightness == Brightness.dark;
 
     final bgColor = isDark ? const Color(0xFF0f231d) : const Color(0xFFf5f8f7);
-    final surfaceColor = isDark ? const Color(0xFF0f231d) : Colors.white; // HTML says white in light mode, background-dark in dark mode. Wait. The wrapper is bg-white.
     // The design shows the main container as white in light mode. Let's adapt that.
     final cardColor = isDark ? const Color(0xFF0f231d) : Colors.white;
 

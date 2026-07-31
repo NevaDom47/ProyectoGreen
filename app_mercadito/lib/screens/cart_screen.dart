@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import '../main.dart'; 
-import 'dart:ui';
 import '../widgets/coupon_card.dart';
 import '../data/global_state.dart';
 
@@ -16,10 +15,6 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   // Data grouped by Vendor
   List<Map<String, dynamic>> get vendors => globalCart.value;
-
-  void _notifyGlobalCart() {
-    globalCart.value = List.from(vendors);
-  }
 
   final Map<String, TextEditingController> _qtyControllers = {};
   
@@ -138,10 +133,9 @@ class _CartScreenState extends State<CartScreen> {
             final surfaceColor = isDark ? const Color(0xFF1E293B) : Colors.white; 
             final textColor = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0f172a);
             final subtextColor = isDark ? const Color(0xFF94a3b8) : const Color(0xFF64748b);
-            final borderColor = primaryColor.withOpacity(0.1);
+            final borderColor = primaryColor.withValues(alpha: 0.1);
 
             final outlineVariant = isDark ? const Color(0xFF475569) : const Color(0xFFbec9c1);
-            final onSurface = isDark ? const Color(0xFFf1f5f9) : const Color(0xFF181d1a);
 
             return Container(
               height: MediaQuery.of(context).size.height * 0.85,
@@ -157,7 +151,7 @@ class _CartScreenState extends State<CartScreen> {
                     Container(
                       width: 40,
                       height: 4,
-                      decoration: BoxDecoration(color: outlineVariant.withOpacity(0.4), borderRadius: BorderRadius.circular(2)),
+                      decoration: BoxDecoration(color: outlineVariant.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(2)),
                     ),
                     // Header
                     Padding(
@@ -260,7 +254,7 @@ class _CartScreenState extends State<CartScreen> {
                           Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: primaryColor.withOpacity(0.1),
+                              color: primaryColor.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Row(
@@ -442,7 +436,7 @@ class _CartScreenState extends State<CartScreen> {
                       primaryColor, onSurface, secondary, outline, outlineVariant, secondaryContainer, onSecondaryContainer, tertiary, isDark
                     ),
                   );
-                }).toList(),
+                }),
 
                 // Order Summary
                 Container(
@@ -480,7 +474,7 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                       ],
                       const SizedBox(height: 12),
-                      Divider(color: outlineVariant.withOpacity(0.3)),
+                      Divider(color: outlineVariant.withValues(alpha: 0.3)),
                       const SizedBox(height: 12),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -521,7 +515,7 @@ class _CartScreenState extends State<CartScreen> {
                                       borderRadius: BorderRadius.circular(28),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withOpacity(0.2),
+                                          color: Colors.black.withValues(alpha: 0.2),
                                           blurRadius: 20,
                                           offset: const Offset(0, 8),
                                         ),
@@ -843,7 +837,7 @@ class _CartScreenState extends State<CartScreen> {
       decoration: BoxDecoration(
         color: surfaceLowest,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 4, offset: const Offset(0, 2))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 4, offset: const Offset(0, 2))],
       ),
       clipBehavior: Clip.antiAlias, // Critical so the bottom green container fits the rounded corners
       child: Column(
@@ -917,7 +911,7 @@ class _CartScreenState extends State<CartScreen> {
                             return Container(
                               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                               decoration: BoxDecoration(
-                                color: primaryColor.withOpacity(0.1),
+                                color: primaryColor.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
@@ -1001,7 +995,7 @@ class _CartScreenState extends State<CartScreen> {
                                 decoration: BoxDecoration(
                                   color: surfaceContainer,
                                   borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: outlineVariant.withOpacity(0.3)),
+                                  border: Border.all(color: outlineVariant.withValues(alpha: 0.3)),
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -1109,7 +1103,7 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  Divider(color: outlineVariant.withOpacity(0.3), height: 1),
+                  Divider(color: outlineVariant.withValues(alpha: 0.3), height: 1),
                   const SizedBox(height: 12),
                   // Coupon Code
                   Row(
@@ -1122,7 +1116,7 @@ class _CartScreenState extends State<CartScreen> {
                           decoration: InputDecoration(
                             hintText: vendor['coupon'] != null ? 'Cupón Activo: ${vendor['coupon']}' : 'Cupón para ${vendor['name']}',
                             hintStyle: TextStyle(
-                              color: vendor['coupon'] != null ? const Color(0xFF10B981) : outline.withOpacity(0.8), 
+                              color: vendor['coupon'] != null ? const Color(0xFF10B981) : outline.withValues(alpha: 0.8), 
                               fontSize: 13, 
                               fontWeight: vendor['coupon'] != null ? FontWeight.bold : FontWeight.w500
                             ),
@@ -1138,7 +1132,7 @@ class _CartScreenState extends State<CartScreen> {
                           onTap: () => setState(() => vendors[vIndex]['coupon'] = null),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Icon(Icons.close, color: outline.withOpacity(0.7), size: 16),
+                            child: Icon(Icons.close, color: outline.withValues(alpha: 0.7), size: 16),
                           ),
                         ),
                       ],

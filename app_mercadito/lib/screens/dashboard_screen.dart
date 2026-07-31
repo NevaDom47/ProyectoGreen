@@ -193,14 +193,14 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
           color: surfaceLowest,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? primary : outlineVariant.withOpacity(0.2),
+            color: isSelected ? primary : outlineVariant.withValues(alpha: 0.2),
             width: isSelected ? 2 : 1,
           ),
           boxShadow: [
             if (isSelected)
-              BoxShadow(color: primary.withOpacity(0.1), blurRadius: 8, offset: const Offset(0, 4))
+              BoxShadow(color: primary.withValues(alpha: 0.1), blurRadius: 8, offset: const Offset(0, 4))
             else
-              BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 4, offset: const Offset(0, 2)),
+              BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 4, offset: const Offset(0, 2)),
           ],
         ),
         child: Column(
@@ -213,7 +213,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
-                    color: (isSelected ? primary : iconColor).withOpacity(0.1),
+                    color: (isSelected ? primary : iconColor).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
@@ -268,9 +268,9 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
           borderRadius: BorderRadius.circular(16),
           border: isSelected ? Border.all(color: Colors.white, width: 2) : null,
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2)),
+            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: const Offset(0, 2)),
             if (isSelected)
-              BoxShadow(color: Colors.white.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 4)),
+              BoxShadow(color: Colors.white.withValues(alpha: 0.2), blurRadius: 10, offset: const Offset(0, 4)),
           ],
         ),
         child: Column(
@@ -283,7 +283,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
-                color: Colors.white.withOpacity(0.8),
+                color: Colors.white.withValues(alpha: 0.8),
               ),
             ),
             const SizedBox(height: 2),
@@ -312,9 +312,9 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
       decoration: BoxDecoration(
         color: surfaceLowest,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: outlineVariant.withOpacity(0.2)),
+        border: Border.all(color: outlineVariant.withValues(alpha: 0.2)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 4, offset: const Offset(0, 2)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 4, offset: const Offset(0, 2)),
         ],
       ),
       child: Column(
@@ -362,7 +362,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
           SizedBox(
             height: 180,
             child: CustomAnimatedChart(
-              key: ValueKey('${_selectedMetric}_${_filterType}'),
+              key: ValueKey('${_selectedMetric}_$_filterType'),
               primary: primary,
               primaryContainer: primaryContainer,
               isDark: isDark,
@@ -488,9 +488,9 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
       decoration: BoxDecoration(
         color: surfaceLowest,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: outlineVariant.withOpacity(0.2)),
+        border: Border.all(color: outlineVariant.withValues(alpha: 0.2)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 4, offset: const Offset(0, 2)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 4, offset: const Offset(0, 2)),
         ],
       ),
       child: ClipRRect(
@@ -573,7 +573,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                       margin: const EdgeInsets.only(bottom: 8),
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: iconColor.withOpacity(0.1),
+                        color: iconColor.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(icon, size: 16, color: iconColor),
@@ -753,7 +753,7 @@ class _CustomAnimatedChartState extends State<CustomAnimatedChart> with SingleTi
               children: List.generate(4, (index) => 
                 Container(
                   height: 1,
-                  color: widget.isDark ? Colors.grey[800] : const Color(0xFFbec9c1).withOpacity(0.2),
+                  color: widget.isDark ? Colors.grey[800] : const Color(0xFFbec9c1).withValues(alpha: 0.2),
                 )
               ),
             ),
@@ -770,11 +770,11 @@ class _CustomAnimatedChartState extends State<CustomAnimatedChart> with SingleTi
                 if (isHighlighted) {
                   barColor = widget.primary;
                 } else if (d['value'] >= 0.7) {
-                  barColor = widget.primaryContainer.withOpacity(0.8);
-                } else if (d['value'] >= 0.6) {
+                  barColor = widget.primaryContainer.withValues(alpha: 0.8);
+                } else if (d['value'] >= 0.7) {
                   barColor = const Color(0xFFa5f3cb);
                 } else {
-                  barColor = widget.isDark ? secondaryContainerDark.withOpacity(0.5) : secondaryContainer.withOpacity(0.5);
+                  barColor = widget.isDark ? secondaryContainerDark.withValues(alpha: 0.5) : secondaryContainer.withValues(alpha: 0.5);
                 }
 
                 return GestureDetector(
@@ -820,7 +820,7 @@ class _CustomAnimatedChartState extends State<CustomAnimatedChart> with SingleTi
                                 topRight: Radius.circular(6),
                               ),
                               boxShadow: isHighlighted ? [
-                                BoxShadow(color: widget.primary.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, -4))
+                                BoxShadow(color: widget.primary.withValues(alpha: 0.2), blurRadius: 10, offset: const Offset(0, -4))
                               ] : null,
                             ),
                           );

@@ -176,12 +176,12 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
     final cardBgColor = isSelected
         ? (isDarkMode
             ? const Color(0xFF1B2C24)
-            : _colorSecondaryContainerTint.withOpacity(0.25))
+            : _colorSecondaryContainerTint.withValues(alpha: 0.25))
         : actualCardBg;
 
     final shadowColor = isSelected
-        ? actualPrimary.withOpacity(isDarkMode ? 0.15 : 0.1)
-        : Colors.black.withOpacity(isDarkMode ? 0.1 : 0.03);
+        ? actualPrimary.withValues(alpha: isDarkMode ? 0.15 : 0.1)
+        : Colors.black.withValues(alpha: isDarkMode ? 0.1 : 0.03);
 
     final shadowBlur = isSelected ? 16.0 : 8.0;
     final shadowOffset = isSelected ? const Offset(0, 8) : const Offset(0, 4);
@@ -226,7 +226,7 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
                   height: 64,
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? actualPrimary.withOpacity(0.15)
+                        ? actualPrimary.withValues(alpha: 0.15)
                         : (isDarkMode ? const Color(0xFF27302B) : const Color(0xFFE6E9E4)),
                     shape: BoxShape.circle,
                   ),
@@ -306,7 +306,7 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
           boxShadow: isEnabled
               ? [
                   BoxShadow(
-                    color: actualPrimary.withOpacity(0.3),
+                    color: actualPrimary.withValues(alpha: 0.3),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -356,7 +356,7 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
             backgroundColor: btnBg,
             disabledBackgroundColor: const Color(0xFFBEC9C1),
             foregroundColor: Colors.white,
-            disabledForegroundColor: Colors.white.withOpacity(0.6),
+            disabledForegroundColor: Colors.white.withValues(alpha: 0.6),
             padding: const EdgeInsets.symmetric(vertical: 20.0),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(9999), // Perfect rounded full pill

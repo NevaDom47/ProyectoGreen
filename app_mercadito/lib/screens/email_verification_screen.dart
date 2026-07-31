@@ -36,7 +36,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     final onSurfaceVariant = isDark ? const Color(0xFFa0afa6) : const Color(0xFF3f4943);
     final secondary = isDark ? const Color(0xFF89d6b0) : const Color(0xFF486456);
     final surfaceContainerLow = isDark ? const Color(0xFF18241e) : const Color(0xFFf1f4f0);
-    final outlineVariant = isDark ? Colors.white.withOpacity(0.1) : const Color(0xFFbec9c1).withOpacity(0.2);
+    final outlineVariant = isDark ? Colors.white.withValues(alpha: 0.1) : const Color(0xFFbec9c1).withValues(alpha: 0.2);
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -80,7 +80,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                           width: 80,
                           height: 80,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF89d6b0).withOpacity(0.2),
+                            color: const Color(0xFF89d6b0).withValues(alpha: 0.2),
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -92,7 +92,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                           width: 60,
                           height: 60,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFcaead7).withOpacity(0.3),
+                            color: const Color(0xFFcaead7).withValues(alpha: 0.3),
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -106,7 +106,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                           border: Border.all(color: outlineVariant),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.02),
+                              color: Colors.black.withValues(alpha: 0.02),
                               blurRadius: 4,
                               offset: const Offset(0, 2),
                             )
@@ -117,7 +117,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                             width: 64,
                             height: 64,
                             decoration: BoxDecoration(
-                              color: primaryGreen.withOpacity(0.1),
+                              color: primaryGreen.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: Icon(
@@ -169,7 +169,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                     border: Border.all(color: outlineVariant),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.02),
+                        color: Colors.black.withValues(alpha: 0.02),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       )
@@ -274,7 +274,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: secondary.withOpacity(0.5),
+                            color: secondary.withValues(alpha: 0.5),
                           ),
                         ),
                       )
@@ -286,7 +286,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFcaead7).withOpacity(0.2),
+                    color: const Color(0xFFcaead7).withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Row(

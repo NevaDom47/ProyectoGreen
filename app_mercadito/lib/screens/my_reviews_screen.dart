@@ -91,7 +91,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
     return Scaffold(
       backgroundColor: bgColor,
       appBar: AppBar(
-        backgroundColor: isDark ? const Color(0xFF0f231d).withOpacity(0.8) : const Color(0xFFf7faf5),
+        backgroundColor: isDark ? const Color(0xFF0f231d).withValues(alpha: 0.8) : const Color(0xFFf7faf5),
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: Container(
@@ -104,7 +104,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.02),
+                  color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.02),
                 ),
                 child: Icon(
                   Icons.arrow_back,
@@ -128,7 +128,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
           child: Container(
-            color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03),
+            color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.03),
             height: 1,
           ),
         ),
@@ -353,7 +353,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF00462f).withOpacity(0.15),
+            color: const Color(0xFF00462f).withValues(alpha: 0.15),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -501,7 +501,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                       fontWeight: FontWeight.w800,
                       color: onSurfaceColor,
                       decoration: TextDecoration.underline,
-                      decorationColor: onSurfaceColor.withOpacity(0.3),
+                      decorationColor: onSurfaceColor.withValues(alpha: 0.3),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -628,7 +628,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.15 : 0.02),
+            color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.02),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -695,7 +695,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                           fontWeight: FontWeight.w800,
                           color: onSurfaceColor,
                           decoration: TextDecoration.underline,
-                          decorationColor: onSurfaceColor.withOpacity(0.3),
+                          decorationColor: onSurfaceColor.withValues(alpha: 0.3),
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -771,7 +771,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF131e1a).withOpacity(0.5) : Colors.white.withOpacity(0.5),
+              color: isDark ? const Color(0xFF131e1a).withValues(alpha: 0.5) : Colors.white.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
@@ -811,7 +811,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
               color: isDark ? const Color(0xFF131e1a) : Colors.white,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: isDark ? Colors.white.withOpacity(0.03) : const Color(0xFFbec9c1).withOpacity(0.15),
+                color: isDark ? Colors.white.withValues(alpha: 0.03) : const Color(0xFFbec9c1).withValues(alpha: 0.15),
               ),
             ),
             child: Row(
@@ -841,7 +841,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 13,
                       fontStyle: FontStyle.italic,
-                      color: onSurfaceColor.withOpacity(0.8),
+                      color: onSurfaceColor.withValues(alpha: 0.8),
                       height: 1.4,
                     ),
                   ),
@@ -857,7 +857,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
               margin: const EdgeInsets.only(left: 12),
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: const Color(0xFFcaead7).withOpacity(isDark ? 0.08 : 0.25),
+                color: const Color(0xFFcaead7).withValues(alpha: isDark ? 0.08 : 0.25),
                 border: const Border(
                   left: BorderSide(
                     color: Color(0xFF00462f),
@@ -1343,10 +1343,10 @@ class _WriteReviewDialogContentState extends State<WriteReviewDialogContent> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFFB300).withOpacity(0.12),
+                            color: const Color(0xFFFFB300).withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                              color: const Color(0xFFFFB300).withOpacity(0.3),
+                              color: const Color(0xFFFFB300).withValues(alpha: 0.3),
                               width: 1,
                             ),
                           ),

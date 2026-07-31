@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
@@ -89,9 +88,8 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
     const primaryGreen = Color(0xFF00462f);
     final bgColor = isDark ? const Color(0xFF0f231d) : const Color(0xFFf7faf5);
     final surfaceColor = isDark ? const Color(0xFF1c2c26) : Colors.white;
-    final onSurfaceColor = isDark ? const Color(0xFFeef2ed) : const Color(0xFF181d1a);
     final secondaryTextColor = isDark ? const Color(0xFF89d6b0) : const Color(0xFF486456);
-    final outlineVariant = isDark ? Colors.white.withOpacity(0.1) : const Color(0xFFbec9c1).withOpacity(0.2);
+    final outlineVariant = isDark ? Colors.white.withValues(alpha: 0.1) : const Color(0xFFbec9c1).withValues(alpha: 0.2);
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -157,7 +155,7 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: (isDark ? const Color(0xFF89d6b0) : primaryGreen).withOpacity(0.1),
+                            color: (isDark ? const Color(0xFF89d6b0) : primaryGreen).withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -183,7 +181,7 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
                           padding: const EdgeInsets.symmetric(vertical: 40.0),
                           child: Column(
                             children: [
-                              Icon(Icons.search_off, size: 48, color: secondaryTextColor.withOpacity(0.5)),
+                              Icon(Icons.search_off, size: 48, color: secondaryTextColor.withValues(alpha: 0.5)),
                               const SizedBox(height: 16),
                               Text(
                                 'No se encontraron productores',
@@ -328,7 +326,7 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1c2c26) : const Color(0xFFf1f4f0),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: isDark ? Colors.white.withOpacity(0.05) : Colors.transparent),
+        border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.transparent),
       ),
       child: TextField(
         controller: _searchController,
@@ -368,7 +366,7 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -383,7 +381,7 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
                 height: 64,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.black.withOpacity(0.05)),
+                  border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
                   color: isDark ? const Color(0xFF1a2f26) : const Color(0xFFebefea),
                   image: imageUrl.isNotEmpty
                       ? (imageUrl.startsWith('http')
@@ -473,7 +471,7 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
           TextButton(
             onPressed: () => _showUnfollowDialog(context, name, isDark),
             style: TextButton.styleFrom(
-              backgroundColor: isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFf1f4f0),
+              backgroundColor: isDark ? Colors.white.withValues(alpha: 0.05) : const Color(0xFFf1f4f0),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               foregroundColor: isDark ? Colors.white70 : const Color(0xFF3f4943),
@@ -515,7 +513,7 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
                 borderRadius: BorderRadius.circular(32),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
+                    color: Colors.black.withValues(alpha: 0.15),
                     blurRadius: 30,
                     offset: const Offset(0, 15),
                   ),
@@ -618,7 +616,7 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
     final cardColor = isDark ? const Color(0xFF1c2c26) : Colors.white;
     final secondaryBg = isDark ? const Color(0xFF0f231d) : const Color(0xFFf1f4f0);
     final primaryGreen = isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f);
-    final borderColor = isDark ? Colors.white.withOpacity(0.05) : Colors.grey.withOpacity(0.1);
+    final borderColor = isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey.withValues(alpha: 0.1);
     final textColor = isDark ? Colors.white : const Color(0xFF181d1a);
     final subtitleColor = isDark ? Colors.grey[400] : Colors.grey[600];
 
@@ -630,7 +628,7 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
         border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -650,7 +648,7 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
                       height: 64,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.black.withOpacity(0.05)),
+                        border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
                         color: isDark ? const Color(0xFF1a2f26) : const Color(0xFFebefea),
                         image: imageUrl.isNotEmpty
                             ? (imageUrl.startsWith('http')
@@ -727,7 +725,7 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.05),
+                          color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05),
                           borderRadius: BorderRadius.circular(99),
                         ),
                         child: Row(

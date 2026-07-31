@@ -16,10 +16,10 @@ class LegalPoliciesScreen extends StatelessWidget {
         // Colors from the provided Tailwind config
         final bgColor = isDark ? const Color(0xFF0f231d) : const Color(0xFFf5f8f7);
         final primaryColor = const Color(0xFF016042);
-        final surfaceColor = isDark ? const Color(0xFF1e293b).withOpacity(0.5) : Colors.white;
+        final surfaceColor = isDark ? const Color(0xFF1e293b).withValues(alpha: 0.5) : Colors.white;
         final textColor = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0f172a);
         final subtextColor = isDark ? const Color(0xFF94a3b8) : const Color(0xFF64748b);
-        final borderColor = primaryColor.withOpacity(0.1);
+        final borderColor = primaryColor.withValues(alpha: 0.1);
 
         return Scaffold(
           backgroundColor: bgColor,
@@ -54,7 +54,7 @@ class LegalPoliciesScreen extends StatelessWidget {
                       width: 64,
                       height: 64,
                       decoration: BoxDecoration(
-                        color: primaryColor.withOpacity(0.1),
+                        color: primaryColor.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(Icons.gavel, color: primaryColor, size: 32),
@@ -114,7 +114,7 @@ class LegalPoliciesScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: primaryColor.withOpacity(0.05),
+                    color: primaryColor.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(24),
                     border: Border.all(color: borderColor),
                   ),
@@ -194,7 +194,7 @@ class LegalPoliciesScreen extends StatelessWidget {
         border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),

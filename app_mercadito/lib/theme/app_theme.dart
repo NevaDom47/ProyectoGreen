@@ -22,7 +22,6 @@ class AppTheme {
       brightness: Brightness.light,
       colorScheme: ColorScheme.light(
         primary: primary,
-        background: backgroundLight,
         surface: Colors.white,
         onSurface: slate900,
         outline: slate200,
@@ -61,7 +60,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           elevation: 4,
-          shadowColor: primary.withOpacity(0.4),
+          shadowColor: primary.withValues(alpha: 0.4),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -84,7 +83,6 @@ class AppTheme {
       brightness: Brightness.dark,
       colorScheme: ColorScheme.dark(
         primary: primary,
-        background: backgroundDark,
         surface: slate900,
         onSurface: slate100,
         outline: slate700,
@@ -123,7 +121,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           elevation: 4,
-          shadowColor: primary.withOpacity(0.4),
+          shadowColor: primary.withValues(alpha: 0.4),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(

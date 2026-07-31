@@ -9,6 +9,7 @@ import '../screens/chat_list_screen.dart';
 import '../screens/chat_detail_screen.dart';
 import '../screens/profile_screen.dart';
 import '../screens/market_analysis_screen.dart';
+import '../screens/market_price_detail_screen.dart';
 import '../screens/search_screen.dart';
 import '../screens/favorites_screen.dart';
 import '../screens/help_support_screen.dart';
@@ -299,6 +300,27 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/market-analysis',
       builder: (context, state) => const MarketAnalysisScreen(),
+    ),
+    GoRoute(
+      path: '/market-price-detail',
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>? ?? {};
+        final item = extra['item'] as Map<String, dynamic>? ?? {};
+        final product = extra['product'] as Map<String, dynamic>? ?? {};
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: MarketPriceDetailScreen(item: item, product: product),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: animation.drive(
+                Tween(begin: const Offset(1.0, 0.0), end: Offset.zero)
+                    .chain(CurveTween(curve: Curves.easeOutCubic)),
+              ),
+              child: child,
+            );
+          },
+        );
+      },
     ),
     GoRoute(
       path: '/language',

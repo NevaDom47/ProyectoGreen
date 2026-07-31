@@ -388,10 +388,10 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                       selectedColor: primaryContainer,
                       backgroundColor: surfaceContainerHigh,
                       showCheckmark: false,
+                      side: BorderSide.none,
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
-                        side: BorderSide.none,
                       ),
                       onSelected: effectiveState == MarketPricesState.loading
                           ? null
@@ -640,11 +640,12 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                                     ),
                                   ),
                                   onPressed: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('Vendedores de ${item['name']}'),
-                                        duration: const Duration(seconds: 2),
-                                      ),
+                                    context.push(
+                                      '/market-price-detail',
+                                      extra: {
+                                        'item': item,
+                                        'product': product,
+                                      },
                                     );
                                   },
                                 ),

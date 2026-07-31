@@ -190,6 +190,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
         ),
         title: Text(
           'Análisis de Mercado',
+          overflow: TextOverflow.ellipsis,
           style: GoogleFonts.manrope(
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -375,7 +376,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                     child: ChoiceChip(
                       label: Text(
                         cat,
-                        style: GoogleFonts.jetbrainsMono(
+                        style: GoogleFonts.jetBrainsMono(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                           color: isSelected
@@ -507,6 +508,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                                 fontWeight: FontWeight.bold,
                                 color: onSurface,
                               ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 2),
                             Text(
@@ -515,6 +517,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                                 fontSize: 14,
                                 color: onSurfaceVariant,
                               ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
@@ -560,18 +563,22 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                                       fontWeight: FontWeight.w600,
                                       color: onSurface,
                                     ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                   Text(
                                     item['sku'],
-                                    style: GoogleFonts.jetbrainsMono(
+                                    style: GoogleFonts.jetBrainsMono(
                                       fontSize: 12,
                                       color: onSurfaceVariant,
                                     ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
                               ),
                             ),
+                            const SizedBox(width: 8),
                             Row(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -579,7 +586,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                                     RichText(
                                       text: TextSpan(
                                         style: GoogleFonts.manrope(
-                                          fontSize: 18,
+                                          fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                           color: primaryColor,
                                         ),
@@ -588,7 +595,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                                           TextSpan(
                                             text: '/${product['unit']}',
                                             style: GoogleFonts.inter(
-                                              fontSize: 12,
+                                              fontSize: 11,
                                               fontWeight: FontWeight.normal,
                                               color: onSurfaceVariant,
                                             ),
@@ -608,8 +615,8 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                                         const SizedBox(width: 2),
                                         Text(
                                           '${isPositive ? '+' : ''}${trend.toStringAsFixed(1)}%',
-                                          style: GoogleFonts.jetbrainsMono(
-                                            fontSize: 12,
+                                          style: GoogleFonts.jetBrainsMono(
+                                            fontSize: 11,
                                             fontWeight: FontWeight.bold,
                                             color: trendColor,
                                           ),
@@ -618,9 +625,11 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                                     ),
                                   ],
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(width: 8),
                                 IconButton(
                                   icon: const Icon(Icons.storefront, size: 20),
+                                  constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                                  padding: EdgeInsets.zero,
                                   style: IconButton.styleFrom(
                                     backgroundColor: isDark
                                         ? const Color(0xFF23322B)
@@ -728,39 +737,43 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: 110,
-                              height: 14,
-                              decoration: BoxDecoration(
-                                color: primaryContainer.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(4),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 110,
+                                height: 14,
+                                decoration: BoxDecoration(
+                                  color: primaryContainer.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 6),
+                              const SizedBox(height: 6),
+                              Container(
+                                width: 60,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  color: primaryContainer.withValues(alpha: 0.05),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
                             Container(
                               width: 60,
-                              height: 10,
-                              decoration: BoxDecoration(
-                                color: primaryContainer.withValues(alpha: 0.05),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              width: 70,
                               height: 20,
                               decoration: BoxDecoration(
                                 color: primaryContainer.withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: 8),
                             Container(
                               width: 36,
                               height: 36,
@@ -903,7 +916,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
             ),
             child: Text(
               'Intentar de nuevo',
-              style: GoogleFonts.jetbrainsMono(
+              style: GoogleFonts.jetBrainsMono(
                 fontWeight: FontWeight.bold,
                 fontSize: 13,
               ),
@@ -977,7 +990,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
             ),
             child: Text(
               'Reintentar',
-              style: GoogleFonts.jetbrainsMono(
+              style: GoogleFonts.jetBrainsMono(
                 fontWeight: FontWeight.bold,
                 fontSize: 13,
               ),

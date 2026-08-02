@@ -688,106 +688,520 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
             _buildMarketSelectorRow(),
             const SizedBox(height: 16),
 
-            // ----- Chart area -----
-            LayoutBuilder(
-              builder: (ctx, constraints) {
-                final chartWidth = constraints.maxWidth;
-                return Column(
-                  children: [
-                    // Y-axis price labels + chart
-                    SizedBox(
-                      height: 180,
-                      child: Row(
-                        children: [
-                          // Y labels
-                          _buildYLabels(chartWidth),
-                          const SizedBox(width: 8),
-                          // Chart + gesture
-                          Expanded(
-                            child: GestureDetector(
-                              key: _chartKey,
-                              behavior: HitTestBehavior.opaque,
-                              onPanStart: (d) => _onChartPan(
-                                  d.localPosition, chartWidth - 40),
-                              onPanUpdate: (d) => _onChartPan(
-                                  d.localPosition, chartWidth - 40),
-                              onPanEnd: (_) => _onChartPanEnd(),
-                              onTapDown: (d) => _onChartPan(
-                                  d.localPosition, chartWidth - 40),
-                              onTapUp: (_) => _onChartPanEnd(),
-                              child: AnimatedBuilder(
-                                animation: _chartAnimation,
-                                builder: (_, _) => CustomPaint(
-                                  painter: _ChartPainter(
-                                    values: _currentValues,
-                                    progress: _chartAnimation.value,
-                                    touchXNorm: _touchXNorm,
-                                    lineColor: color,
+            // ----- Chart area or Day Detail View -----
+            if (_selectedRange == _RangeFilter.day)
+              _buildDayDetailView()
+            else
+              LayoutBuilder(
+                builder: (ctx, constraints) {
+                  final chartWidth = constraints.maxWidth;
+                  return Column(
+                    children: [
+                      // Y-axis price labels + chart
+                      SizedBox(
+                        height: 180,
+                        child: Row(
+                          children: [
+                            // Y labels
+                            _buildYLabels(chartWidth),
+                            const SizedBox(width: 8),
+                            // Chart + gesture
+                            Expanded(
+                              child: GestureDetector(
+                                key: _chartKey,
+                                behavior: HitTestBehavior.opaque,
+                                onPanStart: (d) => _onChartPan(
+                                    d.localPosition, chartWidth - 40),
+                                onPanUpdate: (d) => _onChartPan(
+                                    d.localPosition, chartWidth - 40),
+                                onPanEnd: (_) => _onChartPanEnd(),
+                                onTapDown: (d) => _onChartPan(
+                                    d.localPosition, chartWidth - 40),
+                                onTapUp: (_) => _onChartPanEnd(),
+                                child: AnimatedBuilder(
+                                  animation: _chartAnimation,
+                                  builder: (_, _) => CustomPaint(
+                                    painter: _ChartPainter(
+                                      values: _currentValues,
+                                      progress: _chartAnimation.value,
+                                      touchXNorm: _touchXNorm,
+                                      lineColor: color,
+                                    ),
+                                    size: Size.infinite,
                                   ),
-                                  size: Size.infinite,
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
+                      const SizedBox(height: 10),
 
-                    // X-axis labels
-                    Padding(
-                      padding: const EdgeInsets.only(left: 40),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: List.generate(labels.length, (i) {
-                          final idx = labelIndices[i];
-                          final isTouched =
-                              _touchedPointIndex != null &&
-                              (_touchedPointIndex! - idx).abs() <= (n / (labels.length * 1.5)).round();
-                          return AnimatedDefaultTextStyle(
-                            duration: const Duration(milliseconds: 200),
-                            style: GoogleFonts.jetBrainsMono(
-                              fontSize: 10,
-                              fontWeight: isTouched
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
-                              color: isTouched ? color : _onSurfaceVariant,
-                            ),
-                            child: Text(labels[i]),
-                          );
-                        }),
+                      // X-axis labels
+                      Padding(
+                        padding: const EdgeInsets.only(left: 40),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: List.generate(labels.length, (i) {
+                            final idx = labelIndices[i];
+                            final isTouched =
+                                _touchedPointIndex != null &&
+                                (_touchedPointIndex! - idx).abs() <= (n / (labels.length * 1.5)).round();
+                            return AnimatedDefaultTextStyle(
+                              duration: const Duration(milliseconds: 200),
+                              style: GoogleFonts.jetBrainsMono(
+                                fontSize: 10,
+                                fontWeight: isTouched
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
+                                color: isTouched ? color : _onSurfaceVariant,
+                              ),
+                              child: Text(labels[i]),
+                            );
+                          }),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
+                      const SizedBox(height: 8),
 
-                    // Touch hint
-                    AnimatedOpacity(
-                      opacity: _touchXNorm == null ? 1.0 : 0.0,
-                      duration: const Duration(milliseconds: 300),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.touch_app_rounded,
-                              size: 14, color: _onSurfaceVariant.withValues(alpha: 0.6)),
-                          const SizedBox(width: 4),
-                          Text(
-                            'Toca o desliza para ver el precio',
-                            style: GoogleFonts.inter(
-                              fontSize: 11,
-                              color: _onSurfaceVariant.withValues(alpha: 0.6),
+                      // Touch hint
+                      AnimatedOpacity(
+                        opacity: _touchXNorm == null ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 300),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.touch_app_rounded,
+                                size: 14, color: _onSurfaceVariant.withValues(alpha: 0.6)),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Toca o desliza para ver el precio',
+                              style: GoogleFonts.inter(
+                                fontSize: 11,
+                                color: _onSurfaceVariant.withValues(alpha: 0.6),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                );
-              },
-            ),
+                    ],
+                  );
+                },
+              ),
           ],
         ),
       ),
     );
+  }
+
+  // ============================================================
+  // Day View Layout (Official Report + Stats + Info Banner)
+  // ============================================================
+  Widget _buildDayDetailView() {
+    final color = _selectedMarketColor;
+    final currentPrice = _currentValues.isNotEmpty
+        ? _currentValues.first
+        : _basePrice * _marketMultipliers[_selectedMarketIndex];
+
+    double minPrice = double.infinity;
+    double maxPrice = double.negativeInfinity;
+    String minMarket = '';
+    String maxMarket = '';
+    double sumPrice = 0;
+
+    for (int i = 0; i < _marketFullNames.length; i++) {
+      final mName = _marketFullNames[i];
+      final mShort = _marketShortNames[i];
+      final mVals = _allData[mName]?[_RangeFilter.day];
+      final p = (mVals != null && mVals.isNotEmpty)
+          ? mVals.first
+          : _basePrice * _marketMultipliers[i];
+
+      if (p < minPrice) {
+        minPrice = p;
+        minMarket = mShort;
+      }
+      if (p > maxPrice) {
+        maxPrice = p;
+        maxMarket = mShort;
+      }
+      sumPrice += p;
+    }
+    final avgPrice = sumPrice / _marketFullNames.length;
+
+    return Column(
+      children: [
+        // 1. Reporte Oficial Card
+        _buildDayReportCard(currentPrice, color),
+        const SizedBox(height: 12),
+
+        // 2. Stats Row (Min, Avg, Max)
+        _buildDayStatsRow(
+          minPrice: minPrice,
+          minMarket: minMarket,
+          avgPrice: avgPrice,
+          maxPrice: maxPrice,
+          maxMarket: maxMarket,
+        ),
+        const SizedBox(height: 12),
+
+        // 3. Info Banner
+        _buildDayInfoBanner(),
+      ],
+    );
+  }
+
+  Widget _buildDayReportCard(double price, Color color) {
+    final unit = widget.item['unit']?.toString() ?? 'kg';
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withValues(alpha: 0.35), width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Top row: [Reporte Oficial del Día] ... 07:30 AM
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.verified_rounded, size: 14, color: color),
+                    const SizedBox(width: 5),
+                    Text(
+                      'Reporte Oficial del Día',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: color,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                '07:30 AM',
+                style: GoogleFonts.jetBrainsMono(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: _onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          // Date string
+          Text(
+            _formatSpanishDate(_selectedDay),
+            style: GoogleFonts.manrope(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: _onSurface.withValues(alpha: 0.85),
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          // Price row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Text(
+                    '\$${price.toStringAsFixed(2)}',
+                    style: GoogleFonts.manrope(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w800,
+                      color: color,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    '/ $unit',
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: _onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE2E9F9),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  '— Sin cambio',
+                  style: GoogleFonts.jetBrainsMono(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF3B4858),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDayStatsRow({
+    required double minPrice,
+    required String minMarket,
+    required double avgPrice,
+    required double maxPrice,
+    required String maxMarket,
+  }) {
+    return Row(
+      children: [
+        // Min Card
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: _surfaceContainerLowest,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: _outlineVariant.withValues(alpha: 0.4)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'MÍNIMO',
+                      style: GoogleFonts.jetBrainsMono(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: _onSurfaceVariant,
+                      ),
+                    ),
+                    const Icon(
+                      Icons.arrow_downward_rounded,
+                      size: 12,
+                      color: Color(0xFF065F46),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '\$${minPrice.toStringAsFixed(2)}',
+                  style: GoogleFonts.manrope(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: const Color(0xFF065F46),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  minMarket,
+                  style: GoogleFonts.inter(
+                    fontSize: 11,
+                    color: _onSurfaceVariant,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+
+        // Avg Card
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: _surfaceContainerLowest,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: _outlineVariant.withValues(alpha: 0.4)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'PROMEDIO',
+                      style: GoogleFonts.jetBrainsMono(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: _onSurfaceVariant,
+                      ),
+                    ),
+                    Text(
+                      'Σ',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        color: _onSurface,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '\$${avgPrice.toStringAsFixed(2)}',
+                  style: GoogleFonts.manrope(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: _onSurface,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'General',
+                  style: GoogleFonts.inter(
+                    fontSize: 11,
+                    color: _onSurfaceVariant,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+
+        // Max Card
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: _surfaceContainerLowest,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: _outlineVariant.withValues(alpha: 0.4)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'MÁXIMO',
+                      style: GoogleFonts.jetBrainsMono(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: _onSurfaceVariant,
+                      ),
+                    ),
+                    const Icon(
+                      Icons.arrow_upward_rounded,
+                      size: 12,
+                      color: _error,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '\$${maxPrice.toStringAsFixed(2)}',
+                  style: GoogleFonts.manrope(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: _error,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  maxMarket,
+                  style: GoogleFonts.inter(
+                    fontSize: 11,
+                    color: _onSurfaceVariant,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDayInfoBanner() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF0F4FA),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: _outlineVariant.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.info_outline_rounded,
+            size: 18,
+            color: _onSurfaceVariant,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              'El precio de mercado se reporta oficialmente 1 vez al día durante la apertura comercial.',
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                color: _onSurfaceVariant,
+                height: 1.3,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatSpanishDate(DateTime dt) {
+    const days = [
+      'Lunes',
+      'Martes',
+      'Miércoles',
+      'Jueves',
+      'Viernes',
+      'Sábado',
+      'Domingo'
+    ];
+    const months = [
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre'
+    ];
+    final dayName = days[dt.weekday - 1];
+    final monthName = months[dt.month - 1];
+    return '$dayName, ${dt.day} de $monthName de ${dt.year}';
   }
 
   // Y-axis labels

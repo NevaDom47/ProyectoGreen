@@ -438,7 +438,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: products.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 16),
+      separatorBuilder: (context, index) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
         final product = products[index];
         final productId = product['id'] as String;
@@ -490,7 +490,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                               ? Image.network(
                                   product['imageUrl'],
                                   fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => Icon(product['icon'] as IconData, color: primaryColor),
+                                  errorBuilder: (context, error, stackTrace) => Icon(product['icon'] as IconData, color: primaryColor),
                                 )
                               : Icon(product['icon'] as IconData, color: primaryColor),
                         ),

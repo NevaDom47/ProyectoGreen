@@ -153,6 +153,25 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
     super.dispose();
   }
 
+  String _getItemMarketAvgPrice(dynamic rawPrice) {
+    final base = double.tryParse(rawPrice?.toString() ?? '0') ?? 0.0;
+    // Wholesale market average multiplier = (0.91 + 0.98 + 1.01 + 1.20) / 4 = 1.025
+    const double wholesaleAvgMultiplier = 1.025;
+    final avg = base * wholesaleAvgMultiplier;
+    return avg.toStringAsFixed(2);
+  }
+
+  String _getCategoryAvgPrice(Map<String, dynamic> product) {
+    final items = product['items'] as List<dynamic>? ?? [];
+    if (items.isEmpty) return product['avgPrice']?.toString() ?? '0.00';
+    double sum = 0;
+    for (final item in items) {
+      final p = item['price'];
+      sum += double.tryParse(_getItemMarketAvgPrice(p)) ?? 0.0;
+    }
+    return (sum / items.length).toStringAsFixed(2);
+  }
+
   List<Map<String, dynamic>> get _filteredProducts {
     return _allProducts.where((product) {
       final matchesCategory = _selectedCategory == 'Todos' || product['category'] == _selectedCategory;
@@ -512,7 +531,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              'Promedio: \$${product['avgPrice']} / ${product['unit']}',
+                              'Venta Promedio \$${_getCategoryAvgPrice(product)}',
                               style: GoogleFonts.inter(
                                 fontSize: 14,
                                 color: onSurfaceVariant,
@@ -591,7 +610,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                                           color: primaryColor,
                                         ),
                                         children: [
-                                          TextSpan(text: '\$${item['price']}'),
+                                          TextSpan(text: '\$${_getItemMarketAvgPrice(item['price'])}'),
                                           TextSpan(
                                             text: '/${product['unit']}',
                                             style: GoogleFonts.inter(

@@ -204,6 +204,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
     'Mercado Nuevo',
     'Mercado Los Minas',
     'La Duarte',
+    'Supermercados',
   ];
 
   static const _marketShortNames = [
@@ -211,6 +212,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
     'Merc. Nuevo',
     'Los Minas',
     'La Duarte',
+    'Supermercados',
   ];
 
   static const _marketColors = [
@@ -218,24 +220,27 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
     Color(0xFF00415F), // teal
     Color(0xFF904D00), // amber
     Color(0xFFBA1A1A), // red
+    Color(0xFF4F46E5), // indigo/purple
   ];
 
-  static const _marketMultipliers = [0.91, 0.98, 1.01, 1.20];
+  static const _marketMultipliers = [0.91, 0.98, 1.01, 1.20, 1.30];
   static const _marketLabels = [
     'Precio más bajo',
     'Venta Promedio',
     'Precio elevado',
     'Precio más alto',
+    'Venta al Detalle',
   ];
   static const _marketTypes = [
     _EntryType.lowest,
     _EntryType.stable,
     _EntryType.high,
     _EntryType.highest,
+    _EntryType.stable,
   ];
 
   // --- State ---
-  _RangeFilter _selectedRange = _RangeFilter.week;
+  _RangeFilter _selectedRange = _RangeFilter.day;
   int _selectedMarketIndex = 0;
   double? _touchXNorm;
   int? _touchedPointIndex;
@@ -320,7 +325,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
       final seed = (_basePrice * 100).toInt() + mi * 31;
       out[_marketFullNames[mi]] = {
         _RangeFilter.week: _series(mb, 7, mb * 0.04, seed),
-        _RangeFilter.month: _series(mb, 30, mb * 0.025, seed + 7),
+        _RangeFilter.month: _series(mb, 8, mb * 0.025, seed + 7),
         _RangeFilter.day: _series(mb, 24, mb * 0.012, seed + 13),
       };
     }
@@ -333,9 +338,22 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
 
   Color get _selectedMarketColor => _marketColors[_selectedMarketIndex];
 
+  double _getMarketDisplayPrice(int i) {
+    final vals = _allData[_marketFullNames[i]]![_selectedRange]!;
+    if (_touchedPointIndex != null && _touchedPointIndex! < vals.length) {
+      return vals[_touchedPointIndex!];
+    } else {
+      return vals.isNotEmpty ? vals.first : _basePrice * _marketMultipliers[i];
+    }
+  }
+
   double get _avgPrice {
-    final v = _currentValues;
-    return v.reduce((a, b) => a + b) / v.length;
+    double sum = 0;
+    const wholesaleCount = 4; // Excludes Supermercados (index 4)
+    for (int i = 0; i < wholesaleCount; i++) {
+      sum += _getMarketDisplayPrice(i);
+    }
+    return sum / wholesaleCount;
   }
 
   double? get _touchedPrice {
@@ -345,13 +363,51 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
     return v[idx];
   }
 
+  String _getTouchedLabel(int idx) {
+    switch (_selectedRange) {
+      case _RangeFilter.week:
+        const days = [
+          'Lunes',
+          'Martes',
+          'Miércoles',
+          'Jueves',
+          'Viernes',
+          'Sábado',
+          'Domingo'
+        ];
+        if (idx >= 0 && idx < days.length) return days[idx];
+        return '';
+      case _RangeFilter.month:
+        const months = [
+          'Enero',
+          'Febrero',
+          'Marzo',
+          'Abril',
+          'Mayo',
+          'Junio',
+          'Julio',
+          'Agosto',
+          'Septiembre',
+          'Octubre',
+          'Noviembre',
+          'Diciembre'
+        ];
+        if (idx >= 0 && idx < months.length) return months[idx];
+        return '';
+      case _RangeFilter.day:
+        final hour = idx.clamp(0, 23);
+        final formatted = hour.toString().padLeft(2, '0');
+        return '${formatted}h';
+    }
+  }
+
   // ---- X-axis labels ----
   List<String> _xLabels() {
     switch (_selectedRange) {
       case _RangeFilter.week:
         return ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
       case _RangeFilter.month:
-        return ['1', '5', '10', '15', '20', '25', '30'];
+        return ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago'];
       case _RangeFilter.day:
         return ['00h', '04h', '08h', '12h', '16h', '20h', '23h'];
     }
@@ -362,7 +418,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
       case _RangeFilter.week:
         return [0, 1, 2, 3, 4, 5, 6];
       case _RangeFilter.month:
-        return [0, 4, 9, 14, 19, 24, 29];
+        return [0, 1, 2, 3, 4, 5, 6, 7];
       case _RangeFilter.day:
         return [0, 4, 8, 12, 16, 20, 23];
     }
@@ -510,6 +566,19 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
             ),
             const SizedBox(height: 14),
             ..._buildMarketCards(),
+            const SizedBox(height: 28),
+
+            // 4. Supermarket comparison list
+            Text(
+              'Precio en Supermercado',
+              style: GoogleFonts.manrope(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: _onSurface,
+              ),
+            ),
+            const SizedBox(height: 14),
+            ..._buildSupermarketCards(),
           ],
         ),
       ),
@@ -654,9 +723,10 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                   duration: const Duration(milliseconds: 200),
                   transitionBuilder: (child, anim) =>
                       ScaleTransition(scale: anim, child: child),
-                  child: touchedPrice != null
+                  child: touchedPrice != null && _touchedPointIndex != null
                       ? Container(
-                          key: ValueKey(touchedPrice),
+                          key: ValueKey(
+                              '${_touchedPointIndex}_$touchedPrice'),
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
@@ -666,9 +736,9 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                                 color: color.withValues(alpha: 0.4)),
                           ),
                           child: Text(
-                            '\$${touchedPrice.toStringAsFixed(2)}',
+                            '${_getTouchedLabel(_touchedPointIndex!)} \$${touchedPrice.toStringAsFixed(2)}',
                             style: GoogleFonts.jetBrainsMono(
-                              fontSize: 14,
+                              fontSize: 13,
                               fontWeight: FontWeight.w700,
                               color: color,
                             ),
@@ -802,31 +872,28 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
         ? _currentValues.first
         : _basePrice * _marketMultipliers[_selectedMarketIndex];
 
+    final selectedMarketFullName = _marketFullNames[_selectedMarketIndex];
+    final monthVals = _allData[selectedMarketFullName]?[_RangeFilter.month] ?? [];
+
     double minPrice = double.infinity;
     double maxPrice = double.negativeInfinity;
-    String minMarket = '';
-    String maxMarket = '';
     double sumPrice = 0;
+    int totalCount = 0;
 
-    for (int i = 0; i < _marketFullNames.length; i++) {
-      final mName = _marketFullNames[i];
-      final mShort = _marketShortNames[i];
-      final mVals = _allData[mName]?[_RangeFilter.day];
-      final p = (mVals != null && mVals.isNotEmpty)
-          ? mVals.first
-          : _basePrice * _marketMultipliers[i];
-
+    for (final p in monthVals) {
       if (p < minPrice) {
         minPrice = p;
-        minMarket = mShort;
       }
       if (p > maxPrice) {
         maxPrice = p;
-        maxMarket = mShort;
       }
       sumPrice += p;
+      totalCount++;
     }
-    final avgPrice = sumPrice / _marketFullNames.length;
+
+    final avgPrice = totalCount > 0 ? sumPrice / totalCount : _basePrice;
+    if (minPrice == double.infinity) minPrice = _basePrice;
+    if (maxPrice == double.negativeInfinity) maxPrice = _basePrice;
 
     return Column(
       children: [
@@ -837,16 +904,184 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
         // 2. Stats Row (Min, Avg, Max)
         _buildDayStatsRow(
           minPrice: minPrice,
-          minMarket: minMarket,
           avgPrice: avgPrice,
           maxPrice: maxPrice,
-          maxMarket: maxMarket,
+          selectedMarket: selectedMarketFullName,
         ),
         const SizedBox(height: 12),
 
         // 3. Info Banner
         _buildDayInfoBanner(),
       ],
+    );
+  }
+
+  void _showConceptDetailBottomSheet({
+    required String title,
+    required String value,
+    required String unit,
+    required String description,
+    String? market,
+    required Color color,
+    required IconData icon,
+  }) {
+    HapticFeedback.mediumImpact();
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: _surfaceContainerLowest,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Drag handle
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: _outlineVariant.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Icon badge
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: color, size: 28),
+              ),
+              const SizedBox(height: 12),
+
+              // Title
+              Text(
+                title,
+                style: GoogleFonts.manrope(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: _onSurface,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+
+              // Value & Unit display
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Text(
+                    value,
+                    style: GoogleFonts.manrope(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w800,
+                      color: color,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '/ $unit',
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: _onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+              if (market != null && market.isNotEmpty) ...[
+                const SizedBox(height: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: _surfaceVariant.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    'Mercado: $market',
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: _onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ],
+              const SizedBox(height: 20),
+
+              // Description Card
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: _background,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: _outlineVariant.withValues(alpha: 0.4),
+                  ),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.info_outline_rounded,
+                      size: 20,
+                      color: color,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        description,
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          height: 1.4,
+                          color: _onSurface,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Entendido button
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _primary,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: Text(
+                    'Entendido',
+                    style: GoogleFonts.manrope(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -967,177 +1202,152 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
 
   Widget _buildDayStatsRow({
     required double minPrice,
-    required String minMarket,
     required double avgPrice,
     required double maxPrice,
-    required String maxMarket,
+    required String selectedMarket,
   }) {
+    final unit = widget.product['unit'] as String? ?? 'kg';
+
+    Widget buildStatCard({
+      required String title,
+      required String value,
+      required String subtitle,
+      required Color color,
+      required IconData icon,
+      required VoidCallback onTap,
+    }) {
+      return Expanded(
+        child: Material(
+          color: _surfaceContainerLowest,
+          borderRadius: BorderRadius.circular(12),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: _outlineVariant.withValues(alpha: 0.4),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        title,
+                        style: GoogleFonts.jetBrainsMono(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          color: _onSurfaceVariant,
+                        ),
+                      ),
+                      Icon(
+                        icon,
+                        size: 12,
+                        color: color,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    value,
+                    style: GoogleFonts.manrope(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      color: color,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          subtitle,
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            color: _onSurfaceVariant,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Icon(
+                        Icons.info_outline_rounded,
+                        size: 11,
+                        color: _onSurfaceVariant.withValues(alpha: 0.6),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     return Row(
       children: [
         // Min Card
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: _surfaceContainerLowest,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: _outlineVariant.withValues(alpha: 0.4)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'MÍNIMO',
-                      style: GoogleFonts.jetBrainsMono(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: _onSurfaceVariant,
-                      ),
-                    ),
-                    const Icon(
-                      Icons.arrow_downward_rounded,
-                      size: 12,
-                      color: Color(0xFF065F46),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '\$${minPrice.toStringAsFixed(2)}',
-                  style: GoogleFonts.manrope(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    color: const Color(0xFF065F46),
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  minMarket,
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    color: _onSurfaceVariant,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
+        buildStatCard(
+          title: 'MÍNIMO',
+          value: '\$${minPrice.toStringAsFixed(2)}',
+          subtitle: 'Mínimo del Mes',
+          color: const Color(0xFF065F46),
+          icon: Icons.arrow_downward_rounded,
+          onTap: () => _showConceptDetailBottomSheet(
+            title: 'Precio Mínimo del Mes',
+            value: '\$${minPrice.toStringAsFixed(2)}',
+            unit: unit,
+            description:
+                'Es el valor más bajo registrado en el mes actual para $selectedMarket. Te permite visualizar la oferta más económica en este mercado.',
+            market: selectedMarket,
+            color: const Color(0xFF065F46),
+            icon: Icons.arrow_downward_rounded,
           ),
         ),
         const SizedBox(width: 8),
 
         // Avg Card
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: _surfaceContainerLowest,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: _outlineVariant.withValues(alpha: 0.4)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'PROMEDIO',
-                      style: GoogleFonts.jetBrainsMono(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: _onSurfaceVariant,
-                      ),
-                    ),
-                    Text(
-                      'Σ',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w800,
-                        color: _onSurface,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '\$${avgPrice.toStringAsFixed(2)}',
-                  style: GoogleFonts.manrope(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    color: _onSurface,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  'General',
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    color: _onSurfaceVariant,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
+        buildStatCard(
+          title: 'PROMEDIO',
+          value: '\$${avgPrice.toStringAsFixed(2)}',
+          subtitle: 'Promedio del Mes',
+          color: _onSurface,
+          icon: Icons.functions_rounded,
+          onTap: () => _showConceptDetailBottomSheet(
+            title: 'Precio Promedio del Mes',
+            value: '\$${avgPrice.toStringAsFixed(2)}',
+            unit: unit,
+            description:
+                'Es la media calculada entre los valores de cada día del mes actual para $selectedMarket. Sirve como referencia del costo habitual en este mercado.',
+            market: selectedMarket,
+            color: _primaryContainer,
+            icon: Icons.functions_rounded,
           ),
         ),
         const SizedBox(width: 8),
 
         // Max Card
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: _surfaceContainerLowest,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: _outlineVariant.withValues(alpha: 0.4)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'MÁXIMO',
-                      style: GoogleFonts.jetBrainsMono(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: _onSurfaceVariant,
-                      ),
-                    ),
-                    const Icon(
-                      Icons.arrow_upward_rounded,
-                      size: 12,
-                      color: _error,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '\$${maxPrice.toStringAsFixed(2)}',
-                  style: GoogleFonts.manrope(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    color: _error,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  maxMarket,
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    color: _onSurfaceVariant,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
+        buildStatCard(
+          title: 'MÁXIMO',
+          value: '\$${maxPrice.toStringAsFixed(2)}',
+          subtitle: 'Más alto del mes',
+          color: _error,
+          icon: Icons.arrow_upward_rounded,
+          onTap: () => _showConceptDetailBottomSheet(
+            title: 'Precio Máximo del Mes',
+            value: '\$${maxPrice.toStringAsFixed(2)}',
+            unit: unit,
+            description:
+                'Es el valor más alto registrado en el mes actual para $selectedMarket. Indica el precio máximo alcanzado en este mercado.',
+            market: selectedMarket,
+            color: _error,
+            icon: Icons.arrow_upward_rounded,
           ),
         ),
       ],
@@ -1393,10 +1603,9 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
   // 3. Market comparison cards
   // ============================================================
   List<Widget> _buildMarketCards() {
-    return List.generate(_marketFullNames.length, (i) {
-      final vals =
-          _allData[_marketFullNames[i]]![_selectedRange]!;
-      final avg = vals.reduce((a, b) => a + b) / vals.length;
+    const wholesaleCount = 4; // Excludes Supermercados (index 4)
+    return List.generate(wholesaleCount, (i) {
+      final displayPrice = _getMarketDisplayPrice(i);
       final type = _marketTypes[i];
       final isHighest = type == _EntryType.highest;
       final anim = _cardAnim(i);
@@ -1412,7 +1621,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
           child: _buildOneMarketCard(
             name: _marketFullNames[i],
             label: _marketLabels[i],
-            price: avg,
+            price: displayPrice,
             type: type,
             isHighest: isHighest,
             isSelected: _selectedMarketIndex == i,
@@ -1421,6 +1630,147 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
         ),
       );
     });
+  }
+
+  // ============================================================
+  // 4. Supermarket comparison cards
+  // ============================================================
+  List<Widget> _buildSupermarketCards() {
+    const i = 4; // Supermercados index
+    final displayPrice = _getMarketDisplayPrice(i);
+    final isSelected = _selectedMarketIndex == i;
+    final anim = _cardAnim(0);
+
+    return [
+      AnimatedBuilder(
+        animation: anim,
+        builder: (_, child) => Transform.translate(
+          offset: Offset(0, 30 * (1 - anim.value)),
+          child: Opacity(opacity: anim.value.clamp(0.0, 1.0), child: child),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: GestureDetector(
+            onTap: () => _changeMarket(i),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 280),
+              curve: Curves.easeOutCubic,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? const Color(0xFF4F46E5).withValues(alpha: 0.05)
+                    : _surfaceContainerLowest,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: isSelected
+                      ? const Color(0xFF4F46E5).withValues(alpha: 0.7)
+                      : _outlineVariant.withValues(alpha: 0.5),
+                  width: isSelected ? 1.5 : 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: isSelected
+                        ? const Color(0xFF4F46E5).withValues(alpha: 0.08)
+                        : Colors.black.withValues(alpha: 0.03),
+                    blurRadius: isSelected ? 10 : 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  // Icon badge
+                  Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF4F46E5).withValues(alpha: 0.12),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.shopping_cart_rounded,
+                      size: 18,
+                      color: Color(0xFF4F46E5),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              'Supermercados',
+                              style: GoogleFonts.inter(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: _onSurface,
+                              ),
+                            ),
+                            if (isSelected) ...[
+                              const SizedBox(width: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 6, vertical: 1),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF4F46E5).withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  'Viendo',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFF4F46E5),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Venta al Detalle (Consumidor)',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: _onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Supermercado',
+                        style: GoogleFonts.jetBrainsMono(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: _onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '\$${displayPrice.toStringAsFixed(2)}',
+                        style: GoogleFonts.jetBrainsMono(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFF4F46E5),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    ];
   }
 
   Widget _buildOneMarketCard({

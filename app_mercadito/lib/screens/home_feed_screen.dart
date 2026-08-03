@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'my_reviews_screen.dart';
 import '../widgets/location_selector_modal.dart';
 import '../data/global_state.dart';
@@ -385,6 +386,51 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
     );
   }
 
+  Widget? _buildSalesModeBadge(String? salesMode, ThemeData theme, bool isDark) {
+    if (salesMode == null || salesMode == 'both') {
+      return null;
+    }
+
+    final bool isRetailOnly = salesMode == 'retail_only' || salesMode == 'retail';
+    final String label = isRetailOnly ? 'Solo al Detalle' : 'Solo por Mayor';
+    final IconData icon = isRetailOnly ? Icons.shopping_bag_outlined : Icons.inventory_2_outlined;
+
+    final Color bgColor = isRetailOnly
+        ? (isDark ? const Color(0xFF064E3B).withValues(alpha: 0.35) : const Color(0xFFECFDF5))
+        : (isDark ? const Color(0xFF075985).withValues(alpha: 0.35) : const Color(0xFFF0F9FF));
+    final Color borderColor = isRetailOnly
+        ? (isDark ? const Color(0xFF059669).withValues(alpha: 0.4) : const Color(0xFFA7F3D0))
+        : (isDark ? const Color(0xFF0284C7).withValues(alpha: 0.4) : const Color(0xFFBAE6FD));
+    final Color textColor = isRetailOnly
+        ? (isDark ? const Color(0xFF6EE7B7) : const Color(0xFF047857))
+        : (isDark ? const Color(0xFF7DD3FC) : const Color(0xFF0369A1));
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: borderColor, width: 0.8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 11, color: textColor),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: GoogleFonts.inter(
+              color: textColor,
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildVariantCard(BuildContext context, ThemeData theme, Map<String, dynamic> data, bool isDark) {
     final String badge = (data['badge'] ?? 'Primera Calidad').toString();
     Color badgeColor = theme.colorScheme.primary;
@@ -516,31 +562,45 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                         children: [
                           Text(data['name']!, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, height: 1.2), maxLines: 2, overflow: TextOverflow.ellipsis),
                           const SizedBox(height: 6),
-                          if (data['tags'] != null && (data['tags'] as List).isNotEmpty) ...[
-                            Wrap(
-                              spacing: 6,
-                              runSpacing: 4,
-                              children: (data['tags'] as List).map((tag) {
-                                return Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(4),
-                                    border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.3)),
+                          Builder(
+                            builder: (context) {
+                              final salesBadge = _buildSalesModeBadge(data['salesMode'], theme, isDark);
+                              final hasTags = data['tags'] != null && (data['tags'] as List).isNotEmpty;
+                              if (!hasTags && salesBadge == null) return const SizedBox.shrink();
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Wrap(
+                                    spacing: 6,
+                                    runSpacing: 4,
+                                    children: [
+                                      ...salesBadge != null ? [salesBadge] : <Widget>[],
+                                      if (hasTags)
+                                        ...(data['tags'] as List).map((tag) {
+                                          return Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                            decoration: BoxDecoration(
+                                              color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                                              borderRadius: BorderRadius.circular(4),
+                                              border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.3)),
+                                            ),
+                                            child: Text(
+                                              tag.toString(),
+                                              style: TextStyle(
+                                                color: isDark ? const Color(0xFF6ee7b7) : theme.colorScheme.primary, // emerald-300 or primary
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          );
+                                        }),
+                                    ],
                                   ),
-                                  child: Text(
-                                    tag.toString(),
-                                    style: TextStyle(
-                                      color: isDark ? const Color(0xFF6ee7b7) : theme.colorScheme.primary, // emerald-300 or primary
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                            const SizedBox(height: 8),
-                          ],
+                                  const SizedBox(height: 8),
+                                ],
+                              );
+                            },
+                          ),
                           GestureDetector(
                             onTap: () {
                               showModalBottomSheet(
@@ -678,11 +738,11 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
 
   Widget _buildFlashOffers(ThemeData theme, Color surfaceColor, bool isDark) {
     final offers = [
-      {'name': 'Papa Blanca Alpha', 'price': '\$18.00', 'oldPrice': '\$22.50', 'rating': '4.8', 'badge': 'PRIMERA CALIDAD', 'supplier': 'Don Pedro H.', 'location': 'Tecomán, Colima', 'tags': ['Tubérculos', 'Oferta', 'Cosecha Hoy'], 'img': 'assets/images/PapaGemini.png'},
-      {'name': 'Zanahoria Orgánica', 'price': '\$12.50', 'oldPrice': '\$16.00', 'rating': '4.9', 'badge': 'TERCERA CALIDAD', 'supplier': 'Granja Sol', 'location': 'Valle Verde, Puebla', 'tags': ['Raíces', 'Orgánico'], 'img': 'assets/images/ZanahoriaGemini.png'},
-      {'name': 'Fresas de Campo', 'price': '\$45.00', 'oldPrice': '\$60.00', 'rating': '4.9', 'badge': 'PRIMERA CALIDAD', 'supplier': 'AgroFresas', 'location': 'Zamora, Michoacán', 'tags': ['Frutas', 'Frescas'], 'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250620_1233_Fresas%20en%20Fondo%20Rosado_simple_compose_01jy72ypjmeccafrqb33rfm1q8.png'},
-      {'name': 'Saco de Papas Blancas', 'price': '\$280.00', 'oldPrice': '\$320.00', 'rating': '4.6', 'badge': 'SEGUNDA CALIDAD', 'supplier': 'Hermanos Ruiz', 'location': 'Galeana, Nuevo León', 'tags': ['Por Mayor', 'Tubérculos'], 'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1556_Sacos%20de%20Papas_simple_compose_01jwvnskaee6evykbzreq6j8wm.png'},
-      {'name': 'Mix de Ajíes Frescos', 'price': '\$35.00', 'oldPrice': '\$45.00', 'rating': '4.7', 'badge': 'PRIMERA CALIDAD', 'supplier': 'Picantes del Sur', 'location': 'Oaxaca, Oaxaca', 'tags': ['Hortalizas', 'Mix'], 'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1549_Variedad%20de%20Aj%C3%ADes_simple_compose_01jwvncbmqfpvb7qv6rs3vh22x.png'},
+      {'name': 'Papa Blanca Alpha', 'price': '\$18.00', 'oldPrice': '\$22.50', 'rating': '4.8', 'badge': 'PRIMERA CALIDAD', 'supplier': 'Don Pedro H.', 'location': 'Tecomán, Colima', 'tags': ['Tubérculos', 'Oferta', 'Cosecha Hoy'], 'salesMode': 'retail_only', 'img': 'assets/images/PapaGemini.png'},
+      {'name': 'Zanahoria Orgánica', 'price': '\$12.50', 'oldPrice': '\$16.00', 'rating': '4.9', 'badge': 'TERCERA CALIDAD', 'supplier': 'Granja Sol', 'location': 'Valle Verde, Puebla', 'tags': ['Raíces', 'Orgánico'], 'salesMode': 'both', 'img': 'assets/images/ZanahoriaGemini.png'},
+      {'name': 'Fresas de Campo', 'price': '\$45.00', 'oldPrice': '\$60.00', 'rating': '4.9', 'badge': 'PRIMERA CALIDAD', 'supplier': 'AgroFresas', 'location': 'Zamora, Michoacán', 'tags': ['Frutas', 'Frescas'], 'salesMode': 'retail_only', 'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250620_1233_Fresas%20en%20Fondo%20Rosado_simple_compose_01jy72ypjmeccafrqb33rfm1q8.png'},
+      {'name': 'Saco de Papas Blancas', 'price': '\$280.00', 'oldPrice': '\$320.00', 'rating': '4.6', 'badge': 'SEGUNDA CALIDAD', 'supplier': 'Hermanos Ruiz', 'location': 'Galeana, Nuevo León', 'tags': ['Tubérculos'], 'salesMode': 'wholesale_only', 'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1556_Sacos%20de%20Papas_simple_compose_01jwvnskaee6evykbzreq6j8wm.png'},
+      {'name': 'Mix de Ajíes Frescos', 'price': '\$35.00', 'oldPrice': '\$45.00', 'rating': '4.7', 'badge': 'PRIMERA CALIDAD', 'supplier': 'Picantes del Sur', 'location': 'Oaxaca, Oaxaca', 'tags': ['Hortalizas', 'Mix'], 'salesMode': 'both', 'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1549_Variedad%20de%20Aj%C3%ADes_simple_compose_01jwvncbmqfpvb7qv6rs3vh22x.png'},
     ];
     return Column(
       children: [

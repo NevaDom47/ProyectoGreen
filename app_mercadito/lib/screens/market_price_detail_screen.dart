@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 // Enums
 // ============================================================
 enum _RangeFilter { week, month, day }
+
 enum _EntryType { lowest, stable, high, highest }
 
 // ============================================================
@@ -69,14 +70,20 @@ class _ChartPainter extends CustomPainter {
       // Dashed line
       double x = 0;
       while (x < size.width) {
-        canvas.drawLine(Offset(x, y), Offset(math.min(x + 6, size.width), y), gridPaint);
+        canvas.drawLine(
+          Offset(x, y),
+          Offset(math.min(x + 6, size.width), y),
+          gridPaint,
+        );
         x += 10;
       }
     }
 
     // --- Clip for draw animation ---
     canvas.save();
-    canvas.clipRect(Rect.fromLTWH(0, -100, size.width * progress, size.height + 200));
+    canvas.clipRect(
+      Rect.fromLTWH(0, -100, size.width * progress, size.height + 200),
+    );
 
     // Area gradient
     final areaGrad = LinearGradient(
@@ -90,8 +97,9 @@ class _ChartPainter extends CustomPainter {
     canvas.drawPath(
       areaPath,
       Paint()
-        ..shader =
-            areaGrad.createShader(Rect.fromLTWH(0, 0, size.width, size.height)),
+        ..shader = areaGrad.createShader(
+          Rect.fromLTWH(0, 0, size.width, size.height),
+        ),
     );
 
     // Line
@@ -142,7 +150,11 @@ class _ChartPainter extends CustomPainter {
       }
 
       // Highlighted ring + dot
-      canvas.drawCircle(touchedPt, 8, Paint()..color = lineColor.withValues(alpha: 0.15));
+      canvas.drawCircle(
+        touchedPt,
+        8,
+        Paint()..color = lineColor.withValues(alpha: 0.15),
+      );
       canvas.drawCircle(touchedPt, 6, Paint()..color = Colors.white);
       canvas.drawCircle(
         touchedPt,
@@ -379,7 +391,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
           'Jueves',
           'Viernes',
           'Sábado',
-          'Domingo'
+          'Domingo',
         ];
         if (idx >= 0 && idx < days.length) return days[idx];
         return '';
@@ -396,7 +408,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
           'Septiembre',
           'Octubre',
           'Noviembre',
-          'Diciembre'
+          'Diciembre',
         ];
         if (idx >= 0 && idx < months.length) return months[idx];
         return '';
@@ -654,11 +666,15 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                           ),
                         ),
                         Text(
-                          isWholesale ? 'Modo Venta al por Mayor' : 'Modo Venta al Detalle',
+                          isWholesale
+                              ? 'Modo Venta al por Mayor'
+                              : 'Modo Venta al Detalle',
                           style: GoogleFonts.inter(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: isWholesale ? const Color(0xFF0369A1) : const Color(0xFF15803D),
+                            color: isWholesale
+                                ? const Color(0xFF0369A1)
+                                : const Color(0xFF15803D),
                           ),
                         ),
                       ],
@@ -675,8 +691,8 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                 icon: Icons.analytics_outlined,
                 title: '¿Qué es el Precio Promedio?',
                 description: isWholesale
-                    ? 'Es el precio medio estimado que pagan los comerciantes y revendedores al comprar grandes volúmenes en mercados de distribución.'
-                    : 'Es el precio de venta habitual al consumidor final que encuentras en supermercados y comercios al detalle.',
+                    ? 'Es el precio medio estimado que pagan los comerciantes y revendedores al comprar grandes volúmenes en los mercados mayoristas.'
+                    : 'Es el precio medio estimado de venta al consumidor final, que encuentras en los mercados minoristas.',
               ),
               const SizedBox(height: 16),
 
@@ -693,7 +709,8 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
               _buildExplanationRow(
                 icon: Icons.lightbulb_outline_rounded,
                 title: '¿Para qué te sirve?',
-                description: 'Te sirve como una guía imparcial de referencia para comprobar si estás pagando un precio justo o para negociar mejores precios.',
+                description:
+                    'Te sirve como una guía imparcial de referencia para comprobar si estás pagando un precio justo o para negociar mejores precios.',
               ),
               const SizedBox(height: 28),
 
@@ -805,7 +822,9 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                   height: 80,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: _outlineVariant.withValues(alpha: 0.4)),
+                    border: Border.all(
+                      color: _outlineVariant.withValues(alpha: 0.4),
+                    ),
                     color: _surfaceContainerHigh,
                   ),
                   clipBehavior: Clip.antiAlias,
@@ -813,10 +832,17 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                       ? Image.network(
                           imageUrl,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) =>
-                              const Icon(Icons.grain, size: 36, color: _primaryContainer),
+                          errorBuilder: (_, _, _) => const Icon(
+                            Icons.grain,
+                            size: 36,
+                            color: _primaryContainer,
+                          ),
                         )
-                      : const Icon(Icons.grain, size: 36, color: _primaryContainer),
+                      : const Icon(
+                          Icons.grain,
+                          size: 36,
+                          color: _primaryContainer,
+                        ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -828,7 +854,9 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                         children: [
                           Expanded(
                             child: Text(
-                              widget.isWholesale ? 'PRECIO PROMEDIO POR MAYOR' : 'PRECIO PROMEDIO AL DETALLE',
+                              widget.isWholesale
+                                  ? 'PRECIO PROMEDIO POR MAYOR'
+                                  : 'PRECIO PROMEDIO AL DETALLE',
                               style: GoogleFonts.jetBrainsMono(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w600,
@@ -871,7 +899,10 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                           ),
                           const SizedBox(width: 8),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: widget.isWholesale
                                   ? const Color(0xFFE0F2FE)
@@ -879,25 +910,37 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
                                 color: widget.isWholesale
-                                    ? const Color(0xFF0284C7).withValues(alpha: 0.3)
-                                    : const Color(0xFF16A34A).withValues(alpha: 0.3),
+                                    ? const Color(
+                                        0xFF0284C7,
+                                      ).withValues(alpha: 0.3)
+                                    : const Color(
+                                        0xFF16A34A,
+                                      ).withValues(alpha: 0.3),
                               ),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
-                                  widget.isWholesale ? Icons.inventory_2_outlined : Icons.shopping_bag_outlined,
+                                  widget.isWholesale
+                                      ? Icons.inventory_2_outlined
+                                      : Icons.shopping_bag_outlined,
                                   size: 12,
-                                  color: widget.isWholesale ? const Color(0xFF0369A1) : const Color(0xFF15803D),
+                                  color: widget.isWholesale
+                                      ? const Color(0xFF0369A1)
+                                      : const Color(0xFF15803D),
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  widget.isWholesale ? 'Al por Mayor' : 'Al Detalle',
+                                  widget.isWholesale
+                                      ? 'Al por Mayor'
+                                      : 'Al Detalle',
                                   style: GoogleFonts.jetBrainsMono(
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
-                                    color: widget.isWholesale ? const Color(0xFF0369A1) : const Color(0xFF15803D),
+                                    color: widget.isWholesale
+                                        ? const Color(0xFF0369A1)
+                                        : const Color(0xFF15803D),
                                   ),
                                 ),
                               ],
@@ -963,15 +1006,17 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                       ScaleTransition(scale: anim, child: child),
                   child: touchedPrice != null && _touchedPointIndex != null
                       ? Container(
-                          key: ValueKey(
-                              '${_touchedPointIndex}_$touchedPrice'),
+                          key: ValueKey('${_touchedPointIndex}_$touchedPrice'),
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 4),
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: color.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                                color: color.withValues(alpha: 0.4)),
+                              color: color.withValues(alpha: 0.4),
+                            ),
                           ),
                           child: Text(
                             '${_getTouchedLabel(_touchedPointIndex!)} \$${touchedPrice.toStringAsFixed(2)}',
@@ -1019,12 +1064,18 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                                 key: _chartKey,
                                 behavior: HitTestBehavior.opaque,
                                 onPanStart: (d) => _onChartPan(
-                                    d.localPosition, chartWidth - 40),
+                                  d.localPosition,
+                                  chartWidth - 40,
+                                ),
                                 onPanUpdate: (d) => _onChartPan(
-                                    d.localPosition, chartWidth - 40),
+                                  d.localPosition,
+                                  chartWidth - 40,
+                                ),
                                 onPanEnd: (_) => _onChartPanEnd(),
                                 onTapDown: (d) => _onChartPan(
-                                    d.localPosition, chartWidth - 40),
+                                  d.localPosition,
+                                  chartWidth - 40,
+                                ),
                                 onTapUp: (_) => _onChartPanEnd(),
                                 child: AnimatedBuilder(
                                   animation: _chartAnimation,
@@ -1054,7 +1105,8 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                             final idx = labelIndices[i];
                             final isTouched =
                                 _touchedPointIndex != null &&
-                                (_touchedPointIndex! - idx).abs() <= (n / (labels.length * 1.5)).round();
+                                (_touchedPointIndex! - idx).abs() <=
+                                    (n / (labels.length * 1.5)).round();
                             return AnimatedDefaultTextStyle(
                               duration: const Duration(milliseconds: 200),
                               style: GoogleFonts.jetBrainsMono(
@@ -1078,8 +1130,11 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.touch_app_rounded,
-                                size: 14, color: _onSurfaceVariant.withValues(alpha: 0.6)),
+                            Icon(
+                              Icons.touch_app_rounded,
+                              size: 14,
+                              color: _onSurfaceVariant.withValues(alpha: 0.6),
+                            ),
                             const SizedBox(width: 4),
                             Text(
                               'Toca o desliza para ver el precio',
@@ -1111,7 +1166,8 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
         : _basePrice * _marketMultipliers[_selectedMarketIndex];
 
     final selectedMarketFullName = _marketFullNames[_selectedMarketIndex];
-    final monthVals = _allData[selectedMarketFullName]?[_RangeFilter.month] ?? [];
+    final monthVals =
+        _allData[selectedMarketFullName]?[_RangeFilter.month] ?? [];
 
     double minPrice = double.infinity;
     double maxPrice = double.negativeInfinity;
@@ -1240,7 +1296,10 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
               if (market != null && market.isNotEmpty) ...[
                 const SizedBox(height: 6),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: _surfaceVariant.withValues(alpha: 0.6),
                     borderRadius: BorderRadius.circular(12),
@@ -1271,11 +1330,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.info_outline_rounded,
-                      size: 20,
-                      color: color,
-                    ),
+                    Icon(Icons.info_outline_rounded, size: 20, color: color),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
@@ -1341,8 +1396,10 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(20),
@@ -1416,8 +1473,10 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                 ],
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFFE2E9F9),
                   borderRadius: BorderRadius.circular(20),
@@ -1483,11 +1542,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                           color: _onSurfaceVariant,
                         ),
                       ),
-                      Icon(
-                        icon,
-                        size: 12,
-                        color: color,
-                      ),
+                      Icon(icon, size: 12, color: color),
                     ],
                   ),
                   const SizedBox(height: 4),
@@ -1631,7 +1686,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
       'Jueves',
       'Viernes',
       'Sábado',
-      'Domingo'
+      'Domingo',
     ];
     const months = [
       'Enero',
@@ -1645,7 +1700,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
       'Septiembre',
       'Octubre',
       'Noviembre',
-      'Diciembre'
+      'Diciembre',
     ];
     final dayName = days[dt.weekday - 1];
     final monthName = months[dt.month - 1];
@@ -1677,18 +1732,22 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
   }
 
   Widget _yLabel(double value) => Text(
-        '\$${value.toStringAsFixed(0)}',
-        style: GoogleFonts.jetBrainsMono(
-          fontSize: 9,
-          color: _onSurfaceVariant.withValues(alpha: 0.7),
-        ),
-      );
+    '\$${value.toStringAsFixed(0)}',
+    style: GoogleFonts.jetBrainsMono(
+      fontSize: 9,
+      color: _onSurfaceVariant.withValues(alpha: 0.7),
+    ),
+  );
 
   // Range filter chips
   Widget _buildRangeFilterRow() {
     return Row(
       children: [
-        _rangeChip('Semana', _RangeFilter.week, Icons.calendar_view_week_rounded),
+        _rangeChip(
+          'Semana',
+          _RangeFilter.week,
+          Icons.calendar_view_week_rounded,
+        ),
         const SizedBox(width: 8),
         _rangeChip('Mes', _RangeFilter.month, Icons.calendar_month_rounded),
         const SizedBox(width: 8),
@@ -1734,8 +1793,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
               label,
               style: GoogleFonts.inter(
                 fontSize: 12,
-                fontWeight:
-                    isSelected ? FontWeight.w600 : FontWeight.w500,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                 color: isSelected ? _primaryContainer : _onSurfaceVariant,
               ),
             ),
@@ -1769,8 +1827,11 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
               ),
             ),
             const SizedBox(width: 4),
-            const Icon(Icons.edit_calendar_rounded,
-                size: 13, color: _primaryContainer),
+            const Icon(
+              Icons.edit_calendar_rounded,
+              size: 13,
+              color: _primaryContainer,
+            ),
           ],
         ),
       ),
@@ -1786,13 +1847,18 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
           final isSelected = _selectedMarketIndex == i;
           final color = _marketColors[i];
           return Padding(
-            padding: EdgeInsets.only(right: i < _marketShortNames.length - 1 ? 8 : 0),
+            padding: EdgeInsets.only(
+              right: i < _marketShortNames.length - 1 ? 8 : 0,
+            ),
             child: GestureDetector(
               onTap: () => _changeMarket(i),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 250),
                 curve: Curves.easeOutCubic,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: isSelected
                       ? color.withValues(alpha: 0.14)
@@ -1950,9 +2016,13 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                               const SizedBox(width: 6),
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 6, vertical: 1),
+                                  horizontal: 6,
+                                  vertical: 1,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF4F46E5).withValues(alpha: 0.12),
+                                  color: const Color(
+                                    0xFF4F46E5,
+                                  ).withValues(alpha: 0.12),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
@@ -2075,8 +2145,8 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
               color: isHighest
                   ? _error.withValues(alpha: 0.08)
                   : (isSelected
-                      ? priceColor.withValues(alpha: 0.08)
-                      : Colors.black.withValues(alpha: 0.04)),
+                        ? priceColor.withValues(alpha: 0.08)
+                        : Colors.black.withValues(alpha: 0.04)),
               blurRadius: isHighest || isSelected ? 12 : 6,
               offset: const Offset(0, 2),
             ),
@@ -2112,7 +2182,11 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
               ),
             Padding(
               padding: EdgeInsets.fromLTRB(
-                  isHighest || isSelected ? 20 : 16, 14, 16, 14),
+                isHighest || isSelected ? 20 : 16,
+                14,
+                16,
+                14,
+              ),
               child: Row(
                 children: [
                   Expanded(
@@ -2133,7 +2207,9 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                               const SizedBox(width: 6),
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 6, vertical: 1),
+                                  horizontal: 6,
+                                  vertical: 1,
+                                ),
                                 decoration: BoxDecoration(
                                   color: priceColor.withValues(alpha: 0.12),
                                   borderRadius: BorderRadius.circular(8),
@@ -2205,7 +2281,11 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                                 color: badgeBg,
                                 shape: BoxShape.circle,
                               ),
-                              child: Icon(icon, size: 18, color: badgeIconColor),
+                              child: Icon(
+                                icon,
+                                size: 18,
+                                color: badgeIconColor,
+                              ),
                             ),
                           ],
                         ),

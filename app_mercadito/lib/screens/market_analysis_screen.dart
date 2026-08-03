@@ -34,12 +34,14 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
           'name': 'Arroz Campo',
           'sku': 'SKU-A01',
           'price': '22.50',
+          'prevPrice': '22.037',
           'trend': 2.1,
         },
         {
           'name': 'Arroz Amarillo',
           'sku': 'SKU-A02',
           'price': '18.90',
+          'prevPrice': '18.995',
           'trend': -0.5,
         },
       ],
@@ -173,6 +175,20 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
       sum += double.tryParse(_getItemMarketAvgPrice(p)) ?? 0.0;
     }
     return (sum / items.length).toStringAsFixed(2);
+  }
+
+  double _getItemVariation(Map<String, dynamic> item) {
+    if (item['prevPrice'] != null) {
+      final currentBase = double.tryParse(item['price']?.toString() ?? '0') ?? 0.0;
+      final prevBase = double.tryParse(item['prevPrice']?.toString() ?? '0') ?? 0.0;
+      if (prevBase > 0) {
+        final double multiplier = _isWholesale ? 1.025 : 1.30;
+        final currentAvg = currentBase * multiplier;
+        final prevAvg = prevBase * multiplier;
+        return ((currentAvg - prevAvg) / prevAvg) * 100;
+      }
+    }
+    return (item['trend'] as num?)?.toDouble() ?? 0.0;
   }
 
   List<Map<String, dynamic>> get _filteredProducts {
@@ -702,8 +718,8 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                             const SizedBox(height: 2),
                             Text(
                               _isWholesale
-                                  ? 'Venta por Mayor \$${_getCategoryAvgPrice(product)}'
-                                  : 'Venta al Detalle \$${_getCategoryAvgPrice(product)}',
+                                  ? 'Venta Promedio al Por Mayor \$${_getCategoryAvgPrice(product)}'
+                                  : 'Venta Promedio al Detalle \$${_getCategoryAvgPrice(product)}',
                               style: GoogleFonts.inter(
                                 fontSize: 14,
                                 color: onSurfaceVariant,
@@ -732,7 +748,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Column(
                     children: items.map<Widget>((item) {
-                      final double trend = item['trend'] as double;
+                      final double trend = _getItemVariation(item);
                       final isPositive = trend > 0;
                       final isNegative = trend < 0;
                       final trendColor = isPositive
@@ -766,26 +782,58 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                                         ),
                                         overflow: TextOverflow.ellipsis,
                                       ),
-                                      const SizedBox(width: 6),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                        decoration: BoxDecoration(
-                                          color: _isWholesale
-                                              ? (isDark ? const Color(0xFF00415F) : const Color(0xFFE0F2FE))
-                                              : (isDark ? const Color(0xFF065F46) : const Color(0xFFDCFCE7)),
-                                          borderRadius: BorderRadius.circular(4),
-                                        ),
-                                        child: Text(
-                                          _isWholesale ? 'MAYOR' : 'DETALLE',
-                                          style: GoogleFonts.jetBrainsMono(
-                                            fontSize: 9,
-                                            fontWeight: FontWeight.bold,
-                                            color: _isWholesale
-                                                ? (isDark ? const Color(0xFF7DD3FC) : const Color(0xFF0369A1))
-                                                : (isDark ? const Color(0xFF8BD6B6) : const Color(0xFF15803D)),
-                                          ),
-                                        ),
-                                      ),
+                                      const SizedBox(width: 8),
+                                      Builder(
+                                         builder: (context) {
+                                           final String salesMode = item['salesMode']?.toString() ?? 'both';
+                                           final bool isRetailOnly = salesMode == 'retail_only' || salesMode == 'retail';
+                                           final bool isWholesaleOnly = salesMode == 'wholesale_only' || salesMode == 'wholesale';
+
+                                           final String badgeText = isRetailOnly
+                                               ? 'SOLO DETALLE'
+                                               : (isWholesaleOnly ? 'SOLO MAYOR' : (_isWholesale ? 'MAYOR' : 'DETALLE'));
+
+                                           final Color badgeBg = isRetailOnly
+                                               ? (isDark ? const Color(0xFF064E3B).withValues(alpha: 0.35) : const Color(0xFFECFDF5))
+                                               : (isWholesaleOnly
+                                                   ? (isDark ? const Color(0xFF075985).withValues(alpha: 0.35) : const Color(0xFFF0F9FF))
+                                                   : (_isWholesale
+                                                       ? (isDark ? const Color(0xFF00415F) : const Color(0xFFE0F2FE))
+                                                       : (isDark ? const Color(0xFF065F46) : const Color(0xFFDCFCE7))));
+
+                                           final Color badgeTextColor = isRetailOnly
+                                               ? (isDark ? const Color(0xFF6EE7B7) : const Color(0xFF047857))
+                                               : (isWholesaleOnly
+                                                   ? (isDark ? const Color(0xFF7DD3FC) : const Color(0xFF0369A1))
+                                                   : (_isWholesale
+                                                       ? (isDark ? const Color(0xFF7DD3FC) : const Color(0xFF0369A1))
+                                                       : (isDark ? const Color(0xFF8BD6B6) : const Color(0xFF15803D))));
+
+                                           return Container(
+                                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                             decoration: BoxDecoration(
+                                               color: badgeBg,
+                                               borderRadius: BorderRadius.circular(4),
+                                               border: (isRetailOnly || isWholesaleOnly)
+                                                   ? Border.all(
+                                                       color: isRetailOnly
+                                                           ? (isDark ? const Color(0xFF059669).withValues(alpha: 0.4) : const Color(0xFFA7F3D0))
+                                                           : (isDark ? const Color(0xFF0284C7).withValues(alpha: 0.4) : const Color(0xFFBAE6FD)),
+                                                       width: 0.8,
+                                                     )
+                                                   : null,
+                                             ),
+                                             child: Text(
+                                               badgeText,
+                                               style: GoogleFonts.jetBrainsMono(
+                                                 fontSize: 9,
+                                                 fontWeight: FontWeight.bold,
+                                                 color: badgeTextColor,
+                                               ),
+                                             ),
+                                           );
+                                         },
+                                       ),
                                     ],
                                   ),
                                 ],

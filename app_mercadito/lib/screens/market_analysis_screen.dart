@@ -14,6 +14,7 @@ class MarketAnalysisScreen extends StatefulWidget {
 class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   MarketPricesState _currentState = MarketPricesState.normal;
+  bool _isWholesale = false; // false = Al Detalle (Retail), true = Al por Mayor (Wholesale)
   String _selectedCategory = 'Todos';
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
@@ -155,9 +156,11 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
 
   String _getItemMarketAvgPrice(dynamic rawPrice) {
     final base = double.tryParse(rawPrice?.toString() ?? '0') ?? 0.0;
-    // Wholesale market average multiplier = (0.91 + 0.98 + 1.01 + 1.20) / 4 = 1.025
-    const double wholesaleAvgMultiplier = 1.025;
-    final avg = base * wholesaleAvgMultiplier;
+    // Multipliers:
+    // Wholesale avg multiplier = 1.025 (Merca Santo Domingo, Mercado Nuevo, etc.)
+    // Retail avg multiplier = 1.30 (Supermercados / Venta al detalle)
+    final double multiplier = _isWholesale ? 1.025 : 1.30;
+    final avg = base * multiplier;
     return avg.toStringAsFixed(2);
   }
 
@@ -380,7 +383,49 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
               ),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
+
+          // Price Type Switcher (Segmented Control: Al Detalle vs Al por Mayor)
+          Opacity(
+            opacity: effectiveState == MarketPricesState.loading ? 0.5 : 1.0,
+            child: Column(
+              children: [
+                _buildPriceTypeSegmentedControl(
+                  isDark,
+                  primaryColor,
+                  primaryContainer,
+                  surfaceContainerHigh,
+                  onSurfaceVariant,
+                  surfaceContainerLowest,
+                  surfaceVariant,
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(
+                      _isWholesale ? Icons.inventory_2_outlined : Icons.shopping_bag_outlined,
+                      size: 14,
+                      color: primaryColor,
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        _isWholesale
+                            ? 'Precios promedio de venta al por mayor (Mercados Centrales)'
+                            : 'Precios promedio de venta al detalle (Supermercados y tiendas)',
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
 
           // Category Chips
           Opacity(
@@ -438,6 +483,131 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
           },
 
           const SizedBox(height: 40),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPriceTypeSegmentedControl(
+    bool isDark,
+    Color primaryColor,
+    Color primaryContainer,
+    Color surfaceContainerHigh,
+    Color onSurfaceVariant,
+    Color surfaceContainerLowest,
+    Color surfaceVariant,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1B2822) : const Color(0xFFEBF1FA),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: surfaceVariant),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                if (_isWholesale) {
+                  setState(() {
+                    _isWholesale = false;
+                  });
+                }
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeInOut,
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: !_isWholesale
+                      ? (isDark ? primaryContainer : primaryColor)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: !_isWholesale
+                      ? [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.12),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ]
+                      : [],
+                ),
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.shopping_bag_outlined,
+                      size: 18,
+                      color: !_isWholesale ? Colors.white : onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Al Detalle',
+                      style: GoogleFonts.manrope(
+                        fontWeight: !_isWholesale ? FontWeight.bold : FontWeight.w600,
+                        fontSize: 14,
+                        color: !_isWholesale ? Colors.white : onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                if (!_isWholesale) {
+                  setState(() {
+                    _isWholesale = true;
+                  });
+                }
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeInOut,
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: _isWholesale
+                      ? (isDark ? primaryContainer : primaryColor)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: _isWholesale
+                      ? [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.12),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ]
+                      : [],
+                ),
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.inventory_2_outlined,
+                      size: 18,
+                      color: _isWholesale ? Colors.white : onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Al por Mayor',
+                      style: GoogleFonts.manrope(
+                        fontWeight: _isWholesale ? FontWeight.bold : FontWeight.w600,
+                        fontSize: 14,
+                        color: _isWholesale ? Colors.white : onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -531,7 +701,9 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              'Venta Promedio \$${_getCategoryAvgPrice(product)}',
+                              _isWholesale
+                                  ? 'Venta por Mayor \$${_getCategoryAvgPrice(product)}'
+                                  : 'Venta al Detalle \$${_getCategoryAvgPrice(product)}',
                               style: GoogleFonts.inter(
                                 fontSize: 14,
                                 color: onSurfaceVariant,
@@ -584,13 +756,37 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                                     ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
-                                  Text(
-                                    item['sku'],
-                                    style: GoogleFonts.jetBrainsMono(
-                                      fontSize: 12,
-                                      color: onSurfaceVariant,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
+                                  Row(
+                                    children: [
+                                      Text(
+                                        item['sku'],
+                                        style: GoogleFonts.jetBrainsMono(
+                                          fontSize: 12,
+                                          color: onSurfaceVariant,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: _isWholesale
+                                              ? (isDark ? const Color(0xFF00415F) : const Color(0xFFE0F2FE))
+                                              : (isDark ? const Color(0xFF065F46) : const Color(0xFFDCFCE7)),
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        child: Text(
+                                          _isWholesale ? 'MAYOR' : 'DETALLE',
+                                          style: GoogleFonts.jetBrainsMono(
+                                            fontSize: 9,
+                                            fontWeight: FontWeight.bold,
+                                            color: _isWholesale
+                                                ? (isDark ? const Color(0xFF7DD3FC) : const Color(0xFF0369A1))
+                                                : (isDark ? const Color(0xFF8BD6B6) : const Color(0xFF15803D)),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -664,6 +860,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                                       extra: {
                                         'item': item,
                                         'product': product,
+                                        'isWholesale': _isWholesale,
                                       },
                                     );
                                   },

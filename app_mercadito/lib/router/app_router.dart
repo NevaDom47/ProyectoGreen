@@ -307,9 +307,14 @@ final GoRouter appRouter = GoRouter(
         final extra = state.extra as Map<String, dynamic>? ?? {};
         final item = extra['item'] as Map<String, dynamic>? ?? {};
         final product = extra['product'] as Map<String, dynamic>? ?? {};
+        final isWholesale = extra['isWholesale'] as bool? ?? false;
         return CustomTransitionPage(
           key: state.pageKey,
-          child: MarketPriceDetailScreen(item: item, product: product),
+          child: MarketPriceDetailScreen(
+            item: item,
+            product: product,
+            isWholesale: isWholesale,
+          ),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return SlideTransition(
               position: animation.drive(

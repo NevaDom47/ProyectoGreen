@@ -170,11 +170,13 @@ class _ChartPainter extends CustomPainter {
 class MarketPriceDetailScreen extends StatefulWidget {
   final Map<String, dynamic> item;
   final Map<String, dynamic> product;
+  final bool isWholesale;
 
   const MarketPriceDetailScreen({
     super.key,
     required this.item,
     required this.product,
+    this.isWholesale = false,
   });
 
   @override
@@ -348,6 +350,10 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
   }
 
   double get _avgPrice {
+    if (!widget.isWholesale) {
+      // Retail average price = Supermarkets (index 4)
+      return _getMarketDisplayPrice(4);
+    }
     double sum = 0;
     const wholesaleCount = 4; // Excludes Supermercados (index 4)
     for (int i = 0; i < wholesaleCount; i++) {
@@ -585,6 +591,187 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
     );
   }
 
+  // ---- Modal Explicativo del Precio Promedio ----
+  void _showPriceExplanationModal() {
+    HapticFeedback.lightImpact();
+    final isWholesale = widget.isWholesale;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: _surfaceContainerLowest,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Drag Handle
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: _outlineVariant,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Title Header with Icon
+              Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: _primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.help_outline_rounded,
+                      color: _primary,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '¿Cómo se calcula este precio?',
+                          style: GoogleFonts.manrope(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: _onSurface,
+                          ),
+                        ),
+                        Text(
+                          isWholesale ? 'Modo Venta al por Mayor' : 'Modo Venta al Detalle',
+                          style: GoogleFonts.inter(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: isWholesale ? const Color(0xFF0369A1) : const Color(0xFF15803D),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              const Divider(height: 1),
+              const SizedBox(height: 20),
+
+              // Item 1: ¿Qué es el Precio Promedio?
+              _buildExplanationRow(
+                icon: Icons.analytics_outlined,
+                title: '¿Qué es el Precio Promedio?',
+                description: isWholesale
+                    ? 'Es el precio medio estimado que pagan los comerciantes y revendedores al comprar grandes volúmenes en mercados de distribución.'
+                    : 'Es el precio de venta habitual al consumidor final que encuentras en supermercados y comercios al detalle.',
+              ),
+              const SizedBox(height: 16),
+
+              // Item 2: ¿Cómo lo obtenemos?
+              _buildExplanationRow(
+                icon: Icons.calculate_outlined,
+                title: '¿Cómo se calcula?',
+                description:
+                    'Registramos y comparamos las tarifas vigentes en los principales Mercados obteniendo asi la media de venta entre cada uno de ellos.',
+              ),
+              const SizedBox(height: 16),
+
+              // Item 3: ¿Para qué sirve?
+              _buildExplanationRow(
+                icon: Icons.lightbulb_outline_rounded,
+                title: '¿Para qué te sirve?',
+                description: 'Te sirve como una guía imparcial de referencia para comprobar si estás pagando un precio justo o para negociar mejores precios.',
+              ),
+              const SizedBox(height: 28),
+
+              // Close Button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _primary,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: Text(
+                    '¡Entendido!',
+                    style: GoogleFonts.manrope(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildExplanationRow({
+    required IconData icon,
+    required String title,
+    required String description,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: _background,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, size: 20, color: _primary),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: GoogleFonts.manrope(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: _onSurface,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                description,
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  color: _onSurfaceVariant,
+                  height: 1.4,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   // ============================================================
   // 1. Header Card
   // ============================================================
@@ -595,84 +782,135 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
         offset: Offset(0, 20 * (1 - _headerAnimation.value)),
         child: Opacity(opacity: _headerAnimation.value, child: child),
       ),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: _surfaceContainerLowest,
+      child: Material(
+        color: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        borderRadius: BorderRadius.circular(18),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: _showPriceExplanationModal,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: _outlineVariant.withValues(alpha: 0.5)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: _outlineVariant.withValues(alpha: 0.4)),
             ),
-          ],
-        ),
-        child: Row(
-          children: [
-            // Product image
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: _outlineVariant.withValues(alpha: 0.4)),
-                color: _surfaceContainerHigh,
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: imageUrl != null && imageUrl.isNotEmpty
-                  ? Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) =>
-                          const Icon(Icons.grain, size: 36, color: _primaryContainer),
-                    )
-                  : const Icon(Icons.grain, size: 36, color: _primaryContainer),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'PRECIO PROMEDIO DEL MERCADO',
-                    style: GoogleFonts.jetBrainsMono(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.7,
-                      color: _onSurfaceVariant,
-                    ),
+            child: Row(
+              children: [
+                // Product image
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: _outlineVariant.withValues(alpha: 0.4)),
+                    color: _surfaceContainerHigh,
                   ),
-                  const SizedBox(height: 4),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
+                  clipBehavior: Clip.antiAlias,
+                  child: imageUrl != null && imageUrl.isNotEmpty
+                      ? Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, _, _) =>
+                              const Icon(Icons.grain, size: 36, color: _primaryContainer),
+                        )
+                      : const Icon(Icons.grain, size: 36, color: _primaryContainer),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '\$${_avgPrice.toStringAsFixed(2)}',
-                        style: GoogleFonts.manrope(
-                          fontSize: 36,
-                          fontWeight: FontWeight.w800,
-                          color: _primary,
-                          height: 1.1,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              widget.isWholesale ? 'PRECIO PROMEDIO POR MAYOR' : 'PRECIO PROMEDIO AL DETALLE',
+                              style: GoogleFonts.jetBrainsMono(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.7,
+                                color: _onSurfaceVariant,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Icon(
+                            Icons.info_outline_rounded,
+                            size: 16,
+                            color: _onSurfaceVariant.withValues(alpha: 0.6),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '/ ${widget.product['unit'] ?? 'kg'}',
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: _onSurfaceVariant,
-                        ),
+                      const SizedBox(height: 4),
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        alignment: WrapAlignment.start,
+                        runSpacing: 4,
+                        children: [
+                          Text(
+                            '\$${_avgPrice.toStringAsFixed(2)}',
+                            style: GoogleFonts.manrope(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w800,
+                              color: _primary,
+                              height: 1.1,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '/ ${widget.product['unit'] ?? 'kg'}',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: _onSurfaceVariant,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: widget.isWholesale
+                                  ? const Color(0xFFE0F2FE)
+                                  : const Color(0xFFDCFCE7),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: widget.isWholesale
+                                    ? const Color(0xFF0284C7).withValues(alpha: 0.3)
+                                    : const Color(0xFF16A34A).withValues(alpha: 0.3),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  widget.isWholesale ? Icons.inventory_2_outlined : Icons.shopping_bag_outlined,
+                                  size: 12,
+                                  color: widget.isWholesale ? const Color(0xFF0369A1) : const Color(0xFF15803D),
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  widget.isWholesale ? 'Al por Mayor' : 'Al Detalle',
+                                  style: GoogleFonts.jetBrainsMono(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: widget.isWholesale ? const Color(0xFF0369A1) : const Color(0xFF15803D),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

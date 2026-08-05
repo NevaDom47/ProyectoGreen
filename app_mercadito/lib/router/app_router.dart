@@ -43,6 +43,7 @@ import '../screens/select_role_screen.dart';
 import '../screens/buyer_onboarding_screen.dart';
 import '../screens/provider_onboarding_screen.dart';
 import '../screens/order_history_screen.dart';
+import '../screens/flash_offers_screen.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -192,6 +193,22 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/notifications',
       builder: (context, state) => const NotificationsScreen(),
+    ),
+    GoRoute(
+      path: '/flash-offers',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const FlashOffersScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: animation.drive(
+              Tween(begin: const Offset(1.0, 0.0), end: Offset.zero)
+                  .chain(CurveTween(curve: Curves.easeOutCubic)),
+            ),
+            child: child,
+          );
+        },
+      ),
     ),
     GoRoute(
       path: '/search',

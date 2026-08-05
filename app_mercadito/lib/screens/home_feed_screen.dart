@@ -24,6 +24,7 @@ class HomeFeedScreen extends StatefulWidget {
 class _HomeFeedScreenState extends State<HomeFeedScreen> {
   String _currentLocation = 'Distrito Nacional, DO';
   bool _isLoading = true;
+  final Map<String, String> _selectedProductModes = {};
 
   @override
   void initState() {
@@ -386,9 +387,110 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
     );
   }
 
-  Widget? _buildSalesModeBadge(String? salesMode, ThemeData theme, bool isDark) {
-    if (salesMode == null || salesMode == 'both') {
+  Widget? _buildSalesModeBadge(String? salesMode, ThemeData theme, bool isDark, {String? productName}) {
+    if (salesMode == null) {
       return null;
+    }
+
+    if (salesMode == 'both' && productName != null) {
+      final currentMode = _selectedProductModes[productName] ?? 'retail';
+      final bool isRetailSelected = currentMode == 'retail';
+      final bool isWholesaleSelected = currentMode == 'wholesale';
+
+      return Container(
+        padding: const EdgeInsets.all(2),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF111827) : const Color(0xFFF3F4F6),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB), width: 0.8),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedProductModes[productName] = 'retail';
+                });
+              },
+              behavior: HitTestBehavior.opaque,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                decoration: BoxDecoration(
+                  color: isRetailSelected
+                      ? (isDark ? const Color(0xFF047857) : const Color(0xFF059669))
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(6),
+                  boxShadow: isRetailSelected
+                      ? [BoxShadow(color: Colors.black.withValues(alpha: 0.12), blurRadius: 4, offset: const Offset(0, 1))]
+                      : [],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.shopping_bag_outlined,
+                      size: 11,
+                      color: isRetailSelected ? Colors.white : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                    ),
+                    const SizedBox(width: 3),
+                    Text(
+                      'Detalle',
+                      style: GoogleFonts.inter(
+                        color: isRetailSelected ? Colors.white : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                        fontSize: 10,
+                        fontWeight: isRetailSelected ? FontWeight.w700 : FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(width: 2),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedProductModes[productName] = 'wholesale';
+                });
+              },
+              behavior: HitTestBehavior.opaque,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                decoration: BoxDecoration(
+                  color: isWholesaleSelected
+                      ? (isDark ? const Color(0xFF0284C7) : const Color(0xFF0369A1))
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(6),
+                  boxShadow: isWholesaleSelected
+                      ? [BoxShadow(color: Colors.black.withValues(alpha: 0.12), blurRadius: 4, offset: const Offset(0, 1))]
+                      : [],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.inventory_2_outlined,
+                      size: 11,
+                      color: isWholesaleSelected ? Colors.white : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                    ),
+                    const SizedBox(width: 3),
+                    Text(
+                      'Por Mayor',
+                      style: GoogleFonts.inter(
+                        color: isWholesaleSelected ? Colors.white : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                        fontSize: 10,
+                        fontWeight: isWholesaleSelected ? FontWeight.w700 : FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
     final bool isRetailOnly = salesMode == 'retail_only' || salesMode == 'retail';
@@ -440,6 +542,26 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
     } else if (lowerBadge.contains('tercera')) {
       badgeColor = Colors.red[500]!;
     }
+
+    final productName = data['name'] ?? '';
+    final salesMode = data['salesMode'] ?? 'retail_only';
+    final currentMode = (salesMode == 'both')
+        ? (_selectedProductModes[productName] ?? 'retail')
+        : (salesMode == 'wholesale_only' ? 'wholesale' : 'retail');
+
+    final bool isWholesale = currentMode == 'wholesale';
+
+    final String displayPrice = isWholesale
+        ? (data['wholesalePrice'] ?? data['price'] ?? '\$14.50')
+        : (data['price'] ?? '\$18.00');
+
+    final String? displayOldPrice = isWholesale
+        ? (data['wholesaleOldPrice'] ?? data['oldPrice'])
+        : data['oldPrice'];
+
+    final String unitLabel = isWholesale
+        ? (data['wholesaleMin'] != null ? 'POR MAYOR (${data['wholesaleMin']})' : 'POR MAYOR (MIN. 20 KG)')
+        : 'POR KILO';
 
     return GestureDetector(
       onTap: () => context.push('/product_detail', extra: data),
@@ -549,7 +671,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
             ],
           ),
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -560,11 +682,11 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(data['name']!, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, height: 1.2), maxLines: 2, overflow: TextOverflow.ellipsis),
+                          Text(data['name']!, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold, height: 1.2), maxLines: 2, overflow: TextOverflow.ellipsis),
                           const SizedBox(height: 6),
                           Builder(
                             builder: (context) {
-                              final salesBadge = _buildSalesModeBadge(data['salesMode'], theme, isDark);
+                              final salesBadge = _buildSalesModeBadge(data['salesMode'], theme, isDark, productName: productName);
                               final hasTags = data['tags'] != null && (data['tags'] as List).isNotEmpty;
                               if (!hasTags && salesBadge == null) return const SizedBox.shrink();
                               return Column(
@@ -596,7 +718,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                                         }),
                                     ],
                                   ),
-                                  const SizedBox(height: 8),
+                                  const SizedBox(height: 6),
                                 ],
                               );
                             },
@@ -613,32 +735,93 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                             behavior: HitTestBehavior.opaque,
                             child: Row(
                               children: [
-                                const Icon(Icons.star, color: Colors.orange, size: 16),
+                                const Icon(Icons.star, color: Colors.orange, size: 15),
                                 const SizedBox(width: 4),
-                                Text(data['rating']!, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                                Text(data['rating']!, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
                                 const SizedBox(width: 4),
-                                const Text('(128 reseñas)', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                                const Text('(128 reseñas)', style: TextStyle(fontSize: 10, color: Colors.grey)),
                               ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        if (data.containsKey('oldPrice') && data['oldPrice'] != null)
-                          Text(data['oldPrice']!, style: const TextStyle(color: Colors.grey, fontSize: 12, decoration: TextDecoration.lineThrough, fontWeight: FontWeight.bold)),
-                        Text(data['price']!, style: TextStyle(color: theme.colorScheme.primary, fontSize: 22, fontWeight: FontWeight.w900, height: 1.1)),
-                        const Text('POR KILO', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.5)),
+                        if (displayOldPrice != null)
+                          Text(
+                            displayOldPrice,
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 11,
+                              decoration: TextDecoration.lineThrough,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 200),
+                          transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: child),
+                          child: Text(
+                            displayPrice,
+                            key: ValueKey<String>(displayPrice),
+                            style: TextStyle(
+                              color: isWholesale ? const Color(0xFF0284C7) : theme.colorScheme.primary,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w900,
+                              height: 1.1,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 200),
+                          child: Column(
+                            key: ValueKey<String>(isWholesale ? 'wholesale_${data['wholesaleMin']}' : 'retail'),
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              if (isWholesale) ...[
+                                Text(
+                                  'POR MAYOR',
+                                  style: TextStyle(
+                                    fontSize: 8,
+                                    fontWeight: FontWeight.w800,
+                                    color: isDark ? const Color(0xFF38BDF8) : const Color(0xFF0284C7),
+                                    letterSpacing: 0.2,
+                                  ),
+                                ),
+                                if (data['wholesaleMin'] != null)
+                                  Text(
+                                    '(${data['wholesaleMin']})',
+                                    style: TextStyle(
+                                      fontSize: 7,
+                                      fontWeight: FontWeight.w700,
+                                      color: (isDark ? const Color(0xFF38BDF8) : const Color(0xFF0284C7)).withValues(alpha: 0.85),
+                                      letterSpacing: 0.1,
+                                    ),
+                                  ),
+                              ] else ...[
+                                Text(
+                                  'POR KILO',
+                                  style: TextStyle(
+                                    fontSize: 8,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[600],
+                                    letterSpacing: 0.3,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 const Divider(color: Color(0xFFE0E3DF), thickness: 1),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 GestureDetector(
                   onTap: () {
                     showModalBottomSheet(
@@ -652,26 +835,26 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                   child: Row(
                     children: [
                       Container(
-                        width: 36,
-                        height: 36,
+                        width: 32,
+                        height: 32,
                         decoration: BoxDecoration(
                           color: badgeColor.withValues(alpha: 0.15),
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(Icons.workspace_premium, color: badgeColor, size: 18),
+                        child: Icon(Icons.workspace_premium, color: badgeColor, size: 16),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('CALIDAD', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.5)),
-                          Text(badge.toUpperCase(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: badgeColor)),
+                          const Text('CALIDAD', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.5)),
+                          Text(badge.toUpperCase(), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: badgeColor)),
                         ],
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 GestureDetector(
                   onTap: () {
                     showModalBottomSheet(
@@ -685,44 +868,44 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                   child: Row(
                     children: [
                       Container(
-                        width: 36,
-                        height: 36,
+                        width: 32,
+                        height: 32,
                         decoration: BoxDecoration(
                           color: theme.colorScheme.primary.withValues(alpha: 0.15),
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(Icons.local_florist, color: theme.colorScheme.primary, size: 18),
+                        child: Icon(Icons.local_florist, color: theme.colorScheme.primary, size: 16),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('PROVEEDOR', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.5)),
-                          Text(data['supplier'] ?? 'Granja El Sol', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                          const Text('PROVEEDOR', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.5)),
+                          Text(data['supplier'] ?? 'Granja El Sol', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
                         ],
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 Row(
                   children: [
                     Container(
-                      width: 36,
-                      height: 36,
+                      width: 32,
+                      height: 32,
                       decoration: BoxDecoration(
                         color: Colors.grey[200],
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.location_on, color: Colors.grey, size: 18),
+                      child: const Icon(Icons.location_on, color: Colors.grey, size: 16),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('UBICACIÓN', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.5)),
-                          Text(data['location'] ?? 'Valle de Santiago, GTO', style: const TextStyle(fontSize: 14, color: Colors.grey), overflow: TextOverflow.ellipsis),
+                          const Text('UBICACIÓN', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.5)),
+                          Text(data['location'] ?? 'Valle de Santiago, GTO', style: const TextStyle(fontSize: 13, color: Colors.grey), overflow: TextOverflow.ellipsis),
                         ],
                       ),
                     ),
@@ -738,11 +921,75 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
 
   Widget _buildFlashOffers(ThemeData theme, Color surfaceColor, bool isDark) {
     final offers = [
-      {'name': 'Papa Blanca Alpha', 'price': '\$18.00', 'oldPrice': '\$22.50', 'rating': '4.8', 'badge': 'PRIMERA CALIDAD', 'supplier': 'Don Pedro H.', 'location': 'Tecomán, Colima', 'tags': ['Tubérculos', 'Oferta', 'Cosecha Hoy'], 'salesMode': 'retail_only', 'img': 'assets/images/PapaGemini.png'},
-      {'name': 'Zanahoria Orgánica', 'price': '\$12.50', 'oldPrice': '\$16.00', 'rating': '4.9', 'badge': 'TERCERA CALIDAD', 'supplier': 'Granja Sol', 'location': 'Valle Verde, Puebla', 'tags': ['Raíces', 'Orgánico'], 'salesMode': 'both', 'img': 'assets/images/ZanahoriaGemini.png'},
-      {'name': 'Fresas de Campo', 'price': '\$45.00', 'oldPrice': '\$60.00', 'rating': '4.9', 'badge': 'PRIMERA CALIDAD', 'supplier': 'AgroFresas', 'location': 'Zamora, Michoacán', 'tags': ['Frutas', 'Frescas'], 'salesMode': 'retail_only', 'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250620_1233_Fresas%20en%20Fondo%20Rosado_simple_compose_01jy72ypjmeccafrqb33rfm1q8.png'},
-      {'name': 'Saco de Papas Blancas', 'price': '\$280.00', 'oldPrice': '\$320.00', 'rating': '4.6', 'badge': 'SEGUNDA CALIDAD', 'supplier': 'Hermanos Ruiz', 'location': 'Galeana, Nuevo León', 'tags': ['Tubérculos'], 'salesMode': 'wholesale_only', 'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1556_Sacos%20de%20Papas_simple_compose_01jwvnskaee6evykbzreq6j8wm.png'},
-      {'name': 'Mix de Ajíes Frescos', 'price': '\$35.00', 'oldPrice': '\$45.00', 'rating': '4.7', 'badge': 'PRIMERA CALIDAD', 'supplier': 'Picantes del Sur', 'location': 'Oaxaca, Oaxaca', 'tags': ['Hortalizas', 'Mix'], 'salesMode': 'both', 'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1549_Variedad%20de%20Aj%C3%ADes_simple_compose_01jwvncbmqfpvb7qv6rs3vh22x.png'},
+      {
+        'name': 'Papa Blanca Alpha',
+        'price': '\$18.00',
+        'oldPrice': '\$22.50',
+        'wholesalePrice': '\$14.50',
+        'wholesaleOldPrice': '\$17.50',
+        'wholesaleMin': 'MIN. 20 KG',
+        'rating': '4.8',
+        'badge': 'PRIMERA CALIDAD',
+        'supplier': 'Don Pedro H.',
+        'location': 'Tecomán, Colima',
+        'tags': ['Tubérculos', 'Oferta'],
+        'salesMode': 'both',
+        'img': 'assets/images/PapaGemini.png'
+      },
+      {
+        'name': 'Zanahoria Orgánica',
+        'price': '\$12.50',
+        'oldPrice': '\$16.00',
+        'wholesalePrice': '\$9.80',
+        'wholesaleOldPrice': '\$12.50',
+        'wholesaleMin': 'MIN. 15 KG',
+        'rating': '4.9',
+        'badge': 'TERCERA CALIDAD',
+        'supplier': 'Granja Sol',
+        'location': 'Valle Verde, Puebla',
+        'tags': ['Raíces', 'Orgánico'],
+        'salesMode': 'both',
+        'img': 'assets/images/ZanahoriaGemini.png'
+      },
+      {
+        'name': 'Fresas de Campo',
+        'price': '\$45.00',
+        'oldPrice': '\$60.00',
+        'rating': '4.9',
+        'badge': 'PRIMERA CALIDAD',
+        'supplier': 'AgroFresas',
+        'location': 'Zamora, Michoacán',
+        'tags': ['Frutas', 'Frescas'],
+        'salesMode': 'retail_only',
+        'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250620_1233_Fresas%20en%20Fondo%20Rosado_simple_compose_01jy72ypjmeccafrqb33rfm1q8.png'
+      },
+      {
+        'name': 'Saco de Papas Blancas',
+        'price': '\$280.00',
+        'oldPrice': '\$320.00',
+        'rating': '4.6',
+        'badge': 'SEGUNDA CALIDAD',
+        'supplier': 'Hermanos Ruiz',
+        'location': 'Galeana, Nuevo León',
+        'tags': ['Tubérculos'],
+        'salesMode': 'wholesale_only',
+        'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1556_Sacos%20de%20Papas_simple_compose_01jwvnskaee6evykbzreq6j8wm.png'
+      },
+      {
+        'name': 'Mix de Ajíes Frescos',
+        'price': '\$35.00',
+        'oldPrice': '\$45.00',
+        'wholesalePrice': '\$28.00',
+        'wholesaleOldPrice': '\$36.00',
+        'wholesaleMin': 'MIN. 10 KG',
+        'rating': '4.7',
+        'badge': 'PRIMERA CALIDAD',
+        'supplier': 'Picantes del Sur',
+        'location': 'Oaxaca, Oaxaca',
+        'tags': ['Hortalizas', 'Mix'],
+        'salesMode': 'both',
+        'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1549_Variedad%20de%20Aj%C3%ADes_simple_compose_01jwvncbmqfpvb7qv6rs3vh22x.png'
+      },
     ];
     return Column(
       children: [
@@ -758,13 +1005,16 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                   Text('Ofertas Relámpago', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 ],
               ),
-              Text('Ver todo', style: TextStyle(color: theme.colorScheme.primary, fontSize: 12, fontWeight: FontWeight.bold)),
+              GestureDetector(
+                onTap: () => context.push('/flash-offers'),
+                child: Text('Ver todo', style: TextStyle(color: theme.colorScheme.primary, fontSize: 12, fontWeight: FontWeight.bold)),
+              ),
             ],
           ),
         ),
         const SizedBox(height: 16),
         SizedBox(
-          height: 540,
+          height: 560,
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,
@@ -810,7 +1060,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
         ),
         const SizedBox(height: 16),
         SizedBox(
-          height: 540,
+          height: 560,
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,

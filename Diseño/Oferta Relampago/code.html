@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ofertas Relámpago - Mercadito</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500;600&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error": "#ffffff",
+                      "surface-bright": "#f8f9ff",
+                      "on-primary-container": "#8bd6b7",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-fixed-variant": "#004c6e",
+                      "surface-container-high": "#dfe9fa",
+                      "on-surface-variant": "#3f4944",
+                      "secondary": "#904d00",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "primary": "#004532",
+                      "tertiary-container": "#005980",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-low": "#eef4ff",
+                      "on-primary": "#ffffff",
+                      "tertiary-fixed": "#c9e6ff",
+                      "inverse-on-surface": "#eaf1ff",
+                      "surface-container": "#e5eeff",
+                      "error": "#ba1a1a",
+                      "surface-tint": "#1b6b51",
+                      "primary-container": "#065f46",
+                      "surface-variant": "#d9e3f4",
+                      "error-container": "#ffdad6",
+                      "surface-container-highest": "#d9e3f4",
+                      "inverse-surface": "#27313e",
+                      "outline-variant": "#bec9c2",
+                      "on-surface": "#121c28",
+                      "surface": "#f8f9ff",
+                      "background": "#f8f9ff",
+                      "on-secondary-container": "#663500",
+                      "inverse-primary": "#8bd6b6",
+                      "tertiary-fixed-dim": "#89ceff",
+                      "tertiary": "#00415f",
+                      "secondary-fixed-dim": "#ffb77d",
+                      "primary-fixed-dim": "#8bd6b6",
+                      "on-primary-fixed-variant": "#00513b",
+                      "on-background": "#121c28",
+                      "on-tertiary-fixed": "#001e2f",
+                      "on-tertiary-container": "#8bcfff",
+                      "on-secondary-fixed-variant": "#6e3900",
+                      "on-secondary-fixed": "#2f1500",
+                      "outline": "#6f7973",
+                      "on-primary-fixed": "#002116",
+                      "secondary-fixed": "#ffdcc3",
+                      "surface-dim": "#d1dbec",
+                      "primary-fixed": "#a6f2d1",
+                      "secondary-container": "#fe932c"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "xl": "32px",
+                      "md": "16px",
+                      "xs": "4px",
+                      "gutter": "16px",
+                      "unit": "4px",
+                      "margin-desktop": "48px",
+                      "sm": "8px",
+                      "lg": "24px"
+              },
+              "fontFamily": {
+                      "headline-sm": [
+                              "Manrope"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Manrope"
+                      ],
+                      "data-mono": [
+                              "JetBrains Mono"
+                      ],
+                      "label-caps": [
+                              "JetBrains Mono"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Manrope"
+                      ]
+              },
+              "fontSize": {
+                      "headline-sm": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "data-mono": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .custom-checkbox:checked {
+            background-color: theme('colors.primary');
+            border-color: theme('colors.primary');
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+      </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-[120px]">
+<!-- TopAppBar -->
+<header class="bg-slate-50 dark:bg-neutral-900 docked full-width top-0 none flat no shadows flex justify-between items-center w-full px-4 h-16 sticky z-40 transition-transform active:scale-95">
+<button class="text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+<h1 class="font-plus-jakarta-sans text-emerald-900 dark:text-emerald-50 text-xl font-bold text-emerald-800 dark:text-emerald-400">Ofertas Relámpago</h1>
+<button class="text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 p-2 rounded-full flex items-center justify-center relative">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">shopping_cart</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop py-lg">
+<!-- Search & Filters -->
+<section class="mb-lg sticky top-[64px] bg-background z-30 pt-sm pb-sm">
+<div class="relative mb-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim transition-all shadow-sm text-on-surface placeholder:text-outline" placeholder="Buscar productos en oferta..." type="text"/>
+</div>
+<div class="flex gap-sm overflow-x-auto hide-scrollbar pb-xs">
+<button class="flex items-center gap-xs px-4 py-2 bg-surface-container-high rounded-full border border-outline-variant text-on-surface-variant font-body-sm whitespace-nowrap hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                    Categorías
+                </button>
+<button class="px-4 py-2 bg-surface-container-lowest rounded-full border border-outline-variant text-on-surface font-body-sm whitespace-nowrap hover:bg-surface-variant transition-colors">Todos</button>
+<button class="px-4 py-2 bg-secondary-container text-on-secondary-container rounded-full border border-secondary-container font-body-sm whitespace-nowrap font-medium flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+                    50% OFF
+                </button>
+<button class="px-4 py-2 bg-surface-container-lowest rounded-full border border-outline-variant text-on-surface font-body-sm whitespace-nowrap hover:bg-surface-variant transition-colors">25% OFF</button>
+<button class="px-4 py-2 bg-surface-container-lowest rounded-full border border-outline-variant text-on-surface font-body-sm whitespace-nowrap hover:bg-surface-variant transition-colors">10% OFF</button>
+</div>
+</section>
+<!-- Product Grid -->
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-md md:gap-lg">
+<!-- Product Card 1 -->
+<article class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_16px_rgba(0,0,0,0.04)] overflow-hidden relative group hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col cursor-pointer" onclick="toggleSelection(this)">
+<div class="absolute top-2 left-2 z-10">
+<span class="bg-error text-on-error text-label-caps px-2 py-1 rounded-md font-bold shadow-sm">-30%</span>
+</div>
+<div class="absolute top-2 right-2 z-10">
+<input class="w-5 h-5 custom-checkbox rounded border-outline-variant text-primary focus:ring-primary focus:ring-offset-0 transition-colors cursor-pointer pointer-events-none" type="checkbox"/>
+</div>
+<div class="aspect-square w-full relative overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A macro shot of vibrant, ripe red tomatoes on the vine in a modern agricultural setting, slightly dewy, soft natural greenhouse lighting, conveying freshness and premium quality." src="https://lh3.googleusercontent.com/aida/AP1WRLtbeacH9dE0JdeQXcdMioENzlDqSNGOpZIWx1DpjW9ifvvSZGWiGl5hh6HT8avCjuCauwobetrnYt76MlV6QzVAIQs5drOGMq8dae-E_GL8Aps9DRqK5-NZcNbjatyAMKgS6n7JiHVrwUSF3Dcs1bwsY-z4M4KHsORrJJNGiJx4irblzkVtGQ2fb89Bt0jnB-dRLBE6tAhmCsIsqoji9xJ-NR8gkB5HvD59tBWJsoL2PQsl-PdlbLu_ook"/>
+</div>
+<div class="p-3 flex flex-col flex-grow justify-between">
+<div>
+<span class="text-outline text-label-caps block mb-1">HORTALIZAS</span>
+<h3 class="font-headline-sm text-body-md text-on-surface mb-2 line-clamp-2 leading-tight">Tomate Cherry Orgánico Premium - Caja 5kg</h3>
+</div>
+<div class="mt-auto">
+<div class="flex items-baseline gap-2 flex-wrap">
+<span class="font-data-mono text-body-lg text-primary font-bold">$12.50</span>
+<span class="font-data-mono text-body-sm text-outline line-through">$17.85</span>
+</div>
+<span class="text-label-caps text-outline block mt-1">/ caja</span>
+</div>
+</div>
+</article>
+<!-- Product Card 2 -->
+<article class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_16px_rgba(0,0,0,0.04)] overflow-hidden relative group hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col cursor-pointer" onclick="toggleSelection(this)">
+<div class="absolute top-2 left-2 z-10">
+<span class="bg-error text-on-error text-label-caps px-2 py-1 rounded-md font-bold shadow-sm">-25%</span>
+</div>
+<div class="absolute top-2 right-2 z-10">
+<input class="w-5 h-5 custom-checkbox rounded border-outline-variant text-primary focus:ring-primary focus:ring-offset-0 transition-colors cursor-pointer pointer-events-none" type="checkbox"/>
+</div>
+<div class="aspect-square w-full relative overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Bright, fresh lemons piled neatly in a wooden crate, well-lit with crisp, clean light typical of a professional modern organic farm distribution center." src="https://lh3.googleusercontent.com/aida/AP1WRLvlbxKP90yHFjPRXUNI0XHpWSw6bKsJiUZf7TE9J7UNiKxYYRJXcHvj0KtJWZCKc7MP6LXuBDc4GsTpMwLQ1xSRNpewGuLHffJg_8jWGN3MRxZS-2ukGcaO-3d4Qmk1dGNPOjugpOLey8NYO-wdvfLelpSHzsen2DuQUbWs28ZuLZ4W9IWaA8A8Yrk9jw3MQgE56_wVARBkHZuQZW8ro11yFHobQ_KJBMr8tEB2MATFf8z7GwwGq7DRZMA"/>
+</div>
+<div class="p-3 flex flex-col flex-grow justify-between">
+<div>
+<span class="text-outline text-label-caps block mb-1">CÍTRICOS</span>
+<h3 class="font-headline-sm text-body-md text-on-surface mb-2 line-clamp-2 leading-tight">Limón Sutil Primera Calidad - Malla 10kg</h3>
+</div>
+<div class="mt-auto">
+<div class="flex items-baseline gap-2 flex-wrap">
+<span class="font-data-mono text-body-lg text-primary font-bold">$8.90</span>
+<span class="font-data-mono text-body-sm text-outline line-through">$11.90</span>
+</div>
+<span class="text-label-caps text-outline block mt-1">/ malla</span>
+</div>
+</div>
+</article>
+<!-- Product Card 3 -->
+<article class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_16px_rgba(0,0,0,0.04)] overflow-hidden relative group hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col cursor-pointer ring-2 ring-primary bg-surface-low" onclick="toggleSelection(this)">
+<div class="absolute top-2 left-2 z-10">
+<span class="bg-secondary text-on-secondary text-label-caps px-2 py-1 rounded-md font-bold shadow-sm">-50%</span>
+</div>
+<div class="absolute top-2 right-2 z-10">
+<input checked="" class="w-5 h-5 custom-checkbox rounded border-outline-variant text-primary focus:ring-primary focus:ring-offset-0 transition-colors cursor-pointer pointer-events-none" type="checkbox"/>
+</div>
+<div class="aspect-square w-full relative overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Freshly harvested carrots with green tops intact, resting on rustic wooden planks in a softly lit, modern packing facility setting." src="https://lh3.googleusercontent.com/aida/AP1WRLu-gTo9_BZXy3TZ459APFpqXZeA51_uKnpeFbnkN_W0BsHB9aUq1r3n744WWCDKtsJjlixmEuZ9kykzTmcdHtcSveHVti5C8cSkWeQCRvW4ULep7g6Y72LBAVC03yWIOG7WQvJbf8NQQGvy86CumfatsE3qO79wWMwaPWkFliwDSJue9LcTBbaMUt7yTWxCXWD_eaW3zLCXZGAiFw2thKf1DT7GLsOphBmUAsKTdw1-GqudmzpDk1xYUQ"/>
+</div>
+<div class="p-3 flex flex-col flex-grow justify-between">
+<div>
+<span class="text-outline text-label-caps block mb-1">RAÍCES</span>
+<h3 class="font-headline-sm text-body-md text-on-surface mb-2 line-clamp-2 leading-tight">Zanahoria Nantesa Lavada - Saco 20kg</h3>
+</div>
+<div class="mt-auto">
+<div class="flex items-baseline gap-2 flex-wrap">
+<span class="font-data-mono text-body-lg text-primary font-bold">$15.00</span>
+<span class="font-data-mono text-body-sm text-outline line-through">$30.00</span>
+</div>
+<span class="text-label-caps text-outline block mt-1">/ saco</span>
+</div>
+</div>
+</article>
+<!-- Product Card 4 -->
+<article class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_16px_rgba(0,0,0,0.04)] overflow-hidden relative group hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col cursor-pointer" onclick="toggleSelection(this)">
+<div class="absolute top-2 left-2 z-10">
+<span class="bg-error text-on-error text-label-caps px-2 py-1 rounded-md font-bold shadow-sm">-15%</span>
+</div>
+<div class="absolute top-2 right-2 z-10">
+<input class="w-5 h-5 custom-checkbox rounded border-outline-variant text-primary focus:ring-primary focus:ring-offset-0 transition-colors cursor-pointer pointer-events-none" type="checkbox"/>
+</div>
+<div class="aspect-square w-full relative overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A close up of passion fruit, halved to show the seeds, arranged appealingly on a clean surface with a soft, bright, modern aesthetic." src="https://lh3.googleusercontent.com/aida/AP1WRLsJ9i5_Dq7uhdyUYAlCFf9rjb_i_RmGKBb5RTln7KtIDBHM4IOL5_67Ir87ZhNONpqn-XHOyrx0pTyorzPb3RzCT3lSwBEDeEQGYeoHed6MDuDcwP-0IhtyvatwrReM5ViVV83S0fwbv1_8Y13qXpBSxDpSONXVd3RZZr4fcIzCrzSfFwfBPjr-rYL7JYxYGOdLzsGY5SZuf_7FUGy9v279wWa079GAh1tZGMEQwpkFKlSAZouxJD0pktk"/>
+</div>
+<div class="p-3 flex flex-col flex-grow justify-between">
+<div>
+<span class="text-outline text-label-caps block mb-1">TROPICALES</span>
+<h3 class="font-headline-sm text-body-md text-on-surface mb-2 line-clamp-2 leading-tight">Maracuyá Amarillo Exportación - Caja 3kg</h3>
+</div>
+<div class="mt-auto">
+<div class="flex items-baseline gap-2 flex-wrap">
+<span class="font-data-mono text-body-lg text-primary font-bold">$22.10</span>
+<span class="font-data-mono text-body-sm text-outline line-through">$26.00</span>
+</div>
+<span class="text-label-caps text-outline block mt-1">/ caja</span>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- Sticky Bottom Action Bar for Multi-selection -->
+<div class="fixed bottom-0 left-0 w-full bg-surface-container-lowest border-t border-outline-variant shadow-[0_-8px_24px_rgba(0,0,0,0.08)] p-md z-50 transform transition-transform duration-300 ease-in-out translate-y-0 flex justify-between items-center max-w-7xl mx-auto right-0" id="selectionBar">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-headline-sm font-bold">
+                1
+            </div>
+<div>
+<p class="font-headline-sm text-body-md text-on-surface m-0 leading-tight">1 producto seleccionado</p>
+<p class="font-data-mono text-body-sm text-outline m-0">Total estimado: $15.00</p>
+</div>
+</div>
+<button class="bg-primary text-on-primary px-lg py-3 rounded-lg font-headline-sm text-body-md hover:bg-primary-container transition-colors shadow-sm active:scale-95 flex items-center gap-2">
+            Añadir al Carrito
+            <span class="material-symbols-outlined text-[20px]">shopping_cart_checkout</span>
+</button>
+</div>
+<script>
+        function toggleSelection(card) {
+            const checkbox = card.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            
+            if (checkbox.checked) {
+                card.classList.add('ring-2', 'ring-primary', 'bg-surface-low');
+            } else {
+                card.classList.remove('ring-2', 'ring-primary', 'bg-surface-low');
+            }
+            
+            updateSelectionBar();
+        }
+
+        function updateSelectionBar() {
+            const selectedCount = document.querySelectorAll('input[type="checkbox"]:checked').length;
+            const bar = document.getElementById('selectionBar');
+            
+            if (selectedCount > 0) {
+                bar.classList.remove('translate-y-full');
+                bar.querySelector('.bg-primary-container').textContent = selectedCount;
+                bar.querySelector('.font-headline-sm.text-on-surface').textContent = `${selectedCount} producto${selectedCount > 1 ? 's' : ''} seleccionado${selectedCount > 1 ? 's' : ''}`;
+            } else {
+                bar.classList.add('translate-y-full');
+            }
+        }
+    </script>
+</body></html>

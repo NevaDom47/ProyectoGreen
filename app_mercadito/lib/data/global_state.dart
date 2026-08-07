@@ -1,4 +1,182 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
+
+// ---------------------------------------------------------
+// Global Flash Offers State (Synchronized across screens)
+// ---------------------------------------------------------
+final ValueNotifier<List<Map<String, dynamic>>> globalFlashOffers = ValueNotifier([
+  {
+    'name': 'Papa Blanca Alpha',
+    'category': 'Tubérculos',
+    'discount': '-20%',
+    'discountNumber': 20,
+    'price': '\$18.00',
+    'oldPrice': '\$22.50',
+    'wholesalePrice': '\$14.50',
+    'wholesaleOldPrice': '\$17.50',
+    'wholesaleMin': 'MIN. 20 KG',
+    'rating': '4.8',
+    'badge': 'PRIMERA CALIDAD',
+    'supplier': 'Don Pedro H.',
+    'location': 'Tecomán, Colima',
+    'tags': ['Tubérculos', 'Oferta'],
+    'salesMode': 'both',
+    'secondsRemaining': 10, // ⏳ 10 segundos para pruebas de expiración
+    'img': 'assets/images/PapaGemini.png'
+  },
+  {
+    'name': 'Zanahoria Orgánica',
+    'category': 'Raíces',
+    'discount': '-22%',
+    'discountNumber': 22,
+    'price': '\$12.50',
+    'oldPrice': '\$16.00',
+    'wholesalePrice': '\$9.80',
+    'wholesaleOldPrice': '\$12.50',
+    'wholesaleMin': 'MIN. 15 KG',
+    'rating': '4.9',
+    'badge': 'TERCERA CALIDAD',
+    'supplier': 'Granja Sol',
+    'location': 'Valle Verde, Puebla',
+    'tags': ['Raíces', 'Orgánico'],
+    'salesMode': 'both',
+    'secondsRemaining': 20382, // 05:39:42
+    'img': 'assets/images/ZanahoriaGemini.png'
+  },
+  {
+    'name': 'Fresas de Campo Extras',
+    'category': 'Frutas',
+    'discount': '-25%',
+    'discountNumber': 25,
+    'price': '\$45.00',
+    'oldPrice': '\$60.00',
+    'wholesalePrice': '\$36.00',
+    'wholesaleOldPrice': '\$48.00',
+    'wholesaleMin': 'MIN. 10 KG',
+    'rating': '4.9',
+    'badge': 'PRIMERA CALIDAD',
+    'supplier': 'AgroFresas',
+    'location': 'Zamora, Michoacán',
+    'tags': ['Frutas', 'Frescas'],
+    'salesMode': 'both',
+    'secondsRemaining': 7487, // 02:04:47
+    'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250620_1233_Fresas%20en%20Fondo%20Rosado_simple_compose_01jy72ypjmeccafrqb33rfm1q8.png'
+  },
+  {
+    'name': 'Saco de Papas Blancas',
+    'category': 'Tubérculos',
+    'discount': '-12%',
+    'discountNumber': 12,
+    'price': '\$280.00',
+    'oldPrice': '\$320.00',
+    'wholesalePrice': '\$250.00',
+    'wholesaleOldPrice': '\$300.00',
+    'wholesaleMin': 'MIN. 2 SACOS',
+    'rating': '4.6',
+    'badge': 'SEGUNDA CALIDAD',
+    'supplier': 'Hermanos Ruiz',
+    'location': 'Galeana, Nuevo León',
+    'tags': ['Tubérculos'],
+    'salesMode': 'wholesale_only',
+    'secondsRemaining': 18867, // 05:14:27
+    'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1556_Sacos%20de%20Papas_simple_compose_01jwvnskaee6evykbzreq6j8wm.png'
+  },
+  {
+    'name': 'Tomate Cherry Orgánico',
+    'category': 'Hortalizas',
+    'discount': '-30%',
+    'discountNumber': 30,
+    'price': '\$12.50',
+    'oldPrice': '\$17.85',
+    'wholesalePrice': '\$9.50',
+    'wholesaleOldPrice': '\$13.50',
+    'wholesaleMin': 'MIN. 10 KG',
+    'rating': '4.9',
+    'badge': 'PRIMERA CALIDAD',
+    'supplier': 'Invernaderos SLP',
+    'location': 'San Luis Potosí',
+    'tags': ['Hortalizas', 'Orgánico'],
+    'salesMode': 'both',
+    'secondsRemaining': 4210, // 01:10:10
+    'img': 'https://lh3.googleusercontent.com/aida-public/AB6AXuBXcsVfAn4SXFQcHddnB5qMtM4renFwAuqO-lGdtcJtIIEmGl9tMDsFQiPgu60XnCWVebJO7iP0Ibk5dtJIqrh9Aanp9rZWGv7faUFsthP816CnkwG06d3lv6JAtK1L0AlnAz_e_RO8MTnW4_KInOanUlNL5k2AshcmFlzprpJxW1x81-1wvtFdgqmQ27XRJXCS6DLiTryvA9pgF60utXXNGEKTfgzyHZfbGio0iMIq4G_RBnQepN2i0vJ1-mywwHJNnmaXt1UMSH8'
+  },
+  {
+    'name': 'Zanahoria Nantesa Lavada',
+    'category': 'Raíces',
+    'discount': '-50%',
+    'discountNumber': 50,
+    'price': '\$15.00',
+    'oldPrice': '\$30.00',
+    'wholesalePrice': '\$11.00',
+    'wholesaleOldPrice': '\$22.00',
+    'wholesaleMin': 'MIN. 20 KG',
+    'rating': '4.8',
+    'badge': 'PRIMERA CALIDAD',
+    'supplier': 'Granja Sol',
+    'location': 'Valle Verde, Puebla',
+    'tags': ['Raíces', 'Lavada'],
+    'salesMode': 'both',
+    'secondsRemaining': 9840, // 02:44:00
+    'img': 'https://lh3.googleusercontent.com/aida-public/AB6AXuC8i3bYgCoFml8RIwzz2s32HSkKDvOTWEnX-bo6gt_9o4zdC9d3U0ZglOr_m6EMoKc6Oz2ryDTAoXTbMceJxM4huBHJNMRIBp_rkwcL972T0U0FipN8bSOaMvmlsOxI7peoA4M2Uq1zmuTbYTdHFlAe_A_VA3kLfbMf3thYxRRP7gU3H79Xu6gqxI8wfQqLd59xQyc9evPxWOYoH-ufQjjtXka1i6Bn6dDixAquahUTLyExdeosV0TZReH-nBZgtW2Wf1EEcK2VGiY'
+  },
+  {
+    'name': 'Limón Sutil Primera',
+    'category': 'Cítricos',
+    'discount': '-25%',
+    'discountNumber': 25,
+    'price': '\$8.90',
+    'oldPrice': '\$11.90',
+    'wholesalePrice': '\$6.50',
+    'wholesaleOldPrice': '\$9.20',
+    'wholesaleMin': 'MIN. 15 KG',
+    'rating': '4.7',
+    'badge': 'PRIMERA CALIDAD',
+    'supplier': 'Cítricos del Pacífico',
+    'location': 'Manzanillo, Colima',
+    'tags': ['Cítricos', 'Fresco'],
+    'salesMode': 'both',
+    'secondsRemaining': 31500, // 08:45:00
+    'img': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCoJ0D5DucqLAya_-YteH6-8cB0lbCiusShRQ5J7CpVWmeRZq_Dunwko3RtZ6MnlwVNNLu9qIMiXPC02Jr1-ZLXltcDkkQ0pqh4QKIExzuuQRRqrcXdHQcZxH33bpROQ5o-f2IBOsbqiL6lAuXMgnbrH4_kJmNK6b8kKf_2pM4dzh8AtsiiLNaiDX88Fe0OoRYiKx2-omyEvAoG4YwfLUNLxG5W4A6kcm0dv08LBcwmXpObjY9s4lgDuy3fpuu-_bUGZXDeZUcnKro'
+  },
+  {
+    'name': 'Mix de Ajíes Frescos',
+    'category': 'Hortalizas',
+    'discount': '-22%',
+    'discountNumber': 22,
+    'price': '\$35.00',
+    'oldPrice': '\$45.00',
+    'wholesalePrice': '\$28.00',
+    'wholesaleOldPrice': '\$36.00',
+    'wholesaleMin': 'MIN. 10 KG',
+    'rating': '4.7',
+    'badge': 'PRIMERA CALIDAD',
+    'supplier': 'Picantes del Sur',
+    'location': 'Oaxaca, Oaxaca',
+    'tags': ['Hortalizas', 'Mix'],
+    'salesMode': 'both',
+    'secondsRemaining': 12300, // 03:25:00
+    'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1549_Variedad%20de%20Aj%C3%ADes_simple_compose_01jwvncbmqfpvb7qv6rs3vh22x.png'
+  },
+]);
+
+Timer? _globalFlashTimer;
+
+void startGlobalFlashTimer() {
+  _globalFlashTimer ??= Timer.periodic(const Duration(seconds: 1), (timer) {
+    bool updated = false;
+    final offers = List<Map<String, dynamic>>.from(globalFlashOffers.value);
+    for (var offer in offers) {
+      final secs = offer['secondsRemaining'] as int? ?? 0;
+      if (secs > 0) {
+        offer['secondsRemaining'] = secs - 1;
+        updated = true;
+      }
+    }
+    if (updated) {
+      globalFlashOffers.value = offers;
+    }
+  });
+}
 
 final ValueNotifier<List<Map<String, dynamic>>> globalFavorites = ValueNotifier([
   {

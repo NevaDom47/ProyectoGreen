@@ -132,6 +132,39 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
     return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 
+  Color _getQualityBadgeBgColor(String badge, bool isDark) {
+    final b = badge.toUpperCase();
+    if (b.contains('PRIMERA') || b.contains('1')) {
+      return const Color(0xFF10B981).withValues(alpha: 0.15); // Verde semitransparente
+    } else if (b.contains('SEGUNDA') || b.contains('2')) {
+      return const Color(0xFFF97316).withValues(alpha: 0.15); // Mamey semitransparente
+    } else {
+      return const Color(0xFFEF4444).withValues(alpha: 0.15); // Rojo semitransparente
+    }
+  }
+
+  Color _getQualityBadgeTextColor(String badge, bool isDark) {
+    final b = badge.toUpperCase();
+    if (b.contains('PRIMERA') || b.contains('1')) {
+      return isDark ? const Color(0xFF34D399) : const Color(0xFF047857);
+    } else if (b.contains('SEGUNDA') || b.contains('2')) {
+      return isDark ? const Color(0xFFFB923C) : const Color(0xFFC2410C);
+    } else {
+      return isDark ? const Color(0xFFFCA5A5) : const Color(0xFFB91C1C);
+    }
+  }
+
+  Color _getQualityBadgeBorderColor(String badge, bool isDark) {
+    final b = badge.toUpperCase();
+    if (b.contains('PRIMERA') || b.contains('1')) {
+      return const Color(0xFF10B981).withValues(alpha: 0.3);
+    } else if (b.contains('SEGUNDA') || b.contains('2')) {
+      return const Color(0xFFF97316).withValues(alpha: 0.3);
+    } else {
+      return const Color(0xFFEF4444).withValues(alpha: 0.3);
+    }
+  }
+
   void _openEditDialog(Map<String, dynamic> product, {Map<String, dynamic>? existingOffer}) async {
     final result = await showDialog<bool>(
       context: context,
@@ -157,6 +190,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
   }
 
   void _cancelOffer(int index, String productName) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -177,33 +211,70 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
           '¿Estás seguro de cancelar la oferta para "$productName"? Esta acción la eliminará y dejará de estar disponible para los compradores inmediatamente.',
           style: const TextStyle(fontSize: 14, height: 1.4),
         ),
+        actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Volver', style: TextStyle(color: Colors.grey)),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              final current = List<Map<String, dynamic>>.from(globalFlashOffers.value);
-              if (index >= 0 && index < current.length) {
-                current.removeAt(index);
-                globalFlashOffers.value = current;
-              }
-              setState(() {});
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Oferta relámpago cancelada.'),
-                  backgroundColor: Colors.redAccent,
-                  duration: Duration(seconds: 2),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // 1. Botón Principal: Cancelar Oferta
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                    final current = List<Map<String, dynamic>>.from(globalFlashOffers.value);
+                    if (index >= 0 && index < current.length) {
+                      current[index]['secondsRemaining'] = 0;
+                      current[index]['status'] = 'Finalizada';
+                      globalFlashOffers.value = current;
+                    }
+                    setState(() {});
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Oferta relámpago cancelada y movida al histórico.'),
+                        backgroundColor: Colors.redAccent,
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFEF4444),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    elevation: 0,
+                  ),
+                  child: const Text(
+                    'Cancelar Oferta',
+                    style: TextStyle(
+                      fontFamily: 'Manrope',
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                  ),
                 ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.redAccent,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-            child: const Text('Cancelar Oferta', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              ),
+              const SizedBox(height: 6),
+              // 2. Opción Secundaria: Volver (DEBAJO del botón Cancelar Oferta)
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                  ),
+                  child: Text(
+                    'Volver',
+                    style: TextStyle(
+                      fontFamily: 'Manrope',
+                      color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -295,13 +366,15 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
     return ValueListenableBuilder<List<Map<String, dynamic>>>(
       valueListenable: globalFlashOffers,
       builder: (context, offers, _) {
-        final activeOffersCount = offers.length;
+        // Only offers with time remaining (secondsRemaining > 0) are considered active
+        final activeOffersList = offers.where((o) => (o['secondsRemaining'] as int? ?? 0) > 0).toList();
+        final activeOffersCount = activeOffersList.length;
 
-        // Comprehensive search filter across all card fields
-        final filteredOffers = offers.where((offer) {
+        // Comprehensive search filter across active offer cards
+        final filteredOffers = activeOffersList.where((offer) {
+          final secs = offer['secondsRemaining'] as int? ?? 0;
           if (_selectedFilter == 'Por Vencer') {
-            final secs = offer['secondsRemaining'] as int? ?? 0;
-            if (secs > 7200) return false; // Only offers under 2h
+            if (secs > 1800) return false; // Solo ofertas por debajo de los 30 min (1800 segundos)
           }
 
           if (_searchQuery.isNotEmpty) {
@@ -351,54 +424,22 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                 ),
                 child: Row(
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 10,
-                                height: 10,
-                                decoration: const BoxDecoration(
-                                  color: Colors.redAccent,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                'OFERTAS ACTIVAS',
-                                style: TextStyle(
-                                  fontFamily: 'JetBrains Mono',
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            '$activeOffersCount Activas',
-                            style: TextStyle(
-                              fontFamily: 'Manrope',
-                              fontSize: 22,
-                              fontWeight: FontWeight.w800,
-                              color: isDark ? Colors.white : Colors.black87,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(height: 36, width: 1, color: borderColor),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
                           children: [
+                            Container(
+                              width: 10,
+                              height: 10,
+                              decoration: const BoxDecoration(
+                                color: Colors.redAccent,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
                             Text(
-                              'DESCUENTOS',
+                              'OFERTAS ACTIVAS',
                               style: TextStyle(
                                 fontFamily: 'JetBrains Mono',
                                 fontSize: 11,
@@ -406,19 +447,19 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                 color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                               ),
                             ),
-                            const SizedBox(height: 6),
-                            Text(
-                              'Hasta -50%',
-                              style: TextStyle(
-                                fontFamily: 'Manrope',
-                                fontSize: 22,
-                                fontWeight: FontWeight.w800,
-                                color: primaryColor,
-                              ),
-                            ),
                           ],
                         ),
-                      ),
+                        const SizedBox(height: 6),
+                        Text(
+                          '$activeOffersCount Activas',
+                          style: TextStyle(
+                            fontFamily: 'Manrope',
+                            fontSize: 22,
+                            fontWeight: FontWeight.w800,
+                            color: isDark ? Colors.white : Colors.black87,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -614,14 +655,14 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                 ),
                               ),
 
-                              // Status Badge / Timer
+                              // Status Badge / Timer (Fondo Mamey/Rojo sutil si le quedan <= 30 min)
                               Positioned(
                                 top: 12,
                                 right: 12,
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                   decoration: BoxDecoration(
-                                    color: primaryColor,
+                                    color: (secsRemaining <= 1800) ? const Color(0xFFC2410C) : primaryColor,
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Row(
@@ -713,20 +754,48 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                         ),
                                       ],
                                     ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color: isDark ? const Color(0xFF0F172A) : const Color(0xFFEEF4FF),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Text(
-                                        offer['category'] ?? 'General',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.bold,
-                                          color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        // Etiqueta de Calidad (Primera, Segunda o Tercera Calidad)
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                          margin: const EdgeInsets.only(bottom: 6),
+                                          decoration: BoxDecoration(
+                                            color: _getQualityBadgeBgColor(offer['badge'] ?? 'PRIMERA CALIDAD', isDark),
+                                            borderRadius: BorderRadius.circular(6),
+                                            border: Border.all(
+                                              color: _getQualityBadgeBorderColor(offer['badge'] ?? 'PRIMERA CALIDAD', isDark),
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            (offer['badge'] ?? 'PRIMERA CALIDAD').toString().toUpperCase(),
+                                            style: TextStyle(
+                                              fontFamily: 'JetBrains Mono',
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w800,
+                                              color: _getQualityBadgeTextColor(offer['badge'] ?? 'PRIMERA CALIDAD', isDark),
+                                            ),
+                                          ),
                                         ),
-                                      ),
+                                        // Categoría del Producto
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                          decoration: BoxDecoration(
+                                            color: isDark ? const Color(0xFF0F172A) : const Color(0xFFEEF4FF),
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: Text(
+                                            offer['category'] ?? 'General',
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.bold,
+                                              color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -1067,124 +1136,167 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
     Color cardBg,
     Color borderColor,
   ) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Historial de Ofertas Relámpago',
-            style: TextStyle(
-              fontFamily: 'Manrope',
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Revisa las ofertas concluidas y sus métricas de rendimiento.',
-            style: TextStyle(fontSize: 13, color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
-          ),
+    return ValueListenableBuilder<List<Map<String, dynamic>>>(
+      valueListenable: globalFlashOffers,
+      builder: (context, globalOffers, _) {
+        // Collect all offers from global state whose time has expired (secondsRemaining <= 0)
+        final expiredGlobalOffers = globalOffers.where((o) => (o['secondsRemaining'] as int? ?? 0) <= 0).map((o) {
+          final stock = o['stockLimit'] ?? 50;
+          return {
+            'name': o['name'] ?? 'Producto',
+            'category': o['category'] ?? 'General',
+            'discount': o['discount'] ?? '-20%',
+            'finalPrice': o['price'] ?? '\$0.00',
+            'oldPrice': o['oldPrice'] ?? '\$0.00',
+            'totalSoldKg': '$stock KG',
+            'totalRevenue': o['price'] ?? '\$500.00',
+            'endedDate': 'Finalizada (Concluida)',
+            'status': 'Finalizada',
+            'img': o['img'] ?? 'assets/images/PapaGemini.png',
+            'rawProduct': o,
+          };
+        }).toList();
 
-          const SizedBox(height: 16),
+        final combinedHistory = [...expiredGlobalOffers, ..._historyOffers];
 
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: _historyOffers.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 12),
-            itemBuilder: (ctx, index) {
-              final item = _historyOffers[index];
-              return Container(
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: cardBg,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: borderColor),
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Historial de Ofertas Relámpago',
+                style: TextStyle(
+                  fontFamily: 'Manrope',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black87,
                 ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 56,
-                      height: 56,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Revisa las ofertas concluidas y sus métricas de rendimiento.',
+                style: TextStyle(fontSize: 13, color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
+              ),
+
+              const SizedBox(height: 16),
+
+              if (combinedHistory.isEmpty)
+                Container(
+                  padding: const EdgeInsets.all(32),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: cardBg,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: borderColor),
+                  ),
+                  child: Text(
+                    'No hay ofertas finalizadas en el historial',
+                    style: TextStyle(color: Colors.grey.shade600),
+                  ),
+                )
+              else
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: combinedHistory.length,
+                  separatorBuilder: (_, _) => const SizedBox(height: 12),
+                  itemBuilder: (ctx, index) {
+                    final item = combinedHistory[index];
+                    return Container(
+                      padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey.shade100,
+                        color: cardBg,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: borderColor),
                       ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: (item['img'] ?? '').toString().startsWith('http')
-                            ? Image.network(item['img'], fit: BoxFit.cover)
-                            : Image.asset(item['img'], fit: BoxFit.cover),
-                      ),
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Row(
                         children: [
-                          Row(
-                            children: [
-                              Text(
-                                item['name'] ?? '',
-                                style: TextStyle(
-                                  fontFamily: 'Manrope',
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: isDark ? Colors.white : Colors.black87,
-                                ),
-                              ),
-                              const SizedBox(width: 6),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: Colors.red.shade100,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: Text(
-                                  item['discount'] ?? '',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red.shade800,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Vendido: ${item['totalSoldKg']} • Recaudado: ${item['totalRevenue']}',
-                            style: TextStyle(
-                              fontFamily: 'JetBrains Mono',
-                              fontSize: 11,
-                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+                          Container(
+                            width: 56,
+                            height: 56,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.grey.shade100,
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: (item['img'] ?? '').toString().startsWith('http')
+                                  ? Image.network(item['img'], fit: BoxFit.cover)
+                                  : Image.asset(item['img'], fit: BoxFit.cover),
                             ),
                           ),
-                          Text(
-                            'Finalizada: ${item['endedDate']}',
-                            style: const TextStyle(fontSize: 11, color: Colors.grey),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        item['name'] ?? '',
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontFamily: 'Manrope',
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                          color: isDark ? Colors.white : Colors.black87,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red.shade100,
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        item['discount'] ?? '',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.red.shade800,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Vendido: ${item['totalSoldKg']} • Recaudado: ${item['totalRevenue']}',
+                                  style: TextStyle(
+                                    fontFamily: 'JetBrains Mono',
+                                    fontSize: 11,
+                                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+                                  ),
+                                ),
+                                Text(
+                                  '${item['endedDate']}',
+                                  style: const TextStyle(fontSize: 11, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // Quick reactivate button
+                          IconButton(
+                            icon: const Icon(Icons.refresh, color: primaryColor),
+                            tooltip: 'Reactivar Oferta',
+                            onPressed: () {
+                              _openEditDialog(item['rawProduct'] ?? item);
+                            },
                           ),
                         ],
                       ),
-                    ),
-
-                    // Quick reactivate button
-                    IconButton(
-                      icon: const Icon(Icons.refresh, color: primaryColor),
-                      tooltip: 'Reactivar Oferta',
-                      onPressed: () {
-                        _openEditDialog(item);
-                      },
-                    ),
-                  ],
+                    );
+                  },
                 ),
-              );
-            },
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

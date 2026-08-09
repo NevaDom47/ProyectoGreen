@@ -99,7 +99,7 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFlashOffers = ValueNotifie
     'location': 'San Luis Potosí',
     'tags': ['Hortalizas', 'Orgánico'],
     'salesMode': 'both',
-    'secondsRemaining': 4210, // 01:10:10
+    'secondsRemaining': 1256, // ⏳ 00:20:56 (< 30 min) para prueba de Por Vencer
     'img': 'https://lh3.googleusercontent.com/aida-public/AB6AXuBXcsVfAn4SXFQcHddnB5qMtM4renFwAuqO-lGdtcJtIIEmGl9tMDsFQiPgu60XnCWVebJO7iP0Ibk5dtJIqrh9Aanp9rZWGv7faUFsthP816CnkwG06d3lv6JAtK1L0AlnAz_e_RO8MTnW4_KInOanUlNL5k2AshcmFlzprpJxW1x81-1wvtFdgqmQ27XRJXCS6DLiTryvA9pgF60utXXNGEKTfgzyHZfbGio0iMIq4G_RBnQepN2i0vJ1-mywwHJNnmaXt1UMSH8'
   },
   {

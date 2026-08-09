@@ -22,6 +22,8 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFlashOffers = ValueNotifie
     'tags': ['Tubérculos', 'Oferta'],
     'salesMode': 'both',
     'secondsRemaining': 10, // ⏳ 10 segundos para pruebas de expiración
+    'startTime': 'hoy, 08:00 AM',
+    'duration': '12 Horas',
     'img': 'assets/images/PapaGemini.png'
   },
   {

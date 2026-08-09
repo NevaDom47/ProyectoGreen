@@ -44,6 +44,7 @@ import '../screens/buyer_onboarding_screen.dart';
 import '../screens/provider_onboarding_screen.dart';
 import '../screens/order_history_screen.dart';
 import '../screens/flash_offers_screen.dart';
+import '../screens/flash_offers_manager_screen.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -199,6 +200,38 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
         child: const FlashOffersScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: animation.drive(
+              Tween(begin: const Offset(1.0, 0.0), end: Offset.zero)
+                  .chain(CurveTween(curve: Curves.easeOutCubic)),
+            ),
+            child: child,
+          );
+        },
+      ),
+    ),
+    GoRoute(
+      path: '/flash-offers-manager',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const FlashOffersManagerScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: animation.drive(
+              Tween(begin: const Offset(1.0, 0.0), end: Offset.zero)
+                  .chain(CurveTween(curve: Curves.easeOutCubic)),
+            ),
+            child: child,
+          );
+        },
+      ),
+    ),
+    GoRoute(
+      path: '/flash-offers-gestor',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const FlashOffersManagerScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return SlideTransition(
             position: animation.drive(

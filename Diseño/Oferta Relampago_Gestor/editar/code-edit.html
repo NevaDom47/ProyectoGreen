@@ -1,0 +1,245 @@
+<!DOCTYPE html><html class="light" lang="es" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Mantenimiento de Ofertas Relámpago</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#2f1500",
+                        "surface-bright": "#f8f9ff",
+                        "on-tertiary-fixed-variant": "#004c6e",
+                        "surface-container-low": "#eef4ff",
+                        "surface-variant": "#d9e3f4",
+                        "background": "#f8f9ff",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#c9e6ff",
+                        "on-surface": "#121c28",
+                        "on-primary-fixed-variant": "#00513b",
+                        "surface-container-lowest": "#ffffff",
+                        "on-background": "#121c28",
+                        "surface": "#f8f9ff",
+                        "primary-fixed-dim": "#8bd6b6",
+                        "on-error-container": "#93000a",
+                        "surface-tint": "#1b6b51",
+                        "surface-container-high": "#dfe9fa",
+                        "on-tertiary-container": "#8bcfff",
+                        "primary": "#004532",
+                        "on-surface-variant": "#3f4944",
+                        "secondary-container": "#fe932c",
+                        "primary-fixed": "#a6f2d1",
+                        "surface-container-highest": "#d9e3f4",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#6e3900",
+                        "error-container": "#ffdad6",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#e5eeff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "inverse-surface": "#27313e",
+                        "tertiary-container": "#005980",
+                        "on-tertiary-fixed": "#001e2f",
+                        "on-primary-container": "#8bd6b7",
+                        "secondary-fixed-dim": "#ffb77d",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#d1dbec",
+                        "on-secondary-container": "#663500",
+                        "outline-variant": "#bec9c2",
+                        "tertiary-fixed-dim": "#89ceff",
+                        "inverse-primary": "#8bd6b6",
+                        "primary-container": "#065f46",
+                        "secondary": "#904d00",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#002116",
+                        "tertiary": "#00415f",
+                        "outline": "#6f7973",
+                        "secondary-fixed": "#ffdcc3"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "margin-desktop": "48px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "margin-mobile": "16px",
+                        "gutter": "16px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "headline-sm": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "display-lg": ["Manrope"],
+                        "data-mono": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-caps": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "data-mono": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #004532;
+            cursor: pointer;
+            margin-top: -10px;
+            box-shadow: 0px 2px 4px rgba(0,0,0,0.2);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #bec9c2;
+            border-radius: 2px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface w-full top-0 sticky border-b border-outline-variant flex items-center justify-between px-margin-mobile py-4 z-50">
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors active:opacity-70 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm text-primary">Gestionar Oferta</h1>
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors active:opacity-70 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+</header>
+<main class="flex-grow p-margin-mobile md:p-margin-desktop max-w-3xl mx-auto w-full space-y-md">
+<!-- Product Selection Section -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-4 flex items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<div class="w-20 h-20 rounded-xl bg-surface-container overflow-hidden flex-shrink-0 shadow-sm border border-outline-variant/30">
+<img alt="Tomate Saladette" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYN02O86K6knfDqM1gBCrHpJwRGAAFnGsTyBuDx_bz_LwJVJVvlwFt52ynNfBtYQgv8dANxYu2V-EKIHFQTA29lFosAhweneCU27NDnXJgOCnd6DsdRiiCmRZUTFWZFj4N1Fe46X8YMsV49Az2KYcc3vuHSpM-NCUxis8P32yqk3cDgFMUtzp3734FiMXIr62ADYo5_MnwZbPxUA6n_UCdUv0CgnoMmOrf6wp2c1-CiDK2s3NG-_bD">
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-primary uppercase tracking-wider mb-xs">Producto Seleccionado</p>
+<h2 class="font-headline-sm text-headline-sm text-on-surface leading-tight">Tomate Saladette</h2>
+
+</div>
+</div>
+
+</section>
+<!-- Discount & Preview Section Combined -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+<div class="p-4 border-b border-outline-variant">
+<h3 class="font-body-lg text-body-lg font-semibold text-on-surface mb-4">Configuración de Descuento</h3>
+<div class="flex p-1 bg-surface-container-low rounded-lg mb-4">
+<button class="flex-1 py-1.5 text-center rounded-md bg-surface-container-lowest shadow-sm font-body-sm text-body-sm text-primary font-medium border border-outline-variant/30">Porcentaje (%)</button>
+<button class="flex-1 py-1.5 text-center rounded-md font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">Monto Fijo ($)</button>
+</div>
+<div class="relative">
+<label class="block font-body-sm text-body-sm text-on-surface-variant mb-2" for="discount-value">Valor del Descuento</label>
+<div class="relative flex items-center">
+<input class="w-full pl-4 pr-12 py-2.5 border border-outline rounded-lg focus:ring-2 focus:ring-primary focus:border-primary font-data-mono text-data-mono text-lg bg-surface-bright" id="discount-value" placeholder="0" type="number" value="25">
+<span class="absolute right-4 font-data-mono text-data-mono text-primary font-bold">%</span>
+</div>
+</div>
+</div>
+<!-- Calculation Preview Zone -->
+<div class="bg-surface-container p-4 flex justify-between items-center gap-4">
+<div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-1">Precio Original</p>
+<p class="font-data-mono text-data-mono text-on-surface-variant line-through decoration-outline-variant">$28.50</p>
+</div>
+<div class="text-outline-variant shrink-0">
+<span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</div>
+<div class="text-right bg-primary-container/10 border border-primary-container/20 px-4 py-2 rounded-xl flex-grow">
+<p class="font-label-caps text-label-caps text-primary uppercase tracking-wider mb-1">Precio de Oferta</p>
+<p class="font-headline-md text-headline-md text-primary font-bold">$20.00</p>
+</div>
+</div>
+</section>
+<!-- Duration Section -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-4">
+<div class="flex justify-between items-end mb-4">
+<div>
+<h3 class="font-body-lg text-body-lg font-semibold text-on-surface mb-1">Duración de la Oferta</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Selecciona cuánto tiempo estará activa</p>
+</div>
+<span class="font-data-mono text-data-mono text-primary font-bold bg-primary-container/20 px-3 py-1.5 rounded-lg border border-primary-container/30">12 Horas</span>
+</div>
+<div class="mb-6 px-1">
+<input class="w-full" max="24" min="1" type="range" value="12">
+<div class="flex justify-between mt-2 font-label-caps text-label-caps text-on-surface-variant">
+<span class="">1h</span>
+<span class="">12h</span>
+<span class="">24h</span>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 bg-surface-container-low rounded-lg border border-outline-variant/50 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="timer">timer</span>
+<p class="font-body-sm text-body-sm">Finaliza hoy a las <strong class="font-data-mono text-data-mono text-on-surface font-semibold">22:00</strong></p>
+</div>
+</section>
+</main>
+<!-- Action Footer -->
+<footer class="bg-surface border-t border-outline-variant p-4 sticky bottom-0 z-40 shadow-[0_-4px_12px_rgba(0,0,0,0.03)]">
+<div class="max-w-3xl mx-auto flex flex-col md:flex-row-reverse gap-3">
+<button class="w-full md:w-auto px-6 py-3.5 bg-primary text-on-primary rounded-xl font-body-md text-body-md font-semibold hover:bg-surface-tint transition-colors shadow-sm active:scale-[0.98] flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]" data-icon="bolt">bolt</span>
+    Activar Oferta Relámpago
+</button>
+<button class="w-full md:w-auto px-6 py-3.5 bg-transparent text-on-surface-variant hover:text-on-surface border border-outline-variant hover:border-outline rounded-xl font-body-md text-body-md font-medium transition-colors active:scale-[0.98]">
+    Cancelar
+</button>
+</div>
+</footer>
+
+
+</body></html>

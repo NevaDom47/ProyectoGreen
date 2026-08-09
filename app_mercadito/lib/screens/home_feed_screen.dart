@@ -2353,6 +2353,35 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                     },
                   ),
                   _buildDrawerItem(
+                    'Gestor de Ofertas',
+                    Icons.bolt,
+                    itemTextColor,
+                    itemHoverBg,
+                    false,
+                    onTap: () {
+                      context.pop();
+                      context.push('/flash-offers-manager');
+                    },
+                    trailing: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF004532),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Text(
+                        'GESTIÓN',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  _buildDrawerItem(
                     'Dashboard',
                     Icons.dashboard,
                     itemTextColor,

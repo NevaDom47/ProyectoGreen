@@ -7,7 +7,8 @@ class FlashOffersManagerScreen extends StatefulWidget {
   const FlashOffersManagerScreen({super.key});
 
   @override
-  State<FlashOffersManagerScreen> createState() => _FlashOffersManagerScreenState();
+  State<FlashOffersManagerScreen> createState() =>
+      _FlashOffersManagerScreenState();
 }
 
 class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
@@ -31,7 +32,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
       'supplier': 'Don Pedro H.',
       'location': 'Central de Abastos, CDMX',
       'tags': ['Hortalizas', 'Fresco'],
-      'img': 'https://lh3.googleusercontent.com/aida-public/AB6AXuBYN02O86K6knfDqM1gBCrHpJwRGAAFnGsTyBuDx_bz_LwJVJVvlwFt52ynNfBtYQgv8dANxYu2V-EKIHFQTA29lFosAhweneCU27NDnXJgOCnd6DsdRiiCmRZUTFWZFj4N1Fe46X8YMsV49Az2KYcc3vuHSpM-NCUxis8P32yqk3cDgFMUtzp3734FiMXIr62ADYo5_MnwZbPxUA6n_UCdUv0CgnoMmOrf6wp2c1-CiDK2s3NG-_bD',
+      'img':
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuBYN02O86K6knfDqM1gBCrHpJwRGAAFnGsTyBuDx_bz_LwJVJVvlwFt52ynNfBtYQgv8dANxYu2V-EKIHFQTA29lFosAhweneCU27NDnXJgOCnd6DsdRiiCmRZUTFWZFj4N1Fe46X8YMsV49Az2KYcc3vuHSpM-NCUxis8P32yqk3cDgFMUtzp3734FiMXIr62ADYo5_MnwZbPxUA6n_UCdUv0CgnoMmOrf6wp2c1-CiDK2s3NG-_bD',
     },
     {
       'name': 'Aguacate Hass',
@@ -43,7 +45,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
       'supplier': 'Huasca Farms',
       'location': 'Uruapan, Michoacán',
       'tags': ['Frutas', 'Exportación'],
-      'img': 'https://lh3.googleusercontent.com/aida-public/AB6AXuDzFUdJEljqU-maGlOCYJr48Yky6pxYw5HDib7_VK1wtVBuNeDeHn2DBN4J9qTg8bgBuawXdUccydbrF0VG6iRRTZSgp-Fm88SCOgPKFpl0f1J8yNP1NSmQNRqaBMdqmnC9XqNg1Y45IZVs4vXyEBUYezsrxGskz5cRj9f_Jh02xPW3MwMWEdAEtj0mNsplETXkT2NWn7W9mQn2hFO-lGYIZ2MiJjFFkH3INhJtV8aYabh1YYjLvte-',
+      'img':
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuDzFUdJEljqU-maGlOCYJr48Yky6pxYw5HDib7_VK1wtVBuNeDeHn2DBN4J9qTg8bgBuawXdUccydbrF0VG6iRRTZSgp-Fm88SCOgPKFpl0f1J8yNP1NSmQNRqaBMdqmnC9XqNg1Y45IZVs4vXyEBUYezsrxGskz5cRj9f_Jh02xPW3MwMWEdAEtj0mNsplETXkT2NWn7W9mQn2hFO-lGYIZ2MiJjFFkH3INhJtV8aYabh1YYjLvte-',
     },
     {
       'name': 'Cebolla Morada Extra',
@@ -55,7 +58,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
       'supplier': 'AgroCebollas',
       'location': 'Irapuato, Guanajuato',
       'tags': ['Hortalizas'],
-      'img': 'https://lh3.googleusercontent.com/aida-public/AB6AXuBXcsVfAn4SXFQcHddnB5qMtM4renFwAuqO-lGdtcJtIIEmGl9tMDsFQiPgu60XnCWVebJO7iP0Ibk5dtJIqrh9Aanp9rZWGv7faUFsthP816CnkwG06d3lv6JAtK1L0AlnAz_e_RO8MTnW4_KInOanUlNL5k2AshcmFlzprpJxW1x81-1wvtFdgqmQ27XRJXCS6DLiTryvA9pgF60utXXNGEKTfgzyHZfbGio0iMIq4G_RBnQepN2i0vJ1-mywwHJNnmaXt1UMSH8',
+      'img':
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuBXcsVfAn4SXFQcHddnB5qMtM4renFwAuqO-lGdtcJtIIEmGl9tMDsFQiPgu60XnCWVebJO7iP0Ibk5dtJIqrh9Aanp9rZWGv7faUFsthP816CnkwG06d3lv6JAtK1L0AlnAz_e_RO8MTnW4_KInOanUlNL5k2AshcmFlzprpJxW1x81-1wvtFdgqmQ27XRJXCS6DLiTryvA9pgF60utXXNGEKTfgzyHZfbGio0iMIq4G_RBnQepN2i0vJ1-mywwHJNnmaXt1UMSH8',
     },
     {
       'name': 'Mango Ataulfo de Campo',
@@ -67,7 +71,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
       'supplier': 'Frutas del Soconusco',
       'location': 'Tapachula, Chiapas',
       'tags': ['Frutas', 'Dulce'],
-      'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250620_1233_Fresas%20en%20Fondo%20Rosado_simple_compose_01jy72ypjmeccafrqb33rfm1q8.png',
+      'img':
+          'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250620_1233_Fresas%20en%20Fondo%20Rosado_simple_compose_01jy72ypjmeccafrqb33rfm1q8.png',
     },
     {
       'name': 'Limón Persa Seleccionado',
@@ -79,7 +84,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
       'supplier': 'Cítricos del Golfo',
       'location': 'Martínez de la Torre, Veracruz',
       'tags': ['Cítricos', 'Jugo'],
-      'img': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCoJ0D5DucqLAya_-YteH6-8cB0lbCiusShRQ5J7CpVWmeRZq_Dunwko3RtZ6MnlwVNNLu9qIMiXPC02Jr1-ZLXltcDkkQ0pqh4QKIExzuuQRRqrcXdHQcZxH33bpROQ5o-f2IBOsbqiL6lAuXMgnbrH4_kJmNK6b8kKf_2pM4dzh8AtsiiLNaiDX88Fe0OoRYiKx2-omyEvAoG4YwfLUNLxG5W4A6kcm0dv08LBcwmXpObjY9s4lgDuy3fpuu-_bUGZXDeZUcnKro',
+      'img':
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuCoJ0D5DucqLAya_-YteH6-8cB0lbCiusShRQ5J7CpVWmeRZq_Dunwko3RtZ6MnlwVNNLu9qIMiXPC02Jr1-ZLXltcDkkQ0pqh4QKIExzuuQRRqrcXdHQcZxH33bpROQ5o-f2IBOsbqiL6lAuXMgnbrH4_kJmNK6b8kKf_2pM4dzh8AtsiiLNaiDX88Fe0OoRYiKx2-omyEvAoG4YwfLUNLxG5W4A6kcm0dv08LBcwmXpObjY9s4lgDuy3fpuu-_bUGZXDeZUcnKro',
     },
   ];
 
@@ -95,7 +101,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
       'totalRevenue': '\$7,200.00',
       'endedDate': 'Ayer, 21:00',
       'status': 'Finalizada',
-      'img': 'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1549_Variedad%20de%20Aj%C3%ADes_simple_compose_01jwvncbmqfpvb7qv6rs3vh22x.png',
+      'img':
+          'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1549_Variedad%20de%20Aj%C3%ADes_simple_compose_01jwvncbmqfpvb7qv6rs3vh22x.png',
     },
     {
       'name': 'Chile Poblano de Primera',
@@ -107,7 +114,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
       'totalRevenue': '\$8,320.00',
       'endedDate': 'hace 3 días',
       'status': 'Finalizada',
-      'img': 'https://lh3.googleusercontent.com/aida-public/AB6AXuC8i3bYgCoFml8RIwzz2s32HSkKDvOTWEnX-bo6gt_9o4zdC9d3U0ZglOr_m6EMoKc6Oz2ryDTAoXTbMceJxM4huBHJNMRIBp_rkwcL972T0U0FipN8bSOaMvmlsOxI7peoA4M2Uq1zmuTbYTdHFlAe_A_VA3kLfbMf3thYxRRP7gU3H79Xu6gqxI8wfQqLd59xQyc9evPxWOYoH-ufQjjtXka1i6Bn6dDixAquahUTLyExdeosV0TZReH-nBZgtW2Wf1EEcK2VGiY',
+      'img':
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuC8i3bYgCoFml8RIwzz2s32HSkKDvOTWEnX-bo6gt_9o4zdC9d3U0ZglOr_m6EMoKc6Oz2ryDTAoXTbMceJxM4huBHJNMRIBp_rkwcL972T0U0FipN8bSOaMvmlsOxI7peoA4M2Uq1zmuTbYTdHFlAe_A_VA3kLfbMf3thYxRRP7gU3H79Xu6gqxI8wfQqLd59xQyc9evPxWOYoH-ufQjjtXka1i6Bn6dDixAquahUTLyExdeosV0TZReH-nBZgtW2Wf1EEcK2VGiY',
     },
   ];
 
@@ -135,11 +143,17 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
   Color _getQualityBadgeBgColor(String badge, bool isDark) {
     final b = badge.toUpperCase();
     if (b.contains('PRIMERA') || b.contains('1')) {
-      return const Color(0xFF10B981).withValues(alpha: 0.15); // Verde semitransparente
+      return const Color(
+        0xFF10B981,
+      ).withValues(alpha: 0.15); // Verde semitransparente
     } else if (b.contains('SEGUNDA') || b.contains('2')) {
-      return const Color(0xFFF97316).withValues(alpha: 0.15); // Mamey semitransparente
+      return const Color(
+        0xFFF97316,
+      ).withValues(alpha: 0.15); // Mamey semitransparente
     } else {
-      return const Color(0xFFEF4444).withValues(alpha: 0.15); // Rojo semitransparente
+      return const Color(
+        0xFFEF4444,
+      ).withValues(alpha: 0.15); // Rojo semitransparente
     }
   }
 
@@ -165,14 +179,15 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
     }
   }
 
-  void _openEditDialog(Map<String, dynamic> product, {Map<String, dynamic>? existingOffer}) async {
+  void _openEditDialog(
+    Map<String, dynamic> product, {
+    Map<String, dynamic>? existingOffer,
+  }) async {
     final result = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
-      builder: (ctx) => FlashOfferEditDialog(
-        product: product,
-        existingOffer: existingOffer,
-      ),
+      builder: (ctx) =>
+          FlashOfferEditDialog(product: product, existingOffer: existingOffer),
     );
 
     if (!mounted) return;
@@ -197,7 +212,11 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Row(
           children: [
-            Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 28),
+            Icon(
+              Icons.warning_amber_rounded,
+              color: Colors.redAccent,
+              size: 28,
+            ),
             SizedBox(width: 10),
             Expanded(
               child: Text(
@@ -222,7 +241,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.of(ctx).pop();
-                    final current = List<Map<String, dynamic>>.from(globalFlashOffers.value);
+                    final current = List<Map<String, dynamic>>.from(
+                      globalFlashOffers.value,
+                    );
                     if (index >= 0 && index < current.length) {
                       current[index]['secondsRemaining'] = 0;
                       current[index]['status'] = 'Finalizada';
@@ -231,7 +252,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                     setState(() {});
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Oferta relámpago cancelada y movida al histórico.'),
+                        content: Text(
+                          'Oferta relámpago cancelada y movida al histórico.',
+                        ),
                         backgroundColor: Colors.redAccent,
                         duration: Duration(seconds: 2),
                       ),
@@ -240,7 +263,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFEF4444),
                     padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     elevation: 0,
                   ),
                   child: const Text(
@@ -267,7 +292,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                     'Volver',
                     style: TextStyle(
                       fontFamily: 'Manrope',
-                      color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                      color: isDark
+                          ? Colors.grey.shade400
+                          : Colors.grey.shade600,
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
                     ),
@@ -285,9 +312,13 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final surfaceBg = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8F9FF);
+    final surfaceBg = isDark
+        ? const Color(0xFF0F172A)
+        : const Color(0xFFF8F9FF);
     final cardBg = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFD9E3F4);
+    final borderColor = isDark
+        ? const Color(0xFF334155)
+        : const Color(0xFFD9E3F4);
 
     return Scaffold(
       backgroundColor: surfaceBg,
@@ -295,7 +326,10 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
         backgroundColor: cardBg,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black87),
+          icon: Icon(
+            Icons.arrow_back,
+            color: isDark ? Colors.white : Colors.black87,
+          ),
           onPressed: () {
             if (Navigator.canPop(context)) {
               context.pop();
@@ -327,7 +361,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
         bottom: TabBar(
           controller: _tabController,
           labelColor: primaryColor,
-          unselectedLabelColor: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+          unselectedLabelColor: isDark
+              ? Colors.grey.shade400
+              : Colors.grey.shade600,
           indicatorColor: primaryColor,
           indicatorWeight: 3,
           labelStyle: const TextStyle(
@@ -337,7 +373,10 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
           ),
           tabs: const [
             Tab(text: 'Ofertas', icon: Icon(Icons.bolt, size: 20)),
-            Tab(text: 'Productos', icon: Icon(Icons.inventory_2_outlined, size: 20)),
+            Tab(
+              text: 'Productos',
+              icon: Icon(Icons.inventory_2_outlined, size: 20),
+            ),
             Tab(text: 'Histórico', icon: Icon(Icons.history, size: 20)),
           ],
         ),
@@ -367,14 +406,18 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
       valueListenable: globalFlashOffers,
       builder: (context, offers, _) {
         // Only offers with time remaining (secondsRemaining > 0) are considered active
-        final activeOffersList = offers.where((o) => (o['secondsRemaining'] as int? ?? 0) > 0).toList();
+        final activeOffersList = offers
+            .where((o) => (o['secondsRemaining'] as int? ?? 0) > 0)
+            .toList();
         final activeOffersCount = activeOffersList.length;
 
         // Comprehensive search filter across active offer cards
         final filteredOffers = activeOffersList.where((offer) {
           final secs = offer['secondsRemaining'] as int? ?? 0;
           if (_selectedFilter == 'Por Vencer') {
-            if (secs > 1800) return false; // Solo ofertas por debajo de los 30 min (1800 segundos)
+            if (secs > 1800) {
+              return false; // Solo ofertas por debajo de los 30 min (1800 segundos)
+            }
           }
 
           if (_searchQuery.isNotEmpty) {
@@ -384,16 +427,27 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
             final price = (offer['price'] ?? '').toString().toLowerCase();
             final oldPrice = (offer['oldPrice'] ?? '').toString().toLowerCase();
             final discount = (offer['discount'] ?? '').toString().toLowerCase();
-            final discountNum = (offer['discountNumber'] ?? '').toString().toLowerCase();
+            final discountNum = (offer['discountNumber'] ?? '')
+                .toString()
+                .toLowerCase();
             final category = (offer['category'] ?? '').toString().toLowerCase();
             final badge = (offer['badge'] ?? '').toString().toLowerCase();
             final supplier = (offer['supplier'] ?? '').toString().toLowerCase();
-            final tags = (offer['tags'] is List) ? (offer['tags'] as List).join(' ').toLowerCase() : '';
+            final tags = (offer['tags'] is List)
+                ? (offer['tags'] as List).join(' ').toLowerCase()
+                : '';
 
             final matchName = name.contains(q);
             final matchPrice = price.contains(q) || oldPrice.contains(q);
-            final matchDiscount = discount.contains(q) || discountNum.contains(q) || '$discountNum%'.contains(q);
-            final matchDetails = category.contains(q) || badge.contains(q) || supplier.contains(q) || tags.contains(q);
+            final matchDiscount =
+                discount.contains(q) ||
+                discountNum.contains(q) ||
+                '$discountNum%'.contains(q);
+            final matchDetails =
+                category.contains(q) ||
+                badge.contains(q) ||
+                supplier.contains(q) ||
+                tags.contains(q);
 
             if (!matchName && !matchPrice && !matchDiscount && !matchDetails) {
               return false;
@@ -444,7 +498,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                 fontFamily: 'JetBrains Mono',
                                 fontSize: 11,
                                 fontWeight: FontWeight.bold,
-                                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                color: isDark
+                                    ? Colors.grey.shade400
+                                    : Colors.grey.shade600,
                               ),
                             ),
                           ],
@@ -474,9 +530,13 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                     child: TextField(
                       onChanged: (val) => setState(() => _searchQuery = val),
                       decoration: InputDecoration(
-                        hintText: 'Buscar por nombre, precio, % descuento, etiquetas...',
+                        hintText:
+                            'Buscar por nombre, precio, % descuento, etiquetas...',
                         prefixIcon: const Icon(Icons.search, size: 20),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
                         filled: true,
                         fillColor: cardBg,
                         border: OutlineInputBorder(
@@ -499,25 +559,36 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                     final isSelected = _selectedFilter == filter;
                     return Padding(
                       padding: const EdgeInsets.only(right: 8),
-                      child: FilterChip(
-                        label: Text(filter),
-                        selected: isSelected,
-                        selectedColor: primaryColor.withValues(alpha: 0.15),
-                        checkmarkColor: primaryColor,
-                        side: BorderSide.none,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          splashColor: primaryColor.withValues(alpha: 0.15),
+                          highlightColor: primaryColor.withValues(alpha: 0.08),
+                        ),
+                        child: FilterChip(
+                          label: Text(filter),
+                          selected: isSelected,
+                          selectedColor: primaryColor.withValues(alpha: 0.15),
+                          checkmarkColor: primaryColor,
                           side: BorderSide.none,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: BorderSide.none,
+                          ),
+                          labelStyle: TextStyle(
+                            fontFamily: 'Manrope',
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                            color: isSelected
+                                ? primaryColor
+                                : (isDark ? Colors.white : Colors.black87),
+                          ),
+                          onSelected: (selected) {
+                            if (selected) {
+                              setState(() => _selectedFilter = filter);
+                            }
+                          },
                         ),
-                        labelStyle: TextStyle(
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                          color: isSelected ? primaryColor : (isDark ? Colors.white : Colors.black87),
-                        ),
-                        onSelected: (selected) {
-                          if (selected) {
-                            setState(() => _selectedFilter = filter);
-                          }
-                        },
                       ),
                     );
                   }).toList(),
@@ -538,7 +609,11 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                   ),
                   child: Column(
                     children: [
-                      Icon(Icons.bolt_outlined, size: 48, color: Colors.grey.shade400),
+                      Icon(
+                        Icons.bolt_outlined,
+                        size: 48,
+                        color: Colors.grey.shade400,
+                      ),
                       const SizedBox(height: 12),
                       Text(
                         'No hay ofertas que coincidan con la búsqueda',
@@ -552,14 +627,19 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                       Text(
                         'Prueba buscando por producto, precio, etiquetas o porcentaje.',
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 13,
+                        ),
                       ),
                       const SizedBox(height: 16),
                       ElevatedButton.icon(
                         onPressed: () => _tabController.animateTo(1),
                         icon: const Icon(Icons.add),
                         label: const Text('Añadir Oferta'),
-                        style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColor,
+                        ),
                       ),
                     ],
                   ),
@@ -573,7 +653,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                   itemBuilder: (ctx, index) {
                     final offer = filteredOffers[index];
                     final originalIdx = offers.indexOf(offer);
-                    final secsRemaining = offer['secondsRemaining'] as int? ?? 0;
+                    final secsRemaining =
+                        offer['secondsRemaining'] as int? ?? 0;
 
                     return Container(
                       decoration: BoxDecoration(
@@ -603,16 +684,22 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                   height: 140,
                                   width: double.infinity,
                                   color: Colors.grey.shade200,
-                                  child: (offer['img'] ?? '').toString().startsWith('http')
+                                  child:
+                                      (offer['img'] ?? '')
+                                          .toString()
+                                          .startsWith('http')
                                       ? Image.network(
                                           offer['img'],
                                           fit: BoxFit.cover,
-                                          errorBuilder: (c, e, s) => const Icon(Icons.image, size: 40),
+                                          errorBuilder: (c, e, s) =>
+                                              const Icon(Icons.image, size: 40),
                                         )
                                       : Image.asset(
-                                          offer['img'] ?? 'assets/images/PapaGemini.png',
+                                          offer['img'] ??
+                                              'assets/images/PapaGemini.png',
                                           fit: BoxFit.cover,
-                                          errorBuilder: (c, e, s) => const Icon(Icons.image, size: 40),
+                                          errorBuilder: (c, e, s) =>
+                                              const Icon(Icons.image, size: 40),
                                         ),
                                 ),
                               ),
@@ -638,7 +725,10 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                 top: 12,
                                 left: 12,
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 5,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: Colors.red.shade700,
                                     borderRadius: BorderRadius.circular(8),
@@ -660,9 +750,14 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                 top: 12,
                                 right: 12,
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 5,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: (secsRemaining <= 1800) ? const Color(0xFFC2410C) : primaryColor,
+                                    color: (secsRemaining <= 1800)
+                                        ? const Color(0xFFC2410C)
+                                        : primaryColor,
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Row(
@@ -700,7 +795,12 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18,
-                                    shadows: [Shadow(color: Colors.black54, blurRadius: 4)],
+                                    shadows: [
+                                      Shadow(
+                                        color: Colors.black54,
+                                        blurRadius: 4,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -714,21 +814,26 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           'Precio de Oferta',
                                           style: TextStyle(
                                             fontSize: 12,
-                                            color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                            color: isDark
+                                                ? Colors.grey.shade400
+                                                : Colors.grey.shade600,
                                           ),
                                         ),
                                         const SizedBox(height: 2),
                                         Row(
-                                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.baseline,
                                           textBaseline: TextBaseline.alphabetic,
                                           children: [
                                             Text(
@@ -746,7 +851,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                               style: TextStyle(
                                                 fontFamily: 'JetBrains Mono',
                                                 fontSize: 13,
-                                                decoration: TextDecoration.lineThrough,
+                                                decoration:
+                                                    TextDecoration.lineThrough,
                                                 color: Colors.grey.shade500,
                                               ),
                                             ),
@@ -755,43 +861,76 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                       ],
                                     ),
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
                                       children: [
                                         // Etiqueta de Calidad (Primera, Segunda o Tercera Calidad)
                                         Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                          margin: const EdgeInsets.only(bottom: 6),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 3,
+                                          ),
+                                          margin: const EdgeInsets.only(
+                                            bottom: 6,
+                                          ),
                                           decoration: BoxDecoration(
-                                            color: _getQualityBadgeBgColor(offer['badge'] ?? 'PRIMERA CALIDAD', isDark),
-                                            borderRadius: BorderRadius.circular(6),
+                                            color: _getQualityBadgeBgColor(
+                                              offer['badge'] ??
+                                                  'PRIMERA CALIDAD',
+                                              isDark,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              6,
+                                            ),
                                             border: Border.all(
-                                              color: _getQualityBadgeBorderColor(offer['badge'] ?? 'PRIMERA CALIDAD', isDark),
+                                              color:
+                                                  _getQualityBadgeBorderColor(
+                                                    offer['badge'] ??
+                                                        'PRIMERA CALIDAD',
+                                                    isDark,
+                                                  ),
                                               width: 1,
                                             ),
                                           ),
                                           child: Text(
-                                            (offer['badge'] ?? 'PRIMERA CALIDAD').toString().toUpperCase(),
+                                            (offer['badge'] ??
+                                                    'PRIMERA CALIDAD')
+                                                .toString()
+                                                .toUpperCase(),
                                             style: TextStyle(
                                               fontFamily: 'JetBrains Mono',
                                               fontSize: 10,
                                               fontWeight: FontWeight.w800,
-                                              color: _getQualityBadgeTextColor(offer['badge'] ?? 'PRIMERA CALIDAD', isDark),
+                                              color: _getQualityBadgeTextColor(
+                                                offer['badge'] ??
+                                                    'PRIMERA CALIDAD',
+                                                isDark,
+                                              ),
                                             ),
                                           ),
                                         ),
                                         // Categoría del Producto
                                         Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 4,
+                                          ),
                                           decoration: BoxDecoration(
-                                            color: isDark ? const Color(0xFF0F172A) : const Color(0xFFEEF4FF),
-                                            borderRadius: BorderRadius.circular(8),
+                                            color: isDark
+                                                ? const Color(0xFF0F172A)
+                                                : const Color(0xFFECFDF5),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
                                           ),
                                           child: Text(
                                             offer['category'] ?? 'General',
                                             style: TextStyle(
                                               fontSize: 11,
                                               fontWeight: FontWeight.bold,
-                                              color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
+                                              color: isDark
+                                                  ? Colors.grey.shade300
+                                                  : const Color(0xFF047857),
                                             ),
                                           ),
                                         ),
@@ -801,12 +940,16 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                 ),
 
                                 const SizedBox(height: 12),
-                                Divider(color: borderColor.withValues(alpha: 0.5), height: 1),
+                                Divider(
+                                  color: borderColor.withValues(alpha: 0.5),
+                                  height: 1,
+                                ),
                                 const SizedBox(height: 12),
 
                                 // Inicio y Duración de la Oferta (Solicitud del Usuario)
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text.rich(
                                       TextSpan(
@@ -816,15 +959,17 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                             style: TextStyle(
                                               fontSize: 13,
                                               fontWeight: FontWeight.normal,
-                                              color: Color(0xFF0284C7),
+                                              color: Color(0xFF047857),
                                             ),
                                           ),
                                           TextSpan(
-                                            text: offer['startTime'] ?? 'hoy, 08:00 AM',
+                                            text:
+                                                offer['startTime'] ??
+                                                'hoy, 08:00 AM',
                                             style: const TextStyle(
                                               fontSize: 13,
                                               fontWeight: FontWeight.w600,
-                                              color: Color(0xFF0284C7),
+                                              color: Color(0xFF047857),
                                             ),
                                           ),
                                         ],
@@ -838,15 +983,20 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                             style: TextStyle(
                                               fontSize: 13,
                                               fontWeight: FontWeight.normal,
-                                              color: isDark ? Colors.grey.shade400 : const Color(0xFF334155),
+                                              color: isDark
+                                                  ? Colors.grey.shade400
+                                                  : const Color(0xFF334155),
                                             ),
                                           ),
                                           TextSpan(
-                                            text: offer['duration'] ?? '12 Horas',
+                                            text:
+                                                offer['duration'] ?? '12 Horas',
                                             style: TextStyle(
                                               fontSize: 13,
                                               fontWeight: FontWeight.w600,
-                                              color: isDark ? Colors.white : const Color(0xFF1E293B),
+                                              color: isDark
+                                                  ? Colors.white
+                                                  : const Color(0xFF1E293B),
                                             ),
                                           ),
                                         ],
@@ -861,8 +1011,15 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                 SizedBox(
                                   width: double.infinity,
                                   child: OutlinedButton.icon(
-                                    onPressed: () => _cancelOffer(originalIdx, offer['name'] ?? ''),
-                                    icon: const Icon(Icons.cancel_outlined, size: 18, color: Colors.redAccent),
+                                    onPressed: () => _cancelOffer(
+                                      originalIdx,
+                                      offer['name'] ?? '',
+                                    ),
+                                    icon: const Icon(
+                                      Icons.cancel_outlined,
+                                      size: 18,
+                                      color: Colors.redAccent,
+                                    ),
                                     label: const Text(
                                       'Cancelar Oferta',
                                       style: TextStyle(
@@ -872,8 +1029,15 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                       ),
                                     ),
                                     style: OutlinedButton.styleFrom(
-                                      minimumSize: const Size(double.infinity, 44),
-                                      side: BorderSide(color: Colors.redAccent.withValues(alpha: 0.4)),
+                                      minimumSize: const Size(
+                                        double.infinity,
+                                        44,
+                                      ),
+                                      side: BorderSide(
+                                        color: Colors.redAccent.withValues(
+                                          alpha: 0.4,
+                                        ),
+                                      ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(10),
                                       ),
@@ -907,7 +1071,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
   ) {
     final categories = ['Todos', 'Hortalizas', 'Frutas', 'Cítricos'];
     final filteredAvailable = _availableProducts.where((prod) {
-      if (_selectedCategory != 'Todos' && prod['category'] != _selectedCategory) {
+      if (_selectedCategory != 'Todos' &&
+          prod['category'] != _selectedCategory) {
         return false;
       }
       return true;
@@ -937,7 +1102,11 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                     color: Colors.white.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.add_shopping_cart, color: Colors.white, size: 28),
+                  child: const Icon(
+                    Icons.add_shopping_cart,
+                    color: Colors.white,
+                    size: 28,
+                  ),
                 ),
                 const SizedBox(width: 14),
                 const Expanded(
@@ -956,10 +1125,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                       SizedBox(height: 2),
                       Text(
                         'Selecciona cualquier producto de tu inventario para añadirlo a Oferta Relámpago con descuento especial.',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white70,
-                        ),
+                        style: TextStyle(fontSize: 12, color: Colors.white70),
                       ),
                     ],
                   ),
@@ -970,7 +1136,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
 
           const SizedBox(height: 20),
 
-          // Category Chips without black border!
+          // Category Chips matching FilterChips style
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -978,139 +1144,214 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                 final isSelected = _selectedCategory == cat;
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: ChoiceChip(
-                    label: Text(cat),
-                    selected: isSelected,
-                    selectedColor: primaryColor.withValues(alpha: 0.15),
-                    checkmarkColor: primaryColor,
-                    side: BorderSide.none,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                  child: Theme(
+                    data: Theme.of(context).copyWith(
+                      splashColor: primaryColor.withValues(alpha: 0.15),
+                      highlightColor: primaryColor.withValues(alpha: 0.08),
+                    ),
+                    child: ChoiceChip(
+                      label: Text(cat),
+                      selected: isSelected,
+                      selectedColor: primaryColor.withValues(alpha: 0.15),
+                      checkmarkColor: primaryColor,
                       side: BorderSide.none,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide.none,
+                      ),
+                      labelStyle: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.normal,
+                        color: isSelected
+                            ? primaryColor
+                            : (isDark ? Colors.white : Colors.black87),
+                      ),
+                      onSelected: (selected) {
+                        if (selected) setState(() => _selectedCategory = cat);
+                      },
                     ),
-                    labelStyle: TextStyle(
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                      color: isSelected ? primaryColor : (isDark ? Colors.white : Colors.black87),
-                    ),
-                    onSelected: (selected) {
-                      if (selected) setState(() => _selectedCategory = cat);
-                    },
                   ),
                 );
               }).toList(),
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
 
-          // Available Products Grid / Cards (Home Card Style with "Añadir Oferta" button)
+          // Available Products Grid / Cards (Rich description matching _buildFlashOffers design)
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.65,
-              crossAxisSpacing: 14,
-              mainAxisSpacing: 14,
+              childAspectRatio: 0.44,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
             ),
             itemCount: filteredAvailable.length,
             itemBuilder: (ctx, index) {
               final prod = filteredAvailable[index];
-              return Container(
-                decoration: BoxDecoration(
-                  color: cardBg,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: borderColor),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.03),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
+              return _buildAvailableProductCard(context, prod, isDark);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAvailableProductCard(
+    BuildContext context,
+    Map<String, dynamic> prod,
+    bool isDark,
+  ) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+          width: 1.0,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Product Image (Top half)
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(19),
+            ),
+            child: Container(
+              height: 120,
+              width: double.infinity,
+              color: isDark
+                  ? const Color(0xFF0F172A)
+                  : const Color(0xFFF8FAFC),
+              child: (prod['img'] ?? '').toString().startsWith('http')
+                  ? Image.network(
+                      prod['img'],
+                      fit: BoxFit.cover,
+                      errorBuilder: (c, e, s) =>
+                          const Icon(Icons.shopping_bag, size: 36),
+                    )
+                  : Image.asset(
+                      prod['img'] ?? 'assets/images/PapaGemini.png',
+                      fit: BoxFit.cover,
+                      errorBuilder: (c, e, s) =>
+                          const Icon(Icons.shopping_bag, size: 36),
                     ),
-                  ],
+            ),
+          ),
+
+          // Content Details (Rich description style matching _buildFlashOffers)
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Product Title
+                Text(
+                  prod['name'] ?? '',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: 'Manrope',
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : const Color(0xFF0F172A),
+                  ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                const SizedBox(height: 4),
+
+                // Price Row
+                Text(
+                  '${prod['price']} / kg',
+                  style: TextStyle(
+                    fontFamily: 'Manrope',
+                    fontSize: 15,
+                    fontWeight: FontWeight.w800,
+                    color: isDark ? Colors.white : const Color(0xFF047857),
+                  ),
+                ),
+                const SizedBox(height: 6),
+
+                // Sales Mode Badges [ Detalle ] [ Por Mayor ]
+                Row(
                   children: [
-                    // Product Image
-                    ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 5,
+                        vertical: 2,
                       ),
-                      child: Container(
-                        height: 110,
-                        width: double.infinity,
-                        color: Colors.grey.shade100,
-                        child: (prod['img'] ?? '').toString().startsWith('http')
-                            ? Image.network(
-                                prod['img'],
-                                fit: BoxFit.cover,
-                                errorBuilder: (c, e, s) => const Icon(Icons.shopping_bag, size: 30),
-                              )
-                            : Image.asset(
-                                prod['img'] ?? 'assets/images/PapaGemini.png',
-                                fit: BoxFit.cover,
-                                errorBuilder: (c, e, s) => const Icon(Icons.shopping_bag, size: 30),
-                              ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF047857).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(
+                          color: const Color(0xFF047857).withValues(alpha: 0.3),
+                          width: 0.8,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.shopping_bag_outlined,
+                            size: 10,
+                            color: Color(0xFF047857),
+                          ),
+                          const SizedBox(width: 2),
+                          Text(
+                            'Detalle',
+                            style: TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                              color: isDark
+                                  ? const Color(0xFF34D399)
+                                  : const Color(0xFF047857),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    const SizedBox(width: 4),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 5,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(
+                          color: Colors.grey.withValues(alpha: 0.3),
+                          width: 0.8,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            prod['category'] ?? '',
-                            style: const TextStyle(
-                              fontFamily: 'JetBrains Mono',
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              color: primaryColor,
-                            ),
+                          const Icon(
+                            Icons.store_outlined,
+                            size: 10,
+                            color: Colors.grey,
                           ),
-                          const SizedBox(height: 2),
+                          const SizedBox(width: 2),
                           Text(
-                            prod['name'] ?? '',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                            'Por Mayor',
                             style: TextStyle(
-                              fontFamily: 'Manrope',
-                              fontSize: 14,
+                              fontSize: 9,
                               fontWeight: FontWeight.bold,
-                              color: isDark ? Colors.white : Colors.black87,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '${prod['price']} / kg',
-                            style: TextStyle(
-                              fontFamily: 'JetBrains Mono',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w800,
-                              color: isDark ? Colors.white : Colors.black87,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-
-                          // Button "Añadir Oferta"
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton.icon(
-                              onPressed: () => _openEditDialog(prod),
-                              icon: const Icon(Icons.bolt, size: 16),
-                              label: const Text(
-                                'Añadir Oferta',
-                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: primaryColor,
-                                padding: const EdgeInsets.symmetric(vertical: 8),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
+                              color: isDark
+                                  ? Colors.grey[400]
+                                  : Colors.grey[700],
                             ),
                           ),
                         ],
@@ -1118,8 +1359,132 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                     ),
                   ],
                 ),
-              );
-            },
+                const SizedBox(height: 6),
+
+                // Rating & Reviews
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.star,
+                      color: Colors.orange,
+                      size: 12,
+                    ),
+                    const SizedBox(width: 3),
+                    Text(
+                      prod['rating'] ?? '4.8',
+                      style: const TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 3),
+                    Text(
+                      '(128 reseñas)',
+                      style: TextStyle(
+                        fontSize: 9,
+                        color: Colors.grey[500],
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 6),
+                Divider(
+                  color: Colors.grey.withValues(alpha: 0.2),
+                  height: 1,
+                ),
+                const SizedBox(height: 6),
+
+                // CALIDAD Row
+                Row(
+                  children: [
+                    Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: _getQualityBadgeBgColor(
+                          prod['badge'] ?? 'PRIMERA CALIDAD',
+                          isDark,
+                        ),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.workspace_premium,
+                        color: _getQualityBadgeTextColor(
+                          prod['badge'] ?? 'PRIMERA CALIDAD',
+                          isDark,
+                        ),
+                        size: 11,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'CALIDAD',
+                            style: TextStyle(
+                              fontSize: 7,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          Text(
+                            (prod['badge'] ?? 'PRIMERA CALIDAD')
+                                .toString()
+                                .toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w900,
+                              color: _getQualityBadgeTextColor(
+                                prod['badge'] ?? 'PRIMERA CALIDAD',
+                                isDark,
+                              ),
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 10),
+
+                // Primary Action Button "⚡ Añadir Oferta"
+                SizedBox(
+                  width: double.infinity,
+                  height: 40,
+                  child: ElevatedButton.icon(
+                    onPressed: () => _openEditDialog(prod),
+                    icon: const Icon(
+                      Icons.bolt,
+                      size: 15,
+                      color: Colors.white,
+                    ),
+                    label: const Text(
+                      'Añadir Oferta',
+                      style: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF004532),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      padding: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -1140,22 +1505,25 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
       valueListenable: globalFlashOffers,
       builder: (context, globalOffers, _) {
         // Collect all offers from global state whose time has expired (secondsRemaining <= 0)
-        final expiredGlobalOffers = globalOffers.where((o) => (o['secondsRemaining'] as int? ?? 0) <= 0).map((o) {
-          final stock = o['stockLimit'] ?? 50;
-          return {
-            'name': o['name'] ?? 'Producto',
-            'category': o['category'] ?? 'General',
-            'discount': o['discount'] ?? '-20%',
-            'finalPrice': o['price'] ?? '\$0.00',
-            'oldPrice': o['oldPrice'] ?? '\$0.00',
-            'totalSoldKg': '$stock KG',
-            'totalRevenue': o['price'] ?? '\$500.00',
-            'endedDate': 'Finalizada (Concluida)',
-            'status': 'Finalizada',
-            'img': o['img'] ?? 'assets/images/PapaGemini.png',
-            'rawProduct': o,
-          };
-        }).toList();
+        final expiredGlobalOffers = globalOffers
+            .where((o) => (o['secondsRemaining'] as int? ?? 0) <= 0)
+            .map((o) {
+              final stock = o['stockLimit'] ?? 50;
+              return {
+                'name': o['name'] ?? 'Producto',
+                'category': o['category'] ?? 'General',
+                'discount': o['discount'] ?? '-20%',
+                'finalPrice': o['price'] ?? '\$0.00',
+                'oldPrice': o['oldPrice'] ?? '\$0.00',
+                'totalSoldKg': '$stock KG',
+                'totalRevenue': o['price'] ?? '\$500.00',
+                'endedDate': 'Finalizada (Concluida)',
+                'status': 'Finalizada',
+                'img': o['img'] ?? 'assets/images/PapaGemini.png',
+                'rawProduct': o,
+              };
+            })
+            .toList();
 
         final combinedHistory = [...expiredGlobalOffers, ..._historyOffers];
 
@@ -1176,7 +1544,10 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
               const SizedBox(height: 4),
               Text(
                 'Revisa las ofertas concluidas y sus métricas de rendimiento.',
-                style: TextStyle(fontSize: 13, color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
+                style: TextStyle(
+                  fontSize: 13,
+                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                ),
               ),
 
               const SizedBox(height: 16),
@@ -1221,8 +1592,14 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
-                              child: (item['img'] ?? '').toString().startsWith('http')
-                                  ? Image.network(item['img'], fit: BoxFit.cover)
+                              child:
+                                  (item['img'] ?? '').toString().startsWith(
+                                    'http',
+                                  )
+                                  ? Image.network(
+                                      item['img'],
+                                      fit: BoxFit.cover,
+                                    )
                                   : Image.asset(item['img'], fit: BoxFit.cover),
                             ),
                           ),
@@ -1241,13 +1618,18 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                           fontFamily: 'Manrope',
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold,
-                                          color: isDark ? Colors.white : Colors.black87,
+                                          color: isDark
+                                              ? Colors.white
+                                              : Colors.black87,
                                         ),
                                       ),
                                     ),
                                     const SizedBox(width: 6),
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: Colors.red.shade100,
                                         borderRadius: BorderRadius.circular(4),
@@ -1269,12 +1651,17 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                   style: TextStyle(
                                     fontFamily: 'JetBrains Mono',
                                     fontSize: 11,
-                                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+                                    color: isDark
+                                        ? Colors.grey.shade400
+                                        : Colors.grey.shade700,
                                   ),
                                 ),
                                 Text(
                                   '${item['endedDate']}',
-                                  style: const TextStyle(fontSize: 11, color: Colors.grey),
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                               ],
                             ),
@@ -1282,7 +1669,10 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
 
                           // Quick reactivate button
                           IconButton(
-                            icon: const Icon(Icons.refresh, color: primaryColor),
+                            icon: const Icon(
+                              Icons.refresh,
+                              color: primaryColor,
+                            ),
                             tooltip: 'Reactivar Oferta',
                             onPressed: () {
                               _openEditDialog(item['rawProduct'] ?? item);

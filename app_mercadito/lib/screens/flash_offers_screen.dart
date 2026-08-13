@@ -819,7 +819,7 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                             displayPrice,
                             style: GoogleFonts.inter(
                               color: isWholesale
-                                  ? const Color(0xFF0284C7)
+                                  ? const Color(0xFF047857)
                                   : const Color(0xFF047857),
                               fontSize: 16,
                               fontWeight: FontWeight.w900,
@@ -836,7 +836,7 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                                   fontSize: 8,
                                   fontWeight: FontWeight.bold,
                                   color: isWholesale
-                                      ? const Color(0xFF0284C7)
+                                      ? const Color(0xFF047857)
                                       : Colors.grey[600],
                                 ),
                               ),
@@ -846,11 +846,7 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                                   style: GoogleFonts.inter(
                                     fontSize: 7,
                                     fontWeight: FontWeight.w700,
-                                    color:
-                                        (isDark
-                                                ? const Color(0xFF38BDF8)
-                                                : const Color(0xFF0284C7))
-                                            .withValues(alpha: 0.85),
+                                    color: const Color(0xFF047857).withValues(alpha: 0.85),
                                   ),
                                 ),
                             ],
@@ -1258,8 +1254,8 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                 decoration: BoxDecoration(
                   color: isWholesaleSelected
                       ? (isDark
-                            ? const Color(0xFF0284C7)
-                            : const Color(0xFF0369A1))
+                            ? const Color(0xFF047857)
+                            : const Color(0xFF065F46))
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(4),
                 ),
@@ -1291,8 +1287,8 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                   ? const Color(0xFF064E3B).withValues(alpha: 0.4)
                   : const Color(0xFFECFDF5))
             : (isDark
-                  ? const Color(0xFF075985).withValues(alpha: 0.4)
-                  : const Color(0xFFF0F9FF)),
+                  ? const Color(0xFF064E3B).withValues(alpha: 0.4)
+                  : const Color(0xFFECFDF5)),
         borderRadius: BorderRadius.circular(4),
         border: Border.all(
           color: isRetail
@@ -1300,8 +1296,8 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                     ? const Color(0xFF059669).withValues(alpha: 0.5)
                     : const Color(0xFFA7F3D0))
               : (isDark
-                    ? const Color(0xFF0284C7).withValues(alpha: 0.5)
-                    : const Color(0xFFBAE6FD)),
+                    ? const Color(0xFF059669).withValues(alpha: 0.5)
+                    : const Color(0xFFA7F3D0)),
           width: 0.8,
         ),
       ),

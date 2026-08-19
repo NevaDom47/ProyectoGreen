@@ -24,6 +24,11 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
   double _durationHours = 12.0; // Default 12 hours
   final int _stockLimit = 50; // 50 KG max in offer
 
+  // Sales mode & Unit selection
+  String _salesMode = 'retail'; // 'retail' (Detalle) or 'wholesale' (Por Mayor)
+  String _selectedUnit = 'KG'; // 'KG', 'LB', 'CAJA', 'SACO', or 'TODAS'
+  late List<String> _availableUnits;
+
   late double _originalPrice;
   late TextEditingController _discountController;
 
@@ -33,15 +38,79 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
     _parseInitialData();
   }
 
+  double _calculateBasePrice(String mode, String unit) {
+    final double baseRetail =
+        (widget.product['priceRetailKg'] as num?)?.toDouble() ?? 28.50;
+    final double baseWholesale =
+        (widget.product['priceWholesaleKg'] as num?)?.toDouble() ?? 22.00;
+    final double basePriceKg =
+        (mode == 'wholesale') ? baseWholesale : baseRetail;
+
+    final u = unit.toUpperCase().replaceAll('POR ', '').trim();
+    if (u == 'LB' || u == 'LIBRA') {
+      return basePriceKg / 2.20462;
+    } else if (u == 'CAJA') {
+      return basePriceKg * 15.0;
+    } else if (u == 'SACO') {
+      return basePriceKg * 20.0;
+    } else if (u == 'BULTO') {
+      return basePriceKg * 25.0;
+    } else if (u == 'ARROBA' || u == '@') {
+      return basePriceKg * 11.339;
+    } else if (u == 'TON' || u == 'TONELADA') {
+      return basePriceKg * 1000.0;
+    } else if (u == 'MANOJO') {
+      return basePriceKg * 0.5;
+    } else {
+      return basePriceKg; // KG or base
+    }
+  }
+
   void _parseInitialData() {
-    final rawPriceStr = widget.existingOffer?['price'] ??
-        widget.product['price'] ??
-        widget.product['oldPrice'] ??
-        '\$28.50';
-    _originalPrice = double.tryParse(
-          rawPriceStr.toString().replaceAll(RegExp(r'[^0-9.]'), ''),
-        ) ??
-        28.50;
+    // 1. Initialize sales mode
+    if (widget.existingOffer != null &&
+        widget.existingOffer!['salesMode'] != null) {
+      _salesMode =
+          widget.existingOffer!['salesMode'] == 'wholesale'
+              ? 'wholesale'
+              : 'retail';
+    } else if (widget.product['salesMode'] != null) {
+      _salesMode =
+          widget.product['salesMode'] == 'wholesale' ? 'wholesale' : 'retail';
+    } else {
+      _salesMode = 'retail';
+    }
+
+    // 2. Initialize available units list
+    final List<dynamic>? rawUnits =
+        widget.product['availableUnits'] as List<dynamic>?;
+    if (rawUnits != null && rawUnits.isNotEmpty) {
+      _availableUnits =
+          rawUnits.map((e) => e.toString().toUpperCase()).toList();
+    } else {
+      _availableUnits = ['KG', 'LB', 'CAJA'];
+    }
+
+    // 3. Initialize selected unit
+    final initialUnitRaw =
+        (widget.product['selectedUnit'] ??
+                widget.product['unit'] ??
+                widget.existingOffer?['unit'] ??
+                'KG')
+            .toString()
+            .toUpperCase()
+            .replaceAll('POR ', '')
+            .trim();
+
+    if (initialUnitRaw.contains('TODAS')) {
+      _selectedUnit = 'TODAS';
+    } else if (_availableUnits.contains(initialUnitRaw)) {
+      _selectedUnit = initialUnitRaw;
+    } else {
+      _selectedUnit = _availableUnits.first;
+    }
+
+    _updateOriginalPrice();
 
     if (widget.existingOffer != null) {
       final discNum = widget.existingOffer!['discountNumber'] as num? ?? 25;
@@ -52,8 +121,46 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
     }
 
     _discountController = TextEditingController(
-      text: _discountValue.toInt().toString(),
+      text:
+          _isPercentage
+              ? _discountValue.toInt().toString()
+              : _discountValue.toStringAsFixed(2),
     );
+  }
+
+  void _updateOriginalPrice() {
+    if (_selectedUnit == 'TODAS') {
+      _isPercentage = true; // Rule 2: Cannot use fixed amount for all units!
+      _originalPrice = _calculateBasePrice(_salesMode, 'KG');
+    } else {
+      _originalPrice = _calculateBasePrice(_salesMode, _selectedUnit);
+    }
+  }
+
+  void _onSalesModeChanged(String newMode) {
+    setState(() {
+      _salesMode = newMode;
+      _updateOriginalPrice();
+      if (!_isPercentage && _discountValue >= _originalPrice) {
+        _discountValue = (_originalPrice * 0.25);
+        _discountController.text = _discountValue.toStringAsFixed(2);
+      }
+    });
+  }
+
+  void _onUnitChanged(String newUnit) {
+    setState(() {
+      _selectedUnit = newUnit;
+      if (_selectedUnit == 'TODAS') {
+        _isPercentage = true;
+        _discountController.text = _discountValue.toInt().toString();
+      }
+      _updateOriginalPrice();
+      if (!_isPercentage && _discountValue >= _originalPrice) {
+        _discountValue = (_originalPrice * 0.25);
+        _discountController.text = _discountValue.toStringAsFixed(2);
+      }
+    });
   }
 
   @override
@@ -84,9 +191,18 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
     final endTime = DateTime.now().add(
       Duration(minutes: (_durationHours * 60).round()),
     );
-    final hourStr = endTime.hour.toString().padLeft(2, '0');
+    final hour12 = endTime.hour % 12 == 0 ? 12 : endTime.hour % 12;
     final minuteStr = endTime.minute.toString().padLeft(2, '0');
-    return '$hourStr:$minuteStr';
+    final period = endTime.hour >= 12 ? 'PM' : 'AM';
+    return '${hour12.toString().padLeft(2, '0')}:$minuteStr $period';
+  }
+
+  String get _formattedEndDay {
+    final now = DateTime.now();
+    final endTime = now.add(
+      Duration(minutes: (_durationHours * 60).round()),
+    );
+    return endTime.day != now.day ? 'mañana' : 'hoy';
   }
 
   void _onPublishOffer() async {
@@ -105,17 +221,31 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
     final origPriceStr = '\$${_originalPrice.toStringAsFixed(2)}';
     final secondsRemaining = (_durationHours * 3600).toInt();
 
-    final productName = widget.product['name'] ?? widget.product['title'] ?? 'Producto';
+    final productName =
+        widget.product['name'] ?? widget.product['title'] ?? 'Producto';
     final category = widget.product['category'] ?? 'General';
-    final image = widget.product['img'] ?? widget.product['image'] ?? widget.product['iconUrl'] ?? 'assets/images/PapaGemini.png';
+    final image =
+        widget.product['img'] ??
+        widget.product['image'] ??
+        widget.product['iconUrl'] ??
+        'assets/images/PapaGemini.png';
     final supplier = widget.product['supplier'] ?? 'Mi Proveedora';
     final location = widget.product['location'] ?? 'Central de Abasto';
 
     final now = DateTime.now();
     final hour12 = now.hour % 12 == 0 ? 12 : now.hour % 12;
     final period = now.hour >= 12 ? 'PM' : 'AM';
-    final startTimeFormatted = 'hoy, ${hour12.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')} $period';
+    final startTimeFormatted =
+        'hoy, ${hour12.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')} $period';
     final durationFormatted = '${_durationHours.toInt()} Horas';
+
+    final String unitFormatted;
+    if (_selectedUnit == 'TODAS') {
+      unitFormatted =
+          'Todas las unidades (${_salesMode == 'wholesale' ? 'Por Mayor' : 'Detalle'})';
+    } else {
+      unitFormatted = 'por $_selectedUnit';
+    }
 
     final updatedOffer = {
       'name': productName,
@@ -124,15 +254,20 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
       'discountNumber': finalDiscountPct,
       'price': offerPriceStr,
       'oldPrice': origPriceStr,
-      'wholesalePrice': '\$${(_calculatedOfferPrice * 0.85).toStringAsFixed(2)}',
-      'wholesaleOldPrice': '\$${(_originalPrice * 0.85).toStringAsFixed(2)}',
+      'wholesalePrice':
+          '\$${(_calculatedOfferPrice * 0.85).toStringAsFixed(2)}',
+      'wholesaleOldPrice':
+          '\$${(_originalPrice * 0.85).toStringAsFixed(2)}',
       'wholesaleMin': 'MIN. 15 KG',
       'rating': widget.product['rating'] ?? '4.9',
       'badge': widget.product['badge'] ?? 'PRIMERA CALIDAD',
+      'unit': unitFormatted,
+      'selectedUnit': _selectedUnit,
+      'availableUnits': _availableUnits,
       'supplier': supplier,
       'location': location,
       'tags': widget.product['tags'] ?? [category, 'Oferta'],
-      'salesMode': 'both',
+      'salesMode': _salesMode,
       'secondsRemaining': secondsRemaining,
       'startTime': startTimeFormatted,
       'duration': durationFormatted,
@@ -142,12 +277,19 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
     };
 
     // Update reactive global offers state
-    final currentList = List<Map<String, dynamic>>.from(globalFlashOffers.value);
-    final existingIdx = currentList.indexWhere((o) => o['name'] == productName);
+    final currentList = List<Map<String, dynamic>>.from(
+      globalFlashOffers.value,
+    );
 
-    if (existingIdx >= 0) {
-      currentList[existingIdx] = updatedOffer;
+    if (widget.existingOffer != null) {
+      final existingIdx = currentList.indexOf(widget.existingOffer!);
+      if (existingIdx >= 0) {
+        currentList[existingIdx] = updatedOffer;
+      } else {
+        currentList.insert(0, updatedOffer);
+      }
     } else {
+      // Always insert new offer for new unit/mode without replacing existing active offers
       currentList.insert(0, updatedOffer);
     }
     globalFlashOffers.value = currentList;
@@ -162,9 +304,11 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     const primaryColor = Color(0xFF004532);
-    final surfaceBg = isDark ? const Color(0xFF121C28) : const Color(0xFFF8F9FF);
+    final surfaceBg =
+        isDark ? const Color(0xFF121C28) : const Color(0xFFF8F9FF);
     final cardBg = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFBEC9C2);
+    final borderColor =
+        isDark ? const Color(0xFF334155) : const Color(0xFFBEC9C2);
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -209,11 +353,24 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
     Color borderColor,
   ) {
     if (_currentStep == 1) {
-      return _buildLoadingStepView(context, isDark, primaryColor, cardBg, borderColor);
+      return _buildLoadingStepView(
+        context,
+        isDark,
+        primaryColor,
+        cardBg,
+        borderColor,
+      );
     } else if (_currentStep == 2) {
       return _buildSuccessStepView(context, isDark, primaryColor, cardBg);
     } else {
-      return _buildFormStepView(context, theme, isDark, primaryColor, cardBg, borderColor);
+      return _buildFormStepView(
+        context,
+        theme,
+        isDark,
+        primaryColor,
+        cardBg,
+        borderColor,
+      );
     }
   }
 
@@ -228,9 +385,22 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
     Color cardBg,
     Color borderColor,
   ) {
-    final productName = widget.product['name'] ?? widget.product['title'] ?? 'Tomate Saladette';
-    final productImg = widget.product['img'] ?? widget.product['image'] ?? 'assets/images/PapaGemini.png';
+    final productName =
+        widget.product['name'] ??
+        widget.product['title'] ??
+        'Tomate Saladette';
+    final productImg =
+        widget.product['img'] ??
+        widget.product['image'] ??
+        'assets/images/PapaGemini.png';
     final category = widget.product['category'] ?? 'Hortalizas';
+
+    final bool hasDuplicateOffer = widget.existingOffer == null &&
+        hasActiveOfferForProductUnit(
+          productName: productName,
+          salesMode: _salesMode,
+          unit: _selectedUnit,
+        );
 
     return SingleChildScrollView(
       child: Column(
@@ -242,20 +412,29 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             decoration: BoxDecoration(
               color: cardBg,
-              border: Border(bottom: BorderSide(color: borderColor.withValues(alpha: 0.5))),
+              border: Border(
+                bottom: BorderSide(
+                  color: borderColor.withValues(alpha: 0.5),
+                ),
+              ),
             ),
             child: Row(
               children: [
                 IconButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black87),
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
-                    widget.existingOffer != null ? 'Editar Oferta Relámpago' : 'Gestionar Oferta',
+                    widget.existingOffer != null
+                        ? 'Editar Oferta Relámpago'
+                        : 'Gestionar Oferta',
                     style: TextStyle(
                       fontFamily: 'Manrope',
                       fontSize: 18,
@@ -280,7 +459,9 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
                   decoration: BoxDecoration(
                     color: cardBg,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: borderColor.withValues(alpha: 0.6)),
+                    border: Border.all(
+                      color: borderColor.withValues(alpha: 0.6),
+                    ),
                   ),
                   child: Row(
                     children: [
@@ -293,17 +474,26 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
-                          child: productImg.startsWith('http')
-                              ? Image.network(
-                                  productImg,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (ctx, err, stack) => const Icon(Icons.shopping_bag, color: Colors.grey),
-                                )
-                              : Image.asset(
-                                  productImg,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (ctx, err, stack) => const Icon(Icons.shopping_bag, color: Colors.grey),
-                                ),
+                          child:
+                              productImg.startsWith('http')
+                                  ? Image.network(
+                                    productImg,
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (ctx, err, stack) => const Icon(
+                                          Icons.shopping_bag,
+                                          color: Colors.grey,
+                                        ),
+                                  )
+                                  : Image.asset(
+                                    productImg,
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (ctx, err, stack) => const Icon(
+                                          Icons.shopping_bag,
+                                          color: Colors.grey,
+                                        ),
+                                  ),
                         ),
                       ),
                       const SizedBox(width: 14),
@@ -335,32 +525,388 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
                               'Categoría: $category',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                color:
+                                    isDark
+                                        ? Colors.grey.shade400
+                                        : Colors.grey.shade600,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: primaryColor.withValues(alpha: 0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(Icons.edit, size: 18, color: primaryColor),
-                      ),
                     ],
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 18),
+
+                // NUEVA SECCIÓN: Alcance y Modalidad de la Oferta
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: cardBg,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: borderColor.withValues(alpha: 0.6),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.tune, size: 18, color: primaryColor),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Alcance de la Oferta',
+                            style: TextStyle(
+                              fontFamily: 'Manrope',
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: isDark ? Colors.white : Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Define la modalidad de venta y las unidades donde aplicará la oferta',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color:
+                              isDark
+                                  ? Colors.grey.shade400
+                                  : Colors.grey.shade600,
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+
+                      // 1. Modalidad de Venta (Detalle vs Por Mayor)
+                      Text(
+                        'Modalidad de Venta',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color:
+                              isDark
+                                  ? Colors.grey.shade300
+                                  : Colors.grey.shade700,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => _onSalesModeChanged('retail'),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color:
+                                      _salesMode == 'retail'
+                                          ? primaryColor.withValues(alpha: 0.1)
+                                          : (isDark
+                                              ? const Color(0xFF0F172A)
+                                              : const Color(0xFFF1F5F9)),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color:
+                                        _salesMode == 'retail'
+                                            ? primaryColor
+                                            : borderColor.withValues(
+                                              alpha: 0.5,
+                                            ),
+                                    width: _salesMode == 'retail' ? 1.5 : 1.0,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.shopping_bag_outlined,
+                                      size: 16,
+                                      color:
+                                          _salesMode == 'retail'
+                                              ? primaryColor
+                                              : Colors.grey,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      'Al Detalle',
+                                      style: TextStyle(
+                                        fontFamily: 'Manrope',
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color:
+                                            _salesMode == 'retail'
+                                                ? primaryColor
+                                                : (isDark
+                                                    ? Colors.grey.shade400
+                                                    : Colors.grey.shade700),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => _onSalesModeChanged('wholesale'),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color:
+                                      _salesMode == 'wholesale'
+                                          ? primaryColor.withValues(alpha: 0.1)
+                                          : (isDark
+                                              ? const Color(0xFF0F172A)
+                                              : const Color(0xFFF1F5F9)),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color:
+                                        _salesMode == 'wholesale'
+                                            ? primaryColor
+                                            : borderColor.withValues(
+                                              alpha: 0.5,
+                                            ),
+                                    width:
+                                        _salesMode == 'wholesale' ? 1.5 : 1.0,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.store_outlined,
+                                      size: 16,
+                                      color:
+                                          _salesMode == 'wholesale'
+                                              ? primaryColor
+                                              : Colors.grey,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      'Al Por Mayor',
+                                      style: TextStyle(
+                                        fontFamily: 'Manrope',
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color:
+                                            _salesMode == 'wholesale'
+                                                ? primaryColor
+                                                : (isDark
+                                                    ? Colors.grey.shade400
+                                                    : Colors.grey.shade700),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // 2. Unidad de Medida (Unidades individuales + Todas las Unidades)
+                      Text(
+                        'Unidad de Medida Aplicable',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color:
+                              isDark
+                                  ? Colors.grey.shade300
+                                  : Colors.grey.shade700,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          ..._availableUnits.map((u) {
+                            final isSelected =
+                                _selectedUnit.toUpperCase() ==
+                                u.toUpperCase();
+                            return ChoiceChip(
+                              label: Text(u),
+                              selected: isSelected,
+                              selectedColor: primaryColor.withValues(
+                                alpha: 0.15,
+                              ),
+                              side: BorderSide(
+                                color:
+                                    isSelected
+                                        ? primaryColor
+                                        : borderColor.withValues(
+                                          alpha: 0.6,
+                                        ),
+                                width: isSelected ? 1.2 : 0.8,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              labelStyle: TextStyle(
+                                fontFamily: 'JetBrains Mono',
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color:
+                                    isSelected
+                                        ? primaryColor
+                                        : (isDark
+                                            ? Colors.white
+                                            : Colors.black87),
+                              ),
+                              onSelected: (selected) {
+                                if (selected) _onUnitChanged(u);
+                              },
+                            );
+                          }),
+                          // Opción "Todas las Unidades"
+                          ChoiceChip(
+                            avatar: Icon(
+                              Icons.auto_awesome,
+                              size: 14,
+                              color:
+                                  _selectedUnit == 'TODAS'
+                                      ? primaryColor
+                                      : const Color(0xFFD97706),
+                            ),
+                            label: const Text('Todas las Unidades'),
+                            selected: _selectedUnit == 'TODAS',
+                            selectedColor: primaryColor.withValues(
+                              alpha: 0.18,
+                            ),
+                            side: BorderSide(
+                              color:
+                                  _selectedUnit == 'TODAS'
+                                      ? primaryColor
+                                      : const Color(0xFFF59E0B),
+                              width: _selectedUnit == 'TODAS' ? 1.5 : 1.0,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            labelStyle: TextStyle(
+                              fontFamily: 'Manrope',
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  _selectedUnit == 'TODAS'
+                                      ? primaryColor
+                                      : (isDark
+                                          ? const Color(0xFFFCD34D)
+                                          : const Color(0xFFB45309)),
+                            ),
+                            onSelected: (selected) {
+                              if (selected) _onUnitChanged('TODAS');
+                            },
+                          ),
+                        ],
+                      ),
+
+                      if (_selectedUnit == 'TODAS') ...[
+                        const SizedBox(height: 10),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.amber.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: Colors.amber.withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.info_outline,
+                                size: 16,
+                                color: Colors.amber.shade800,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Al seleccionar "Todas las Unidades", la oferta se aplicará proporcionalmente en porcentaje (%) a todas las presentaciones al ${_salesMode == 'wholesale' ? 'Por Mayor' : 'Detalle'}. Solo se permite descuento porcentual.',
+                                  style: TextStyle(
+                                    fontSize: 11.5,
+                                    color:
+                                        isDark
+                                            ? Colors.amber.shade200
+                                            : Colors.amber.shade900,
+                                    height: 1.3,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                      if (hasDuplicateOffer) ...[
+                        const SizedBox(height: 10),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: Colors.red.withValues(alpha: 0.35),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.block,
+                                size: 16,
+                                color: Color(0xFFEF4444),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Ya existe una oferta activa para este producto al ${_salesMode == 'wholesale' ? 'Por Mayor' : 'Detalle'} (${_selectedUnit == 'TODAS' ? 'Todas las unidades' : 'unidad $_selectedUnit'}). No se puede duplicar hasta que culmine o sea cancelada.',
+                                  style: TextStyle(
+                                    fontSize: 11.5,
+                                    fontWeight: FontWeight.w600,
+                                    color: isDark
+                                        ? const Color(0xFFFCA5A5)
+                                        : const Color(0xFFB91C1C),
+                                    height: 1.3,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 18),
 
                 // Discount Configuration Card
                 Container(
                   decoration: BoxDecoration(
                     color: cardBg,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: borderColor.withValues(alpha: 0.6)),
+                    border: Border.all(
+                      color: borderColor.withValues(alpha: 0.6),
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -385,7 +931,10 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
                             Container(
                               padding: const EdgeInsets.all(3),
                               decoration: BoxDecoration(
-                                color: isDark ? const Color(0xFF0F172A) : const Color(0xFFEEF4FF),
+                                color:
+                                    isDark
+                                        ? const Color(0xFF0F172A)
+                                        : const Color(0xFFEEF4FF),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Row(
@@ -400,16 +949,36 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
                                         });
                                       },
                                       child: Container(
-                                        padding: const EdgeInsets.symmetric(vertical: 8),
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 8,
+                                        ),
                                         decoration: BoxDecoration(
-                                          color: _isPercentage ? cardBg : Colors.transparent,
-                                          borderRadius: BorderRadius.circular(8),
-                                          boxShadow: _isPercentage
-                                              ? [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4)]
-                                              : null,
-                                          border: _isPercentage
-                                              ? Border.all(color: borderColor.withValues(alpha: 0.4))
-                                              : null,
+                                          color:
+                                              _isPercentage
+                                                  ? cardBg
+                                                  : Colors.transparent,
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          boxShadow:
+                                              _isPercentage
+                                                  ? [
+                                                    BoxShadow(
+                                                      color: Colors.black
+                                                          .withValues(
+                                                            alpha: 0.05,
+                                                          ),
+                                                      blurRadius: 4,
+                                                    ),
+                                                  ]
+                                                  : null,
+                                          border:
+                                              _isPercentage
+                                                  ? Border.all(
+                                                    color: borderColor
+                                                        .withValues(alpha: 0.4),
+                                                  )
+                                                  : null,
                                         ),
                                         child: Text(
                                           'Porcentaje (%)',
@@ -417,9 +986,12 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
                                           style: TextStyle(
                                             fontSize: 13,
                                             fontWeight: FontWeight.w600,
-                                            color: _isPercentage
-                                                ? primaryColor
-                                                : (isDark ? Colors.grey.shade400 : Colors.grey.shade600),
+                                            color:
+                                                _isPercentage
+                                                    ? primaryColor
+                                                    : (isDark
+                                                        ? Colors.grey.shade400
+                                                        : Colors.grey.shade600),
                                           ),
                                         ),
                                       ),
@@ -427,34 +999,103 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
                                   ),
                                   Expanded(
                                     child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          _isPercentage = false;
-                                          _discountValue = 5.0;
-                                          _discountController.text = '5.00';
-                                        });
-                                      },
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(vertical: 8),
-                                        decoration: BoxDecoration(
-                                          color: !_isPercentage ? cardBg : Colors.transparent,
-                                          borderRadius: BorderRadius.circular(8),
-                                          boxShadow: !_isPercentage
-                                              ? [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4)]
-                                              : null,
-                                          border: !_isPercentage
-                                              ? Border.all(color: borderColor.withValues(alpha: 0.4))
-                                              : null,
-                                        ),
-                                        child: Text(
-                                          'Monto Fijo (\$)',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w600,
-                                            color: !_isPercentage
-                                                ? primaryColor
-                                                : (isDark ? Colors.grey.shade400 : Colors.grey.shade600),
+                                      onTap:
+                                          _selectedUnit == 'TODAS'
+                                              ? () {
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                      'Para "Todas las Unidades", solo se permite descuento en Porcentaje (%).',
+                                                    ),
+                                                    duration: Duration(
+                                                      seconds: 2,
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                              : () {
+                                                setState(() {
+                                                  _isPercentage = false;
+                                                  _discountValue = 5.0;
+                                                  _discountController.text =
+                                                      '5.00';
+                                                });
+                                              },
+                                      child: Opacity(
+                                        opacity:
+                                            _selectedUnit == 'TODAS' ? 0.45 : 1.0,
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 8,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                (!_isPercentage &&
+                                                        _selectedUnit !=
+                                                            'TODAS')
+                                                    ? cardBg
+                                                    : Colors.transparent,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            boxShadow:
+                                                (!_isPercentage &&
+                                                        _selectedUnit !=
+                                                            'TODAS')
+                                                    ? [
+                                                      BoxShadow(
+                                                        color: Colors.black
+                                                            .withValues(
+                                                              alpha: 0.05,
+                                                            ),
+                                                        blurRadius: 4,
+                                                      ),
+                                                    ]
+                                                    : null,
+                                            border:
+                                                (!_isPercentage &&
+                                                        _selectedUnit !=
+                                                            'TODAS')
+                                                    ? Border.all(
+                                                      color: borderColor
+                                                          .withValues(
+                                                            alpha: 0.4,
+                                                          ),
+                                                    )
+                                                    : null,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                'Monto Fijo (\$)',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w600,
+                                                  color:
+                                                      !_isPercentage
+                                                          ? primaryColor
+                                                          : (isDark
+                                                              ? Colors
+                                                                  .grey
+                                                                  .shade400
+                                                              : Colors
+                                                                  .grey
+                                                                  .shade600),
+                                                ),
+                                              ),
+                                              if (_selectedUnit == 'TODAS') ...[
+                                                const SizedBox(width: 4),
+                                                const Icon(
+                                                  Icons.lock_outline,
+                                                  size: 13,
+                                                  color: Colors.grey,
+                                                ),
+                                              ],
+                                            ],
                                           ),
                                         ),
                                       ),
@@ -471,7 +1112,10 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
                               'Valor del Descuento',
                               style: TextStyle(
                                 fontSize: 13,
-                                color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+                                color:
+                                    isDark
+                                        ? Colors.grey.shade400
+                                        : Colors.grey.shade700,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -479,7 +1123,9 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
 
                             TextField(
                               controller: _discountController,
-                              keyboardType: TextInputType.numberWithOptions(decimal: !_isPercentage),
+                              keyboardType: TextInputType.numberWithOptions(
+                                decimal: !_isPercentage,
+                              ),
                               style: const TextStyle(
                                 fontFamily: 'JetBrains Mono',
                                 fontSize: 18,
@@ -507,36 +1153,49 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
                               SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 child: Row(
-                                  children: [15, 20, 25, 30, 50].map((preset) {
-                                    final isSelected = _discountValue.toInt() == preset;
-                                    return Padding(
-                                      padding: const EdgeInsets.only(right: 8),
-                                      child: ChoiceChip(
-                                        label: Text('-$preset%'),
-                                        selected: isSelected,
-                                        selectedColor: primaryColor.withValues(alpha: 0.15),
-                                        side: BorderSide.none,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10),
-                                          side: BorderSide.none,
-                                        ),
-                                        labelStyle: TextStyle(
-                                          fontFamily: 'JetBrains Mono',
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          color: isSelected ? primaryColor : (isDark ? Colors.white : Colors.black87),
-                                        ),
-                                        onSelected: (selected) {
-                                          if (selected) {
-                                            setState(() {
-                                              _discountValue = preset.toDouble();
-                                              _discountController.text = preset.toString();
-                                            });
-                                          }
-                                        },
-                                      ),
-                                    );
-                                  }).toList(),
+                                  children:
+                                      [15, 20, 25, 30, 50].map((preset) {
+                                        final isSelected =
+                                            _discountValue.toInt() == preset;
+                                        return Padding(
+                                          padding: const EdgeInsets.only(
+                                            right: 8,
+                                          ),
+                                          child: ChoiceChip(
+                                            label: Text('-$preset%'),
+                                            selected: isSelected,
+                                            selectedColor: primaryColor
+                                                .withValues(alpha: 0.15),
+                                            side: BorderSide.none,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              side: BorderSide.none,
+                                            ),
+                                            labelStyle: TextStyle(
+                                              fontFamily: 'JetBrains Mono',
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color:
+                                                  isSelected
+                                                      ? primaryColor
+                                                      : (isDark
+                                                          ? Colors.white
+                                                          : Colors.black87),
+                                            ),
+                                            onSelected: (selected) {
+                                              if (selected) {
+                                                setState(() {
+                                                  _discountValue =
+                                                      preset.toDouble();
+                                                  _discountController.text =
+                                                      preset.toString();
+                                                });
+                                              }
+                                            },
+                                          ),
+                                        );
+                                      }).toList(),
                                 ),
                               ),
                             ],
@@ -548,7 +1207,10 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: isDark ? const Color(0xFF132030) : const Color(0xFFE5EEFF),
+                          color:
+                              isDark
+                                  ? const Color(0xFF132030)
+                                  : const Color(0xFFE5EEFF),
                           borderRadius: const BorderRadius.only(
                             bottomLeft: Radius.circular(16),
                             bottomRight: Radius.circular(16),
@@ -560,35 +1222,52 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Precio Original',
+                                  'Precio Base (${_salesMode == 'wholesale' ? 'P. Mayor' : 'Detalle'})',
                                   style: TextStyle(
-                                    fontSize: 12,
-                                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                    fontSize: 11,
+                                    color:
+                                        isDark
+                                            ? Colors.grey.shade400
+                                            : Colors.grey.shade600,
                                   ),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  '\$${_originalPrice.toStringAsFixed(2)}',
+                                  _selectedUnit == 'TODAS'
+                                      ? '\$${_originalPrice.toStringAsFixed(2)}/kg base'
+                                      : '\$${_originalPrice.toStringAsFixed(2)} / ${_selectedUnit.toLowerCase()}',
                                   style: TextStyle(
                                     fontFamily: 'JetBrains Mono',
-                                    fontSize: 14,
+                                    fontSize: 13,
                                     decoration: TextDecoration.lineThrough,
-                                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                    color:
+                                        isDark
+                                            ? Colors.grey.shade400
+                                            : Colors.grey.shade600,
                                   ),
                                 ),
                               ],
                             ),
                             const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 12),
-                              child: Icon(Icons.arrow_forward, color: Colors.grey, size: 20),
+                              child: Icon(
+                                Icons.arrow_forward,
+                                color: Colors.grey,
+                                size: 20,
+                              ),
                             ),
                             Expanded(
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 10,
+                                ),
                                 decoration: BoxDecoration(
                                   color: primaryColor.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: primaryColor.withValues(alpha: 0.2)),
+                                  border: Border.all(
+                                    color: primaryColor.withValues(alpha: 0.2),
+                                  ),
                                 ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -605,12 +1284,27 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      '\$${_calculatedOfferPrice.toStringAsFixed(2)}',
+                                      _selectedUnit == 'TODAS'
+                                          ? '-${_calculatedDiscountPercentage.round()}%'
+                                          : '\$${_calculatedOfferPrice.toStringAsFixed(2)}',
                                       style: TextStyle(
                                         fontFamily: 'Manrope',
                                         fontSize: 22,
                                         fontWeight: FontWeight.w800,
                                         color: primaryColor,
+                                      ),
+                                    ),
+                                    Text(
+                                      _selectedUnit == 'TODAS'
+                                          ? 'En todas las unidades'
+                                          : 'por ${_selectedUnit.toLowerCase()}',
+                                      style: TextStyle(
+                                        fontFamily: 'JetBrains Mono',
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        color: primaryColor.withValues(
+                                          alpha: 0.8,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -729,10 +1423,13 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
                             Icon(Icons.timer_outlined, size: 20, color: primaryColor),
                             const SizedBox(width: 10),
                             Text(
-                              'Finaliza hoy a las ',
+                              'Finaliza $_formattedEndDay a las ',
                               style: TextStyle(
                                 fontSize: 13,
-                                color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
+                                color:
+                                    isDark
+                                        ? Colors.grey.shade300
+                                        : Colors.grey.shade800,
                               ),
                             ),
                             Text(
@@ -766,14 +1463,20 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
                     Expanded(
                       flex: 2,
                       child: ElevatedButton.icon(
-                        onPressed: _onPublishOffer,
+                        onPressed: hasDuplicateOffer ? null : _onPublishOffer,
                         icon: const Icon(Icons.bolt, color: Colors.white, size: 20),
-                        label: const Text(
-                          'Activar Oferta Relámpago',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                        label: Text(
+                          hasDuplicateOffer
+                              ? 'Oferta Ya Existente'
+                              : 'Activar Oferta Relámpago',
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                         ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: primaryColor,
+                          disabledBackgroundColor: isDark
+                              ? const Color(0xFF334155)
+                              : const Color(0xFF94A3B8),
+                          disabledForegroundColor: Colors.white70,
                           minimumSize: const Size(double.infinity, 50),
                         ),
                       ),

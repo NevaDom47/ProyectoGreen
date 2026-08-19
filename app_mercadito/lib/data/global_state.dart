@@ -17,6 +17,7 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFlashOffers = ValueNotifie
     'wholesaleMin': 'MIN. 20 KG',
     'rating': '4.8',
     'badge': 'PRIMERA CALIDAD',
+    'unit': 'por KG',
     'supplier': 'Don Pedro H.',
     'location': 'Tecomán, Colima',
     'tags': ['Tubérculos', 'Oferta'],
@@ -38,6 +39,7 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFlashOffers = ValueNotifie
     'wholesaleMin': 'MIN. 15 KG',
     'rating': '4.9',
     'badge': 'TERCERA CALIDAD',
+    'unit': 'por KG',
     'supplier': 'Granja Sol',
     'location': 'Valle Verde, Puebla',
     'tags': ['Raíces', 'Orgánico'],
@@ -57,6 +59,7 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFlashOffers = ValueNotifie
     'wholesaleMin': 'MIN. 10 KG',
     'rating': '4.9',
     'badge': 'PRIMERA CALIDAD',
+    'unit': 'por KG',
     'supplier': 'AgroFresas',
     'location': 'Zamora, Michoacán',
     'tags': ['Frutas', 'Frescas'],
@@ -76,6 +79,7 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFlashOffers = ValueNotifie
     'wholesaleMin': 'MIN. 2 SACOS',
     'rating': '4.6',
     'badge': 'SEGUNDA CALIDAD',
+    'unit': 'por Saco',
     'supplier': 'Hermanos Ruiz',
     'location': 'Galeana, Nuevo León',
     'tags': ['Tubérculos'],
@@ -95,6 +99,7 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFlashOffers = ValueNotifie
     'wholesaleMin': 'MIN. 10 KG',
     'rating': '4.9',
     'badge': 'PRIMERA CALIDAD',
+    'unit': 'por KG',
     'supplier': 'Invernaderos SLP',
     'location': 'San Luis Potosí',
     'tags': ['Hortalizas', 'Orgánico'],
@@ -114,6 +119,7 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFlashOffers = ValueNotifie
     'wholesaleMin': 'MIN. 20 KG',
     'rating': '4.8',
     'badge': 'PRIMERA CALIDAD',
+    'unit': 'por KG',
     'supplier': 'Granja Sol',
     'location': 'Valle Verde, Puebla',
     'tags': ['Raíces', 'Lavada'],
@@ -133,6 +139,7 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFlashOffers = ValueNotifie
     'wholesaleMin': 'MIN. 15 KG',
     'rating': '4.7',
     'badge': 'PRIMERA CALIDAD',
+    'unit': 'por KG',
     'supplier': 'Cítricos del Pacífico',
     'location': 'Manzanillo, Colima',
     'tags': ['Cítricos', 'Fresco'],
@@ -152,6 +159,7 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFlashOffers = ValueNotifie
     'wholesaleMin': 'MIN. 10 KG',
     'rating': '4.7',
     'badge': 'PRIMERA CALIDAD',
+    'unit': 'por KG',
     'supplier': 'Picantes del Sur',
     'location': 'Oaxaca, Oaxaca',
     'tags': ['Hortalizas', 'Mix'],
@@ -652,6 +660,113 @@ String generateNextInvoiceId() {
   }
   _lastGeneratedSequence += 1;
   return '#FAC-$_lastGeneratedSequence';
+}
+
+// ---------------------------------------------------------
+// Global Cancellation & Lockout Tracker for Flash Offers
+// (Rule: 3 cancellations before completion = 1 hour lockout)
+// ---------------------------------------------------------
+final ValueNotifier<Map<String, List<DateTime>>> globalOfferCancellations =
+    ValueNotifier({});
+final ValueNotifier<Map<String, DateTime>> globalProductLockouts =
+    ValueNotifier({});
+
+bool isProductLockedForOffers(String productName) {
+  final lockoutUntil = globalProductLockouts.value[productName];
+  if (lockoutUntil == null) return false;
+  if (DateTime.now().isBefore(lockoutUntil)) {
+    return true;
+  }
+  return false;
+}
+
+int getProductLockoutRemainingMinutes(String productName) {
+  final lockoutUntil = globalProductLockouts.value[productName];
+  if (lockoutUntil == null) return 0;
+  final diff = lockoutUntil.difference(DateTime.now()).inMinutes;
+  return diff > 0 ? diff : 1;
+}
+
+int getProductCancellationCount(String productName) {
+  final now = DateTime.now();
+  final cancels = globalOfferCancellations.value[productName] ?? [];
+  return cancels.where((t) => now.difference(t).inMinutes <= 60).length;
+}
+
+void registerOfferCancellation(String productName) {
+  final now = DateTime.now();
+  final currentMap =
+      Map<String, List<DateTime>>.from(globalOfferCancellations.value);
+  final productCancels = List<DateTime>.from(currentMap[productName] ?? []);
+
+  // Filter only cancellations within the last 1 hour
+  productCancels.removeWhere(
+    (t) => now.difference(t).inMinutes > 60,
+  );
+  productCancels.add(now);
+  currentMap[productName] = productCancels;
+  globalOfferCancellations.value = currentMap;
+
+  // If reached 3 cancellations, lock product for 1 hour
+  if (productCancels.length >= 3) {
+    final lockouts = Map<String, DateTime>.from(globalProductLockouts.value);
+    lockouts[productName] = now.add(const Duration(hours: 1));
+    globalProductLockouts.value = lockouts;
+  }
+}
+
+// ---------------------------------------------------------
+// Active Offer Verification Helper (Duplicate Prevention)
+// ---------------------------------------------------------
+bool hasActiveOfferForProductUnit({
+  required String productName,
+  required String salesMode, // 'retail', 'wholesale', or 'both'
+  required String unit, // 'KG', 'LB', 'CAJA', etc., or 'TODAS'
+  dynamic excludeOfferId,
+}) {
+  final normalizedUnit = unit.toUpperCase().replaceAll('POR ', '').trim();
+  for (final offer in globalFlashOffers.value) {
+    final secs = offer['secondsRemaining'] as int? ?? 0;
+    if (secs <= 0) continue; // Expired or canceled
+
+    if (excludeOfferId != null && offer == excludeOfferId) {
+      continue;
+    }
+
+    final offerName = offer['name'] ?? '';
+    if (offerName.toString().toLowerCase().trim() !=
+        productName.toLowerCase().trim()) {
+      continue;
+    }
+
+    final offerSalesMode =
+        (offer['salesMode'] ?? 'both').toString().toLowerCase();
+    final offerUnit = (offer['selectedUnit'] ?? offer['unit'] ?? 'KG')
+        .toString()
+        .toUpperCase()
+        .replaceAll('POR ', '')
+        .trim();
+
+    // Check sales mode overlap
+    bool modeMatches = false;
+    if (offerSalesMode == 'both' || salesMode == 'both') {
+      modeMatches = true;
+    } else if (offerSalesMode == salesMode) {
+      modeMatches = true;
+    }
+
+    if (!modeMatches) continue;
+
+    // Check unit overlap
+    if (offerUnit == 'TODAS' ||
+        offerUnit == 'TODAS LAS UNIDADES' ||
+        normalizedUnit == 'TODAS' ||
+        normalizedUnit == 'TODAS LAS UNIDADES' ||
+        offerUnit == normalizedUnit) {
+      return true;
+    }
+  }
+  return false;
 }
 
 

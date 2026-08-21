@@ -706,6 +706,35 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
     }
   }
 
+  IconData _getFilterChipIcon(String filterName) {
+    final lower = filterName.toLowerCase().trim();
+    if (lower == 'todas' || lower == 'todos') {
+      return Icons.grid_view_rounded;
+    } else if (lower == 'activas') {
+      return Icons.bolt_rounded;
+    } else if (lower == 'por vencer') {
+      return Icons.hourglass_bottom_rounded;
+    } else if (lower.contains('raíz') ||
+        lower.contains('raiz') ||
+        lower.contains('raíces') ||
+        lower.contains('raices')) {
+      return Icons.grass_rounded;
+    } else if (lower.contains('fruta')) {
+      return Icons.apple_rounded;
+    } else if (lower.contains('hortaliza')) {
+      return Icons.spa_rounded;
+    } else if (lower.contains('tubérculo') || lower.contains('tuberculo')) {
+      return Icons.agriculture_rounded;
+    } else if (lower.contains('cítrico') || lower.contains('citrico')) {
+      return Icons.wb_sunny_outlined;
+    } else if (lower.contains('verdura') || lower.contains('legumbre')) {
+      return Icons.eco_rounded;
+    } else if (lower.contains('calidad')) {
+      return Icons.workspace_premium_rounded;
+    }
+    return Icons.label_outline_rounded;
+  }
+
   String _getOfferEndTimeFormatted(Map<String, dynamic> offer) {
     if (offer['endTimeFormatted'] != null &&
         offer['endTimeFormatted'].toString().isNotEmpty) {
@@ -1048,15 +1077,61 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
             .toList();
         final activeOffersCount = activeOffersList.length;
 
+        // Extract all dynamic categories and tags from active offers & products
+        final filterOptions = <String>['Todas', 'Activas', 'Por Vencer'];
+        final dynamicTags = <String>{};
+        for (final o in activeOffersList) {
+          final cat = (o['category'] ?? '').toString().trim();
+          if (cat.isNotEmpty && cat != 'General') {
+            dynamicTags.add(cat);
+          }
+        }
+        for (final p in _availableProducts) {
+          final cat = (p['category'] ?? '').toString().trim();
+          if (cat.isNotEmpty && cat != 'General') {
+            dynamicTags.add(cat);
+          }
+        }
+        for (final tag in dynamicTags) {
+          if (!filterOptions.contains(tag)) {
+            filterOptions.add(tag);
+          }
+        }
+
         // Comprehensive search filter across active offer cards
         final filteredOffers = activeOffersList.where((offer) {
           final secs = offer['secondsRemaining'] as int? ?? 0;
+
+          // 1. Status or Category Tag Filter
           if (_selectedFilter == 'Por Vencer') {
             if (secs > 1800) {
               return false; // Solo ofertas por debajo de los 30 min (1800 segundos)
             }
+          } else if (_selectedFilter == 'Activas' || _selectedFilter == 'Todas') {
+            // All offers in activeOffersList have secondsRemaining > 0
+          } else {
+            // Filter by product tag / category (e.g. 'Raíces', 'Frutas', 'Hortalizas', 'Tubérculos', 'Cítricos')
+            final offerCategory =
+                (offer['category'] ?? '').toString().toLowerCase();
+            final offerBadge = (offer['badge'] ?? '').toString().toLowerCase();
+            final offerTags = (offer['tags'] is List)
+                ? (offer['tags'] as List)
+                    .map((e) => e.toString().toLowerCase())
+                    .toList()
+                : <String>[];
+            final target = _selectedFilter.toLowerCase();
+
+            final matchCategory =
+                offerCategory == target || offerCategory.contains(target);
+            final matchBadge = offerBadge.contains(target);
+            final matchTag = offerTags.contains(target);
+
+            if (!matchCategory && !matchBadge && !matchTag) {
+              return false;
+            }
           }
 
+          // 2. Text Search query filter
           if (_searchQuery.isNotEmpty) {
             final q = _searchQuery.toLowerCase().trim();
 
@@ -1188,55 +1263,82 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
 
               const SizedBox(height: 12),
 
-              // Filter Chips without black border!
+              // Filter Choice Chips with Icons & Product Tags (Strict Design Tokens)
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: ['Todas', 'Activas', 'Por Vencer'].map((filter) {
+                  children: filterOptions.map((filter) {
                     final isSelected = _selectedFilter == filter;
+                    final iconData = _getFilterChipIcon(filter);
+
                     return Padding(
                       padding: const EdgeInsets.only(right: 8),
-                      child: Theme(
-                        data: Theme.of(context).copyWith(
-                          splashColor: primaryColor.withValues(alpha: 0.15),
-                          highlightColor: primaryColor.withValues(alpha: 0.08),
-                        ),
-                        child: FilterChip(
-                          label: Text(filter),
-                          selected: isSelected,
-                          selectedColor: const Color(0xFF016042),
-                          backgroundColor:
-                              isDark ? const Color(0xFF1E293B) : Colors.white,
-                          checkmarkColor: Colors.white,
-                          showCheckmark: true,
-                          side: BorderSide(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() => _selectedFilter = filter);
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 180),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 7.5,
+                          ),
+                          decoration: BoxDecoration(
                             color: isSelected
                                 ? const Color(0xFF016042)
                                 : (isDark
-                                    ? const Color(0xFF334155)
-                                    : const Color(0xFFCCDFD9)),
-                            width: 1.0,
-                          ),
-                          shape: RoundedRectangleBorder(
+                                    ? const Color(0xFF1E293B)
+                                    : Colors.white),
                             borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: isSelected
+                                  ? const Color(0xFF016042)
+                                  : (isDark
+                                      ? const Color(0xFF334155)
+                                      : const Color(0xFFCCDFD9)),
+                              width: 1.0,
+                            ),
+                            boxShadow: isSelected
+                                ? [
+                                    BoxShadow(
+                                      color: const Color(0xFF016042)
+                                          .withValues(alpha: 0.22),
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ]
+                                : null,
                           ),
-                          labelStyle: TextStyle(
-                            fontFamily: 'Manrope',
-                            fontWeight: isSelected
-                                ? FontWeight.bold
-                                : FontWeight.w600,
-                            fontSize: 13,
-                            color: isSelected
-                                ? Colors.white
-                                : (isDark
-                                    ? Colors.grey.shade400
-                                    : const Color(0xFF737373)),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                iconData,
+                                size: 15,
+                                color: isSelected
+                                    ? Colors.white
+                                    : (isDark
+                                        ? Colors.grey.shade400
+                                        : const Color(0xFF737373)),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                filter,
+                                style: TextStyle(
+                                  fontFamily: 'Manrope',
+                                  fontWeight: isSelected
+                                      ? FontWeight.bold
+                                      : FontWeight.w600,
+                                  fontSize: 13,
+                                  color: isSelected
+                                      ? Colors.white
+                                      : (isDark
+                                          ? Colors.grey.shade300
+                                          : const Color(0xFF737373)),
+                                ),
+                              ),
+                            ],
                           ),
-                          onSelected: (selected) {
-                            if (selected) {
-                              setState(() => _selectedFilter = filter);
-                            }
-                          },
                         ),
                       ),
                     );

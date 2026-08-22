@@ -27,6 +27,10 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
   // Track selected unit per available product ('KG', 'LB', 'CAJA', 'SACO')
   final Map<String, String> _availableProductSelectedUnit = {};
 
+  // Track expanded/collapsed state for detailed info in cards
+  final Set<String> _expandedHistoryCards = {};
+  final Set<String> _expandedProductCards = {};
+
   // Catalog of available seller products that can be put on Flash Offer (Productos tab)
   final List<Map<String, dynamic>> _availableProducts = [
     {
@@ -99,7 +103,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
       'location': 'Tapachula, Chiapas',
       'tags': ['Frutas', 'Dulce'],
       'img':
-          'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250620_1233_Fresas%20en%20Fondo%20Rosado_simple_compose_01jy72ypjmeccafrqb33rfm1q8.png',
+          'https://images.unsplash.com/photo-1553279768-865429fa0078?q=80&w=400&auto=format&fit=crop',
     },
     {
       'name': 'Limón Persa Seleccionado',
@@ -118,6 +122,94 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
       'tags': ['Cítricos', 'Jugo'],
       'img':
           'https://lh3.googleusercontent.com/aida-public/AB6AXuCoJ0D5DucqLAya_-YteH6-8cB0lbCiusShRQ5J7CpVWmeRZq_Dunwko3RtZ6MnlwVNNLu9qIMiXPC02Jr1-ZLXltcDkkQ0pqh4QKIExzuuQRRqrcXdHQcZxH33bpROQ5o-f2IBOsbqiL6lAuXMgnbrH4_kJmNK6b8kKf_2pM4dzh8AtsiiLNaiDX88Fe0OoRYiKx2-omyEvAoG4YwfLUNLxG5W4A6kcm0dv08LBcwmXpObjY9s4lgDuy3fpuu-_bUGZXDeZUcnKro',
+    },
+    {
+      'name': 'Papa Blanca Alpha',
+      'category': 'Tubérculos',
+      'priceRetailKg': 20.00,
+      'priceWholesaleKg': 15.00,
+      'price': '\$20.00',
+      'unit': 'por KG',
+      'availableUnits': ['KG', 'LB', 'SACO', 'BULTO'],
+      'negotiations': '62 realizadas',
+      'views': '2,100 vistas',
+      'rating': '4.8',
+      'badge': 'PRIMERA CALIDAD',
+      'supplier': 'Don Pedro H.',
+      'location': 'Tecomán, Colima',
+      'tags': ['Tubérculos', 'Fresco'],
+      'img': 'assets/images/PapaGemini.png',
+    },
+    {
+      'name': 'Zanahoria Orgánica',
+      'category': 'Raíces',
+      'priceRetailKg': 14.00,
+      'priceWholesaleKg': 10.50,
+      'price': '\$14.00',
+      'unit': 'por KG',
+      'availableUnits': ['KG', 'LB', 'CAJA', 'SACO'],
+      'negotiations': '35 realizadas',
+      'views': '980 vistas',
+      'rating': '4.9',
+      'badge': 'PRIMERA CALIDAD',
+      'supplier': 'Granja Sol',
+      'location': 'Valle Verde, Puebla',
+      'tags': ['Raíces', 'Orgánico'],
+      'img': 'assets/images/ZanahoriaGemini.png',
+    },
+    {
+      'name': 'Frijol Negro Veracruz',
+      'category': 'Cereales',
+      'priceRetailKg': 36.00,
+      'priceWholesaleKg': 28.00,
+      'price': '\$36.00',
+      'unit': 'por KG',
+      'availableUnits': ['KG', 'LB', 'SACO', 'BULTO'],
+      'negotiations': '45 realizadas',
+      'views': '1,640 vistas',
+      'rating': '4.9',
+      'badge': 'PRIMERA CALIDAD',
+      'supplier': 'Granos del Golfo',
+      'location': 'Córdoba, Veracruz',
+      'tags': ['Cereales', 'Granos'],
+      'img':
+          'https://images.unsplash.com/photo-1586201375761-83865001e31c?q=80&w=400&auto=format&fit=crop',
+    },
+    {
+      'name': 'Fresas de Campo Extras',
+      'category': 'Frutas',
+      'priceRetailKg': 45.00,
+      'priceWholesaleKg': 36.00,
+      'price': '\$45.00',
+      'unit': 'por KG',
+      'availableUnits': ['KG', 'LB', 'CAJA'],
+      'negotiations': '73 realizadas',
+      'views': '2,890 vistas',
+      'rating': '4.9',
+      'badge': 'PRIMERA CALIDAD',
+      'supplier': 'AgroFresas',
+      'location': 'Zamora, Michoacán',
+      'tags': ['Frutas', 'Frescas'],
+      'img':
+          'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250620_1233_Fresas%20en%20Fondo%20Rosado_simple_compose_01jy72ypjmeccafrqb33rfm1q8.png',
+    },
+    {
+      'name': 'Maíz Blanco Criollo',
+      'category': 'Cereales',
+      'priceRetailKg': 19.50,
+      'priceWholesaleKg': 14.00,
+      'price': '\$19.50',
+      'unit': 'por KG',
+      'availableUnits': ['KG', 'SACO', 'BULTO', 'TON'],
+      'negotiations': '51 realizadas',
+      'views': '1,920 vistas',
+      'rating': '4.8',
+      'badge': 'PRIMERA CALIDAD',
+      'supplier': 'Maiceros Unidos',
+      'location': 'Celaya, Guanajuato',
+      'tags': ['Cereales', 'Granos'],
+      'img':
+          'https://images.unsplash.com/photo-1551754655-cd27e38d2076?q=80&w=400&auto=format&fit=crop',
     },
   ];
 
@@ -456,17 +548,14 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
   }
 
   Widget _buildCategoryChip(String category, bool isDark) {
+    const emeraldColor = Color(0xFF047857);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
       decoration: BoxDecoration(
-        color: isDark
-            ? const Color(0xFF016042).withValues(alpha: 0.2)
-            : const Color(0xFFEAF2E8),
+        color: emeraldColor.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(6),
         border: Border.all(
-          color: isDark
-              ? const Color(0xFF016042).withValues(alpha: 0.4)
-              : const Color(0xFFBBD5C7),
+          color: emeraldColor.withValues(alpha: 0.4),
           width: 0.8,
         ),
       ),
@@ -474,9 +563,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
         category,
         style: TextStyle(
           fontFamily: 'Manrope',
-          fontSize: 9.5,
+          fontSize: 10,
           fontWeight: FontWeight.bold,
-          color: isDark ? const Color(0xFF6EE7B7) : const Color(0xFF016042),
+          color: isDark ? const Color(0xFF34D399) : emeraldColor,
         ),
       ),
     );
@@ -506,11 +595,16 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
   }
 
   DateTimeRange? _historyDateRange;
+  String _historyQuickFilter = 'Últimas 5';
+  late final List<Map<String, dynamic>> _baseHistoryOffers;
 
-  // List of concluded / past flash offers (Histórico tab - within last 15 days)
-  List<Map<String, dynamic>> get _historyOffers {
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+    startGlobalFlashTimer(); // Sincroniza reloj regresivo global
     final now = DateTime.now();
-    return [
+    _baseHistoryOffers = [
       {
         'name': 'Papa Blanca Alpha',
         'category': 'Tubérculos',
@@ -652,13 +746,6 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
   }
 
   @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-    startGlobalFlashTimer(); // Sincroniza reloj regresivo global
-  }
-
-  @override
   void dispose() {
     _tabController.dispose();
     _productSearchController.dispose();
@@ -706,7 +793,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
     }
   }
 
-  IconData _getFilterChipIcon(String filterName) {
+  IconData? _getFilterChipIcon(String filterName) {
     final lower = filterName.toLowerCase().trim();
     if (lower == 'todas' || lower == 'todos') {
       return Icons.grid_view_rounded;
@@ -714,25 +801,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
       return Icons.bolt_rounded;
     } else if (lower == 'por vencer') {
       return Icons.hourglass_bottom_rounded;
-    } else if (lower.contains('raíz') ||
-        lower.contains('raiz') ||
-        lower.contains('raíces') ||
-        lower.contains('raices')) {
-      return Icons.grass_rounded;
-    } else if (lower.contains('fruta')) {
-      return Icons.apple_rounded;
-    } else if (lower.contains('hortaliza')) {
-      return Icons.spa_rounded;
-    } else if (lower.contains('tubérculo') || lower.contains('tuberculo')) {
-      return Icons.agriculture_rounded;
-    } else if (lower.contains('cítrico') || lower.contains('citrico')) {
-      return Icons.wb_sunny_outlined;
-    } else if (lower.contains('verdura') || lower.contains('legumbre')) {
-      return Icons.eco_rounded;
-    } else if (lower.contains('calidad')) {
-      return Icons.workspace_premium_rounded;
     }
-    return Icons.label_outline_rounded;
+    // No icons for product category chips
+    return null;
   }
 
   String _getOfferEndTimeFormatted(Map<String, dynamic> offer) {
@@ -923,55 +994,107 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
 
   Future<void> _pickHistoryDateRange(BuildContext context, bool isDark) async {
     final now = DateTime.now();
-    final firstAllowed = now.subtract(const Duration(days: 15));
+    final firstAllowed = now.subtract(const Duration(days: 90));
     final initialRange = _historyDateRange ??
         DateTimeRange(
           start: now.subtract(const Duration(days: 7)),
           end: now,
         );
 
-    final picked = await showDateRangePicker(
-      context: context,
-      firstDate: firstAllowed,
-      lastDate: now,
-      initialDateRange: initialRange,
-      helpText: 'HISTORIAL (MÁXIMO 15 DÍAS)',
-      cancelText: 'CANCELAR',
-      confirmText: 'APLICAR',
-      saveText: 'APLICAR',
-      builder: (context, child) {
-        return Theme(
-          data: isDark
-              ? ThemeData.dark().copyWith(
-                  colorScheme: const ColorScheme.dark(
-                    primary: Color(0xFF016042),
-                    onPrimary: Colors.white,
-                    surface: Color(0xFF1E293B),
-                    onSurface: Colors.white,
+    try {
+      final picked = await showDateRangePicker(
+        context: context,
+        firstDate: firstAllowed,
+        lastDate: now.add(const Duration(days: 1)),
+        initialDateRange: initialRange,
+        helpText: 'FILTRAR POR FECHAS (CALENDARIO)',
+        cancelText: 'CANCELAR',
+        confirmText: 'APLICAR',
+        saveText: 'APLICAR',
+        builder: (context, child) {
+          return Theme(
+            data: isDark
+                ? ThemeData.dark().copyWith(
+                    colorScheme: const ColorScheme.dark(
+                      primary: Color(0xFF016042),
+                      onPrimary: Colors.white,
+                      surface: Color(0xFF1E293B),
+                      onSurface: Colors.white,
+                    ),
+                  )
+                : ThemeData.light().copyWith(
+                    colorScheme: const ColorScheme.light(
+                      primary: Color(0xFF016042),
+                      onPrimary: Colors.white,
+                      surface: Colors.white,
+                      onSurface: Color(0xFF1E293B),
+                    ),
                   ),
-                )
-              : ThemeData.light().copyWith(
-                  colorScheme: const ColorScheme.light(
-                    primary: Color(0xFF016042),
-                    onPrimary: Colors.white,
-                    surface: Colors.white,
-                    onSurface: Color(0xFF1E293B),
-                  ),
-                ),
-          child: child!,
-        );
-      },
-    );
+            child: child ?? const SizedBox.shrink(),
+          );
+        },
+      );
 
-    if (picked != null) {
-      setState(() {
-        _historyDateRange = picked;
-      });
+      if (picked != null && mounted) {
+        setState(() {
+          _historyDateRange = picked;
+          _historyQuickFilter = 'Personalizado';
+        });
+      }
+    } catch (e) {
+      debugPrint('Error opening date range picker: $e');
     }
   }
 
   String _formatShortDate(DateTime dt) {
     return '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}';
+  }
+
+  Widget _buildHistoryFilterChip({
+    required String label,
+    required bool isSelected,
+    required bool isDark,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7.5),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? const Color(0xFF016042)
+              : (isDark ? const Color(0xFF1E293B) : Colors.white),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: isSelected
+                ? const Color(0xFF016042)
+                : (isDark ? const Color(0xFF334155) : const Color(0xFFCCDFD9)),
+            width: 1.0,
+          ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFF016042).withValues(alpha: 0.22),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontFamily: 'Manrope',
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+            fontSize: 13,
+            color: isSelected
+                ? Colors.white
+                : (isDark ? Colors.grey.shade300 : const Color(0xFF737373)),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -1312,16 +1435,18 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
-                                iconData,
-                                size: 15,
-                                color: isSelected
-                                    ? Colors.white
-                                    : (isDark
-                                        ? Colors.grey.shade400
-                                        : const Color(0xFF737373)),
-                              ),
-                              const SizedBox(width: 6),
+                              if (iconData != null) ...[
+                                Icon(
+                                  iconData,
+                                  size: 15,
+                                  color: isSelected
+                                      ? Colors.white
+                                      : (isDark
+                                          ? Colors.grey.shade400
+                                          : const Color(0xFF737373)),
+                                ),
+                                const SizedBox(width: 6),
+                              ],
                               Text(
                                 filter,
                                 style: TextStyle(
@@ -1396,24 +1521,21 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                   ),
                 )
               else
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: filteredOffers.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 16),
-                  itemBuilder: (ctx, index) {
-                    final offer = filteredOffers[index];
-                    final originalIdx = offers.indexOf(offer);
-                    return _buildActiveOfferCard(
-                      context,
-                      offer,
-                      originalIdx,
-                      isDark,
-                      cardBg,
-                      borderColor,
-                      primaryColor,
-                    );
-                  },
+                Column(
+                  children: [
+                    for (int index = 0; index < filteredOffers.length; index++) ...[
+                      if (index > 0) const SizedBox(height: 16),
+                      _buildActiveOfferCard(
+                        context,
+                        filteredOffers[index],
+                        offers.indexOf(filteredOffers[index]),
+                        isDark,
+                        cardBg,
+                        borderColor,
+                        primaryColor,
+                      ),
+                    ],
+                  ],
                 ),
             ],
           ),
@@ -1936,7 +2058,14 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
     Color cardBg,
     Color borderColor,
   ) {
-    final categories = ['Todos', 'Hortalizas', 'Frutas', 'Cítricos'];
+    final Set<String> distinctCategories = {};
+    for (final prod in _availableProducts) {
+      final cat = (prod['category'] as String?)?.trim();
+      if (cat != null && cat.isNotEmpty) {
+        distinctCategories.add(cat);
+      }
+    }
+    final categories = ['Todos', ...distinctCategories];
     final filteredAvailable = _availableProducts.where((prod) {
       // 1. Category filter
       if (_selectedCategory != 'Todos' &&
@@ -2102,7 +2231,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
 
           const SizedBox(height: 12),
 
-          // Category Chips matching FilterChips style
+          // Category Choice Chips with dynamic categories from all available products
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -2218,20 +2347,35 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
               ),
             )
           else
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.55,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-              ),
-              itemCount: filteredAvailable.length,
-              itemBuilder: (ctx, index) {
-                final prod = filteredAvailable[index];
-                return _buildAvailableProductCard(context, prod, isDark);
-              },
+            Column(
+              children: [
+                for (int i = 0; i < filteredAvailable.length; i += 2) ...[
+                  if (i > 0) const SizedBox(height: 12),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: _buildAvailableProductCard(
+                          context,
+                          filteredAvailable[i],
+                          isDark,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      if (i + 1 < filteredAvailable.length)
+                        Expanded(
+                          child: _buildAvailableProductCard(
+                            context,
+                            filteredAvailable[i + 1],
+                            isDark,
+                          ),
+                        )
+                      else
+                        const Expanded(child: SizedBox.shrink()),
+                    ],
+                  ),
+                ],
+              ],
             ),
         ],
       ),
@@ -2535,56 +2679,113 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                 ),
 
                 const SizedBox(height: 6),
-                Divider(color: Colors.grey.withValues(alpha: 0.2), height: 1),
-                const SizedBox(height: 6),
+                Divider(color: Colors.grey.withValues(alpha: 0.2)),
 
-                // Metric Rows Stacked (uno debajo del otro)
-                // 1. CALIDAD
-                _buildMetricRow(
-                  icon: Icons.workspace_premium,
-                  iconBgColor: _getQualityBadgeBgColor(
-                    prod['badge'] ?? 'PRIMERA CALIDAD',
-                    isDark,
-                  ),
-                  iconColor: _getQualityBadgeTextColor(
-                    prod['badge'] ?? 'PRIMERA CALIDAD',
-                    isDark,
-                  ),
-                  label: 'CALIDAD',
-                  value: (prod['badge'] ?? 'PRIMERA CALIDAD')
-                      .toString()
-                      .toUpperCase(),
-                  valueTextColor: _getQualityBadgeTextColor(
-                    prod['badge'] ?? 'PRIMERA CALIDAD',
-                    isDark,
+                // Expandable Details Toggle
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      if (_expandedProductCards.contains(productName)) {
+                        _expandedProductCards.remove(productName);
+                      } else {
+                        _expandedProductCards.add(productName);
+                      }
+                    });
+                  },
+                  borderRadius: BorderRadius.circular(6),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? const Color(0xFF0F172A)
+                          : const Color(0xFFF1F5F9),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: isDark
+                            ? const Color(0xFF334155)
+                            : const Color(0xFFE2E8F0),
+                        width: 0.8,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _expandedProductCards.contains(productName)
+                              ? 'Ocultar detalles'
+                              : 'Ver detalle completo',
+                          style: TextStyle(
+                            fontFamily: 'Manrope',
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.bold,
+                            color: isDark
+                                ? const Color(0xFF34D399)
+                                : const Color(0xFF047857),
+                          ),
+                        ),
+                        Icon(
+                          _expandedProductCards.contains(productName)
+                              ? Icons.keyboard_arrow_up_rounded
+                              : Icons.keyboard_arrow_down_rounded,
+                          size: 14,
+                          color: isDark
+                              ? const Color(0xFF34D399)
+                              : const Color(0xFF047857),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(height: 5),
 
-                // 2. NEGOCIACIONES
-                _buildMetricRow(
-                  icon: Icons.handshake_outlined,
-                  iconBgColor: const Color(0xFF047857).withValues(alpha: 0.12),
-                  iconColor: const Color(0xFF047857),
-                  label: 'NEGOCIACIONES',
-                  value: prod['negotiations'] ?? '35 realizadas',
-                  valueTextColor: isDark
-                      ? const Color(0xFF34D399)
-                      : const Color(0xFF047857),
-                ),
-                const SizedBox(height: 5),
+                if (_expandedProductCards.contains(productName)) ...[
+                  const SizedBox(height: 6),
+                  // 1. CALIDAD
+                  _buildMetricRow(
+                    icon: Icons.workspace_premium,
+                    iconBgColor: _getQualityBadgeBgColor(
+                      prod['badge'] ?? 'PRIMERA CALIDAD',
+                      isDark,
+                    ),
+                    iconColor: _getQualityBadgeTextColor(
+                      prod['badge'] ?? 'PRIMERA CALIDAD',
+                      isDark,
+                    ),
+                    label: 'CALIDAD',
+                    value: (prod['badge'] ?? 'PRIMERA CALIDAD')
+                        .toString()
+                        .toUpperCase(),
+                    valueTextColor: _getQualityBadgeTextColor(
+                      prod['badge'] ?? 'PRIMERA CALIDAD',
+                      isDark,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
 
-                // 3. VISUALIZACIONES
-                _buildMetricRow(
-                  icon: Icons.visibility_outlined,
-                  iconBgColor: const Color(0xFF0284C7).withValues(alpha: 0.12),
-                  iconColor: const Color(0xFF0284C7),
-                  label: 'VISUALIZACIONES',
-                  value: prod['views'] ?? '1,280 vistas',
-                  valueTextColor: isDark
-                      ? const Color(0xFF38BDF8)
-                      : const Color(0xFF0369A1),
-                ),
+                  // 2. NEGOCIACIONES
+                  _buildMetricRow(
+                    icon: Icons.handshake_outlined,
+                    iconBgColor: const Color(0xFF047857).withValues(alpha: 0.12),
+                    iconColor: const Color(0xFF047857),
+                    label: 'NEGOCIACIONES',
+                    value: prod['negotiations'] ?? '35 realizadas',
+                    valueTextColor: isDark
+                        ? const Color(0xFF34D399)
+                        : const Color(0xFF047857),
+                  ),
+                  const SizedBox(height: 5),
+
+                  // 3. VISUALIZACIONES
+                  _buildMetricRow(
+                    icon: Icons.visibility_outlined,
+                    iconBgColor: const Color(0xFF0284C7).withValues(alpha: 0.12),
+                    iconColor: const Color(0xFF0284C7),
+                    label: 'VISUALIZACIONES',
+                    value: prod['views'] ?? '1,280 vistas',
+                    valueTextColor: isDark
+                        ? const Color(0xFF38BDF8)
+                        : const Color(0xFF0369A1),
+                  ),
+                ],
 
                 const SizedBox(height: 10),
 
@@ -2712,13 +2913,15 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
     return ValueListenableBuilder<List<Map<String, dynamic>>>(
       valueListenable: globalFlashOffers,
       builder: (context, globalOffers, _) {
-        // Collect all offers from global state whose time has expired (secondsRemaining <= 0)
+        final now = DateTime.now();
+
+        // 1. Concluded offers from active state
         final expiredGlobalOffers = globalOffers
             .where((o) => (o['secondsRemaining'] as int? ?? 0) <= 0)
             .map((o) {
               final stock = o['stockLimit'] ?? 50;
               return {
-                'name': o['name'] ?? 'Producto',
+                'name': o['name'] ?? 'Producto en Oferta',
                 'category': o['category'] ?? 'General',
                 'discount': o['discount'] ?? '-20%',
                 'finalPrice': o['price'] ?? '\$0.00',
@@ -2732,7 +2935,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                 'negotiations': o['negotiations'] ?? '38 realizadas',
                 'views': o['views'] ?? '1,850 vistas',
                 'endedDate': 'Hoy (Concluida)',
-                'endedDateTime': DateTime.now(),
+                'endedDateTime': now,
                 'status': 'Finalizada',
                 'img': o['img'] ?? 'assets/images/PapaGemini.png',
                 'rawProduct': o,
@@ -2740,23 +2943,30 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
             })
             .toList();
 
-        final combinedHistory = [...expiredGlobalOffers, ..._historyOffers];
-        // Sort descending by completion date
-        combinedHistory.sort((a, b) {
-          final dtA = (a['endedDateTime'] as DateTime?) ?? DateTime.now();
-          final dtB = (b['endedDateTime'] as DateTime?) ?? DateTime.now();
+        // 2. Combine with base history offers and sort safely
+        final List<Map<String, dynamic>> allOffers = [
+          ...expiredGlobalOffers,
+          ..._baseHistoryOffers,
+        ];
+
+        allOffers.sort((a, b) {
+          final dtA = a['endedDateTime'] as DateTime? ?? DateTime(2020);
+          final dtB = b['endedDateTime'] as DateTime? ?? DateTime(2020);
           return dtB.compareTo(dtA);
         });
 
-        // Filter by date range (if selected) or default to the latest 5 offers (Point 4)
-        final List<Map<String, dynamic>> displayHistory;
-        final bool isDateFiltered = _historyDateRange != null;
+        // 3. Filter by date range or quick filters
+        List<Map<String, dynamic>> displayHistory;
+        final bool isCustomDateRange = _historyDateRange != null;
 
-        if (isDateFiltered) {
+        if (isCustomDateRange) {
           final startDay = DateTime(
             _historyDateRange!.start.year,
             _historyDateRange!.start.month,
             _historyDateRange!.start.day,
+            0,
+            0,
+            0,
           );
           final endDay = DateTime(
             _historyDateRange!.end.year,
@@ -2767,19 +2977,33 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
             59,
           );
 
-          displayHistory = combinedHistory.where((item) {
+          displayHistory = allOffers.where((item) {
             final dt = item['endedDateTime'] as DateTime?;
             if (dt == null) return true;
             return dt.isAfter(startDay.subtract(const Duration(seconds: 1))) &&
                 dt.isBefore(endDay.add(const Duration(seconds: 1)));
           }).toList();
+        } else if (_historyQuickFilter == '7 Días') {
+          final threshold = now.subtract(const Duration(days: 7));
+          displayHistory = allOffers.where((item) {
+            final dt = item['endedDateTime'] as DateTime?;
+            return dt == null || dt.isAfter(threshold);
+          }).toList();
+        } else if (_historyQuickFilter == '15 Días') {
+          final threshold = now.subtract(const Duration(days: 15));
+          displayHistory = allOffers.where((item) {
+            final dt = item['endedDateTime'] as DateTime?;
+            return dt == null || dt.isAfter(threshold);
+          }).toList();
+        } else if (_historyQuickFilter == 'Todas') {
+          displayHistory = allOffers;
         } else {
-          // Always show the latest 5 offers performed when entering this section (Point 4)
-          displayHistory = combinedHistory.take(5).toList();
+          // Default: 'Últimas 5'
+          displayHistory = allOffers.take(5).toList();
         }
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -2802,7 +3026,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                         ),
                         const SizedBox(height: 3),
                         Text(
-                          'Revisa las ofertas concluidas, duración y métricas obtenidas.',
+                          'Revisa el rendimiento, duración y métricas de ofertas pasadas.',
                           style: TextStyle(
                             fontSize: 12.5,
                             color: isDark
@@ -2816,78 +3040,156 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                 ],
               ),
 
-              const SizedBox(height: 14),
+              const SizedBox(height: 12),
 
-              // Calendar Filter Bar (Point 3: Calendario con límite de 15 días)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1E293B) : Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: isDateFiltered
-                        ? const Color(0xFF016042)
-                        : borderColor,
-                    width: isDateFiltered ? 1.4 : 1.0,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.03),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
+              // Calendar and Quick Filter Choice Chips Bar
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _buildHistoryFilterChip(
+                      label: 'Últimas 5',
+                      isSelected: _historyDateRange == null && _historyQuickFilter == 'Últimas 5',
+                      isDark: isDark,
+                      onTap: () {
+                        setState(() {
+                          _historyDateRange = null;
+                          _historyQuickFilter = 'Últimas 5';
+                        });
+                      },
+                    ),
+                    const SizedBox(width: 8),
+                    _buildHistoryFilterChip(
+                      label: 'Últimos 7 días',
+                      isSelected: _historyDateRange == null && _historyQuickFilter == '7 Días',
+                      isDark: isDark,
+                      onTap: () {
+                        setState(() {
+                          _historyDateRange = null;
+                          _historyQuickFilter = '7 Días';
+                        });
+                      },
+                    ),
+                    const SizedBox(width: 8),
+                    _buildHistoryFilterChip(
+                      label: 'Últimos 15 días',
+                      isSelected: _historyDateRange == null && _historyQuickFilter == '15 Días',
+                      isDark: isDark,
+                      onTap: () {
+                        setState(() {
+                          _historyDateRange = null;
+                          _historyQuickFilter = '15 Días';
+                        });
+                      },
+                    ),
+                    const SizedBox(width: 8),
+                    _buildHistoryFilterChip(
+                      label: 'Todas',
+                      isSelected: _historyDateRange == null && _historyQuickFilter == 'Todas',
+                      isDark: isDark,
+                      onTap: () {
+                        setState(() {
+                          _historyDateRange = null;
+                          _historyQuickFilter = 'Todas';
+                        });
+                      },
+                    ),
+                    const SizedBox(width: 8),
+                    // Interactive Calendar Picker button
+                    GestureDetector(
+                      onTap: () => _pickHistoryDateRange(context, isDark),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 180),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7.5),
+                        decoration: BoxDecoration(
+                          color: isCustomDateRange
+                              ? const Color(0xFF016042)
+                              : (isDark ? const Color(0xFF1E293B) : Colors.white),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: isCustomDateRange
+                                ? const Color(0xFF016042)
+                                : (isDark ? const Color(0xFF334155) : const Color(0xFFCCDFD9)),
+                            width: 1.0,
+                          ),
+                          boxShadow: isCustomDateRange
+                              ? [
+                                  BoxShadow(
+                                    color: const Color(0xFF016042).withValues(alpha: 0.25),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ]
+                              : null,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.calendar_month_rounded,
+                              size: 15,
+                              color: isCustomDateRange
+                                  ? Colors.white
+                                  : (isDark ? Colors.grey.shade400 : const Color(0xFF016042)),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              isCustomDateRange
+                                  ? '${_formatShortDate(_historyDateRange!.start)} - ${_formatShortDate(_historyDateRange!.end)}'
+                                  : 'Filtrar por Calendario',
+                              style: TextStyle(
+                                fontFamily: 'Manrope',
+                                fontWeight: isCustomDateRange ? FontWeight.bold : FontWeight.w600,
+                                fontSize: 13,
+                                color: isCustomDateRange
+                                    ? Colors.white
+                                    : (isDark ? Colors.grey.shade300 : const Color(0xFF016042)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF016042).withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Icons.calendar_month_outlined,
+              ),
+
+              if (isCustomDateRange) ...[
+                const SizedBox(height: 10),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF016042).withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: const Color(0xFF016042).withValues(alpha: 0.3),
+                      width: 1.0,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.filter_alt_outlined,
+                        size: 16,
                         color: Color(0xFF016042),
-                        size: 20,
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            isDateFiltered
-                                ? 'Rango: ${_formatShortDate(_historyDateRange!.start)} - ${_formatShortDate(_historyDateRange!.end)}'
-                                : 'Últimas 5 ofertas realizadas',
-                            style: TextStyle(
-                              fontFamily: 'Manrope',
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: isDark ? Colors.white : const Color(0xFF1E293B),
-                            ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Filtrando del ${_formatShortDate(_historyDateRange!.start)} al ${_formatShortDate(_historyDateRange!.end)} (${displayHistory.length} resultados)',
+                          style: TextStyle(
+                            fontFamily: 'Manrope',
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? const Color(0xFF34D399) : const Color(0xFF016042),
                           ),
-                          Text(
-                            isDateFiltered
-                                ? '${displayHistory.length} oferta(s) encontrada(s)'
-                                : 'Límite de búsqueda: últimos 15 días',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: isDark
-                                  ? Colors.grey.shade400
-                                  : Colors.grey.shade600,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                    if (isDateFiltered)
                       TextButton.icon(
                         onPressed: () {
                           setState(() {
                             _historyDateRange = null;
+                            _historyQuickFilter = 'Últimas 5';
                           });
                         },
                         icon: const Icon(Icons.close, size: 14, color: Colors.redAccent),
@@ -2900,38 +3202,17 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                           ),
                         ),
                         style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                           minimumSize: Size.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                       ),
-                    const SizedBox(width: 4),
-                    ElevatedButton.icon(
-                      onPressed: () => _pickHistoryDateRange(context, isDark),
-                      icon: const Icon(Icons.tune, size: 14),
-                      label: Text(isDateFiltered ? 'Cambiar' : 'Filtrar'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF016042),
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 6,
-                        ),
-                        textStyle: const TextStyle(
-                          fontSize: 11.5,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+              ],
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
 
               // History list rendering
               if (displayHistory.isEmpty)
@@ -2948,49 +3229,65 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                     children: [
                       Icon(
                         Icons.history_toggle_off_outlined,
-                        size: 44,
+                        size: 48,
                         color: Colors.grey.shade400,
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
                       Text(
-                        isDateFiltered
-                            ? 'No se encontraron ofertas en este rango de fechas.'
-                            : 'No hay ofertas finalizadas en el historial.',
+                        isCustomDateRange
+                            ? 'No se encontraron ofertas en las fechas seleccionadas.'
+                            : 'No hay ofertas concluidas en este periodo.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 13.5,
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: isDark ? Colors.white70 : Colors.black87,
                         ),
                       ),
-                      if (isDateFiltered) ...[
-                        const SizedBox(height: 10),
-                        OutlinedButton(
-                          onPressed: () {
-                            setState(() {
-                              _historyDateRange = null;
-                            });
-                          },
-                          child: const Text('Ver últimas 5 ofertas'),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Prueba ajustando el rango de fechas o limpiando el filtro.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                         ),
-                      ],
+                      ),
+                      const SizedBox(height: 14),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _historyDateRange = null;
+                            _historyQuickFilter = 'Todas';
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF016042),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: const Text('Ver todas las ofertas concluidas'),
+                      ),
                     ],
                   ),
                 )
               else
                 Column(
-                  children: displayHistory
-                      .map(
-                        (item) => _buildHistoryOfferCard(
-                          context,
-                          item,
-                          isDark,
-                          cardBg,
-                          borderColor,
-                          primaryColor,
-                        ),
-                      )
-                      .toList(),
+                  children: [
+                    for (int i = 0; i < displayHistory.length; i++)
+                      _buildHistoryOfferCard(
+                        context,
+                        displayHistory[i],
+                        i,
+                        isDark,
+                        cardBg,
+                        borderColor,
+                        primaryColor,
+                      ),
+                  ],
                 ),
             ],
           ),
@@ -3002,6 +3299,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
   Widget _buildHistoryOfferCard(
     BuildContext context,
     Map<String, dynamic> item,
+    int index,
     bool isDark,
     Color cardBg,
     Color borderColor,
@@ -3009,6 +3307,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
   ) {
     final isWholesale = (item['salesMode'] ?? 'retail') == 'wholesale';
     final activeColor = isWholesale ? const Color(0xFF0369A1) : primaryColor;
+    final String imgSrc = (item['img'] ?? '').toString();
+    final String cardKey = '${item['name']}_${item['endedDate']}_$index';
+    final bool isExpanded = _expandedHistoryCards.contains(cardKey);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
@@ -3029,7 +3330,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. Header: Image + Title + Discount + Status
+            // 1. Header: Image + Title + Discount + Prices
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -3042,18 +3343,18 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: (item['img'] ?? '').toString().startsWith('http')
+                    child: imgSrc.startsWith('http')
                         ? Image.network(
-                            item['img'],
+                            imgSrc,
                             fit: BoxFit.cover,
                             errorBuilder: (c, e, s) =>
-                                const Icon(Icons.image, size: 28),
+                                const Icon(Icons.image, size: 28, color: Colors.grey),
                           )
                         : Image.asset(
-                            item['img'] ?? 'assets/images/PapaGemini.png',
+                            imgSrc.isNotEmpty ? imgSrc : 'assets/images/PapaGemini.png',
                             fit: BoxFit.cover,
                             errorBuilder: (c, e, s) =>
-                                const Icon(Icons.image, size: 28),
+                                const Icon(Icons.image, size: 28, color: Colors.grey),
                           ),
                   ),
                 ),
@@ -3066,7 +3367,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                         children: [
                           Expanded(
                             child: Text(
-                              item['name'] ?? '',
+                              item['name'] ?? 'Producto',
                               style: TextStyle(
                                 fontFamily: 'Manrope',
                                 fontSize: 15,
@@ -3105,7 +3406,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                         textBaseline: TextBaseline.alphabetic,
                         children: [
                           Text(
-                            item['finalPrice'] ?? '',
+                            item['finalPrice'] ?? '\$0.00',
                             style: TextStyle(
                               fontFamily: 'Manrope',
                               fontSize: 15,
@@ -3224,140 +3525,215 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                   ),
                 ),
 
-                // Category Badge (Requirement 6)
+                // Category Badge (Formato Al Detalle, sin icono)
                 _buildCategoryChip(item['category'] ?? 'General', isDark),
 
-                // Quality Badge (Requirement 5)
+                // Quality Badge
                 _buildQualityChip(item['badge'] ?? 'PRIMERA CALIDAD', isDark),
               ],
             ),
 
             const SizedBox(height: 10),
-            Divider(color: Colors.grey.withValues(alpha: 0.2), height: 1),
-            const SizedBox(height: 8),
 
-            // 3. Duración activa & Fecha de finalización (Point 2)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
+            // Toggle Button: "Ver detalle completo ▾" / "Ocultar detalles ▴"
+            InkWell(
+              onTap: () {
+                setState(() {
+                  if (isExpanded) {
+                    _expandedHistoryCards.remove(cardKey);
+                  } else {
+                    _expandedHistoryCards.add(cardKey);
+                  }
+                });
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? const Color(0xFF0F172A)
+                      : const Color(0xFFF1F5F9),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: isDark
+                        ? const Color(0xFF334155)
+                        : const Color(0xFFE2E8F0),
+                    width: 0.8,
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Icon(
-                      Icons.timer_outlined,
-                      size: 12,
-                      color: Color(0xFF047857),
+                    Row(
+                      children: [
+                        Icon(
+                          isExpanded
+                              ? Icons.visibility_off_outlined
+                              : Icons.analytics_outlined,
+                          size: 13,
+                          color: isDark
+                              ? const Color(0xFF34D399)
+                              : const Color(0xFF047857),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          isExpanded
+                              ? 'Ocultar información detallada'
+                              : 'Ver métricas y detalle completo',
+                          style: TextStyle(
+                            fontFamily: 'Manrope',
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: isDark
+                                ? const Color(0xFF34D399)
+                                : const Color(0xFF047857),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Tiempo activa: ',
-                      style: TextStyle(
-                        fontSize: 10.5,
-                        color: isDark
-                            ? Colors.grey.shade400
-                            : Colors.grey.shade600,
-                      ),
-                    ),
-                    Text(
-                      item['activeDuration'] ?? '12 Horas',
-                      style: TextStyle(
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.bold,
-                        color: isDark
-                            ? Colors.white
-                            : const Color(0xFF1E293B),
-                      ),
+                    Icon(
+                      isExpanded
+                          ? Icons.keyboard_arrow_up_rounded
+                          : Icons.keyboard_arrow_down_rounded,
+                      size: 17,
+                      color: isDark
+                          ? const Color(0xFF34D399)
+                          : const Color(0xFF047857),
                     ),
                   ],
                 ),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.event_available_outlined,
-                      size: 12,
-                      color: Colors.grey.shade500,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      item['endedDate'] ?? 'Concluida',
+              ),
+            ),
+
+            // Collapsible Details Section
+            if (isExpanded) ...[
+              const SizedBox(height: 10),
+              Divider(color: Colors.grey.withValues(alpha: 0.2), height: 1),
+              const SizedBox(height: 8),
+
+              // 3. Duración activa & Fecha de finalización
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.timer_outlined,
+                        size: 12,
+                        color: Color(0xFF047857),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Tiempo activa: ',
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          color: isDark
+                              ? Colors.grey.shade400
+                              : Colors.grey.shade600,
+                        ),
+                      ),
+                      Text(
+                        item['activeDuration'] ?? '12 Horas',
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.bold,
+                          color: isDark
+                              ? Colors.white
+                              : const Color(0xFF1E293B),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.event_available_outlined,
+                        size: 12,
+                        color: Colors.grey.shade500,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        item['endedDate'] ?? 'Concluida',
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w600,
+                          color: isDark
+                              ? Colors.grey.shade400
+                              : Colors.grey.shade600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 4),
+
+              // Vendido & Recaudado
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '📦 Vendido: ${item['totalSoldKg'] ?? '0 KG'}',
                       style: TextStyle(
+                        fontFamily: 'JetBrains Mono',
                         fontSize: 10.5,
                         fontWeight: FontWeight.w600,
                         color: isDark
-                            ? Colors.grey.shade400
-                            : Colors.grey.shade600,
+                            ? Colors.grey.shade300
+                            : const Color(0xFF334155),
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 4),
-
-            // Vendido & Recaudado
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    '📦 Vendido: ${item['totalSoldKg']}',
+                  ),
+                  Text(
+                    '💰 Recaudado: ${item['totalRevenue'] ?? '\$0.00'}',
                     style: TextStyle(
                       fontFamily: 'JetBrains Mono',
                       fontSize: 10.5,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
                       color: isDark
-                          ? Colors.grey.shade300
-                          : const Color(0xFF334155),
+                          ? const Color(0xFF34D399)
+                          : const Color(0xFF047857),
                     ),
                   ),
-                ),
-                Text(
-                  '💰 Recaudado: ${item['totalRevenue']}',
-                  style: TextStyle(
-                    fontFamily: 'JetBrains Mono',
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.bold,
-                    color: isDark
-                        ? const Color(0xFF34D399)
-                        : const Color(0xFF047857),
-                  ),
-                ),
-              ],
-            ),
+                ],
+              ),
 
-            const SizedBox(height: 8),
-            Divider(color: Colors.grey.withValues(alpha: 0.2), height: 1),
-            const SizedBox(height: 8),
+              const SizedBox(height: 8),
+              Divider(color: Colors.grey.withValues(alpha: 0.2), height: 1),
+              const SizedBox(height: 8),
 
-            // 4. Métricas Obtenidas (Point 1: Negociaciones y Visualizaciones obtenidas)
-            Row(
-              children: [
-                Expanded(
-                  child: _buildMetricRow(
-                    icon: Icons.handshake_outlined,
-                    iconBgColor: const Color(0xFF047857).withValues(alpha: 0.12),
-                    iconColor: const Color(0xFF047857),
-                    label: 'NEGOCIACIONES OBTENIDAS',
-                    value: item['negotiations'] ?? '24 realizadas',
-                    valueTextColor: isDark
-                        ? const Color(0xFF34D399)
-                        : const Color(0xFF047857),
+              // 4. Métricas Obtenidas
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildMetricRow(
+                      icon: Icons.handshake_outlined,
+                      iconBgColor: const Color(0xFF047857).withValues(alpha: 0.12),
+                      iconColor: const Color(0xFF047857),
+                      label: 'NEGOCIACIONES OBTENIDAS',
+                      value: item['negotiations'] ?? '24 realizadas',
+                      valueTextColor: isDark
+                          ? const Color(0xFF34D399)
+                          : const Color(0xFF047857),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildMetricRow(
-                    icon: Icons.visibility_outlined,
-                    iconBgColor: const Color(0xFF0284C7).withValues(alpha: 0.12),
-                    iconColor: const Color(0xFF0284C7),
-                    label: 'VISUALIZACIONES OBTENIDAS',
-                    value: item['views'] ?? '1,420 vistas',
-                    valueTextColor: isDark
-                        ? const Color(0xFF38BDF8)
-                        : const Color(0xFF0369A1),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildMetricRow(
+                      icon: Icons.visibility_outlined,
+                      iconBgColor: const Color(0xFF0284C7).withValues(alpha: 0.12),
+                      iconColor: const Color(0xFF0284C7),
+                      label: 'VISUALIZACIONES OBTENIDAS',
+                      value: item['views'] ?? '1,420 vistas',
+                      valueTextColor: isDark
+                          ? const Color(0xFF38BDF8)
+                          : const Color(0xFF0369A1),
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            ],
 
             const SizedBox(height: 10),
 

@@ -116,7 +116,7 @@ class _AnimatedDiscountBadgeState extends State<AnimatedDiscountBadge>
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(
-              Icons.local_fire_department,
+              Icons.bolt,
               color: Colors.white,
               size: 13,
             ),

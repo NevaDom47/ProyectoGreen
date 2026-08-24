@@ -211,7 +211,7 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                           '30% OFF',
                           isDark,
                           filterType: 'discount',
-                          icon: Icons.local_fire_department,
+                          icon: Icons.bolt,
                           iconColor: Colors.orange,
                         ),
                         _buildFilterChip('25% OFF', isDark, filterType: 'discount'),

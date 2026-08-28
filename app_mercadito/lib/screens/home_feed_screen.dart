@@ -2381,6 +2381,36 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                       ),
                     ),
                   ),
+
+                  _buildDrawerItem(
+                    'Gestion Producto',
+                    Icons.inventory_2_outlined,
+                    itemTextColor,
+                    itemHoverBg,
+                    false,
+                    onTap: () {
+                      context.pop();
+                      context.push('/product-management');
+                    },
+                    trailing: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF004532),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Text(
+                        'CATÁLOGO',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
                   _buildDrawerItem(
                     'Dashboard',
                     Icons.dashboard,

@@ -1,0 +1,199 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Product Catalog - Emerald Harvest</title>
+<!-- Tailwind CSS & Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind Config injected from Design System -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-dim": "#d7dbd6",
+                        "primary-fixed": "#a5f3cb",
+                        "background": "#f7faf5",
+                        "inverse-surface": "#2d312e",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#eef2ed",
+                        "on-tertiary-fixed-variant": "#75322f",
+                        "secondary-fixed": "#caead7",
+                        "secondary-container": "#caead7",
+                        "surface-container-low": "#f1f4f0",
+                        "on-secondary-fixed-variant": "#314c3f",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#e6e9e4",
+                        "surface-variant": "#e0e3df",
+                        "outline-variant": "#bec9c1",
+                        "on-secondary-fixed": "#042015",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#89d6b0",
+                        "surface": "#f7faf5",
+                        "on-surface-variant": "#3f4943",
+                        "surface-container": "#ebefea",
+                        "primary-container": "#036042",
+                        "on-secondary-container": "#4e6b5b",
+                        "on-tertiary-fixed": "#3c0708",
+                        "secondary": "#486456",
+                        "on-primary-fixed": "#002114",
+                        "inverse-primary": "#89d6b0",
+                        "outline": "#6f7a73",
+                        "tertiary-fixed-dim": "#ffb3ae",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#005137",
+                        "surface-bright": "#f7faf5",
+                        "tertiary": "#682826",
+                        "on-tertiary-container": "#ffb5b0",
+                        "surface-tint": "#186b4c",
+                        "on-background": "#181d1a",
+                        "error-container": "#ffdad6",
+                        "primary": "#00462f",
+                        "error": "#ba1a1a",
+                        "on-surface": "#181d1a",
+                        "surface-container-highest": "#e0e3df",
+                        "secondary-fixed-dim": "#afcebb",
+                        "on-primary-container": "#8bd8b2",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#853e3b",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#ffdad7"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans", "sans-serif"],
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "body": ["Plus Jakarta Sans", "sans-serif"],
+                        "label": ["Plus Jakarta Sans", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background font-body text-on-surface antialiased min-h-screen pt-20 pb-28 md:pb-8 flex flex-col">
+<!-- TopAppBar -->
+
+<!-- Main Content Area -->
+<main class="flex-grow px-4 md:px-8 max-w-7xl mx-auto w-full flex flex-col gap-6 pt-4">
+<!-- Header Section with Actions -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 w-full">
+<div>
+<h1 class="font-display font-extrabold text-2xl text-primary mb-1">Productos</h1>
+<p class="text-sm text-on-surface-variant">Administra los productos de tu mercado</p>
+</div>
+<button class="bg-primary text-on-primary font-label font-bold text-[10px] tracking-widest uppercase px-6 py-3 rounded-full hover:bg-primary-container hover:text-on-primary-container transition-colors active:scale-95 duration-150 flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined" style="font-size: 16px;">add</span>Agregar producto</button>
+</div>
+<!-- Catalog List Container -->
+<div class="flex flex-col gap-4">
+<!-- Product Card 1: Tomatoes -->
+<article class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-4 flex flex-row items-center gap-4 relative overflow-hidden group">
+<!-- Image Wrapper -->
+<div class="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 rounded-lg overflow-hidden relative bg-surface-container-low">
+<img alt="Fresh Tomatoes" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out" src="https://lh3.googleusercontent.com/aida/AEtjO1WJPFi5I7ZN-mHEOmgqdgmYQxGUivEKgUceqV8OcdNcWwowkcPmSiJrAgNG82XtSgoX-uePPMYN8BGd4CqtyuTb_DWJcL1N9EY-Zb9pw67Sxhks3OGyC9hadvAaJOIk0gudu0Hrum9DHf9E_MsgiO4Vq3RUl5yWwKlvGxQyVEZbHKV44heVYLB-SuP2c9B2EN7Wg5gaYaoj991-EEiBhW8g_oE8djsBWnAcvDzTbTF6XMHOPxANhCnCOzg">
+
+</div>
+<!-- Content -->
+<div class="flex-grow flex flex-col justify-between py-1 min-w-0">
+<div class="flex justify-between items-start gap-2">
+<div class="min-w-0">
+<h2 class="font-display font-bold text-base sm:text-lg text-on-surface truncate">Tomate Saladette</h2>
+<div class="flex items-center gap-1 text-xs text-secondary mt-1">
+
+<span class="font-medium">Primera Calidad</span>
+</div>
+</div>
+<button class="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-90">
+<span class="material-symbols-outlined" style="font-size: 20px;">more_vert</span>
+</button>
+</div>
+<div class="flex justify-between items-end mt-3 sm:mt-4">
+<div class="flex items-baseline gap-1">
+<span class="font-display font-bold text-xl text-primary">$28.50</span>
+<span class="text-xs font-medium text-on-surface-variant">/ LB</span>
+</div>
+<button class="hidden sm:flex items-center justify-center bg-surface-container-high text-primary font-label font-bold text-[10px] tracking-widest uppercase px-4 py-2 rounded-full hover:bg-primary hover:text-on-primary transition-colors active:scale-95 duration-150">
+                            Manage
+                        </button>
+</div>
+</div>
+</article>
+<!-- Product Card 2: Lemons -->
+<article class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-4 flex flex-row items-center gap-4 relative overflow-hidden group">
+<!-- Image Wrapper -->
+<div class="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 rounded-lg overflow-hidden relative bg-surface-container-low">
+<img alt="Fresh Lemons" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out" src="https://lh3.googleusercontent.com/aida/AEtjO1UDV4xCp1jhcb-egx-ZZs69cRSVWsKFPJbDs5xkG824bImlFddNkfuvUFIAC88rGP-Jp55kQWHiB6FW4SZ-rGaW3DRUqEb_HGtLYuz_FY2tPb8WIlbkWcpwzJ63EaoWFM7aHlX7Yo4NHJwGoOhgT8c5mYeCEQrxmB6-1sLYMwOHSJ45nrpaVqu_awDl5Mff3RLV2UrekFhLE5QIrW-yBLh86eqpu71Aolq3nXys9zWAHQ6cGCpwX9EecgI">
+
+</div>
+<!-- Content -->
+<div class="flex-grow flex flex-col justify-between py-1 min-w-0">
+<div class="flex justify-between items-start gap-2">
+<div class="min-w-0">
+<h2 class="font-display font-bold text-base sm:text-lg text-on-surface truncate">Limón Colima</h2>
+<div class="flex items-center gap-1 text-xs text-secondary mt-1">
+
+<span class="font-medium">Primera Calidad</span>
+</div>
+</div>
+<button class="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-90">
+<span class="material-symbols-outlined" style="font-size: 20px;">more_vert</span>
+</button>
+</div>
+<div class="flex justify-between items-end mt-3 sm:mt-4">
+<div class="flex items-baseline gap-1">
+<span class="font-display font-bold text-xl text-primary">$35.00</span>
+<span class="text-xs font-medium text-on-surface-variant">/ LB</span>
+</div>
+<button class="hidden sm:flex items-center justify-center bg-surface-container-high text-primary font-label font-bold text-[10px] tracking-widest uppercase px-4 py-2 rounded-full hover:bg-primary hover:text-on-primary transition-colors active:scale-95 duration-150">
+                            Manage
+                        </button>
+</div>
+</div>
+</article>
+<!-- Product Card 3: Lettuce -->
+
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden bg-surface dark:bg-background shadow-lg rounded-t-xl fixed bottom-0 left-0 w-full h-20 flex justify-around items-center px-2 pb-2 z-50">
+<!-- Active Tab: Catalog -->
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-full px-6 py-1 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="inventory_2" style="font-variation-settings: &quot;FILL&quot; 1;">inventory_2</span>
+<span class="font-label font-black text-[10px] tracking-widest uppercase">Catalog</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-2 hover:text-primary dark:hover:text-primary-fixed transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="receipt_long">receipt_long</span>
+<span class="font-label font-black text-[10px] tracking-widest uppercase">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-2 hover:text-primary dark:hover:text-primary-fixed transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="query_stats">query_stats</span>
+<span class="font-label font-black text-[10px] tracking-widest uppercase">Trends</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-2 hover:text-primary dark:hover:text-primary-fixed transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-label font-black text-[10px] tracking-widest uppercase">Account</span>
+</a>
+</nav>
+<!-- Desktop Sidebar padding compensator (if needed later for layout extension) -->
+<div class="hidden md:block w-full h-8"></div>
+
+
+</body></html>

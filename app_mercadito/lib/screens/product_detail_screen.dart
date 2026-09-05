@@ -46,7 +46,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     } else {
       _selectedUnit = 'Unidad';
     }
-    _availableUnits = ['Por Libra', 'Unidad', 'Saco', 'Caja'];
+    if (widget.product['availableUnits'] is List && (widget.product['availableUnits'] as List).isNotEmpty) {
+      _availableUnits = (widget.product['availableUnits'] as List).map((e) => e.toString()).toList();
+    } else {
+      _availableUnits = ['Por Libra', 'Unidad', 'Saco', 'Caja'];
+    }
+    if (!_availableUnits.contains(_selectedUnit) && _availableUnits.isNotEmpty) {
+      _selectedUnit = _availableUnits.first;
+    }
     
     var limits = _getUnitLimits(_selectedUnit);
     _quantity = limits['min']!;
@@ -231,8 +238,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         ? fullDescription 
         : '${fullDescription.substring(0, truncateLimit)}... ';
 
-    // Dummy multiple images if none provided
-    final List<String> images = [image, image, image];
+    // Product images (fallback to single image repeated or default)
+    final List<String> images = (widget.product['photos'] is List && (widget.product['photos'] as List).isNotEmpty)
+        ? (widget.product['photos'] as List).map((e) => e.toString()).toList()
+        : [image, image, image];
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -268,12 +277,21 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 children: [
                                 Hero(
                                   tag: 'product_image_$index',
-                                  child: CachedNetworkImage(
-                                    imageUrl: images[index],
-                                    fit: BoxFit.cover,
-                                    placeholder: (context, url) => Container(color: surfaceColor),
-                                    errorWidget: (context, url, error) => Container(color: surfaceColor, child: const Icon(Icons.error)),
-                                  ),
+                                  child: images[index].startsWith('assets/')
+                                      ? Image.asset(
+                                          images[index],
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) => Container(
+                                            color: surfaceColor,
+                                            child: const Icon(Icons.image_not_supported),
+                                          ),
+                                        )
+                                      : CachedNetworkImage(
+                                          imageUrl: images[index],
+                                          fit: BoxFit.cover,
+                                          placeholder: (context, url) => Container(color: surfaceColor),
+                                          errorWidget: (context, url, error) => Container(color: surfaceColor, child: const Icon(Icons.error)),
+                                        ),
                                 ),
                                 // Gradient Overlay
                                 Container(
@@ -1076,13 +1094,18 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
                 child: Center(
                   child: Hero(
                     tag: 'product_image_$index',
-                    child: CachedNetworkImage(
-                      imageUrl: widget.images[index],
-                      fit: BoxFit.contain,
-                      placeholder: (context, url) => const Center(
-                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                      ),
-                    ),
+                    child: widget.images[index].startsWith('assets/')
+                        ? Image.asset(
+                            widget.images[index],
+                            fit: BoxFit.contain,
+                          )
+                        : CachedNetworkImage(
+                            imageUrl: widget.images[index],
+                            fit: BoxFit.contain,
+                            placeholder: (context, url) => const Center(
+                              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                            ),
+                          ),
                   ),
                 ),
               );

@@ -67,7 +67,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
   String _selectedCategory = 'Todos';
   String _selectedSaleType = 'Todos'; // 'Todos', 'Al por mayor', 'Al detalle'
   String _selectedAvailability = 'Todos'; // 'Todos', 'Disponibles', 'Agotados'
-  String _selectedStatus = 'Todos'; // 'Todos', 'Disponible', 'Bajo Stock', 'Agotado'
+  String _selectedQuality = 'Todas'; // 'Todas', 'Primera Calidad', 'Segunda Calidad', 'Tercera Calidad'
 
   final List<String> _categories = [
     'Todos',
@@ -89,6 +89,13 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
     'Todos',
     'Al por mayor',
     'Al detalle',
+  ];
+
+  final List<String> _qualityFilters = [
+    'Todas',
+    'Primera Calidad',
+    'Segunda Calidad',
+    'Tercera Calidad',
   ];
 
   // Initial Product Catalog
@@ -230,198 +237,291 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
       builder: (ctx) {
         return StatefulBuilder(
           builder: (bottomSheetCtx, setSheetState) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Title & Reset row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            return SafeArea(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Row(
+                      // Title & Reset row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Icon(Icons.tune, color: primaryColor, size: 22),
-                          SizedBox(width: 8),
-                          Text(
-                            'Filtros Avanzados',
-                            style: TextStyle(
-                              fontFamily: 'Plus Jakarta Sans',
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: primaryColor,
+                          const Row(
+                            children: [
+                              Icon(Icons.tune, color: primaryColor, size: 22),
+                              SizedBox(width: 8),
+                              Text(
+                                'Filtros Avanzados',
+                                style: TextStyle(
+                                  fontFamily: 'Plus Jakarta Sans',
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: primaryColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setSheetState(() {
+                                _selectedSaleType = 'Todos';
+                                _selectedCategory = 'Todos';
+                                _selectedAvailability = 'Todos';
+                                _selectedQuality = 'Todas';
+                              });
+                              setState(() {});
+                            },
+                            child: const Text(
+                              'Limpiar',
+                              style: TextStyle(
+                                fontFamily: 'Plus Jakarta Sans',
+                                fontWeight: FontWeight.bold,
+                                color: onSurfaceVariant,
+                              ),
                             ),
                           ),
                         ],
                       ),
-                      TextButton(
-                        onPressed: () {
-                          setSheetState(() {
-                            _selectedSaleType = 'Todos';
-                            _selectedCategory = 'Todos';
-                            _selectedAvailability = 'Todos';
-                            _selectedStatus = 'Todos';
-                          });
-                          setState(() {});
-                        },
-                        child: const Text(
-                          'Limpiar',
-                          style: TextStyle(
-                            fontFamily: 'Plus Jakarta Sans',
-                            fontWeight: FontWeight.bold,
-                            color: onSurfaceVariant,
+                      const Divider(),
+                      const SizedBox(height: 10),
+
+                      // Section 1: Modalidad de Venta (Al por mayor / Al detalle / Todos)
+                      const Text(
+                        'Tipo de Venta',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: primaryColor,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: _saleTypes.map((type) {
+                          final isSel = _selectedSaleType == type;
+                          IconData typeIcon;
+                          if (type == 'Al por mayor') {
+                            typeIcon = Icons.inventory_2_outlined;
+                          } else if (type == 'Al detalle') {
+                            typeIcon = Icons.shopping_basket_outlined;
+                          } else {
+                            typeIcon = Icons.apps;
+                          }
+
+                          return GestureDetector(
+                            onTap: () {
+                              setSheetState(() => _selectedSaleType = type);
+                              setState(() {});
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: isSel ? chipSelectedBg : chipUnselectedBg,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: isSel ? chipSelectedBorder : chipUnselectedBorder,
+                                  width: 1.2,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    typeIcon,
+                                    size: 15,
+                                    color: isSel ? chipSelectedText : chipUnselectedText,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    type,
+                                    style: TextStyle(
+                                      fontFamily: 'Plus Jakarta Sans',
+                                      fontSize: 12,
+                                      fontWeight: isSel ? FontWeight.bold : FontWeight.w600,
+                                      color: isSel ? chipSelectedText : chipUnselectedText,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Section 2: Disponibilidad
+                      const Text(
+                        'Disponibilidad',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: primaryColor,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: _availabilityFilters.map((avail) {
+                          final isSel = _selectedAvailability == avail;
+                          IconData availIcon;
+                          Color unselIconColor = chipUnselectedText;
+                          if (avail == 'Disponibles') {
+                            availIcon = Icons.check_circle_outline;
+                            unselIconColor = const Color(0xFF059669);
+                          } else if (avail == 'Agotados') {
+                            availIcon = Icons.block;
+                            unselIconColor = const Color(0xFFE53935);
+                          } else {
+                            availIcon = Icons.apps;
+                          }
+
+                          return GestureDetector(
+                            onTap: () {
+                              setSheetState(() => _selectedAvailability = avail);
+                              setState(() {});
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: isSel ? chipSelectedBg : chipUnselectedBg,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: isSel ? chipSelectedBorder : chipUnselectedBorder,
+                                  width: 1.2,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    availIcon,
+                                    size: 15,
+                                    color: isSel ? chipSelectedText : unselIconColor,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    avail,
+                                    style: TextStyle(
+                                      fontFamily: 'Plus Jakarta Sans',
+                                      fontSize: 12,
+                                      fontWeight: isSel ? FontWeight.bold : FontWeight.w600,
+                                      color: isSel ? chipSelectedText : chipUnselectedText,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Section 3: Calidad
+                      const Text(
+                        'Calidad',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: primaryColor,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: _qualityFilters.map((quality) {
+                          final isSel = _selectedQuality == quality;
+                          IconData qualIcon;
+                          Color unselColor = chipUnselectedText;
+                          if (quality.toLowerCase().contains('primera')) {
+                            qualIcon = Icons.workspace_premium;
+                            unselColor = const Color(0xFF016042);
+                          } else if (quality.toLowerCase().contains('segunda')) {
+                            qualIcon = Icons.workspace_premium_outlined;
+                            unselColor = const Color(0xFFFF9A04);
+                          } else if (quality.toLowerCase().contains('tercera')) {
+                            qualIcon = Icons.eco_outlined;
+                            unselColor = const Color(0xFFF44336);
+                          } else {
+                            qualIcon = Icons.apps;
+                          }
+
+                          return GestureDetector(
+                            onTap: () {
+                              setSheetState(() => _selectedQuality = quality);
+                              setState(() {});
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: isSel ? chipSelectedBg : chipUnselectedBg,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: isSel ? chipSelectedBorder : chipUnselectedBorder,
+                                  width: 1.2,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    qualIcon,
+                                    size: 15,
+                                    color: isSel ? chipSelectedText : unselColor,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    quality,
+                                    style: TextStyle(
+                                      fontFamily: 'Plus Jakarta Sans',
+                                      fontSize: 12,
+                                      fontWeight: isSel ? FontWeight.bold : FontWeight.w600,
+                                      color: isSel ? chipSelectedText : chipUnselectedText,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Apply button
+                      SizedBox(
+                        width: double.infinity,
+                        height: 46,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                          ),
+                          onPressed: () => Navigator.of(ctx).pop(),
+                          child: const Text(
+                            'APLICAR FILTROS',
+                            style: TextStyle(
+                              fontFamily: 'Plus Jakarta Sans',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              letterSpacing: 0.5,
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
-                  const Divider(),
-                  const SizedBox(height: 10),
-
-                  // Section 1: Modalidad de Venta (Al por mayor / Al detalle / Todos)
-                  const Text(
-                    'Tipo de Venta',
-                    style: TextStyle(
-                      fontFamily: 'Plus Jakarta Sans',
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: primaryColor,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: _saleTypes.map((type) {
-                      final isSel = _selectedSaleType == type;
-                      return GestureDetector(
-                        onTap: () {
-                          setSheetState(() => _selectedSaleType = type);
-                          setState(() {});
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: isSel ? chipSelectedBg : chipUnselectedBg,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: isSel ? chipSelectedBorder : chipUnselectedBorder,
-                              width: 1.2,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              if (isSel) ...[
-                                const Icon(
-                                  Icons.check,
-                                  size: 14,
-                                  color: chipSelectedText,
-                                ),
-                                const SizedBox(width: 4),
-                              ],
-                              Text(
-                                type,
-                                style: TextStyle(
-                                  fontFamily: 'Plus Jakarta Sans',
-                                  fontSize: 12,
-                                  fontWeight: isSel ? FontWeight.bold : FontWeight.w600,
-                                  color: isSel ? chipSelectedText : chipUnselectedText,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Section 2: Estado de Stock
-                  const Text(
-                    'Disponibilidad de Inventario',
-                    style: TextStyle(
-                      fontFamily: 'Plus Jakarta Sans',
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: primaryColor,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: ['Todos', 'Disponible', 'Agotado'].map((status) {
-                      final isSel = _selectedStatus == status;
-                      return GestureDetector(
-                        onTap: () {
-                          setSheetState(() => _selectedStatus = status);
-                          setState(() {});
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: isSel ? chipSelectedBg : chipUnselectedBg,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: isSel ? chipSelectedBorder : chipUnselectedBorder,
-                              width: 1.2,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              if (isSel) ...[
-                                const Icon(
-                                  Icons.check,
-                                  size: 14,
-                                  color: chipSelectedText,
-                                ),
-                                const SizedBox(width: 4),
-                              ],
-                              Text(
-                                status,
-                                style: TextStyle(
-                                  fontFamily: 'Plus Jakarta Sans',
-                                  fontSize: 12,
-                                  fontWeight: isSel ? FontWeight.bold : FontWeight.w600,
-                                  color: isSel ? chipSelectedText : chipUnselectedText,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Apply button
-                  SizedBox(
-                    width: double.infinity,
-                    height: 46,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                      ),
-                      onPressed: () => Navigator.of(ctx).pop(),
-                      child: const Text(
-                        'APLICAR FILTROS',
-                        style: TextStyle(
-                          fontFamily: 'Plus Jakarta Sans',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             );
           },
@@ -593,8 +693,8 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
     final cardColor = isDark ? const Color(0xFF1A2420) : surfaceColor;
 
     final hasActiveFilter = _selectedSaleType != 'Todos' ||
-        _selectedStatus != 'Todos' ||
         _selectedAvailability != 'Todos' ||
+        _selectedQuality != 'Todas' ||
         _selectedCategory != 'Todos';
 
     // Filter products
@@ -603,6 +703,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
       final cat = (p['category'] ?? '').toString().toLowerCase();
       final status = (p['status'] ?? 'Disponible').toString();
       final isAgotado = status.toLowerCase() == 'agotado';
+      final badge = (p['badge'] ?? '').toString().toLowerCase();
 
       final matchesQuery = _searchQuery.isEmpty ||
           name.contains(_searchQuery) ||
@@ -628,16 +729,30 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
         matchesSaleType = saleType == 'detalle' || saleType == 'ambos';
       }
 
-      // Status filter
-      final matchesStatus = _selectedStatus == 'Todos' ||
-          status.toLowerCase() == _selectedStatus.toLowerCase();
+      // Quality filter ('Todas', 'Primera Calidad', 'Segunda Calidad', 'Tercera Calidad')
+      bool matchesQuality = true;
+      if (_selectedQuality == 'Primera Calidad') {
+        matchesQuality = badge.contains('primera') || badge.contains('orgánico');
+      } else if (_selectedQuality == 'Segunda Calidad') {
+        matchesQuality = badge.contains('segunda');
+      } else if (_selectedQuality == 'Tercera Calidad') {
+        matchesQuality = badge.contains('tercera');
+      }
 
       return matchesQuery &&
           matchesCategory &&
           matchesAvailability &&
           matchesSaleType &&
-          matchesStatus;
+          matchesQuality;
     }).toList();
+
+    final totalCount = _products.length;
+    final availableCount = _products
+        .where((p) => (p['status'] ?? '').toString().toLowerCase() != 'agotado')
+        .length;
+    final outOfStockCount = _products
+        .where((p) => (p['status'] ?? '').toString().toLowerCase() == 'agotado')
+        .length;
 
     return Scaffold(
       backgroundColor: bg,
@@ -730,6 +845,67 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                         letterSpacing: 0.8,
                       ),
                     ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Inventory Summary Metric Cards (Registrados, Disponibles, Agotados)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildInventoryStatCard(
+                          label: 'Registrados',
+                          count: totalCount,
+                          icon: Icons.inventory_2_outlined,
+                          color: primaryColor,
+                          bgColor: isDark ? const Color(0xFF1E2822) : const Color(0xFFF1F6F3),
+                          borderColor: isDark ? const Color(0xFF2C3C34) : const Color(0xFFD3E2DA),
+                          isSelected: _selectedAvailability == 'Todos',
+                          onTap: () {
+                            setState(() => _selectedAvailability = 'Todos');
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _buildInventoryStatCard(
+                          label: 'Disponibles',
+                          count: availableCount,
+                          icon: Icons.check_circle_outline,
+                          color: const Color(0xFF059669),
+                          bgColor: isDark ? const Color(0xFF152A20) : const Color(0xFFEDFAF3),
+                          borderColor: isDark ? const Color(0xFF1F4835) : const Color(0xFFA7F3D0),
+                          isSelected: _selectedAvailability == 'Disponibles',
+                          onTap: () {
+                            setState(() {
+                              _selectedAvailability =
+                                  _selectedAvailability == 'Disponibles'
+                                      ? 'Todos'
+                                      : 'Disponibles';
+                            });
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _buildInventoryStatCard(
+                          label: 'Agotados',
+                          count: outOfStockCount,
+                          icon: Icons.block,
+                          color: const Color(0xFFDC2626),
+                          bgColor: isDark ? const Color(0xFF2B1D1D) : const Color(0xFFFEF2F2),
+                          borderColor: isDark ? const Color(0xFF4C2A2A) : const Color(0xFFFECACA),
+                          isSelected: _selectedAvailability == 'Agotados',
+                          onTap: () {
+                            setState(() {
+                              _selectedAvailability =
+                                  _selectedAvailability == 'Agotados'
+                                      ? 'Todos'
+                                      : 'Agotados';
+                            });
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 12),
 
@@ -870,168 +1046,6 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                           ),
                         );
                       }).toList(),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Sales Mode Quick Segment ("Todos", "Al por mayor", "Al detalle")
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        Text(
-                          'Tipo de venta: ',
-                          style: TextStyle(
-                            fontFamily: 'Plus Jakarta Sans',
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: isDark ? Colors.white60 : onSurfaceVariant,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        ..._saleTypes.map((type) {
-                          final isSel = _selectedSaleType == type;
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 6),
-                            child: GestureDetector(
-                              onTap: () => setState(() => _selectedSaleType = type),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 9,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: isSel
-                                      ? chipSelectedBg
-                                      : (isDark ? const Color(0xFF26302B) : chipUnselectedBg),
-                                  borderRadius: BorderRadius.circular(6),
-                                  border: Border.all(
-                                    color: isSel ? chipSelectedBorder : chipUnselectedBorder,
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      type == 'Al por mayor'
-                                          ? Icons.inventory_2_outlined
-                                          : (type == 'Al detalle'
-                                              ? Icons.shopping_basket_outlined
-                                              : Icons.apps),
-                                      size: 12,
-                                      color: isSel ? chipSelectedText : chipUnselectedText,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      type,
-                                      style: TextStyle(
-                                        fontFamily: 'Plus Jakarta Sans',
-                                        fontSize: 10,
-                                        fontWeight: isSel
-                                            ? FontWeight.bold
-                                            : FontWeight.w600,
-                                        color: isSel
-                                            ? chipSelectedText
-                                            : (isDark ? Colors.white70 : chipUnselectedText),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Availability Quick Segment ("Todos", "Disponibles", "Agotados")
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        Text(
-                          'Disponibilidad: ',
-                          style: TextStyle(
-                            fontFamily: 'Plus Jakarta Sans',
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: isDark ? Colors.white60 : onSurfaceVariant,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        ..._availabilityFilters.map((avail) {
-                          final isSel = _selectedAvailability == avail;
-                          int count = 0;
-                          if (avail == 'Todos') {
-                            count = _products.length;
-                          } else if (avail == 'Disponibles') {
-                            count = _products.where((p) => (p['status'] ?? '').toString().toLowerCase() != 'agotado').length;
-                          } else if (avail == 'Agotados') {
-                            count = _products.where((p) => (p['status'] ?? '').toString().toLowerCase() == 'agotado').length;
-                          }
-
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 6),
-                            child: GestureDetector(
-                              onTap: () => setState(() => _selectedAvailability = avail),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 9,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: isSel
-                                      ? chipSelectedBg
-                                      : (isDark ? const Color(0xFF26302B) : chipUnselectedBg),
-                                  borderRadius: BorderRadius.circular(6),
-                                  border: Border.all(
-                                    color: isSel ? chipSelectedBorder : chipUnselectedBorder,
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    if (avail == 'Todos')
-                                      Icon(
-                                        Icons.apps,
-                                        size: 12,
-                                        color: isSel ? chipSelectedText : chipUnselectedText,
-                                      ),
-                                    if (avail == 'Disponibles')
-                                      Icon(
-                                        Icons.check_circle_outline,
-                                        size: 12,
-                                        color: isSel ? chipSelectedText : const Color(0xFF059669),
-                                      ),
-                                    if (avail == 'Agotados')
-                                      Icon(
-                                        Icons.block,
-                                        size: 12,
-                                        color: isSel ? chipSelectedText : const Color(0xFFE53935),
-                                      ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      '$avail ($count)',
-                                      style: TextStyle(
-                                        fontFamily: 'Plus Jakarta Sans',
-                                        fontSize: 10,
-                                        fontWeight: isSel
-                                            ? FontWeight.bold
-                                            : FontWeight.w600,
-                                        color: isSel
-                                            ? chipSelectedText
-                                            : (isDark ? Colors.white70 : chipUnselectedText),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
-                      ],
                     ),
                   ),
                 ],
@@ -1562,6 +1576,82 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildInventoryStatCard({
+    required String label,
+    required int count,
+    required IconData icon,
+    required Color color,
+    required Color bgColor,
+    required Color borderColor,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isSelected ? color : borderColor,
+              width: isSelected ? 1.8 : 1.0,
+            ),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: color.withValues(alpha: 0.18),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icon, size: 15, color: color),
+                  const SizedBox(width: 5),
+                  Text(
+                    '$count',
+                    style: TextStyle(
+                      fontFamily: 'Plus Jakarta Sans',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      color: color,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 2),
+              Text(
+                label,
+                style: TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 11,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                  color: isSelected ? color : onSurfaceVariant,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

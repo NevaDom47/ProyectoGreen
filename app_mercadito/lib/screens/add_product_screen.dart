@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class UnitPricingConfig {
   String unit;
@@ -61,7 +62,6 @@ class AddProductScreen extends StatefulWidget {
 class _AddProductScreenState extends State<AddProductScreen> {
   // Emerald Harvest Color Palette
   static const Color primaryColor = Color(0xFF00462F);
-  static const Color primaryContainer = Color(0xFF036042);
   static const Color backgroundColor = Color(0xFFF7FAF5);
   static const Color surfaceColor = Color(0xFFFFFFFF);
   static const Color surfaceLow = Color(0xFFF1F4F0);
@@ -69,12 +69,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
   static const Color onSurfaceVariant = Color(0xFF486456);
   static const Color outlineColor = Color(0x33BEC9C1);
   static const Color errorColor = Color(0xFFBA1A1A);
-
-  // Badge Tag Colors
-  static const Color badgeRetailBg = Color(0xFF059669);
-  static const Color badgeRetailText = Color(0xFFF1F9F7);
-  static const Color badgeWholesaleBg = Color(0xFF0369A1);
-  static const Color badgeWholesaleText = Color(0xFFEDF4F8);
 
   // Quality Tier Colors & Data
   static final List<Map<String, dynamic>> _qualityTiers = [
@@ -207,6 +201,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   // Photos list
   late List<String> _photos;
   int _selectedPhotoIndex = 0;
+  String _previewMode = 'detalle'; // 'detalle' o 'mayor'
 
   @override
   void initState() {
@@ -831,6 +826,57 @@ class _AddProductScreenState extends State<AddProductScreen> {
     );
   }
 
+  void _openDetailPreview() {
+    final def = _defaultConfig;
+    final name = _nameController.text.trim().isEmpty ? 'Tomates Orgánicos' : _nameController.text.trim();
+    final retail = def.retailPriceCtrl.text.trim().isEmpty ? '28.50' : def.retailPriceCtrl.text.trim();
+    final wholesale = def.wholesalePriceCtrl.text.trim().isEmpty ? '22.00' : def.wholesalePriceCtrl.text.trim();
+    final minWholesale = def.minWholesaleCtrl.text.trim().isEmpty ? '10' : def.minWholesaleCtrl.text.trim();
+    final unit = def.unit;
+    final saleType = def.saleType;
+    final activePhoto = _photos.isNotEmpty
+        ? _photos[_selectedPhotoIndex.clamp(0, _photos.length - 1)]
+        : 'assets/images/PapaGemini.png';
+
+    final effectivePrice = saleType == 'mayor' ? wholesale : retail;
+
+    // Available units list
+    final List<String> availableUnits = _unitConfigs.isNotEmpty
+        ? _unitConfigs.map((c) => c.unit).toSet().toList()
+        : ['Por Libra', 'Unidad', 'Saco', 'Caja'];
+
+    final productMap = <String, dynamic>{
+      'id': widget.initialProduct?['id'] ?? 'PROD-PREVIEW',
+      'name': name,
+      'category': _selectedCategory,
+      'badge': _selectedQuality,
+      'quality': _selectedQuality,
+      'saleType': saleType,
+      'price': '\$$effectivePrice',
+      'priceNum': double.tryParse(effectivePrice) ?? 22.00,
+      'wholesalePrice': '\$$wholesale',
+      'wholesalePriceNum': double.tryParse(wholesale) ?? 22.00,
+      'wholesaleMin': '$minWholesale $unit',
+      'unit': unit,
+      'availableUnits': availableUnits,
+      'stock': 100,
+      'status': 'Disponible',
+      'supplier': 'Don Pedro H.',
+      'location': 'Tecomán, Colima',
+      'rating': '4.8',
+      'ratingCount': '124',
+      'description': _descriptionController.text.trim().isNotEmpty
+          ? _descriptionController.text.trim()
+          : 'Este es un producto cultivado localmente bajo estrictos estándares de calidad. Todas nuestras cosechas son seleccionadas a mano y revisadas para garantizar la mejor frescura del campo a su mesa. Nuestro proceso asegura que cada ítem mantenga sus propiedades naturales y su sabor auténtico, apoyando a los productores locales y ofreciendo un precio justo para todos.',
+      'img': activePhoto,
+      'image': activePhoto,
+      'photos': _photos.isNotEmpty ? _photos : [activePhoto],
+      'unitConfigs': _unitConfigs.map((c) => c.toMap()).toList(),
+    };
+
+    context.push('/product_detail', extra: productMap);
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -844,7 +890,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
     final displayRetail = def.retailPriceCtrl.text.trim().isEmpty ? '28.50' : def.retailPriceCtrl.text.trim();
     final displayWholesale = def.wholesalePriceCtrl.text.trim().isEmpty ? '22.00' : def.wholesalePriceCtrl.text.trim();
     final displayMin = def.minWholesaleCtrl.text.trim().isEmpty ? '10' : def.minWholesaleCtrl.text.trim();
-    final displayMax = def.maxWholesaleCtrl.text.trim().isEmpty ? '100' : def.maxWholesaleCtrl.text.trim();
     final displayUnit = def.unit;
     final displaySaleType = def.saleType;
 
@@ -852,6 +897,21 @@ class _AddProductScreenState extends State<AddProductScreen> {
         ? _photos[_selectedPhotoIndex.clamp(0, _photos.length - 1)]
         : 'assets/images/PapaGemini.png';
     final isAsset = activePhoto.startsWith('assets/');
+
+    Color qualityBgColor = const Color(0xFFDCE9E5);
+    Color qualityTextColor = const Color(0xFF016042);
+    final qLower = _selectedQuality.toLowerCase();
+    if (qLower.contains('segunda')) {
+      qualityBgColor = const Color(0xFFFFF4E5);
+      qualityTextColor = const Color(0xFFFF9A04);
+    } else if (qLower.contains('tercera')) {
+      qualityBgColor = const Color(0xFFFDEDED);
+      qualityTextColor = const Color(0xFFF44336);
+    }
+
+    final bool isDetailActive = displaySaleType == 'mayor'
+        ? false
+        : (displaySaleType == 'detalle' ? true : _previewMode == 'detalle');
 
     return Scaffold(
       backgroundColor: bg,
@@ -871,14 +931,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
             color: primaryColor,
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.save_outlined, color: primaryColor),
-            tooltip: 'Guardar Producto',
-            onPressed: _saveProduct,
-          ),
-          const SizedBox(width: 8),
-        ],
       ),
       body: SafeArea(
         child: Form(
@@ -896,229 +948,540 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     const SizedBox(height: 8),
                     Container(
                       decoration: BoxDecoration(
-                        color: cardBg,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: const [
+                        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                          width: 1.0,
+                        ),
+                        boxShadow: [
                           BoxShadow(
-                            color: Color(0x0A000000),
-                            blurRadius: 10,
-                            offset: Offset(0, 4),
-                          )
+                            color: Colors.black.withValues(alpha: 0.05),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
+                          ),
                         ],
-                        border: Border.all(color: outlineColor),
                       ),
                       clipBehavior: Clip.antiAlias,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Preview Image Header
+                          // Preview Image Header Stack
                           Stack(
                             children: [
-                              Container(
-                                height: 160,
-                                width: double.infinity,
-                                color: surfaceLow,
-                                child: isAsset
-                                    ? Image.asset(
-                                        activePhoto,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) => const Center(
-                                          child: Icon(Icons.eco, size: 48, color: primaryColor),
-                                        ),
-                                      )
-                                    : Image.network(
-                                        activePhoto,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) => const Center(
-                                          child: Icon(Icons.eco, size: 48, color: primaryColor),
-                                        ),
-                                      ),
-                              ),
-                              // Quality badge pill
-                              Positioned(
-                                top: 12,
-                                left: 12,
+                              ClipRRect(
+                                borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(19),
+                                ),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: primaryContainer,
-                                    borderRadius: BorderRadius.circular(20),
+                                  height: 180,
+                                  width: double.infinity,
+                                  color: surfaceLow,
+                                  child: isAsset
+                                      ? Image.asset(
+                                          activePhoto,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) => const Center(
+                                            child: Icon(Icons.eco, size: 52, color: primaryColor),
+                                          ),
+                                        )
+                                      : Image.network(
+                                          activePhoto,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) => const Center(
+                                            child: Icon(Icons.eco, size: 52, color: primaryColor),
+                                          ),
+                                        ),
+                                ),
+                              ),
+                              // Top-Right Favorite Button (Círculo blanco)
+                              Positioned(
+                                top: 10,
+                                right: 10,
+                                child: Container(
+                                  width: 36,
+                                  height: 36,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0x20000000),
+                                        blurRadius: 6,
+                                        offset: Offset(0, 2),
+                                      ),
+                                    ],
                                   ),
-                                  child: Text(
-                                    _selectedQuality.toUpperCase(),
-                                    style: const TextStyle(
-                                      fontFamily: 'Plus Jakarta Sans',
-                                      fontSize: 9,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 0.5,
-                                      color: Colors.white,
-                                    ),
+                                  child: const Icon(
+                                    Icons.favorite_border,
+                                    color: Color(0xFF94A3B8),
+                                    size: 18,
                                   ),
                                 ),
                               ),
-                              // Default unit badge
+
+                              // Bottom-Right Verified Badge (Sello verde)
                               Positioned(
-                                top: 12,
-                                right: 12,
+                                bottom: 10,
+                                right: 10,
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  padding: const EdgeInsets.all(5),
                                   decoration: BoxDecoration(
-                                    color: Colors.black.withValues(alpha: 0.7),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Icon(Icons.star, size: 12, color: Colors.amber),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        'Principal: $displayUnit',
-                                        style: const TextStyle(
-                                          fontFamily: 'Plus Jakarta Sans',
-                                          fontSize: 9,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                        ),
-                                      ),
+                                    color: const Color(0xFF047857),
+                                    borderRadius: BorderRadius.circular(7),
+                                    boxShadow: const [
+                                      BoxShadow(color: Colors.black26, blurRadius: 4),
                                     ],
+                                  ),
+                                  child: const Icon(
+                                    Icons.verified,
+                                    color: Colors.white,
+                                    size: 16,
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                          // Preview Details
+
+                          // Card Body Content
                           Padding(
-                            padding: const EdgeInsets.all(14),
+                            padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // Title + Price Row
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            displayName,
-                                            style: const TextStyle(
-                                              fontFamily: 'Plus Jakarta Sans',
-                                              fontWeight: FontWeight.w800,
-                                              fontSize: 17,
-                                              color: onSurface,
-                                            ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            '$_selectedCategory • $_selectedQuality',
-                                            style: const TextStyle(
-                                              fontFamily: 'Plus Jakarta Sans',
-                                              fontSize: 12,
-                                              color: onSurfaceVariant,
-                                            ),
-                                          ),
-                                        ],
+                                      child: Text(
+                                        displayName,
+                                        style: TextStyle(
+                                          fontFamily: 'Plus Jakarta Sans',
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w800,
+                                          height: 1.2,
+                                          color: isDark ? Colors.white : onSurface,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
+                                    const SizedBox(width: 8),
+
+                                    // Price Column
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
-                                        // Main Card Price (Retail or Wholesale depending on saleType)
-                                        if (displaySaleType != 'mayor')
-                                          Row(
-                                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                                            textBaseline: TextBaseline.alphabetic,
-                                            children: [
-                                              Text(
-                                                '\$$displayRetail',
-                                                style: const TextStyle(
-                                                  fontFamily: 'Plus Jakarta Sans',
-                                                  fontWeight: FontWeight.w900,
-                                                  fontSize: 18,
-                                                  color: primaryColor,
-                                                ),
-                                              ),
-                                              const SizedBox(width: 2),
-                                              Text(
-                                                '/ $displayUnit',
-                                                style: const TextStyle(
-                                                  fontFamily: 'Plus Jakarta Sans',
-                                                  fontSize: 11,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: onSurfaceVariant,
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        else
-                                          Row(
-                                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                                            textBaseline: TextBaseline.alphabetic,
-                                            children: [
-                                              Text(
-                                                '\$$displayWholesale',
-                                                style: const TextStyle(
-                                                  fontFamily: 'Plus Jakarta Sans',
-                                                  fontWeight: FontWeight.w900,
-                                                  fontSize: 18,
-                                                  color: Color(0xFF0369A1),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 2),
-                                              Text(
-                                                '/ $displayUnit',
-                                                style: const TextStyle(
-                                                  fontFamily: 'Plus Jakarta Sans',
-                                                  fontSize: 11,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: onSurfaceVariant,
-                                                ),
-                                              ),
-                                            ],
+                                        Text(
+                                          isDetailActive ? '\$$displayRetail' : '\$$displayWholesale',
+                                          style: TextStyle(
+                                            fontFamily: 'Plus Jakarta Sans',
+                                            color: isDetailActive
+                                                ? const Color(0xFF047857)
+                                                : const Color(0xFF0369A1),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w900,
+                                            height: 1.1,
                                           ),
-
-                                        if (displaySaleType == 'ambos')
+                                        ),
+                                        const SizedBox(height: 1),
+                                        Text(
+                                          isDetailActive
+                                              ? (displayUnit == 'KG' ? 'POR KILO' : 'POR $displayUnit')
+                                              : 'POR MAYOR',
+                                          style: TextStyle(
+                                            fontFamily: 'Plus Jakarta Sans',
+                                            fontSize: 8.5,
+                                            fontWeight: FontWeight.bold,
+                                            color: isDetailActive
+                                                ? const Color(0xFF047857)
+                                                : const Color(0xFF0369A1),
+                                          ),
+                                        ),
+                                        if (!isDetailActive)
                                           Text(
-                                            'Por Mayor: \$$displayWholesale (Mín. $displayMin • Máx. $displayMax $displayUnit)',
+                                            '(MIN. $displayMin $displayUnit)',
                                             style: const TextStyle(
                                               fontFamily: 'Plus Jakarta Sans',
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w600,
+                                              fontSize: 7.5,
+                                              fontWeight: FontWeight.w700,
                                               color: Color(0xFF0369A1),
-                                            ),
-                                          )
-                                        else if (displaySaleType == 'mayor')
-                                          Text(
-                                            'Rango: Mín. $displayMin • Máx. $displayMax $displayUnit',
-                                            style: const TextStyle(
-                                              fontFamily: 'Plus Jakarta Sans',
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w600,
-                                              color: onSurfaceVariant,
                                             ),
                                           ),
                                       ],
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 10),
-                                // Sale mode badges
+                                const SizedBox(height: 6),
+
+                                // Sales Mode Switcher [ Detalle | Por Mayor ]
+                                Container(
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: BoxDecoration(
+                                    color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: isDark ? const Color(0xFF475569) : const Color(0xFFE2E8F0),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      // Detalle Option
+                                      GestureDetector(
+                                        onTap: (displaySaleType == 'mayor')
+                                            ? null
+                                            : () => setState(() => _previewMode = 'detalle'),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                                          decoration: BoxDecoration(
+                                            color: isDetailActive
+                                                ? const Color(0xFF059669)
+                                                : Colors.transparent,
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.shopping_bag_outlined,
+                                                size: 13,
+                                                color: isDetailActive
+                                                    ? Colors.white
+                                                    : (isDark ? Colors.white60 : const Color(0xFF64748B)),
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                'Detalle',
+                                                style: TextStyle(
+                                                  fontFamily: 'Plus Jakarta Sans',
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: isDetailActive
+                                                      ? Colors.white
+                                                      : (isDark ? Colors.white60 : const Color(0xFF64748B)),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 2),
+                                      // Por Mayor Option
+                                      GestureDetector(
+                                        onTap: (displaySaleType == 'detalle')
+                                            ? null
+                                            : () => setState(() => _previewMode = 'mayor'),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                                          decoration: BoxDecoration(
+                                            color: !isDetailActive
+                                                ? const Color(0xFF0369A1)
+                                                : Colors.transparent,
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.inventory_2_outlined,
+                                                size: 13,
+                                                color: !isDetailActive
+                                                    ? Colors.white
+                                                    : (isDark ? Colors.white60 : const Color(0xFF64748B)),
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                'Por Mayor',
+                                                style: TextStyle(
+                                                  fontFamily: 'Plus Jakarta Sans',
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: !isDetailActive
+                                                      ? Colors.white
+                                                      : (isDark ? Colors.white60 : const Color(0xFF64748B)),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+
+                                // Category & Extra Badges Row
                                 Wrap(
                                   spacing: 6,
                                   runSpacing: 4,
                                   children: [
-                                    if (displaySaleType == 'detalle' || displaySaleType == 'ambos')
-                                      _buildPillBadge('Detalle', badgeRetailBg, badgeRetailText, Icons.shopping_bag_outlined),
-                                    if (displaySaleType == 'mayor' || displaySaleType == 'ambos')
-                                      _buildPillBadge('Por Mayor', badgeWholesaleBg, badgeWholesaleText, Icons.inventory_2_outlined),
-                                    _buildPillBadge(_selectedCategory, surfaceLow, onSurfaceVariant, Icons.category_outlined),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFEAF2E8),
+                                        borderRadius: BorderRadius.circular(6),
+                                        border: Border.all(color: const Color(0xFFBBD5C7), width: 0.8),
+                                      ),
+                                      child: Text(
+                                        _selectedCategory,
+                                        style: const TextStyle(
+                                          fontFamily: 'Plus Jakarta Sans',
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF016042),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFE0F2FE),
+                                        borderRadius: BorderRadius.circular(6),
+                                        border: Border.all(color: const Color(0xFFBAE6FD), width: 0.8),
+                                      ),
+                                      child: const Text(
+                                        'Oferta',
+                                        style: TextStyle(
+                                          fontFamily: 'Plus Jakarta Sans',
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF0369A1),
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
+                                const SizedBox(height: 6),
+
+                                // Rating & Reviews Row
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.star,
+                                      color: Colors.orange,
+                                      size: 14,
+                                    ),
+                                    const SizedBox(width: 3),
+                                    const Text(
+                                      '4.8',
+                                      style: TextStyle(
+                                        fontFamily: 'Plus Jakarta Sans',
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 3),
+                                    Text(
+                                      '(128 reseñas)',
+                                      style: TextStyle(
+                                        fontFamily: 'Plus Jakarta Sans',
+                                        fontSize: 10,
+                                        color: Colors.grey[500],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                const SizedBox(height: 6),
+                                const Divider(
+                                  color: Color(0xFFE0E3DF),
+                                  thickness: 0.8,
+                                  height: 1,
+                                ),
+                                const SizedBox(height: 6),
+
+                                // CALIDAD Row
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 24,
+                                      height: 24,
+                                      decoration: BoxDecoration(
+                                        color: qualityBgColor,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.workspace_premium,
+                                        color: qualityTextColor,
+                                        size: 13,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'CALIDAD',
+                                            style: TextStyle(
+                                              fontFamily: 'Plus Jakarta Sans',
+                                              fontSize: 8,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                              letterSpacing: 0.3,
+                                            ),
+                                          ),
+                                          Text(
+                                            _selectedQuality.toUpperCase(),
+                                            style: TextStyle(
+                                              fontFamily: 'Plus Jakarta Sans',
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w900,
+                                              color: qualityTextColor,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 5),
+
+                                // PROVEEDOR Row
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 24,
+                                      height: 24,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF047857).withValues(alpha: 0.15),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(
+                                        Icons.local_florist,
+                                        color: Color(0xFF047857),
+                                        size: 13,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'PROVEEDOR',
+                                            style: TextStyle(
+                                              fontFamily: 'Plus Jakarta Sans',
+                                              fontSize: 8,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                              letterSpacing: 0.3,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Don Pedro H.',
+                                            style: TextStyle(
+                                              fontFamily: 'Plus Jakarta Sans',
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.bold,
+                                              color: isDark ? Colors.white : onSurface,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 5),
+
+                                // UBICACIÓN Row
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 24,
+                                      height: 24,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(
+                                        Icons.location_on,
+                                        color: Colors.grey,
+                                        size: 13,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'UBICACIÓN',
+                                            style: TextStyle(
+                                              fontFamily: 'Plus Jakarta Sans',
+                                              fontSize: 8,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                              letterSpacing: 0.3,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Tecomán, Colima',
+                                            style: TextStyle(
+                                              fontFamily: 'Plus Jakarta Sans',
+                                              fontSize: 10,
+                                              color: Colors.grey[600],
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+
+                                // Card Bottom Action Preview Bar
+                                GestureDetector(
+                                  onTap: _openDetailPreview,
+                                  behavior: HitTestBehavior.opaque,
+                                  child: Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 12),
+                                    decoration: BoxDecoration(
+                                      color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.visibility_outlined,
+                                          size: 14,
+                                          color: isDark ? const Color(0xFF34D399) : const Color(0xFF047857),
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          'VISTA PREVIA DE DETALLE',
+                                          style: TextStyle(
+                                            fontFamily: 'Plus Jakarta Sans',
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                            color: isDark ? const Color(0xFF34D399) : const Color(0xFF047857),
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          size: 10,
+                                          color: isDark ? const Color(0xFF34D399) : const Color(0xFF047857),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                                // Additional units hint
                                 if (_unitConfigs.length > 1) ...[
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 8),
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                                     decoration: BoxDecoration(
@@ -1127,14 +1490,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                     ),
                                     child: Row(
                                       children: [
-                                        const Icon(Icons.touch_app_outlined, size: 14, color: primaryColor),
+                                        const Icon(Icons.touch_app_outlined, size: 13, color: primaryColor),
                                         const SizedBox(width: 6),
                                         Expanded(
                                           child: Text(
-                                            '+${_unitConfigs.length - 1} presentación(es) más disponibles al ver el detalle (${_unitConfigs.where((c) => !c.isDefault).map((c) => c.unit).join(', ')})',
+                                            '+${_unitConfigs.length - 1} presentación(es) más disponibles (${_unitConfigs.where((c) => !c.isDefault).map((c) => c.unit).join(', ')})',
                                             style: const TextStyle(
                                               fontFamily: 'Plus Jakarta Sans',
-                                              fontSize: 10,
+                                              fontSize: 9.5,
                                               fontWeight: FontWeight.bold,
                                               color: onSurfaceVariant,
                                             ),
@@ -2382,32 +2745,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: const BorderSide(color: errorColor, width: 1.2),
-      ),
-    );
-  }
-
-  Widget _buildPillBadge(String label, Color bg, Color text, IconData icon) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 12, color: text),
-          const SizedBox(width: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontFamily: 'Plus Jakarta Sans',
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-              color: text,
-            ),
-          ),
-        ],
       ),
     );
   }

@@ -46,6 +46,7 @@ import '../screens/order_history_screen.dart';
 import '../screens/flash_offers_screen.dart';
 import '../screens/flash_offers_manager_screen.dart';
 import '../screens/product_management_screen.dart';
+import '../screens/add_product_screen.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -259,6 +260,25 @@ final GoRouter appRouter = GoRouter(
           );
         },
       ),
+    ),
+    GoRoute(
+      path: '/add-product',
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: AddProductScreen(initialProduct: extra),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: animation.drive(
+                Tween(begin: const Offset(0.0, 1.0), end: Offset.zero)
+                    .chain(CurveTween(curve: Curves.easeOutCubic)),
+              ),
+              child: child,
+            );
+          },
+        );
+      },
     ),
     GoRoute(
       path: '/search',

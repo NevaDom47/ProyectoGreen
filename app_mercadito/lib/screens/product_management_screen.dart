@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'add_product_screen.dart';
 
 class ProductManagementScreen extends StatefulWidget {
   const ProductManagementScreen({super.key});
@@ -12,7 +13,6 @@ class ProductManagementScreen extends StatefulWidget {
 class _ProductManagementScreenState extends State<ProductManagementScreen> {
   // Emerald Harvest Color Palette
   static const Color primaryColor = Color(0xFF00462F);
-  static const Color primaryContainer = Color(0xFF036042);
   static const Color backgroundColor = Color(0xFFF7FAF5);
   static const Color surfaceColor = Color(0xFFFFFFFF);
   static const Color onSurface = Color(0xFF181D1A);
@@ -430,339 +430,71 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
     );
   }
 
-  void _showAddProductDialog() {
-    final nameCtrl = TextEditingController();
-    final priceCtrl = TextEditingController();
-    final wholesalePriceCtrl = TextEditingController();
-    final stockCtrl = TextEditingController(text: '50');
-    final imgCtrl = TextEditingController();
-    String categoryVal = 'Hortalizas';
-    String qualityVal = 'Primera Calidad';
-    String saleTypeVal = 'ambos';
-    String unitVal = 'LB';
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: surfaceColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+  Future<void> _showAddProductDialog() async {
+    final newProduct = await Navigator.of(context).push<Map<String, dynamic>>(
+      MaterialPageRoute(
+        builder: (_) => const AddProductScreen(),
       ),
-      builder: (ctx) {
-        return StatefulBuilder(
-          builder: (modalCtx, setModalState) {
-            return Padding(
-              padding: EdgeInsets.only(
-                left: 20,
-                right: 20,
-                top: 20,
-                bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Nuevo Producto',
-                          style: TextStyle(
-                            fontFamily: 'Plus Jakarta Sans',
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: primaryColor,
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.close, color: onSurfaceVariant),
-                          onPressed: () => Navigator.of(ctx).pop(),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: nameCtrl,
-                      decoration: const InputDecoration(
-                        labelText: 'Nombre del Producto *',
-                        hintText: 'Ej. Tomate Saladette',
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 12,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: DropdownButtonFormField<String>(
-                            initialValue: categoryVal,
-                            decoration: const InputDecoration(
-                              labelText: 'Categoría',
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 12,
-                              ),
-                            ),
-                            items: _categories
-                                .where((c) => c != 'Todos')
-                                .map(
-                                  (c) => DropdownMenuItem(
-                                    value: c,
-                                    child: Text(c, style: const TextStyle(fontSize: 13)),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (val) {
-                              if (val != null) {
-                                setModalState(() => categoryVal = val);
-                              }
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: DropdownButtonFormField<String>(
-                            initialValue: saleTypeVal,
-                            decoration: const InputDecoration(
-                              labelText: 'Tipo de Venta',
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 12,
-                              ),
-                            ),
-                            items: const [
-                              DropdownMenuItem(value: 'ambos', child: Text('Al detalle y Por Mayor', style: TextStyle(fontSize: 12))),
-                              DropdownMenuItem(value: 'mayor', child: Text('Solo Por Mayor', style: TextStyle(fontSize: 12))),
-                              DropdownMenuItem(value: 'detalle', child: Text('Solo al Detalle', style: TextStyle(fontSize: 12))),
-                            ],
-                            onChanged: (val) {
-                              if (val != null) {
-                                setModalState(() => saleTypeVal = val);
-                              }
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: priceCtrl,
-                            keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true,
-                            ),
-                            decoration: const InputDecoration(
-                              labelText: 'Precio Menudeo (\$)',
-                              prefixIcon: Icon(Icons.attach_money),
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 12,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: TextField(
-                            controller: wholesalePriceCtrl,
-                            keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true,
-                            ),
-                            decoration: const InputDecoration(
-                              labelText: 'Precio Mayoreo (\$)',
-                              prefixIcon: Icon(Icons.sell_outlined),
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 12,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: DropdownButtonFormField<String>(
-                            initialValue: unitVal,
-                            decoration: const InputDecoration(
-                              labelText: 'Unidad',
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 12,
-                              ),
-                            ),
-                            items: ['LB', 'KG', 'CAJA', 'SACO', 'UNIDAD']
-                                .map(
-                                  (u) => DropdownMenuItem(
-                                    value: u,
-                                    child: Text(u, style: const TextStyle(fontSize: 13)),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (val) {
-                              if (val != null) {
-                                setModalState(() => unitVal = val);
-                              }
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: TextField(
-                            controller: stockCtrl,
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              labelText: 'Stock Inicial',
-                              prefixIcon: Icon(Icons.inventory_2_outlined),
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 12,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    DropdownButtonFormField<String>(
-                      initialValue: qualityVal,
-                      decoration: const InputDecoration(
-                        labelText: 'Calidad / Grado',
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 12,
-                        ),
-                      ),
-                      items: [
-                        'Primera Calidad',
-                        'Segunda Calidad',
-                        'Tercera Calidad',
-                        'Orgánico Premium',
-                      ]
-                          .map(
-                            (q) => DropdownMenuItem(
-                              value: q,
-                              child: Text(q, style: const TextStyle(fontSize: 13)),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (val) {
-                        if (val != null) {
-                          setModalState(() => qualityVal = val);
-                        }
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: imgCtrl,
-                      decoration: const InputDecoration(
-                        labelText: 'URL de Imagen (Opcional)',
-                        hintText: 'https://...',
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 12,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 48,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: primaryColor,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                        ),
-                        onPressed: () {
-                          final name = nameCtrl.text.trim();
-                          if (name.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Por favor ingresa un nombre para el producto'),
-                              ),
-                            );
-                            return;
-                          }
-                          final priceNum =
-                              double.tryParse(priceCtrl.text.trim()) ?? 0.0;
-                          final wholesaleNum =
-                              double.tryParse(wholesalePriceCtrl.text.trim()) ??
-                                  (priceNum * 0.8);
-                          final stock = int.tryParse(stockCtrl.text.trim()) ?? 0;
-
-                          final now = DateTime.now();
-                          const months = [
-                            'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
-                            'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
-                          ];
-                          final formattedDate =
-                              '${now.day} ${months[now.month - 1]} ${now.year}';
-
-                          setState(() {
-                            _products.insert(0, {
-                              'id': 'PROD-${now.millisecondsSinceEpoch}',
-                              'name': name,
-                              'category': categoryVal,
-                              'badge': qualityVal,
-                              'saleType': saleTypeVal,
-                              'price': '\$${priceNum.toStringAsFixed(2)}',
-                              'priceNum': priceNum,
-                              'wholesalePrice': '\$${wholesaleNum.toStringAsFixed(2)}',
-                              'wholesalePriceNum': wholesaleNum,
-                              'wholesaleMin': '10 $unitVal',
-                              'unit': unitVal,
-                              'stock': stock,
-                              'status': stock > 0 ? 'Disponible' : 'Agotado',
-                              'createdAt': formattedDate,
-                              'img': imgCtrl.text.trim().isNotEmpty
-                                  ? imgCtrl.text.trim()
-                                  : 'https://lh3.googleusercontent.com/aida/AEtjO1WJPFi5I7ZN-mHEOmgqdgmYQxGUivEKgUceqV8OcdNcWwowkcPmSiJrAgNG82XtSgoX-uePPMYN8BGd4CqtyuTb_DWJcL1N9EY-Zb9pw67Sxhks3OGyC9hadvAaJOIk0gudu0Hrum9DHf9E_MsgiO4Vq3RUl5yWwKlvGxQyVEZbHKV44heVYLB-SuP2c9B2EN7Wg5gaYaoj991-EEiBhW8g_oE8djsBWnAcvDzTbTF6XMHOPxANhCnCOzg',
-                            });
-                          });
-
-                          Navigator.of(ctx).pop();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('✓ Producto "$name" agregado')),
-                          );
-                        },
-                        child: const Text(
-                          'GUARDAR PRODUCTO',
-                          style: TextStyle(
-                            fontFamily: 'Plus Jakarta Sans',
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
     );
+
+    if (newProduct != null) {
+      setState(() {
+        _products.insert(0, newProduct);
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.check_circle, color: Colors.white),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text('✓ Producto "${newProduct['name']}" agregado con éxito'),
+                ),
+              ],
+            ),
+            backgroundColor: primaryColor,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _editProductFull(Map<String, dynamic> product) async {
+    final updatedProduct = await Navigator.of(context).push<Map<String, dynamic>>(
+      MaterialPageRoute(
+        builder: (_) => AddProductScreen(initialProduct: product),
+      ),
+    );
+
+    if (updatedProduct != null) {
+      setState(() {
+        final index = _products.indexWhere((p) => p['id'] == product['id']);
+        if (index != -1) {
+          _products[index] = updatedProduct;
+        }
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.check_circle, color: Colors.white),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text('✓ "${updatedProduct['name']}" actualizado con éxito'),
+                ),
+              ],
+            ),
+            backgroundColor: primaryColor,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+        );
+      }
+    }
   }
 
   void _editProductPriceDialog(Map<String, dynamic> product) {
@@ -1500,7 +1232,9 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                               padding: EdgeInsets.zero,
                               constraints: const BoxConstraints(),
                               onSelected: (val) {
-                                if (val == 'edit') {
+                                if (val == 'edit_full') {
+                                  _editProductFull(product);
+                                } else if (val == 'edit_quick') {
                                   _editProductPriceDialog(product);
                                 } else if (val == 'status') {
                                   setState(() {
@@ -1516,12 +1250,22 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                               },
                               itemBuilder: (ctx) => [
                                 const PopupMenuItem(
-                                  value: 'edit',
+                                  value: 'edit_full',
                                   child: Row(
                                     children: [
-                                      Icon(Icons.edit_outlined, size: 18, color: primaryColor),
+                                      Icon(Icons.edit_note_outlined, size: 18, color: primaryColor),
                                       SizedBox(width: 8),
-                                      Text('Editar Precio / Stock'),
+                                      Text('Editar Información Completa'),
+                                    ],
+                                  ),
+                                ),
+                                const PopupMenuItem(
+                                  value: 'edit_quick',
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.tune_outlined, size: 18, color: primaryColor),
+                                      SizedBox(width: 8),
+                                      Text('Edición Rápida (Precio / Stock)'),
                                     ],
                                   ),
                                 ),

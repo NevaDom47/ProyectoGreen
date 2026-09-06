@@ -170,12 +170,26 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
+  String _getProductSku(Map<String, dynamic> item) {
+    if (item['sku'] != null && item['sku'].toString().trim().isNotEmpty) {
+      return item['sku'].toString().trim();
+    }
+    final name = (item['title'] ?? item['name'] ?? 'PROD').toString().replaceAll(' ', '').toUpperCase();
+    final nameCode = name.length >= 3 ? name.substring(0, 3) : name.padRight(3, 'X');
+    final cat = (item['category'] ?? 'GEN').toString().replaceAll(' ', '').toUpperCase();
+    final catCode = cat.length >= 3 ? cat.substring(0, 3) : cat.padRight(3, 'X');
+    return '$catCode-$nameCode-01';
+  }
+
   List<Map<String, dynamic>> get _filteredProducts {
     return _allProducts.where((p) {
       if (_activeCategory.isNotEmpty && p['category'] != _activeCategory && _activeCategory != 'Todos') return false;
       
       if (_activeQuery.isNotEmpty) {
-        if (!p['title'].toString().toLowerCase().contains(_activeQuery) && !p['provider'].toString().toLowerCase().contains(_activeQuery)) {
+        final sku = (p['sku'] ?? _getProductSku(p)).toString().toLowerCase();
+        if (!p['title'].toString().toLowerCase().contains(_activeQuery) &&
+            !p['provider'].toString().toLowerCase().contains(_activeQuery) &&
+            !sku.contains(_activeQuery)) {
           return false;
         }
       }
@@ -611,6 +625,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               final productForFav = {
                                 'id': p['id'],
                                 'name': p['title'],
+                                'sku': p['sku'] ?? _getProductSku(p),
                                 'category': p['category'],
                                 'supplier': p['provider'],
                                 'price': '\$${displayPrice.toStringAsFixed(2)}',
@@ -664,6 +679,17 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'SKU: ${p['sku'] ?? _getProductSku(p)}',
+                          style: TextStyle(
+                            fontFamily: 'Manrope',
+                            fontSize: 9.0,
+                            fontWeight: FontWeight.w500,
+                            color: isDark ? Colors.grey.shade400 : const Color(0xFF94A3B8),
+                            letterSpacing: 0.2,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         GestureDetector(

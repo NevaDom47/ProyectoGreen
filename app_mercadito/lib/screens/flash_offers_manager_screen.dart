@@ -34,6 +34,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
   // Catalog of available seller products that can be put on Flash Offer (Productos tab)
   final List<Map<String, dynamic>> _availableProducts = [
     {
+      'sku': 'HOR-TOM-01',
       'name': 'Tomate Saladette',
       'category': 'Hortalizas',
       'priceRetailKg': 28.50,
@@ -52,6 +53,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
           'https://lh3.googleusercontent.com/aida-public/AB6AXuBYN02O86K6knfDqM1gBCrHpJwRGAAFnGsTyBuDx_bz_LwJVJVvlwFt52ynNfBtYQgv8dANxYu2V-EKIHFQTA29lFosAhweneCU27NDnXJgOCnd6DsdRiiCmRZUTFWZFj4N1Fe46X8YMsV49Az2KYcc3vuHSpM-NCUxis8P32yqk3cDgFMUtzp3734FiMXIr62ADYo5_MnwZbPxUA6n_UCdUv0CgnoMmOrf6wp2c1-CiDK2s3NG-_bD',
     },
     {
+      'sku': 'FRU-AGU-12',
       'name': 'Aguacate Hass',
       'category': 'Frutas',
       'priceRetailKg': 48.00,
@@ -70,6 +72,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
           'https://lh3.googleusercontent.com/aida-public/AB6AXuDzFUdJEljqU-maGlOCYJr48Yky6pxYw5HDib7_VK1wtVBuNeDeHn2DBN4J9qTg8bgBuawXdUccydbrF0VG6iRRTZSgp-Fm88SCOgPKFpl0f1J8yNP1NSmQNRqaBMdqmnC9XqNg1Y45IZVs4vXyEBUYezsrxGskz5cRj9f_Jh02xPW3MwMWEdAEtj0mNsplETXkT2NWn7W9mQn2hFO-lGYIZ2MiJjFFkH3INhJtV8aYabh1YYjLvte-',
     },
     {
+      'sku': 'HOR-CEB-05',
       'name': 'Cebolla Morada Extra',
       'category': 'Hortalizas',
       'priceRetailKg': 22.00,
@@ -88,6 +91,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
           'https://lh3.googleusercontent.com/aida-public/AB6AXuBXcsVfAn4SXFQcHddnB5qMtM4renFwAuqO-lGdtcJtIIEmGl9tMDsFQiPgu60XnCWVebJO7iP0Ibk5dtJIqrh9Aanp9rZWGv7faUFsthP816CnkwG06d3lv6JAtK1L0AlnAz_e_RO8MTnW4_KInOanUlNL5k2AshcmFlzprpJxW1x81-1wvtFdgqmQ27XRJXCS6DLiTryvA9pgF60utXXNGEKTfgzyHZfbGio0iMIq4G_RBnQepN2i0vJ1-mywwHJNnmaXt1UMSH8',
     },
     {
+      'sku': 'FRU-MAN-22',
       'name': 'Mango Ataulfo de Campo',
       'category': 'Frutas',
       'priceRetailKg': 34.00,
@@ -106,6 +110,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
           'https://images.unsplash.com/photo-1553279768-865429fa0078?q=80&w=400&auto=format&fit=crop',
     },
     {
+      'sku': 'CIT-LIM-08',
       'name': 'Limón Persa Seleccionado',
       'category': 'Cítricos',
       'priceRetailKg': 18.00,
@@ -124,6 +129,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
           'https://lh3.googleusercontent.com/aida-public/AB6AXuCoJ0D5DucqLAya_-YteH6-8cB0lbCiusShRQ5J7CpVWmeRZq_Dunwko3RtZ6MnlwVNNLu9qIMiXPC02Jr1-ZLXltcDkkQ0pqh4QKIExzuuQRRqrcXdHQcZxH33bpROQ5o-f2IBOsbqiL6lAuXMgnbrH4_kJmNK6b8kKf_2pM4dzh8AtsiiLNaiDX88Fe0OoRYiKx2-omyEvAoG4YwfLUNLxG5W4A6kcm0dv08LBcwmXpObjY9s4lgDuy3fpuu-_bUGZXDeZUcnKro',
     },
     {
+      'sku': 'TUB-PAP-14',
       'name': 'Papa Blanca Alpha',
       'category': 'Tubérculos',
       'priceRetailKg': 20.00,
@@ -141,6 +147,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
       'img': 'assets/images/PapaGemini.png',
     },
     {
+      'sku': 'RAI-ZAN-03',
       'name': 'Zanahoria Orgánica',
       'category': 'Raíces',
       'priceRetailKg': 14.00,
@@ -158,6 +165,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
       'img': 'assets/images/ZanahoriaGemini.png',
     },
     {
+      'sku': 'CER-FRI-17',
       'name': 'Frijol Negro Veracruz',
       'category': 'Cereales',
       'priceRetailKg': 36.00,
@@ -176,6 +184,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
           'https://images.unsplash.com/photo-1586201375761-83865001e31c?q=80&w=400&auto=format&fit=crop',
     },
     {
+      'sku': 'FRU-FRE-09',
       'name': 'Fresas de Campo Extras',
       'category': 'Frutas',
       'priceRetailKg': 45.00,
@@ -194,6 +203,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
           'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250620_1233_Fresas%20en%20Fondo%20Rosado_simple_compose_01jy72ypjmeccafrqb33rfm1q8.png',
     },
     {
+      'sku': 'CER-MAI-26',
       'name': 'Maíz Blanco Criollo',
       'category': 'Cereales',
       'priceRetailKg': 19.50,
@@ -594,6 +604,18 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
     );
   }
 
+  String _getProductSku(Map<String, dynamic> item) {
+    if (item['sku'] != null && item['sku'].toString().trim().isNotEmpty) {
+      return item['sku'].toString().trim();
+    }
+    final name = (item['name'] ?? '').toString();
+    final cat = (item['category'] ?? '').toString();
+    final catCode = cat.length >= 3 ? cat.substring(0, 3).toUpperCase() : 'PRD';
+    final nameClean = name.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
+    final nameCode = nameClean.length >= 3 ? nameClean.substring(0, 3).toUpperCase() : 'GEN';
+    return '$catCode-$nameCode-01';
+  }
+
   DateTimeRange? _historyDateRange;
   String _historyQuickFilter = 'Últimas 5';
   late final List<Map<String, dynamic>> _baseHistoryOffers;
@@ -606,6 +628,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
     final now = DateTime.now();
     _baseHistoryOffers = [
       {
+        'sku': 'TUB-PAP-14',
         'name': 'Papa Blanca Alpha',
         'category': 'Tubérculos',
         'discount': '-20%',
@@ -625,6 +648,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
         'img': 'assets/images/PapaGemini.png',
       },
       {
+        'sku': 'FRU-MEL-07',
         'name': 'Melón Cantaloupe',
         'category': 'Frutas',
         'discount': '-35%',
@@ -645,6 +669,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
             'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1549_Variedad%20de%20Aj%C3%ADes_simple_compose_01jwvncbmqfpvb7qv6rs3vh22x.png',
       },
       {
+        'sku': 'HOR-CHI-19',
         'name': 'Chile Poblano de Primera',
         'category': 'Hortalizas',
         'discount': '-28%',
@@ -665,6 +690,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
             'https://lh3.googleusercontent.com/aida-public/AB6AXuC8i3bYgCoFml8RIwzz2s32HSkKDvOTWEnX-bo6gt_9o4zdC9d3U0ZglOr_m6EMoKc6Oz2ryDTAoXTbMceJxM4huBHJNMRIBp_rkwcL972T0U0FipN8bSOaMvmlsOxI7peoA4M2Uq1zmuTbYTdHFlAe_A_VA3kLfbMf3thYxRRP7gU3H79Xu6gqxI8wfQqLd59xQyc9evPxWOYoH-ufQjjtXka1i6Bn6dDixAquahUTLyExdeosV0TZReH-nBZgtW2Wf1EEcK2VGiY',
       },
       {
+        'sku': 'HOR-TOM-01',
         'name': 'Tomate Saladette',
         'category': 'Hortalizas',
         'discount': '-25%',
@@ -685,6 +711,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
             'https://lh3.googleusercontent.com/aida-public/AB6AXuBYN02O86K6knfDqM1gBCrHpJwRGAAFnGsTyBuDx_bz_LwJVJVvlwFt52ynNfBtYQgv8dANxYu2V-EKIHFQTA29lFosAhweneCU27NDnXJgOCnd6DsdRiiCmRZUTFWZFj4N1Fe46X8YMsV49Az2KYcc3vuHSpM-NCUxis8P32yqk3cDgFMUtzp3734FiMXIr62ADYo5_MnwZbPxUA6n_UCdUv0CgnoMmOrf6wp2c1-CiDK2s3NG-_bD',
       },
       {
+        'sku': 'HOR-CEB-05',
         'name': 'Cebolla Morada Criolla',
         'category': 'Raíces',
         'discount': '-30%',
@@ -704,6 +731,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
         'img': 'assets/images/PapaGemini.png',
       },
       {
+        'sku': 'RAI-ZAN-03',
         'name': 'Zanahoria Suprema',
         'category': 'Raíces',
         'discount': '-20%',
@@ -723,6 +751,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
         'img': 'assets/images/PapaGemini.png',
       },
       {
+        'sku': 'FRU-AGU-12',
         'name': 'Aguacate Hass Premium',
         'category': 'Frutas',
         'discount': '-22%',
@@ -1557,6 +1586,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
     final isWholesale = (offer['salesMode'] ?? 'retail') == 'wholesale';
     final activeColor = isWholesale ? const Color(0xFF0369A1) : primaryColor;
     final endTimeStr = _getOfferEndTimeFormatted(offer);
+    final String sku = _getProductSku(offer);
 
     return Container(
       decoration: BoxDecoration(
@@ -1681,25 +1711,48 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                 ),
               ),
 
-              // Product Title overlay (Bottom)
+              // Product Title & SKU overlay (Bottom)
               Positioned(
                 bottom: 12,
                 left: 12,
                 right: 12,
-                child: Text(
-                  offer['name'] ?? '',
-                  style: const TextStyle(
-                    fontFamily: 'Manrope',
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black54,
-                        blurRadius: 4,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      offer['name'] ?? '',
+                      style: const TextStyle(
+                        fontFamily: 'Manrope',
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black54,
+                            blurRadius: 4,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'SKU: $sku',
+                      style: TextStyle(
+                        fontFamily: 'Manrope',
+                        color: Colors.white.withValues(alpha: 0.8),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 10,
+                        letterSpacing: 0.2,
+                        shadows: const [
+                          Shadow(
+                            color: Colors.black54,
+                            blurRadius: 3,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -1719,14 +1772,31 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Precio de Oferta',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: isDark
-                                ? Colors.grey.shade400
-                                : Colors.grey.shade600,
-                          ),
+                        Row(
+                          children: [
+                            Text(
+                              'Precio de Oferta',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: isDark
+                                    ? Colors.grey.shade400
+                                    : Colors.grey.shade600,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              '•  SKU: $sku',
+                              style: TextStyle(
+                                fontFamily: 'Manrope',
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: isDark
+                                    ? Colors.grey.shade400
+                                    : const Color(0xFF64748B),
+                                letterSpacing: 0.2,
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 2),
                         Row(
@@ -2096,7 +2166,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
             .map((u) => u.toString().toLowerCase())
             .join(' ');
 
+        final sku = (prod['sku'] ?? '').toString().toLowerCase();
         final matches = name.contains(query) ||
+            sku.contains(query) ||
             category.contains(query) ||
             supplier.contains(query) ||
             location.contains(query) ||
@@ -2400,6 +2472,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
       currentSalesMode,
       currentUnit,
     );
+    final String sku = _getProductSku(prod);
     final List<String> availableUnitsList = List<String>.from(
       prod['availableUnits'] ?? ['KG', 'LB', 'CAJA'],
     );
@@ -2463,25 +2536,45 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Product Title
-                Text(
-                  productName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontFamily: 'Manrope',
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : const Color(0xFF0F172A),
-                  ),
-                ),
-                const SizedBox(height: 3),
-
-                // Calculated Dynamic Price Row
+                // Row 1: Title & SKU (Left) and Price (Right)
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            productName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontFamily: 'Manrope',
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: isDark ? Colors.white : const Color(0xFF0F172A),
+                            ),
+                          ),
+                          const SizedBox(height: 1),
+                          Text(
+                            'SKU: $sku',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontFamily: 'Manrope',
+                              fontSize: 9.0,
+                              fontWeight: FontWeight.w500,
+                              color: isDark
+                                  ? Colors.grey.shade400
+                                  : const Color(0xFF94A3B8),
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 4),
                     Text(
                       priceData['price']!,
                       style: TextStyle(
@@ -2495,135 +2588,168 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                             : activeThemeColor,
                       ),
                     ),
-                    const SizedBox(width: 3),
-                    Text(
-                      '/ ${priceData['unitLabel']}',
-                      style: TextStyle(
-                        fontFamily: 'Manrope',
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        color: isDark
-                            ? Colors.grey.shade400
-                            : Colors.grey.shade600,
-                      ),
-                    ),
                   ],
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
 
-                // Sales Mode Switcher [ Detalle | Por Mayor ]
+                // Row 2: Capsule Switcher (Left) and Unit Label (Right) - identical to Home Feed
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _availableProductSalesMode[productName] = 'retail';
-                        });
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 3,
+                    // Unified Segmented Capsule Switcher [ Detalle | Por Mayor ]
+                    Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF111827) : const Color(0xFFF3F4F6),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB),
+                          width: 0.8,
                         ),
-                        decoration: BoxDecoration(
-                          color: currentSalesMode == 'retail'
-                              ? const Color(0xFF047857)
-                              : (isDark
-                                    ? const Color(0xFF0F172A)
-                                    : const Color(0xFFF1F5F9)),
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                            color: currentSalesMode == 'retail'
-                                ? const Color(0xFF047857)
-                                : (isDark
-                                      ? const Color(0xFF334155)
-                                      : const Color(0xFFCBD5E1)),
-                            width: 0.8,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.shopping_bag_outlined,
-                              size: 10,
-                              color: currentSalesMode == 'retail'
-                                  ? Colors.white
-                                  : (isDark
-                                        ? Colors.grey[400]
-                                        : Colors.grey[700]),
-                            ),
-                            const SizedBox(width: 2),
-                            Text(
-                              'Detalle',
-                              style: TextStyle(
-                                fontSize: 9,
-                                fontWeight: FontWeight.bold,
-                                color: currentSalesMode == 'retail'
-                                    ? Colors.white
-                                    : (isDark
-                                          ? Colors.grey[400]
-                                          : Colors.grey[700]),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _availableProductSalesMode[productName] = 'retail';
+                              });
+                            },
+                            behavior: HitTestBehavior.opaque,
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 180),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                                vertical: 2.5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: !isWholesale
+                                    ? (isDark
+                                        ? const Color(0xFF047857)
+                                        : const Color(0xFF059669))
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(6),
+                                boxShadow: !isWholesale
+                                    ? [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(alpha: 0.12),
+                                          blurRadius: 4,
+                                          offset: const Offset(0, 1),
+                                        ),
+                                      ]
+                                    : [],
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.shopping_bag_outlined,
+                                    size: 10,
+                                    color: !isWholesale
+                                        ? Colors.white
+                                        : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                                  ),
+                                  const SizedBox(width: 2.5),
+                                  Text(
+                                    'Detalle',
+                                    style: TextStyle(
+                                      fontFamily: 'Manrope',
+                                      fontSize: 9.5,
+                                      fontWeight: !isWholesale
+                                          ? FontWeight.bold
+                                          : FontWeight.w500,
+                                      color: !isWholesale
+                                          ? Colors.white
+                                          : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(width: 2),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _availableProductSalesMode[productName] = 'wholesale';
+                              });
+                            },
+                            behavior: HitTestBehavior.opaque,
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 180),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                                vertical: 2.5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: isWholesale
+                                    ? (isDark
+                                        ? const Color(0xFF0284C7)
+                                        : const Color(0xFF0369A1))
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(6),
+                                boxShadow: isWholesale
+                                    ? [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(alpha: 0.12),
+                                          blurRadius: 4,
+                                          offset: const Offset(0, 1),
+                                        ),
+                                      ]
+                                    : [],
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.inventory_2_outlined,
+                                    size: 10,
+                                    color: isWholesale
+                                        ? Colors.white
+                                        : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                                  ),
+                                  const SizedBox(width: 2.5),
+                                  Text(
+                                    'Por Mayor',
+                                    style: TextStyle(
+                                      fontFamily: 'Manrope',
+                                      fontSize: 9.5,
+                                      fontWeight: isWholesale
+                                          ? FontWeight.bold
+                                          : FontWeight.w500,
+                                      color: isWholesale
+                                          ? Colors.white
+                                          : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(width: 4),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _availableProductSalesMode[productName] = 'wholesale';
-                        });
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: currentSalesMode == 'wholesale'
-                              ? const Color(0xFF0369A1)
-                              : (isDark
-                                    ? const Color(0xFF0F172A)
-                                    : const Color(0xFFF1F5F9)),
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                            color: currentSalesMode == 'wholesale'
-                                ? const Color(0xFF0369A1)
-                                : (isDark
-                                      ? const Color(0xFF334155)
-                                      : const Color(0xFFCBD5E1)),
-                            width: 0.8,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.store_outlined,
-                              size: 10,
-                              color: currentSalesMode == 'wholesale'
-                                  ? Colors.white
-                                  : (isDark
-                                        ? Colors.grey[400]
-                                        : Colors.grey[700]),
-                            ),
-                            const SizedBox(width: 2),
-                            Text(
-                              'Por Mayor',
-                              style: TextStyle(
-                                fontSize: 9,
-                                fontWeight: FontWeight.bold,
-                                color: currentSalesMode == 'wholesale'
-                                    ? Colors.white
-                                    : (isDark
-                                          ? Colors.grey[400]
-                                          : Colors.grey[700]),
-                              ),
-                            ),
-                          ],
+                    // Unit Label on the bottom right (under the price)
+                    Flexible(
+                      child: Text(
+                        isWholesale
+                            ? 'POR MAYOR'
+                            : (priceData['unitLabel']?.toLowerCase() == 'kg'
+                                ? 'POR KILO'
+                                : 'POR ${priceData['unitLabel']?.toUpperCase() ?? 'KILO'}'),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontFamily: 'Manrope',
+                          fontSize: 8.5,
+                          fontWeight: FontWeight.w800,
+                          color: isWholesale
+                              ? (isDark ? const Color(0xFF38BDF8) : const Color(0xFF0284C7))
+                              : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                          letterSpacing: 0.2,
                         ),
                       ),
                     ),
@@ -3366,16 +3492,34 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                       Row(
                         children: [
                           Expanded(
-                            child: Text(
-                              item['name'] ?? 'Producto',
-                              style: TextStyle(
-                                fontFamily: 'Manrope',
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: isDark ? Colors.white : Colors.black87,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item['name'] ?? 'Producto',
+                                  style: TextStyle(
+                                    fontFamily: 'Manrope',
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDark ? Colors.white : Colors.black87,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 1),
+                                Text(
+                                  'SKU: ${_getProductSku(item)}',
+                                  style: TextStyle(
+                                    fontFamily: 'Manrope',
+                                    fontSize: 9.5,
+                                    fontWeight: FontWeight.w500,
+                                    color: isDark
+                                        ? Colors.grey.shade400
+                                        : const Color(0xFF94A3B8),
+                                    letterSpacing: 0.2,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           const SizedBox(width: 6),

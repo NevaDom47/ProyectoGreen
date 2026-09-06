@@ -56,6 +56,7 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
       if (_searchQuery.isNotEmpty) {
         final query = _searchQuery.toLowerCase();
 
+        final sku = (offer['sku'] ?? _getProductSku(offer)).toString().toLowerCase();
         final name = (offer['name'] ?? '').toString().toLowerCase();
         final category = (offer['category'] ?? '').toString().toLowerCase();
         final supplier = (offer['supplier'] ?? '').toString().toLowerCase();
@@ -67,7 +68,7 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
         final discount = (offer['discount'] ?? '').toString().toLowerCase();
         final tags = (offer['tags'] as List? ?? []).map((t) => t.toString().toLowerCase()).join(' ');
 
-        final fullSearchableContent = '$name $category $supplier $location $badge $price $oldPrice $wholesalePrice $discount $tags';
+        final fullSearchableContent = '$sku $name $category $supplier $location $badge $price $oldPrice $wholesalePrice $discount $tags';
 
         if (!fullSearchableContent.contains(query)) {
           return false;
@@ -553,6 +554,17 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
     );
   }
 
+  String _getProductSku(Map<String, dynamic> item) {
+    if (item['sku'] != null && item['sku'].toString().trim().isNotEmpty) {
+      return item['sku'].toString().trim();
+    }
+    final name = (item['name'] ?? 'PROD').toString().replaceAll(' ', '').toUpperCase();
+    final nameCode = name.length >= 3 ? name.substring(0, 3) : name.padRight(3, 'X');
+    final cat = (item['category'] ?? 'GEN').toString().replaceAll(' ', '').toUpperCase();
+    final catCode = cat.length >= 3 ? cat.substring(0, 3) : cat.padRight(3, 'X');
+    return '$catCode-$nameCode-01';
+  }
+
   Widget _buildOfferCard(
     Map<String, dynamic> data,
     bool isDark,
@@ -763,6 +775,16 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                               ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              'SKU: ${_getProductSku(data)}',
+                              style: GoogleFonts.inter(
+                                fontSize: 9.0,
+                                fontWeight: FontWeight.w500,
+                                color: isDark ? Colors.grey.shade400 : const Color(0xFF94A3B8),
+                                letterSpacing: 0.2,
+                              ),
                             ),
                             const SizedBox(height: 4),
 

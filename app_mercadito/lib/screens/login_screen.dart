@@ -235,8 +235,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(height: 32),
                           
                           // Register Link
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          Wrap(
+                            alignment: WrapAlignment.center,
+                            crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
                               Text(
                                 '¿No tienes cuenta? ',
@@ -256,7 +257,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                             ],
-                          )
+                          ),
                         ],
                       ),
                     ),

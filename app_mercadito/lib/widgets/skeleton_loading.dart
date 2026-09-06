@@ -244,3 +244,51 @@ class SkeletonListTile extends StatelessWidget {
     );
   }
 }
+
+class SkeletonGridProductCard extends StatelessWidget {
+  const SkeletonGridProductCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SkeletonShimmer(
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SkeletonContainer(
+              width: double.infinity,
+              height: 105,
+              borderRadius: 0,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  SkeletonText(width: 100, height: 12),
+                  SizedBox(height: 4),
+                  SkeletonText(width: 60, height: 8),
+                  SizedBox(height: 6),
+                  SkeletonContainer(width: double.infinity, height: 20, borderRadius: 6),
+                  SizedBox(height: 6),
+                  SkeletonText(width: 80, height: 8),
+                  SizedBox(height: 4),
+                  SkeletonText(width: 70, height: 8),
+                  SizedBox(height: 8),
+                  SkeletonText(width: 50, height: 14),
+                  SizedBox(height: 6),
+                  SkeletonContainer(width: double.infinity, height: 28, borderRadius: 8),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

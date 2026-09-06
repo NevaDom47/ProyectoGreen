@@ -26,6 +26,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int _quantity = 1;
   late String _selectedUnit;
   late List<String> _availableUnits;
+  late String _selectedSaleType; // 'detalle' or 'mayor'
+  late bool _hasBothSaleTypes;
   final TextEditingController _qtyController = TextEditingController(text: '1');
   final GlobalKey<ShakeWidgetState> _shakeKey = GlobalKey<ShakeWidgetState>();
   bool _isExpanded = false;
@@ -34,27 +36,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   void initState() {
     super.initState();
-    // In a real app we'd get this from the product map.
-    // Here we deduce it from the design or default strings.
-    String rawUnit = widget.product['unit'] ?? 'Por Libra';
-    if (rawUnit.toLowerCase().contains('libra')) {
-      _selectedUnit = 'Por Libra';
-    } else if (rawUnit.toLowerCase().contains('saco')) {
-      _selectedUnit = 'Saco';
-    } else if (rawUnit.toLowerCase().contains('caja')) {
-      _selectedUnit = 'Caja';
+    _hasBothSaleTypes = _checkHasBothSaleTypes();
+
+    final rawSaleType = (widget.product['saleType'] ?? widget.product['salesMode'] ?? '').toString().toLowerCase();
+    if (rawSaleType == 'mayor' && !_hasBothSaleTypes) {
+      _selectedSaleType = 'mayor';
     } else {
-      _selectedUnit = 'Unidad';
+      _selectedSaleType = 'detalle';
     }
-    if (widget.product['availableUnits'] is List && (widget.product['availableUnits'] as List).isNotEmpty) {
-      _availableUnits = (widget.product['availableUnits'] as List).map((e) => e.toString()).toList();
-    } else {
-      _availableUnits = ['Por Libra', 'Unidad', 'Saco', 'Caja'];
-    }
-    if (!_availableUnits.contains(_selectedUnit) && _availableUnits.isNotEmpty) {
-      _selectedUnit = _availableUnits.first;
-    }
-    
+
+    _syncUnitsForSaleType(isInitial: true);
+
     var limits = _getUnitLimits(_selectedUnit);
     _quantity = limits['min']!;
     _qtyController.text = _quantity.toString();
@@ -75,9 +67,201 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     super.dispose();
   }
 
+  bool _checkHasBothSaleTypes() {
+    final saleType = (widget.product['saleType'] ?? '').toString().toLowerCase();
+    final salesMode = (widget.product['salesMode'] ?? '').toString().toLowerCase();
+    if (saleType == 'ambos' || saleType == 'both' || salesMode == 'both' || salesMode == 'ambos') {
+      return true;
+    }
+
+    if (widget.product['unitConfigs'] is List) {
+      final configs = widget.product['unitConfigs'] as List;
+      final hasDetalle = configs.any((c) => c is Map && c['saleType'] == 'detalle');
+      final hasMayor = configs.any((c) => c is Map && c['saleType'] == 'mayor');
+      if (hasDetalle && hasMayor) return true;
+    }
+
+    final hasWholesalePrice = widget.product['wholesalePrice'] != null || widget.product['wholesalePriceNum'] != null;
+    final hasRegularPrice = widget.product['price'] != null || widget.product['priceNum'] != null;
+    if (hasWholesalePrice && hasRegularPrice) {
+      return true;
+    }
+
+    final rawUnits = widget.product['availableUnits'];
+    if (rawUnits is List && rawUnits.any((u) => u.toString().toLowerCase().contains('saco') || u.toString().toLowerCase().contains('caja'))) {
+      return true;
+    }
+
+    final name = (widget.product['name'] ?? '').toString().toLowerCase();
+    if (name.contains('papa blanca') || name.contains('limón') || name.contains('zanahoria')) {
+      return true;
+    }
+
+    return false;
+  }
+
+  void _syncUnitsForSaleType({bool isInitial = false}) {
+    List<String> units = [];
+
+    // 1. Check unitConfigs
+    if (widget.product['unitConfigs'] is List) {
+      final configs = widget.product['unitConfigs'] as List;
+      for (var c in configs) {
+        if (c is Map && c['saleType'] == _selectedSaleType && c['unit'] != null) {
+          units.add(c['unit'].toString());
+        }
+      }
+    }
+
+    // 2. Filter from availableUnits if present and no configs matched
+    if (units.isEmpty && widget.product['availableUnits'] is List) {
+      final allAvailable = (widget.product['availableUnits'] as List).map((e) => e.toString()).toList();
+      if (_selectedSaleType == 'mayor') {
+        units = allAvailable.where((u) => u.toLowerCase().contains('saco') || u.toLowerCase().contains('caja')).toList();
+      } else {
+        units = allAvailable.where((u) => !u.toLowerCase().contains('saco') && !u.toLowerCase().contains('caja')).toList();
+      }
+    }
+
+    // 3. Fallbacks
+    if (units.isEmpty) {
+      if (_selectedSaleType == 'mayor') {
+        units = ['Saco', 'Caja'];
+      } else {
+        units = ['Por Libra', 'Unidad'];
+      }
+    }
+
+    _availableUnits = units;
+
+    if (isInitial) {
+      String rawUnit = widget.product['unit'] ?? '';
+      String candidate = '';
+      if (rawUnit.toLowerCase().contains('libra')) {
+        candidate = 'Por Libra';
+      } else if (rawUnit.toLowerCase().contains('saco')) {
+        candidate = 'Saco';
+      } else if (rawUnit.toLowerCase().contains('caja')) {
+        candidate = 'Caja';
+      } else if (rawUnit.toLowerCase().contains('unidad')) {
+        candidate = 'Unidad';
+      }
+
+      if (_availableUnits.contains(candidate)) {
+        _selectedUnit = candidate;
+      } else if (_availableUnits.contains(rawUnit)) {
+        _selectedUnit = rawUnit;
+      } else if (_availableUnits.contains('Unidad')) {
+        _selectedUnit = 'Unidad';
+      } else {
+        _selectedUnit = _availableUnits.first;
+      }
+    } else {
+      if (!_availableUnits.contains(_selectedUnit)) {
+        _selectedUnit = _availableUnits.first;
+      }
+    }
+
+    var limits = _getUnitLimits(_selectedUnit);
+    int min = limits['min']!;
+    int max = limits['max']!;
+    if (_quantity < min) {
+      _quantity = min;
+      _qtyController.text = _quantity.toString();
+    } else if (max > 0 && max < 500 && _quantity > max) {
+      _quantity = max;
+      _qtyController.text = _quantity.toString();
+    }
+  }
+
+  void _onSaleTypeChanged(String newType) {
+    if (_selectedSaleType == newType) return;
+    HapticFeedback.selectionClick();
+    setState(() {
+      _selectedSaleType = newType;
+      _syncUnitsForSaleType(isInitial: false);
+    });
+  }
+
+  double _getCurrentUnitPrice() {
+    // 1. Check unitConfigs
+    if (widget.product['unitConfigs'] is List) {
+      final configs = widget.product['unitConfigs'] as List;
+      for (var c in configs) {
+        if (c is Map && c['saleType'] == _selectedSaleType && c['unit'] == _selectedUnit) {
+          if (_selectedSaleType == 'mayor' && c['priceWholesale'] != null) {
+            return (c['priceWholesale'] as num).toDouble();
+          }
+          if (_selectedSaleType == 'detalle' && c['priceRetail'] != null) {
+            return (c['priceRetail'] as num).toDouble();
+          }
+        }
+      }
+    }
+
+    // 2. Base price fallback
+    final String priceStr = widget.product['price'] ?? '\$18.00';
+    final double baseRetail = double.tryParse(priceStr.replaceAll('\$', '')) ?? 18.0;
+
+    if (_selectedSaleType == 'mayor') {
+      final wp = widget.product['wholesalePrice'] ?? widget.product['wholesalePriceNum'];
+      double baseWholesale = wp != null
+          ? (double.tryParse(wp.toString().replaceAll('\$', '')) ?? 14.50)
+          : (baseRetail * 0.8);
+
+      if (_selectedUnit.toLowerCase().contains('saco')) {
+        return 280.00;
+      } else if (_selectedUnit.toLowerCase().contains('caja')) {
+        return 220.00;
+      }
+      return baseWholesale;
+    } else {
+      if (_selectedUnit.toLowerCase().contains('saco')) {
+        return 320.00;
+      } else if (_selectedUnit.toLowerCase().contains('caja')) {
+        return 250.00;
+      }
+      return baseRetail;
+    }
+  }
+
+  String _getLimitsText() {
+    final limits = _getUnitLimits(_selectedUnit);
+    final min = limits['min'] ?? 1;
+    final max = limits['max'] ?? 99;
+
+    if (_selectedSaleType == 'mayor') {
+      if (max >= 500 || max == 0) {
+        return 'Venta mínima: $min | Sin límites';
+      }
+      return 'Venta mínima: $min | Máx. $max';
+    } else {
+      if (max >= 500 || max == 0) {
+        return 'Mín. $min | Sin límites';
+      }
+      return 'Mín. $min | Máx. $max';
+    }
+  }
+
   Map<String, int> _getUnitLimits(String unit) {
+    if (_selectedSaleType == 'mayor') {
+      int defaultWholesaleMin = 10;
+      final wm = widget.product['wholesaleMin'];
+      if (wm != null) {
+        final match = RegExp(r'\d+').firstMatch(wm.toString());
+        if (match != null) {
+          defaultWholesaleMin = int.tryParse(match.group(0)!) ?? 10;
+        }
+      }
+      if (unit.toLowerCase().contains('saco')) return {'min': 2, 'max': 50};
+      if (unit.toLowerCase().contains('caja')) return {'min': 3, 'max': 100};
+      if (unit.toLowerCase().contains('libra') || unit.toLowerCase().contains('lb')) return {'min': defaultWholesaleMin, 'max': 500};
+      if (unit.toLowerCase().contains('kg')) return {'min': defaultWholesaleMin, 'max': 500};
+      return {'min': defaultWholesaleMin, 'max': 500};
+    }
+
     if (unit.toLowerCase().contains('unidad')) return {'min': 5, 'max': 20};
-    if (unit.toLowerCase().contains('libra')) return {'min': 2, 'max': 50};
+    if (unit.toLowerCase().contains('libra') || unit.toLowerCase().contains('lb')) return {'min': 2, 'max': 50};
     if (unit.toLowerCase().contains('saco')) return {'min': 1, 'max': 10};
     if (unit.toLowerCase().contains('caja')) return {'min': 1, 'max': 15};
     return {'min': 1, 'max': 99};
@@ -93,7 +277,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     if (newQty < min || newQty == 0) {
       newQty = min;
       outOfBounds = true;
-    } else if (newQty > max) {
+    } else if (max > 0 && max < 500 && newQty > max) {
       newQty = max;
       outOfBounds = true;
     }
@@ -123,46 +307,50 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   void _handleAddToCart() {
-    // Map the selected unit back to the format globalCart expects
-    String mappedUnit;
+    String mappedUnit = _selectedUnit.toUpperCase();
     if (_selectedUnit == 'Por Libra') {
       mappedUnit = 'LIBRA';
     } else if (_selectedUnit == 'Saco') {
       mappedUnit = 'SACO';
     } else if (_selectedUnit == 'Caja') {
       mappedUnit = 'CAJA';
-    } else {
+    } else if (_selectedUnit == 'Unidad') {
       mappedUnit = 'UNIDAD';
     }
 
+    final double unitPrice = _getCurrentUnitPrice();
+
     final cartProduct = {
       ...widget.product,
-      'unit': mappedUnit, // Send mapped unit
+      'unit': mappedUnit,
+      'saleType': _selectedSaleType,
+      'price': '\$${unitPrice.toStringAsFixed(2)}',
+      'priceNum': unitPrice,
     };
-    
-    // We add it repeatedly _quantity times, or directly add with quantity if addToCart supports it.
-    // The current addToCart just adds 1 by default, but we can call it multiple times for simplicity,
-    // or modify addToCart. Let's assume we can just add the raw product and it will add 1.
-    // Actually, in global_state.dart `addToCart` ignores incoming quantity and sets it to 1.
-    // To support quantity, we'd need to modify `addToCart`.
-    // For now, we call it multiple times.
+
     for (int i = 0; i < _quantity; i++) {
       addToCart(cartProduct);
     }
 
+    final isWholesale = _selectedSaleType == 'mayor';
+    final modeLabel = isWholesale ? ' (Al por mayor)' : '';
+
+    ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
           children: [
             const Icon(Icons.check_circle, color: Colors.white),
             const SizedBox(width: 12),
-            Text(
-              '$_quantity agregado(s) al carrito',
-              style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold),
+            Expanded(
+              child: Text(
+                '$_quantity $mappedUnit$modeLabel agregado(s) al carrito',
+                style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         ),
-        backgroundColor: const Color(0xFF00462f),
+        backgroundColor: isWholesale ? const Color(0xFF0284C7) : const Color(0xFF00462f),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.all(16),
@@ -209,6 +397,126 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
+  Widget _buildSaleTypeSwitcher(bool isDark, Color primary) {
+    if (!_hasBothSaleTypes) {
+      final isWholesale = _selectedSaleType == 'mayor';
+      final badgeColor = isWholesale ? const Color(0xFF0284C7) : primary;
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: badgeColor.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: badgeColor.withValues(alpha: 0.25), width: 1),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              isWholesale ? Icons.inventory_2_outlined : Icons.shopping_bag_outlined,
+              size: 13,
+              color: badgeColor,
+            ),
+            const SizedBox(width: 5),
+            Text(
+              isWholesale ? 'Por Mayor' : 'Al Detalle',
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                color: badgeColor,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF262C28) : const Color(0xFFEBF0EC),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: isDark ? Colors.white12 : const Color(0xFFD3DDD5),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildSaleTypeTab(
+            type: 'detalle',
+            label: 'Detalle',
+            icon: Icons.shopping_bag_outlined,
+            isSelected: _selectedSaleType == 'detalle',
+            activeColor: primary,
+            isDark: isDark,
+          ),
+          _buildSaleTypeTab(
+            type: 'mayor',
+            label: 'Por Mayor',
+            icon: Icons.inventory_2_outlined,
+            isSelected: _selectedSaleType == 'mayor',
+            activeColor: const Color(0xFF0284C7),
+            isDark: isDark,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSaleTypeTab({
+    required String type,
+    required String label,
+    required IconData icon,
+    required bool isSelected,
+    required Color activeColor,
+    required bool isDark,
+  }) {
+    final subtitleColor = isDark ? Colors.grey[400]! : const Color(0xFF6B7A73);
+
+    return GestureDetector(
+      onTap: () => _onSaleTypeChanged(type),
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOutCubic,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected ? activeColor : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: activeColor.withValues(alpha: 0.25),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 13,
+              color: isSelected ? Colors.white : subtitleColor,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 11,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                color: isSelected ? Colors.white : subtitleColor,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -221,9 +529,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
     final String name = widget.product['name'] ?? 'Producto';
     final String category = widget.product['category'] ?? 'General';
+    final String sku = (widget.product['sku'] != null && widget.product['sku'].toString().isNotEmpty)
+        ? widget.product['sku'].toString()
+        : (widget.product['id'] != null && widget.product['id'].toString().startsWith('PROD-')
+            ? widget.product['id'].toString()
+            : (() {
+                final catCode = category.replaceAll(' ', '').toUpperCase();
+                final nmCode = name.replaceAll(' ', '').toUpperCase();
+                final c3 = catCode.length >= 3 ? catCode.substring(0, 3) : catCode.padRight(3, 'X');
+                final n3 = nmCode.length >= 3 ? nmCode.substring(0, 3) : nmCode.padRight(3, 'X');
+                return '$c3-$n3-01';
+              })());
     final String image = widget.product['image'] ?? widget.product['img'] ?? 'https://via.placeholder.com/400';
-    final String priceStr = widget.product['price'] ?? '\$0.00';
-    final double basePrice = double.tryParse(priceStr.replaceAll('\$', '')) ?? 0.0;
+    final double basePrice = _getCurrentUnitPrice();
     final double totalPrice = basePrice * _quantity;
     final String rating = (widget.product['rating'] ?? '5.0').toString().split(' ').first;
     final String quality = widget.product['quality'] ?? widget.product['badge'] ?? 'Primera';
@@ -404,38 +722,81 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Category
-                      Text(
-                        category,
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 14,
-                          color: subtitleColor,
-                          fontWeight: FontWeight.w600,
-                          height: 1.0,
-                        ),
-                      ),
-                      // Title
-                      Text(
-                        name,
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 24,
-                          color: textColor,
-                          fontWeight: FontWeight.bold,
-                          height: 1.0,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      ShakeWidget(
-                        key: _shakeKey,
-                        child: Text(
-                          'Mín. ${_getUnitLimits(_selectedUnit)['min']} | Máx. ${_getUnitLimits(_selectedUnit)['max']}',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 12,
-                            color: subtitleColor,
-                            fontWeight: FontWeight.w600,
+                      // Top Row: Category, Title, Limits (Left) and Sale Type Switcher (Right in red box area)
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Category & SKU
+                                Wrap(
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  spacing: 4,
+                                  children: [
+                                    Text(
+                                      category,
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: 14,
+                                        color: subtitleColor,
+                                        fontWeight: FontWeight.w600,
+                                        height: 1.0,
+                                      ),
+                                    ),
+                                    if (sku.isNotEmpty) ...[
+                                      Text(
+                                        '•',
+                                        style: TextStyle(
+                                          color: subtitleColor,
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      Text(
+                                        'SKU: $sku',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontSize: 11,
+                                          color: subtitleColor,
+                                          fontWeight: FontWeight.w500,
+                                          letterSpacing: 0.2,
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                // Title
+                                Text(
+                                  name,
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 24,
+                                    color: textColor,
+                                    fontWeight: FontWeight.bold,
+                                    height: 1.1,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                ShakeWidget(
+                                  key: _shakeKey,
+                                  child: Text(
+                                    _getLimitsText(),
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 12,
+                                      color: subtitleColor,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
+                          const SizedBox(width: 8),
+                          // Switcher positioned exactly in the red box
+                          _buildSaleTypeSwitcher(isDark, primary),
+                        ],
                       ),
+                      const SizedBox(height: 10),
                       // Price & Quantity Row
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -457,6 +818,25 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               height: 1.0,
                             ),
                           ),
+                          if (_selectedSaleType == 'mayor') ...[
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF0284C7).withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(color: const Color(0xFF0284C7).withValues(alpha: 0.25), width: 1),
+                              ),
+                              child: Text(
+                                'Por Mayor',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF0284C7),
+                                ),
+                              ),
+                            ),
+                          ],
                           const Spacer(),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -465,6 +845,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               Row(
                                 children: _availableUnits.map((unit) {
                                   final isSelected = _selectedUnit == unit;
+                                  final activeColor = _selectedSaleType == 'mayor' ? const Color(0xFF0284C7) : primary;
                                   return GestureDetector(
                                     onTap: () {
                                       setState(() {
@@ -476,7 +857,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       margin: const EdgeInsets.only(left: 6),
                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                       decoration: BoxDecoration(
-                                        color: isSelected ? primary : (isDark ? Colors.grey[800] : const Color(0xFFe9eceb)),
+                                        color: isSelected ? activeColor : (isDark ? Colors.grey[800] : const Color(0xFFe9eceb)),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Text(
@@ -567,6 +948,33 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           ),
                         ],
                       ),
+                      if (_selectedSaleType == 'mayor') ...[
+                        const SizedBox(height: 12),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF0284C7).withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: const Color(0xFF0284C7).withValues(alpha: 0.2)),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.inventory_2_outlined, size: 16, color: Color(0xFF0284C7)),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Estás comprando por mayor. Precios especiales por volumen aplicados.',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 11,
+                                    color: const Color(0xFF0284C7),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
 
                       const SizedBox(height: 24),
                       Divider(color: outlineVariantColor(isDark)),
@@ -676,6 +1084,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               height: 150,
                               width: double.infinity,
                               fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => Container(
+                                height: 150,
+                                width: double.infinity,
+                                color: surfaceColor,
+                                child: const Center(child: Icon(Icons.store, color: Colors.grey)),
+                              ),
                             ),
                             Positioned.fill(
                               child: Container(
@@ -722,7 +1136,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Precio Total',
+                        _selectedSaleType == 'mayor' ? 'Precio Total (Mayoreo)' : 'Precio Total',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 12,
                           color: subtitleColor,
@@ -761,30 +1175,37 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         decoration: BoxDecoration(
-                          color: primary,
+                          color: _selectedSaleType == 'mayor' ? const Color(0xFF0284C7) : primary,
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: primary.withValues(alpha: 0.3),
+                              color: (_selectedSaleType == 'mayor' ? const Color(0xFF0284C7) : primary).withValues(alpha: 0.3),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
                           ],
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.shopping_cart_outlined, color: Colors.white, size: 20),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Agregar al carrito',
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                _selectedSaleType == 'mayor' ? Icons.inventory_2_outlined : Icons.shopping_cart_outlined,
                                 color: Colors.white,
+                                size: 20,
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 8),
+                              Text(
+                                'Agregar al carrito',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

@@ -96,12 +96,14 @@ final GoRouter appRouter = GoRouter(
           currentIndex = 0;
         } else if (path.startsWith('/cart')) {
           currentIndex = 1;
-        } else if (path.startsWith('/providers')) {
+        } else if (path.startsWith('/search') || path.startsWith('/market')) {
           currentIndex = 2; // mercado
-        } else if (path.startsWith('/favorites')) {
-          currentIndex = 3;
+        } else if (path.startsWith('/providers')) {
+          currentIndex = 3; // buscar proveedores
         } else if (path.startsWith('/chats')) {
           currentIndex = 4;
+        } else {
+          currentIndex = -1;
         }
         
         return Scaffold(
@@ -157,6 +159,19 @@ final GoRouter appRouter = GoRouter(
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               return SlideTransition(
                 position: animation.drive(Tween(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(CurveTween(curve: Curves.easeOutCubic))),
+                child: child,
+              );
+            },
+          ),
+        ),
+        GoRoute(
+          path: '/search',
+          pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: const SearchScreen(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation.drive(CurveTween(curve: Curves.easeInOut)),
                 child: child,
               );
             },
@@ -280,19 +295,7 @@ final GoRouter appRouter = GoRouter(
         );
       },
     ),
-    GoRoute(
-      path: '/search',
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: const SearchScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation.drive(CurveTween(curve: Curves.easeInOut)),
-            child: child,
-          );
-        },
-      ),
-    ),
+
     GoRoute(
       path: '/chat-detail',
       builder: (context, state) {

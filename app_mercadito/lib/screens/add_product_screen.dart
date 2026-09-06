@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 
 class UnitPricingConfig {
   String unit;
-  String saleType; // 'ambos', 'detalle', 'mayor'
+  String saleType; // 'detalle' or 'mayor'
   TextEditingController retailPriceCtrl;
   TextEditingController wholesalePriceCtrl;
   TextEditingController minWholesaleCtrl;
@@ -12,7 +12,7 @@ class UnitPricingConfig {
 
   UnitPricingConfig({
     required this.unit,
-    this.saleType = 'ambos',
+    this.saleType = 'detalle',
     String retailPrice = '',
     String wholesalePrice = '',
     String minWholesale = '10',
@@ -33,15 +33,16 @@ class UnitPricingConfig {
   Map<String, dynamic> toMap() {
     final double retail = double.tryParse(retailPriceCtrl.text.trim()) ?? 0.0;
     final double wholesale = double.tryParse(wholesalePriceCtrl.text.trim()) ?? 0.0;
+    final bool isRetail = saleType == 'detalle';
     return {
       'unit': unit,
       'saleType': saleType,
-      'priceRetail': retail,
-      'priceWholesale': wholesale,
-      'priceRetailStr': '\$${retail.toStringAsFixed(2)}',
-      'priceWholesaleStr': '\$${wholesale.toStringAsFixed(2)}',
-      'wholesaleMin': minWholesaleCtrl.text.trim(),
-      'wholesaleMax': maxWholesaleCtrl.text.trim(),
+      'priceRetail': isRetail ? retail : 0.0,
+      'priceWholesale': !isRetail ? wholesale : 0.0,
+      'priceRetailStr': isRetail ? '\$${retail.toStringAsFixed(2)}' : '',
+      'priceWholesaleStr': !isRetail ? '\$${wholesale.toStringAsFixed(2)}' : '',
+      'wholesaleMin': !isRetail ? (minWholesaleCtrl.text.trim().isEmpty ? '10' : minWholesaleCtrl.text.trim()) : '',
+      'wholesaleMax': !isRetail ? (maxWholesaleCtrl.text.trim().isEmpty ? '100' : maxWholesaleCtrl.text.trim()) : '',
       'isDefault': isDefault,
     };
   }
@@ -186,6 +187,20 @@ class _AddProductScreenState extends State<AddProductScreen> {
     },
   ];
 
+  // Preset Sample Videos for demonstration
+  final List<Map<String, String>> _sampleVideos = [
+    {
+      'name': 'Video Cosecha de Campo (Demo)',
+      'url': 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+      'duration': '0:15 min',
+    },
+    {
+      'name': 'Video Empaque y Calidad (Demo)',
+      'url': 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+      'duration': '0:15 min',
+    },
+  ];
+
   // Form Controllers & State
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
@@ -195,11 +210,49 @@ class _AddProductScreenState extends State<AddProductScreen> {
   String _selectedCategory = 'Hortalizas';
   String _selectedQuality = 'Primera Calidad';
 
-  // Multi-Unit Pricing Configurations (Max 4)
-  final List<UnitPricingConfig> _unitConfigs = [];
+  // Independent Multi-Unit Pricing Configurations (Up to 4 Detalle + Up to 4 Mayor)
+  final List<UnitPricingConfig> _retailConfigs = [];
+  final List<UnitPricingConfig> _wholesaleConfigs = [];
+  String _activePricingTab = 'detalle'; // 'detalle' o 'mayor'
+  bool _enableRetail = true;
+  bool _enableWholesale = true;
 
-  // Photos list
+  // Top Input Form state for adding Retail Units
+  String _newRetailUnit = 'Und';
+  final TextEditingController _newRetailPriceCtrl = TextEditingController();
+
+  // Top Input Form state for adding Wholesale Units
+  String _newWholesaleUnit = 'Caja';
+  final TextEditingController _newWholesalePriceCtrl = TextEditingController();
+  final TextEditingController _newWholesaleMinCtrl = TextEditingController(text: '10');
+  final TextEditingController _newWholesaleMaxCtrl = TextEditingController(text: '100');
+  bool _newWholesaleUnlimited = false;
+
+  // Available units filtered to avoid duplicates within each forma de venta
+  List<String> get _availableRetailUnits {
+    final used = _retailConfigs.map((c) => c.unit).toSet();
+    return _units.where((u) => !used.contains(u)).toList();
+  }
+
+  List<String> get _availableWholesaleUnits {
+    final used = _wholesaleConfigs.map((c) => c.unit).toSet();
+    return _units.where((u) => !used.contains(u)).toList();
+  }
+
+  void _updateInitialNewUnits() {
+    final availRetail = _availableRetailUnits;
+    if (availRetail.isNotEmpty && !availRetail.contains(_newRetailUnit)) {
+      _newRetailUnit = availRetail.first;
+    }
+    final availWholesale = _availableWholesaleUnits;
+    if (availWholesale.isNotEmpty && !availWholesale.contains(_newWholesaleUnit)) {
+      _newWholesaleUnit = availWholesale.first;
+    }
+  }
+
+  // Media state (Up to 8 photos + strictly 1 pinned video)
   late List<String> _photos;
+  String? _videoUrl;
   int _selectedPhotoIndex = 0;
   String _previewMode = 'detalle'; // 'detalle' o 'mayor'
 
@@ -220,41 +273,101 @@ class _AddProductScreenState extends State<AddProductScreen> {
     // Initialize unit configurations
     if (p != null && p['unitConfigs'] != null && (p['unitConfigs'] as List).isNotEmpty) {
       final List rawConfigs = p['unitConfigs'] as List;
-      for (int i = 0; i < rawConfigs.length && i < 4; i++) {
+      for (int i = 0; i < rawConfigs.length; i++) {
         final c = rawConfigs[i];
-        _addUnitConfig(
-          unit: c['unit'] ?? 'LB',
-          saleType: c['saleType'] ?? 'ambos',
-          retailPrice: c['priceRetail'] != null
-              ? (c['priceRetail'] as num).toStringAsFixed(2)
-              : (c['priceNum'] != null ? (c['priceNum'] as num).toStringAsFixed(2) : ''),
-          wholesalePrice: c['priceWholesale'] != null
-              ? (c['priceWholesale'] as num).toStringAsFixed(2)
-              : (c['wholesalePriceNum'] != null ? (c['wholesalePriceNum'] as num).toStringAsFixed(2) : ''),
-          minWholesale: c['wholesaleMin'] ?? '10',
-          maxWholesale: c['wholesaleMax'] ?? '100',
-          isDefault: c['isDefault'] ?? (i == 0),
-        );
+        final type = (c['saleType'] ?? 'ambos').toString().toLowerCase();
+
+        final String unit = c['unit'] ?? 'Und';
+        final String retPrice = c['priceRetail'] != null
+            ? (c['priceRetail'] as num).toStringAsFixed(2)
+            : (c['priceNum'] != null ? (c['priceNum'] as num).toStringAsFixed(2) : '');
+        final String whlPrice = c['priceWholesale'] != null
+            ? (c['priceWholesale'] as num).toStringAsFixed(2)
+            : (c['wholesalePriceNum'] != null ? (c['wholesalePriceNum'] as num).toStringAsFixed(2) : '');
+        final String minWhl = c['wholesaleMin']?.toString() ?? '10';
+        final String maxWhl = c['wholesaleMax']?.toString() ?? '100';
+        final bool isDef = c['isDefault'] ?? false;
+
+        if (type == 'detalle') {
+          if (_retailConfigs.length < 4) {
+            _addRetailConfig(
+              unit: unit,
+              retailPrice: retPrice.isNotEmpty ? retPrice : '28.50',
+              isDefault: isDef || _retailConfigs.isEmpty,
+            );
+          }
+        } else if (type == 'mayor') {
+          if (_wholesaleConfigs.length < 4) {
+            _addWholesaleConfig(
+              unit: unit,
+              wholesalePrice: whlPrice.isNotEmpty ? whlPrice : '22.00',
+              minWholesale: minWhl,
+              maxWholesale: maxWhl,
+              isDefault: isDef || _wholesaleConfigs.isEmpty,
+            );
+          }
+        } else {
+          // 'ambos' legacy: split into both retail and wholesale configs
+          if (_retailConfigs.length < 4) {
+            _addRetailConfig(
+              unit: unit,
+              retailPrice: retPrice.isNotEmpty ? retPrice : '28.50',
+              isDefault: isDef || _retailConfigs.isEmpty,
+            );
+          }
+          if (_wholesaleConfigs.length < 4) {
+            _addWholesaleConfig(
+              unit: unit,
+              wholesalePrice: whlPrice.isNotEmpty ? whlPrice : '22.00',
+              minWholesale: minWhl,
+              maxWholesale: maxWhl,
+              isDefault: isDef || _wholesaleConfigs.isEmpty,
+            );
+          }
+        }
       }
     } else {
       // Default initial configuration
       final retail = p != null && p['priceNum'] != null ? (p['priceNum'] as num).toStringAsFixed(2) : '28.50';
       final wholesale = p != null && p['wholesalePriceNum'] != null ? (p['wholesalePriceNum'] as num).toStringAsFixed(2) : '22.00';
-      final initialUnit = p?['unit'] ?? 'LB';
-      final initialSaleType = p?['saleType'] ?? 'ambos';
+      final initialUnit = p?['unit'] ?? 'Und';
+      final pSaleType = (p?['saleType'] ?? 'ambos').toString().toLowerCase();
 
-      _addUnitConfig(
-        unit: initialUnit,
-        saleType: initialSaleType,
-        retailPrice: retail,
-        wholesalePrice: wholesale,
-        minWholesale: '10',
-        maxWholesale: '100',
-        isDefault: true,
-      );
+      if (pSaleType != 'mayor') {
+        _addRetailConfig(
+          unit: initialUnit,
+          retailPrice: retail,
+          isDefault: true,
+        );
+      }
+      if (pSaleType != 'detalle') {
+        _addWholesaleConfig(
+          unit: initialUnit == 'Und' ? 'Caja' : initialUnit,
+          wholesalePrice: wholesale,
+          minWholesale: '10',
+          maxWholesale: '100',
+          isDefault: true,
+        );
+      }
     }
 
-    if (p != null && p['img'] != null && p['img'].toString().isNotEmpty) {
+    _enableRetail = _retailConfigs.isNotEmpty;
+    _enableWholesale = _wholesaleConfigs.isNotEmpty;
+    if (!_enableRetail && _enableWholesale) {
+      _activePricingTab = 'mayor';
+      _previewMode = 'mayor';
+    } else {
+      _activePricingTab = 'detalle';
+      _previewMode = 'detalle';
+    }
+
+    _updateInitialNewUnits();
+
+    _videoUrl = p?['video']?.toString() ?? p?['videoUrl']?.toString();
+
+    if (p != null && p['photos'] is List && (p['photos'] as List).isNotEmpty) {
+      _photos = (p['photos'] as List).map((e) => e.toString()).take(8).toList();
+    } else if (p != null && p['img'] != null && p['img'].toString().isNotEmpty) {
       _photos = [p['img'].toString()];
     } else {
       _photos = [
@@ -265,60 +378,196 @@ class _AddProductScreenState extends State<AddProductScreen> {
     _nameController.addListener(() => setState(() {}));
   }
 
-  void _addUnitConfig({
-    String unit = 'LB',
-    String saleType = 'ambos',
+  void _addRetailConfig({
+    String unit = 'Und',
     String retailPrice = '',
+    bool isDefault = false,
+  }) {
+    if (_retailConfigs.length >= 4) return;
+    final config = UnitPricingConfig(
+      unit: unit,
+      saleType: 'detalle',
+      retailPrice: retailPrice,
+      isDefault: isDefault || _retailConfigs.isEmpty,
+    );
+    config.retailPriceCtrl.addListener(() => setState(() {}));
+    _retailConfigs.add(config);
+  }
+
+  void _setRetailDefault(int index) {
+    setState(() {
+      for (int i = 0; i < _retailConfigs.length; i++) {
+        _retailConfigs[i].isDefault = (i == index);
+      }
+    });
+  }
+
+  void _removeRetailConfig(int index) {
+    if (_retailConfigs.length <= 1 && !_enableWholesale) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Debes mantener al menos una unidad configurada si la venta al por mayor está inactiva.'),
+          backgroundColor: const Color(0xFFC05621),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+      return;
+    }
+    setState(() {
+      final wasDefault = _retailConfigs[index].isDefault;
+      _retailConfigs[index].dispose();
+      _retailConfigs.removeAt(index);
+      if (wasDefault && _retailConfigs.isNotEmpty) {
+        _retailConfigs[0].isDefault = true;
+      }
+      _updateInitialNewUnits();
+    });
+  }
+
+  void _submitNewRetailUnit() {
+    if (_retailConfigs.length >= 4) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Has alcanzado el límite máximo de 4 unidades al detalle.'),
+          backgroundColor: errorColor,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+      return;
+    }
+    final price = _newRetailPriceCtrl.text.trim();
+    if (price.isEmpty || double.tryParse(price) == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Por favor ingresa un precio válido al detalle.'),
+          backgroundColor: errorColor,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+      return;
+    }
+    if (_availableRetailUnits.isEmpty) return;
+
+    setState(() {
+      _addRetailConfig(
+        unit: _newRetailUnit,
+        retailPrice: price,
+        isDefault: _retailConfigs.isEmpty,
+      );
+      _newRetailPriceCtrl.clear();
+      _updateInitialNewUnits();
+    });
+  }
+
+  void _addWholesaleConfig({
+    String unit = 'Caja',
     String wholesalePrice = '',
     String minWholesale = '10',
     String maxWholesale = '100',
     bool isDefault = false,
   }) {
-    if (_unitConfigs.length >= 4) return;
-
+    if (_wholesaleConfigs.length >= 4) return;
     final config = UnitPricingConfig(
       unit: unit,
-      saleType: saleType,
-      retailPrice: retailPrice,
+      saleType: 'mayor',
       wholesalePrice: wholesalePrice,
       minWholesale: minWholesale,
       maxWholesale: maxWholesale,
-      isDefault: isDefault || _unitConfigs.isEmpty,
+      isDefault: isDefault || _wholesaleConfigs.isEmpty,
     );
-
-    config.retailPriceCtrl.addListener(() => setState(() {}));
     config.wholesalePriceCtrl.addListener(() => setState(() {}));
     config.minWholesaleCtrl.addListener(() => setState(() {}));
     config.maxWholesaleCtrl.addListener(() => setState(() {}));
-
-    _unitConfigs.add(config);
+    _wholesaleConfigs.add(config);
   }
 
-  void _setDefaultConfig(int index) {
+  void _setWholesaleDefault(int index) {
     setState(() {
-      for (int i = 0; i < _unitConfigs.length; i++) {
-        _unitConfigs[i].isDefault = (i == index);
+      for (int i = 0; i < _wholesaleConfigs.length; i++) {
+        _wholesaleConfigs[i].isDefault = (i == index);
       }
     });
   }
 
-  void _removeUnitConfig(int index) {
-    if (_unitConfigs.length <= 1) return;
+  void _removeWholesaleConfig(int index) {
+    if (_wholesaleConfigs.length <= 1 && !_enableRetail) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Debes mantener al menos una unidad configurada si la venta al detalle está inactiva.'),
+          backgroundColor: const Color(0xFFC05621),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+      return;
+    }
     setState(() {
-      final wasDefault = _unitConfigs[index].isDefault;
-      _unitConfigs[index].dispose();
-      _unitConfigs.removeAt(index);
-      if (wasDefault && _unitConfigs.isNotEmpty) {
-        _unitConfigs[0].isDefault = true;
+      final wasDefault = _wholesaleConfigs[index].isDefault;
+      _wholesaleConfigs[index].dispose();
+      _wholesaleConfigs.removeAt(index);
+      if (wasDefault && _wholesaleConfigs.isNotEmpty) {
+        _wholesaleConfigs[0].isDefault = true;
       }
+      _updateInitialNewUnits();
     });
   }
 
-  UnitPricingConfig get _defaultConfig {
-    return _unitConfigs.firstWhere(
-      (c) => c.isDefault,
-      orElse: () => _unitConfigs.isNotEmpty ? _unitConfigs.first : UnitPricingConfig(unit: 'LB', isDefault: true),
-    );
+  void _submitNewWholesaleUnit() {
+    if (_wholesaleConfigs.length >= 4) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Has alcanzado el límite máximo de 4 unidades al por mayor.'),
+          backgroundColor: errorColor,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+      return;
+    }
+    final price = _newWholesalePriceCtrl.text.trim();
+    if (price.isEmpty || double.tryParse(price) == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Por favor ingresa un precio válido al por mayor.'),
+          backgroundColor: errorColor,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+      return;
+    }
+    final min = _newWholesaleMinCtrl.text.trim().isEmpty ? '10' : _newWholesaleMinCtrl.text.trim();
+    final max = _newWholesaleUnlimited
+        ? 'Sin límites'
+        : (_newWholesaleMaxCtrl.text.trim().isEmpty ? 'Sin límites' : _newWholesaleMaxCtrl.text.trim());
+    if (_availableWholesaleUnits.isEmpty) return;
+
+    setState(() {
+      _addWholesaleConfig(
+        unit: _newWholesaleUnit,
+        wholesalePrice: price,
+        minWholesale: min,
+        maxWholesale: max,
+        isDefault: _wholesaleConfigs.isEmpty,
+      );
+      _newWholesalePriceCtrl.clear();
+      _newWholesaleUnlimited = false;
+      _newWholesaleMaxCtrl.text = '100';
+      _updateInitialNewUnits();
+    });
+  }
+
+  UnitPricingConfig? get _defaultRetailConfig {
+    if (_retailConfigs.isEmpty) return null;
+    return _retailConfigs.firstWhere((c) => c.isDefault, orElse: () => _retailConfigs.first);
+  }
+
+  UnitPricingConfig? get _defaultWholesaleConfig {
+    if (_wholesaleConfigs.isEmpty) return null;
+    return _wholesaleConfigs.firstWhere((c) => c.isDefault, orElse: () => _wholesaleConfigs.first);
   }
 
   @override
@@ -326,7 +575,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
     _nameController.dispose();
     _skuController.dispose();
     _descriptionController.dispose();
-    for (final c in _unitConfigs) {
+    _newRetailPriceCtrl.dispose();
+    _newWholesalePriceCtrl.dispose();
+    _newWholesaleMinCtrl.dispose();
+    _newWholesaleMaxCtrl.dispose();
+    for (final c in _retailConfigs) {
+      c.dispose();
+    }
+    for (final c in _wholesaleConfigs) {
       c.dispose();
     }
     super.dispose();
@@ -340,8 +596,97 @@ class _AddProductScreenState extends State<AddProductScreen> {
     return '$catCode-$nameCode-$randomSuffix';
   }
 
-  void _showAddPhotoModal() {
-    final urlCtrl = TextEditingController();
+  // ===========================================================================
+  // GESTIÓN DE FOTOGRAFÍAS Y VIDEO
+  // ===========================================================================
+
+  void _setMainPhoto(int index) {
+    if (index <= 0 || index >= _photos.length) return;
+    setState(() {
+      final photo = _photos.removeAt(index);
+      _photos.insert(0, photo);
+      _selectedPhotoIndex = 0;
+    });
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Row(
+          children: [
+            Icon(Icons.star_rounded, color: Color(0xFFFFD700), size: 20),
+            SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Foto establecida como Imagen Principal del producto.',
+                style: TextStyle(fontFamily: 'Plus Jakarta Sans', fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: const Color(0xFF016042),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 2),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
+  }
+
+  void _movePhotoLeft(int index) {
+    if (index <= 0 || index >= _photos.length) return;
+    setState(() {
+      final photo = _photos.removeAt(index);
+      _photos.insert(index - 1, photo);
+      _selectedPhotoIndex = index - 1;
+    });
+  }
+
+  void _movePhotoRight(int index) {
+    if (index < 0 || index >= _photos.length - 1) return;
+    setState(() {
+      final photo = _photos.removeAt(index);
+      _photos.insert(index + 1, photo);
+      _selectedPhotoIndex = index + 1;
+    });
+  }
+
+  void _removePhoto(int index) {
+    setState(() {
+      _photos.removeAt(index);
+      if (_selectedPhotoIndex >= _photos.length) {
+        _selectedPhotoIndex = _photos.isEmpty ? 0 : _photos.length - 1;
+      }
+    });
+  }
+
+  void _removeVideo() {
+    setState(() {
+      _videoUrl = null;
+    });
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Row(
+          children: [
+            Icon(Icons.delete_outline, color: Colors.white, size: 18),
+            SizedBox(width: 8),
+            Text(
+              'Video del producto eliminado.',
+              style: TextStyle(fontFamily: 'Plus Jakarta Sans'),
+            ),
+          ],
+        ),
+        backgroundColor: const Color(0xFFC05621),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 2),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
+  }
+
+  void _showAddMediaModal() {
+    final photoUrlCtrl = TextEditingController();
+    final videoUrlCtrl = TextEditingController();
+    String activeTab = _photos.length >= 8 && _videoUrl == null ? 'video' : 'photo';
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -352,6 +697,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
       builder: (ctx) {
         return StatefulBuilder(
           builder: (modalCtx, setModalState) {
+            final isPhotoTab = activeTab == 'photo';
+            final canAddPhotos = _photos.length < 8;
+            final canAddVideo = _videoUrl == null;
+
             return Padding(
               padding: EdgeInsets.only(
                 left: 20,
@@ -364,15 +713,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Header Modal
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Row(
                           children: [
-                            Icon(Icons.add_photo_alternate_outlined, color: primaryColor, size: 22),
+                            Icon(Icons.perm_media_outlined, color: primaryColor, size: 22),
                             SizedBox(width: 8),
                             Text(
-                              'Añadir Fotografía',
+                              'Añadir Medios al Producto',
                               style: TextStyle(
                                 fontFamily: 'Plus Jakarta Sans',
                                 fontSize: 18,
@@ -388,144 +738,543 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Selecciona una imagen de nuestro catálogo agrícola o ingresa una URL:',
-                      style: TextStyle(
-                        fontFamily: 'Plus Jakarta Sans',
-                        fontSize: 13,
-                        color: onSurfaceVariant,
+                    const SizedBox(height: 12),
+
+                    // Segmented Tabs: Fotos / Video
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: surfaceLow,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: outlineColor),
+                      ),
+                      child: Row(
+                        children: [
+                          // Tab Fotos
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => setModalState(() => activeTab = 'photo'),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: isPhotoTab ? primaryColor : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(9),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.photo_library_outlined,
+                                      size: 16,
+                                      color: isPhotoTab ? Colors.white : onSurfaceVariant,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      'Fotos (${_photos.length}/8)',
+                                      style: TextStyle(
+                                        fontFamily: 'Plus Jakarta Sans',
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: isPhotoTab ? Colors.white : onSurface,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          // Tab Video
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => setModalState(() => activeTab = 'video'),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: !isPhotoTab ? const Color(0xFF0369A1) : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(9),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.videocam_outlined,
+                                      size: 16,
+                                      color: !isPhotoTab ? Colors.white : onSurfaceVariant,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      'Video (${_videoUrl != null ? '1' : '0'}/1)',
+                                      style: TextStyle(
+                                        fontFamily: 'Plus Jakarta Sans',
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: !isPhotoTab ? Colors.white : onSurface,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 16),
-                    // Presets Grid
-                    SizedBox(
-                      height: 110,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: _sampleImages.length,
-                        separatorBuilder: (context, index) => const SizedBox(width: 12),
-                        itemBuilder: (context, idx) {
-                          final item = _sampleImages[idx];
-                          final isAsset = item['url']!.startsWith('assets/');
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                if (!_photos.contains(item['url'])) {
-                                  _photos.add(item['url']!);
-                                  _selectedPhotoIndex = _photos.length - 1;
-                                }
-                              });
-                              Navigator.of(ctx).pop();
-                            },
-                            child: Container(
-                              width: 90,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: outlineColor),
-                                color: surfaceLow,
+
+                    // TAB CONTENIDO: FOTOGRAFÍAS
+                    if (isPhotoTab) ...[
+                      if (!canAddPhotos) ...[
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFF4E5),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: const Color(0xFFFF9A04)),
+                          ),
+                          child: const Row(
+                            children: [
+                              Icon(Icons.info_outline, color: Color(0xFFC05621), size: 20),
+                              SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  'Has alcanzado el límite máximo de 8 fotografías para este producto. Si deseas agregar una nueva foto, elimina alguna de las actuales.',
+                                  style: TextStyle(
+                                    fontFamily: 'Plus Jakarta Sans',
+                                    fontSize: 11.5,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF7B341E),
+                                  ),
+                                ),
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    child: ClipRRect(
-                                      borderRadius: const BorderRadius.vertical(top: Radius.circular(11)),
-                                      child: isAsset
-                                          ? Image.asset(
-                                              item['url']!,
-                                              width: double.infinity,
-                                              fit: BoxFit.cover,
-                                              errorBuilder: (context, error, stackTrace) => const Icon(Icons.image, color: primaryColor),
-                                            )
-                                          : Image.network(
-                                              item['url']!,
-                                              width: double.infinity,
-                                              fit: BoxFit.cover,
-                                              errorBuilder: (context, error, stackTrace) => const Icon(Icons.image, color: primaryColor),
+                            ],
+                          ),
+                        ),
+                      ] else ...[
+                        const Text(
+                          'Selecciona una imagen de nuestro catálogo agrícola:',
+                          style: TextStyle(
+                            fontFamily: 'Plus Jakarta Sans',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: onSurfaceVariant,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        // Presets Grid
+                        SizedBox(
+                          height: 108,
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: _sampleImages.length,
+                            separatorBuilder: (context, index) => const SizedBox(width: 10),
+                            itemBuilder: (context, idx) {
+                              final item = _sampleImages[idx];
+                              final isAsset = item['url']!.startsWith('assets/');
+                              final isAlreadyAdded = _photos.contains(item['url']);
+                              return GestureDetector(
+                                onTap: () {
+                                  if (isAlreadyAdded) return;
+                                  if (_photos.length >= 8) return;
+                                  setState(() {
+                                    _photos.add(item['url']!);
+                                    _selectedPhotoIndex = _photos.length - 1;
+                                  });
+                                  Navigator.of(ctx).pop();
+                                },
+                                child: Opacity(
+                                  opacity: isAlreadyAdded ? 0.45 : 1.0,
+                                  child: Container(
+                                    width: 88,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: isAlreadyAdded ? primaryColor : outlineColor,
+                                        width: isAlreadyAdded ? 2 : 1,
+                                      ),
+                                      color: surfaceLow,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Expanded(
+                                          child: ClipRRect(
+                                            borderRadius: const BorderRadius.vertical(top: Radius.circular(11)),
+                                            child: isAsset
+                                                ? Image.asset(
+                                                    item['url']!,
+                                                    width: double.infinity,
+                                                    fit: BoxFit.cover,
+                                                    errorBuilder: (context, error, stackTrace) =>
+                                                        const Icon(Icons.image, color: primaryColor),
+                                                  )
+                                                : Image.network(
+                                                    item['url']!,
+                                                    width: double.infinity,
+                                                    fit: BoxFit.cover,
+                                                    errorBuilder: (context, error, stackTrace) =>
+                                                        const Icon(Icons.image, color: primaryColor),
+                                                  ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                                          child: Text(
+                                            isAlreadyAdded ? '✓ Agregada' : item['name']!,
+                                            style: TextStyle(
+                                              fontFamily: 'Plus Jakarta Sans',
+                                              fontSize: 9.5,
+                                              fontWeight: FontWeight.bold,
+                                              color: isAlreadyAdded ? primaryColor : onSurface,
                                             ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                                    child: Text(
-                                      item['name']!,
-                                      style: const TextStyle(
-                                        fontFamily: 'Plus Jakarta Sans',
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        color: onSurface,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.center,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'O ingresa URL directa de la imagen:',
+                          style: TextStyle(
+                            fontFamily: 'Plus Jakarta Sans',
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: onSurfaceVariant,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: photoUrlCtrl,
+                          decoration: InputDecoration(
+                            hintText: 'https://ejemplo.com/foto_producto.jpg',
+                            prefixIcon: const Icon(Icons.link, color: primaryColor),
+                            filled: true,
+                            fillColor: surfaceLow,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 46,
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: primaryColor,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: () {
+                              final text = photoUrlCtrl.text.trim();
+                              if (text.isNotEmpty) {
+                                if (_photos.length >= 8) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: const Text('Límite máximo de 8 fotos alcanzado.'),
+                                      backgroundColor: errorColor,
+                                      behavior: SnackBarBehavior.floating,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    ),
+                                  );
+                                  return;
+                                }
+                                setState(() {
+                                  _photos.add(text);
+                                  _selectedPhotoIndex = _photos.length - 1;
+                                });
+                                Navigator.of(ctx).pop();
+                              }
+                            },
+                            icon: const Icon(Icons.add_photo_alternate_outlined, size: 18),
+                            label: Text(
+                              'AGREGAR FOTO (${_photos.length}/8)',
+                              style: const TextStyle(
+                                fontFamily: 'Plus Jakarta Sans',
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ]
+                    // TAB CONTENIDO: VIDEO
+                    else ...[
+                      // Regla explicativa sobre el video
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF0369A1).withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: const Color(0xFF0369A1).withValues(alpha: 0.3)),
+                        ),
+                        child: const Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.video_collection_outlined, color: Color(0xFF0369A1), size: 20),
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Reglas de Video del Producto:',
+                                    style: TextStyle(
+                                      fontFamily: 'Plus Jakarta Sans',
+                                      fontSize: 11.5,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF0369A1),
+                                    ),
+                                  ),
+                                  SizedBox(height: 2),
+                                  Text(
+                                    '• Máximo 1 video demostrativo por producto.\n• El video siempre se quedará en la última posición del carrusel.\n• No puede colocarse como vista principal del producto.',
+                                    style: TextStyle(
+                                      fontFamily: 'Plus Jakarta Sans',
+                                      fontSize: 10.5,
+                                      color: onSurfaceVariant,
+                                      height: 1.4,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'O ingresa URL directa de la imagen:',
-                      style: TextStyle(
-                        fontFamily: 'Plus Jakarta Sans',
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: urlCtrl,
-                      decoration: InputDecoration(
-                        hintText: 'https://ejemplo.com/foto_producto.jpg',
-                        prefixIcon: const Icon(Icons.link, color: primaryColor),
-                        filled: true,
-                        fillColor: surfaceLow,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
+                          ],
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 48,
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: primaryColor,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
+                      const SizedBox(height: 16),
+
+                      if (!canAddVideo) ...[
+                        // Already has video
+                        Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: surfaceLow,
                             borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: outlineColor),
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF0369A1).withValues(alpha: 0.15),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: const Icon(Icons.play_circle_fill, color: Color(0xFF0369A1), size: 24),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          'Video del Producto Configurado',
+                                          style: TextStyle(
+                                            fontFamily: 'Plus Jakarta Sans',
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: onSurface,
+                                          ),
+                                        ),
+                                        Text(
+                                          _videoUrl!,
+                                          style: const TextStyle(
+                                            fontFamily: 'Plus Jakarta Sans',
+                                            fontSize: 10,
+                                            color: onSurfaceVariant,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                width: double.infinity,
+                                height: 42,
+                                child: OutlinedButton.icon(
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: errorColor,
+                                    side: const BorderSide(color: errorColor),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                  ),
+                                  onPressed: () {
+                                    _removeVideo();
+                                    setModalState(() {});
+                                  },
+                                  icon: const Icon(Icons.delete_outline, size: 18),
+                                  label: const Text(
+                                    'ELIMINAR VIDEO PARA CAMBIARLO',
+                                    style: TextStyle(
+                                      fontFamily: 'Plus Jakarta Sans',
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        onPressed: () {
-                          final text = urlCtrl.text.trim();
-                          if (text.isNotEmpty) {
-                            setState(() {
-                              _photos.add(text);
-                              _selectedPhotoIndex = _photos.length - 1;
-                            });
-                            Navigator.of(ctx).pop();
-                          }
-                        },
-                        icon: const Icon(Icons.check, size: 18),
-                        label: const Text(
-                          'AGREGAR URL',
+                      ] else ...[
+                        // Select video presets or custom URL
+                        const Text(
+                          'Selecciona un video de demostración o ingresa URL:',
                           style: TextStyle(
                             fontFamily: 'Plus Jakarta Sans',
+                            fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
+                            color: onSurfaceVariant,
                           ),
                         ),
-                      ),
-                    ),
+                        const SizedBox(height: 10),
+                        ...List.generate(_sampleVideos.length, (idx) {
+                          final v = _sampleVideos[idx];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _videoUrl = v['url'];
+                                });
+                                Navigator.of(ctx).pop();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Video "${v['name']}" agregado (última posición).'),
+                                    backgroundColor: const Color(0xFF0369A1),
+                                    behavior: SnackBarBehavior.floating,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                  ),
+                                );
+                              },
+                              borderRadius: BorderRadius.circular(12),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: surfaceLow,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: outlineColor),
+                                ),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.play_circle_outline, color: Color(0xFF0369A1), size: 22),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            v['name']!,
+                                            style: const TextStyle(
+                                              fontFamily: 'Plus Jakarta Sans',
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: onSurface,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Duración aprox: ${v['duration']}',
+                                            style: const TextStyle(
+                                              fontFamily: 'Plus Jakarta Sans',
+                                              fontSize: 10,
+                                              color: onSurfaceVariant,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const Icon(Icons.add_circle_outline, color: Color(0xFF0369A1), size: 20),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                        const SizedBox(height: 10),
+                        const Text(
+                          'O ingresa URL directa de video (MP4 / WebM):',
+                          style: TextStyle(
+                            fontFamily: 'Plus Jakarta Sans',
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: onSurfaceVariant,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: videoUrlCtrl,
+                          decoration: InputDecoration(
+                            hintText: 'https://ejemplo.com/video_frescura.mp4',
+                            prefixIcon: const Icon(Icons.videocam_outlined, color: Color(0xFF0369A1)),
+                            filled: true,
+                            fillColor: surfaceLow,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 46,
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF0369A1),
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: () {
+                              final text = videoUrlCtrl.text.trim();
+                              if (text.isNotEmpty) {
+                                setState(() {
+                                  _videoUrl = text;
+                                });
+                                Navigator.of(ctx).pop();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: const Text('Video agregado exitosamente (ubicado en última posición).'),
+                                    backgroundColor: const Color(0xFF0369A1),
+                                    behavior: SnackBarBehavior.floating,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                  ),
+                                );
+                              }
+                            },
+                            icon: const Icon(Icons.video_call_outlined, size: 20),
+                            label: const Text(
+                              'AGREGAR VIDEO (1/1)',
+                              style: TextStyle(
+                                fontFamily: 'Plus Jakarta Sans',
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ],
                 ),
               ),
@@ -706,34 +1455,82 @@ class _AddProductScreenState extends State<AddProductScreen> {
       return;
     }
 
-    // Default primary unit config
-    final def = _defaultConfig;
-    final double retailVal = double.tryParse(def.retailPriceCtrl.text.trim()) ?? 0.0;
-    final double wholesaleVal = double.tryParse(def.wholesalePriceCtrl.text.trim()) ?? (retailVal * 0.8);
-    final double displayMainPrice = def.saleType == 'mayor' ? wholesaleVal : retailVal;
+    final bool hasRetail = _enableRetail && _retailConfigs.isNotEmpty;
+    final bool hasWholesale = _enableWholesale && _wholesaleConfigs.isNotEmpty;
+
+    if (!hasRetail && !hasWholesale) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Row(
+            children: [
+              Icon(Icons.warning_amber_rounded, color: Colors.white),
+              SizedBox(width: 8),
+              Expanded(
+                child: Text('Debes configurar al menos una forma de venta (Al Detalle o Por Mayor).'),
+              ),
+            ],
+          ),
+          backgroundColor: const Color(0xFFC05621),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+      return;
+    }
+
+    String finalSaleType = 'ambos';
+    if (hasRetail && !hasWholesale) {
+      finalSaleType = 'detalle';
+    } else if (!hasRetail && hasWholesale) {
+      finalSaleType = 'mayor';
+    }
+
+    final defRet = _defaultRetailConfig;
+    final defWhl = _defaultWholesaleConfig;
+
+    final double retailVal = defRet != null
+        ? (double.tryParse(defRet.retailPriceCtrl.text.trim()) ?? 0.0)
+        : 0.0;
+    final double wholesaleVal = defWhl != null
+        ? (double.tryParse(defWhl.wholesalePriceCtrl.text.trim()) ?? (retailVal * 0.8))
+        : (retailVal * 0.8);
+
+    final double displayMainPrice = (finalSaleType == 'mayor') ? wholesaleVal : retailVal;
+    final String primaryUnit = defRet?.unit ?? defWhl?.unit ?? 'LB';
 
     final int stockVal = widget.initialProduct?['stock'] ?? 100;
     final int minAlertVal = widget.initialProduct?['minStockAlert'] ?? 10;
 
     final String mainImage = _photos.isNotEmpty
-        ? _photos[_selectedPhotoIndex.clamp(0, _photos.length - 1)]
+        ? _photos[0]
         : 'assets/images/PapaGemini.png';
 
-    final unitConfigsList = _unitConfigs.map((c) => c.toMap()).toList();
+    final List<UnitPricingConfig> allConfigs = [
+      if (hasRetail) ..._retailConfigs,
+      if (hasWholesale) ..._wholesaleConfigs,
+    ];
+
+    final unitConfigsList = allConfigs.map((c) => c.toMap()).toList();
 
     final productData = {
       'id': widget.initialProduct?['id'] ?? 'PROD-${DateTime.now().millisecondsSinceEpoch % 10000}',
       'name': _nameController.text.trim(),
       'category': _selectedCategory,
       'badge': _selectedQuality,
-      'saleType': def.saleType,
+      'saleType': finalSaleType,
       'price': '\$${displayMainPrice.toStringAsFixed(2)}',
       'priceNum': displayMainPrice,
       'wholesalePrice': '\$${wholesaleVal.toStringAsFixed(2)}',
       'wholesalePriceNum': wholesaleVal,
-      'wholesaleMin': def.minWholesaleCtrl.text.trim().isEmpty ? '10 ${def.unit}' : '${def.minWholesaleCtrl.text.trim()} ${def.unit}',
-      'wholesaleMax': def.maxWholesaleCtrl.text.trim().isEmpty ? '100 ${def.unit}' : '${def.maxWholesaleCtrl.text.trim()} ${def.unit}',
-      'unit': def.unit,
+      'wholesaleMin': defWhl != null && defWhl.minWholesaleCtrl.text.trim().isNotEmpty
+          ? '${defWhl.minWholesaleCtrl.text.trim()} ${defWhl.unit}'
+          : '10 $primaryUnit',
+      'wholesaleMax': defWhl != null && defWhl.maxWholesaleCtrl.text.trim().isNotEmpty
+          ? (defWhl.maxWholesaleCtrl.text.trim().toLowerCase().contains('sin l')
+              ? 'Sin límites'
+              : '${defWhl.maxWholesaleCtrl.text.trim()} ${defWhl.unit}')
+          : 'Sin límites',
+      'unit': primaryUnit,
       'unitConfigs': unitConfigsList,
       'stock': stockVal,
       'minStockAlert': minAlertVal,
@@ -744,6 +1541,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
       'createdAt': widget.initialProduct?['createdAt'] ?? '28 Ago 2026',
       'img': mainImage,
       'photos': _photos,
+      'video': _videoUrl,
+      'videoUrl': _videoUrl,
     };
 
     _showSuccessDialog(productData);
@@ -827,23 +1626,39 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   void _openDetailPreview() {
-    final def = _defaultConfig;
+    final defRet = _defaultRetailConfig;
+    final defWhl = _defaultWholesaleConfig;
     final name = _nameController.text.trim().isEmpty ? 'Tomates Orgánicos' : _nameController.text.trim();
-    final retail = def.retailPriceCtrl.text.trim().isEmpty ? '28.50' : def.retailPriceCtrl.text.trim();
-    final wholesale = def.wholesalePriceCtrl.text.trim().isEmpty ? '22.00' : def.wholesalePriceCtrl.text.trim();
-    final minWholesale = def.minWholesaleCtrl.text.trim().isEmpty ? '10' : def.minWholesaleCtrl.text.trim();
-    final unit = def.unit;
-    final saleType = def.saleType;
+
+    final retail = defRet?.retailPriceCtrl.text.trim().isNotEmpty == true ? defRet!.retailPriceCtrl.text.trim() : '28.50';
+    final wholesale = defWhl?.wholesalePriceCtrl.text.trim().isNotEmpty == true ? defWhl!.wholesalePriceCtrl.text.trim() : '22.00';
+    final minWholesale = defWhl?.minWholesaleCtrl.text.trim().isNotEmpty == true ? defWhl!.minWholesaleCtrl.text.trim() : '10';
+    final unit = defRet?.unit ?? defWhl?.unit ?? 'LB';
+
+    final bool hasRetail = _enableRetail && _retailConfigs.isNotEmpty;
+    final bool hasWholesale = _enableWholesale && _wholesaleConfigs.isNotEmpty;
+
+    String effectiveSaleType = 'ambos';
+    if (hasRetail && !hasWholesale) {
+      effectiveSaleType = 'detalle';
+    } else if (!hasRetail && hasWholesale) {
+      effectiveSaleType = 'mayor';
+    }
+
+    final effectivePrice = _previewMode == 'mayor' ? wholesale : retail;
+
+    final allConfigs = [
+      if (hasRetail) ..._retailConfigs,
+      if (hasWholesale) ..._wholesaleConfigs,
+    ];
+
+    final List<String> availableUnits = allConfigs.isNotEmpty
+        ? allConfigs.map((c) => c.unit).toSet().toList()
+        : ['Por Libra', 'Unidad', 'Saco', 'Caja'];
+
     final activePhoto = _photos.isNotEmpty
         ? _photos[_selectedPhotoIndex.clamp(0, _photos.length - 1)]
         : 'assets/images/PapaGemini.png';
-
-    final effectivePrice = saleType == 'mayor' ? wholesale : retail;
-
-    // Available units list
-    final List<String> availableUnits = _unitConfigs.isNotEmpty
-        ? _unitConfigs.map((c) => c.unit).toSet().toList()
-        : ['Por Libra', 'Unidad', 'Saco', 'Caja'];
 
     final productMap = <String, dynamic>{
       'id': widget.initialProduct?['id'] ?? 'PROD-PREVIEW',
@@ -851,12 +1666,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
       'category': _selectedCategory,
       'badge': _selectedQuality,
       'quality': _selectedQuality,
-      'saleType': saleType,
+      'saleType': effectiveSaleType,
       'price': '\$$effectivePrice',
       'priceNum': double.tryParse(effectivePrice) ?? 22.00,
       'wholesalePrice': '\$$wholesale',
       'wholesalePriceNum': double.tryParse(wholesale) ?? 22.00,
-      'wholesaleMin': '$minWholesale $unit',
+      'wholesaleMin': '$minWholesale ${defWhl?.unit ?? unit}',
       'unit': unit,
       'availableUnits': availableUnits,
       'stock': 100,
@@ -871,7 +1686,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
       'img': activePhoto,
       'image': activePhoto,
       'photos': _photos.isNotEmpty ? _photos : [activePhoto],
-      'unitConfigs': _unitConfigs.map((c) => c.toMap()).toList(),
+      'video': _videoUrl,
+      'videoUrl': _videoUrl,
+      'unitConfigs': allConfigs.map((c) => c.toMap()).toList(),
     };
 
     context.push('/product_detail', extra: productMap);
@@ -885,13 +1702,26 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
     final displayName = _nameController.text.trim().isEmpty ? 'Tomates Orgánicos' : _nameController.text.trim();
 
-    // Default configuration for live preview
-    final def = _defaultConfig;
-    final displayRetail = def.retailPriceCtrl.text.trim().isEmpty ? '28.50' : def.retailPriceCtrl.text.trim();
-    final displayWholesale = def.wholesalePriceCtrl.text.trim().isEmpty ? '22.00' : def.wholesalePriceCtrl.text.trim();
-    final displayMin = def.minWholesaleCtrl.text.trim().isEmpty ? '10' : def.minWholesaleCtrl.text.trim();
-    final displayUnit = def.unit;
-    final displaySaleType = def.saleType;
+    // Default configurations for live preview
+    final bool hasRetail = _enableRetail && _retailConfigs.isNotEmpty;
+    final bool hasWholesale = _enableWholesale && _wholesaleConfigs.isNotEmpty;
+    final bool isDetailActive = _previewMode == 'detalle' ? (hasRetail || !hasWholesale) : !hasWholesale;
+
+    final defRetail = _defaultRetailConfig;
+    final defWholesale = _defaultWholesaleConfig;
+
+    final displayRetail = defRetail?.retailPriceCtrl.text.trim().isNotEmpty == true
+        ? defRetail!.retailPriceCtrl.text.trim()
+        : '28.50';
+    final displayRetailUnit = defRetail?.unit ?? 'Und';
+
+    final displayWholesale = defWholesale?.wholesalePriceCtrl.text.trim().isNotEmpty == true
+        ? defWholesale!.wholesalePriceCtrl.text.trim()
+        : '22.00';
+    final displayWholesaleUnit = defWholesale?.unit ?? 'Caja';
+    final displayMin = defWholesale?.minWholesaleCtrl.text.trim().isNotEmpty == true
+        ? defWholesale!.minWholesaleCtrl.text.trim()
+        : '10';
 
     final activePhoto = _photos.isNotEmpty
         ? _photos[_selectedPhotoIndex.clamp(0, _photos.length - 1)]
@@ -908,10 +1738,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
       qualityBgColor = const Color(0xFFFDEDED);
       qualityTextColor = const Color(0xFFF44336);
     }
-
-    final bool isDetailActive = displaySaleType == 'mayor'
-        ? false
-        : (displaySaleType == 'detalle' ? true : _previewMode == 'detalle');
 
     return Scaffold(
       backgroundColor: bg,
@@ -1088,7 +1914,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                         const SizedBox(height: 1),
                                         Text(
                                           isDetailActive
-                                              ? (displayUnit == 'KG' ? 'POR KILO' : 'POR $displayUnit')
+                                              ? (displayRetailUnit == 'KG' ? 'POR KILO' : 'POR $displayRetailUnit')
                                               : 'POR MAYOR',
                                           style: TextStyle(
                                             fontFamily: 'Plus Jakarta Sans',
@@ -1101,7 +1927,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                         ),
                                         if (!isDetailActive)
                                           Text(
-                                            '(MIN. $displayMin $displayUnit)',
+                                            '(MIN. $displayMin $displayWholesaleUnit)',
                                             style: const TextStyle(
                                               fontFamily: 'Plus Jakarta Sans',
                                               fontSize: 7.5,
@@ -1115,101 +1941,156 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 ),
                                 const SizedBox(height: 6),
 
-                                // Sales Mode Switcher [ Detalle | Por Mayor ]
-                                Container(
-                                  padding: const EdgeInsets.all(3),
-                                  decoration: BoxDecoration(
-                                    color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                      color: isDark ? const Color(0xFF475569) : const Color(0xFFE2E8F0),
+                                // Sales Mode Indicator / Switcher
+                                if (hasRetail && hasWholesale)
+                                  Container(
+                                    padding: const EdgeInsets.all(3),
+                                    decoration: BoxDecoration(
+                                      color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(
+                                        color: isDark ? const Color(0xFF475569) : const Color(0xFFE2E8F0),
+                                      ),
                                     ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      // Detalle Option
-                                      GestureDetector(
-                                        onTap: (displaySaleType == 'mayor')
-                                            ? null
-                                            : () => setState(() => _previewMode = 'detalle'),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-                                          decoration: BoxDecoration(
-                                            color: isDetailActive
-                                                ? const Color(0xFF059669)
-                                                : Colors.transparent,
-                                            borderRadius: BorderRadius.circular(6),
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Icon(
-                                                Icons.shopping_bag_outlined,
-                                                size: 13,
-                                                color: isDetailActive
-                                                    ? Colors.white
-                                                    : (isDark ? Colors.white60 : const Color(0xFF64748B)),
-                                              ),
-                                              const SizedBox(width: 4),
-                                              Text(
-                                                'Detalle',
-                                                style: TextStyle(
-                                                  fontFamily: 'Plus Jakarta Sans',
-                                                  fontSize: 11,
-                                                  fontWeight: FontWeight.bold,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        // Detalle Option
+                                        GestureDetector(
+                                          onTap: () => setState(() => _previewMode = 'detalle'),
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: isDetailActive
+                                                  ? const Color(0xFF059669)
+                                                  : Colors.transparent,
+                                              borderRadius: BorderRadius.circular(6),
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(
+                                                  Icons.shopping_bag_outlined,
+                                                  size: 13,
                                                   color: isDetailActive
                                                       ? Colors.white
                                                       : (isDark ? Colors.white60 : const Color(0xFF64748B)),
                                                 ),
-                                              ),
-                                            ],
+                                                const SizedBox(width: 4),
+                                                Text(
+                                                  'Detalle',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Plus Jakarta Sans',
+                                                    fontSize: 11,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: isDetailActive
+                                                        ? Colors.white
+                                                        : (isDark ? Colors.white60 : const Color(0xFF64748B)),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(width: 2),
-                                      // Por Mayor Option
-                                      GestureDetector(
-                                        onTap: (displaySaleType == 'detalle')
-                                            ? null
-                                            : () => setState(() => _previewMode = 'mayor'),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-                                          decoration: BoxDecoration(
-                                            color: !isDetailActive
-                                                ? const Color(0xFF0369A1)
-                                                : Colors.transparent,
-                                            borderRadius: BorderRadius.circular(6),
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Icon(
-                                                Icons.inventory_2_outlined,
-                                                size: 13,
-                                                color: !isDetailActive
-                                                    ? Colors.white
-                                                    : (isDark ? Colors.white60 : const Color(0xFF64748B)),
-                                              ),
-                                              const SizedBox(width: 4),
-                                              Text(
-                                                'Por Mayor',
-                                                style: TextStyle(
-                                                  fontFamily: 'Plus Jakarta Sans',
-                                                  fontSize: 11,
-                                                  fontWeight: FontWeight.bold,
+                                        const SizedBox(width: 2),
+                                        // Por Mayor Option
+                                        GestureDetector(
+                                          onTap: () => setState(() => _previewMode = 'mayor'),
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: !isDetailActive
+                                                  ? const Color(0xFF0369A1)
+                                                  : Colors.transparent,
+                                              borderRadius: BorderRadius.circular(6),
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(
+                                                  Icons.inventory_2_outlined,
+                                                  size: 13,
                                                   color: !isDetailActive
                                                       ? Colors.white
                                                       : (isDark ? Colors.white60 : const Color(0xFF64748B)),
                                                 ),
-                                              ),
-                                            ],
+                                                const SizedBox(width: 4),
+                                                Text(
+                                                  'Por Mayor',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Plus Jakarta Sans',
+                                                    fontSize: 11,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: !isDetailActive
+                                                        ? Colors.white
+                                                        : (isDark ? Colors.white60 : const Color(0xFF64748B)),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
+                                  )
+                                else if (hasRetail)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF059669).withValues(alpha: 0.12),
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(color: const Color(0xFF059669).withValues(alpha: 0.3)),
+                                    ),
+                                    child: const Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.shopping_bag_outlined,
+                                          size: 13,
+                                          color: Color(0xFF059669),
+                                        ),
+                                        SizedBox(width: 4),
+                                        Text(
+                                          'Al Detalle',
+                                          style: TextStyle(
+                                            fontFamily: 'Plus Jakarta Sans',
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w800,
+                                            color: Color(0xFF059669),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                else if (hasWholesale)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF0369A1).withValues(alpha: 0.12),
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(color: const Color(0xFF0369A1).withValues(alpha: 0.3)),
+                                    ),
+                                    child: const Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.inventory_2_outlined,
+                                          size: 13,
+                                          color: Color(0xFF0369A1),
+                                        ),
+                                        SizedBox(width: 4),
+                                        Text(
+                                          'Por Mayor',
+                                          style: TextStyle(
+                                            fontFamily: 'Plus Jakarta Sans',
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w800,
+                                            color: Color(0xFF0369A1),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
                                 const SizedBox(height: 6),
 
                                 // Category & Extra Badges Row
@@ -1480,7 +2361,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 ),
 
                                 // Additional units hint
-                                if (_unitConfigs.length > 1) ...[
+                                if (isDetailActive && _retailConfigs.length > 1) ...[
                                   const SizedBox(height: 8),
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -1494,12 +2375,38 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                         const SizedBox(width: 6),
                                         Expanded(
                                           child: Text(
-                                            '+${_unitConfigs.length - 1} presentación(es) más disponibles (${_unitConfigs.where((c) => !c.isDefault).map((c) => c.unit).join(', ')})',
+                                            '+${_retailConfigs.length - 1} presentación(es) al detalle más (${_retailConfigs.where((c) => !c.isDefault).map((c) => c.unit).join(', ')})',
                                             style: const TextStyle(
                                               fontFamily: 'Plus Jakarta Sans',
                                               fontSize: 9.5,
                                               fontWeight: FontWeight.bold,
                                               color: onSurfaceVariant,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ] else if (!isDetailActive && _wholesaleConfigs.length > 1) ...[
+                                  const SizedBox(height: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: surfaceLow,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Icon(Icons.touch_app_outlined, size: 13, color: Color(0xFF0369A1)),
+                                        const SizedBox(width: 6),
+                                        Expanded(
+                                          child: Text(
+                                            '+${_wholesaleConfigs.length - 1} presentación(es) al por mayor más (${_wholesaleConfigs.where((c) => !c.isDefault).map((c) => c.unit).join(', ')})',
+                                            style: const TextStyle(
+                                              fontFamily: 'Plus Jakarta Sans',
+                                              fontSize: 9.5,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFF0369A1),
                                             ),
                                           ),
                                         ),
@@ -1516,150 +2423,536 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     const SizedBox(height: 20),
 
                     // ==========================================
-                    // 2. FOTOGRAFÍAS STRIP
+                    // 2. FOTOGRAFÍAS Y VIDEO STRIP (HASTA 8 FOTOS + 1 VIDEO ANCLADO AL FINAL)
                     // ==========================================
-                    _buildSectionHeader('Fotografías del Producto', Icons.photo_library_outlined),
-                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.perm_media_outlined, size: 18, color: primaryColor),
+                            const SizedBox(width: 6),
+                            const Text(
+                              'Fotografías del Producto',
+                              style: TextStyle(
+                                fontFamily: 'Plus Jakarta Sans',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w800,
+                                color: primaryColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            // Badge contador fotos
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: _photos.length >= 8
+                                    ? const Color(0xFFFDEDED)
+                                    : primaryColor.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: _photos.length >= 8 ? errorColor : primaryColor.withValues(alpha: 0.3),
+                                ),
+                              ),
+                              child: Text(
+                                '${_photos.length}/8 Fotos',
+                                style: TextStyle(
+                                  fontFamily: 'Plus Jakarta Sans',
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                  color: _photos.length >= 8 ? errorColor : primaryColor,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            // Badge contador video
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: _videoUrl != null
+                                    ? const Color(0xFF0369A1).withValues(alpha: 0.15)
+                                    : surfaceLow,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: _videoUrl != null ? const Color(0xFF0369A1) : outlineColor,
+                                ),
+                              ),
+                              child: Text(
+                                '${_videoUrl != null ? '1' : '0'}/1 Video',
+                                style: TextStyle(
+                                  fontFamily: 'Plus Jakarta Sans',
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                  color: _videoUrl != null ? const Color(0xFF0369A1) : onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'La foto #1 es la Portada Principal. Usa ◀ ▶ para ordenar o pulsa ☆ para definir la principal. El video siempre se mostrará al final.',
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 10.5,
+                        color: onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
                     SizedBox(
-                      height: 96,
+                      height: 122,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
-                          // Add Photo Dashed Button
+                          // Botón Añadir Medio (Foto o Video)
                           GestureDetector(
-                            onTap: _showAddPhotoModal,
+                            onTap: _showAddMediaModal,
                             child: Container(
-                              width: 88,
-                              height: 88,
+                              width: 96,
+                              height: 118,
                               margin: const EdgeInsets.only(right: 12),
                               decoration: BoxDecoration(
                                 color: surfaceLow,
                                 borderRadius: BorderRadius.circular(14),
                                 border: Border.all(
-                                  color: primaryColor.withValues(alpha: 0.5),
+                                  color: (_photos.length >= 8 && _videoUrl != null)
+                                      ? outlineColor
+                                      : primaryColor.withValues(alpha: 0.5),
                                   style: BorderStyle.solid,
                                   width: 1.5,
                                 ),
                               ),
-                              child: const Column(
+                              child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.add_a_photo_outlined, color: primaryColor, size: 26),
-                                  SizedBox(height: 4),
+                                  Icon(
+                                    (_photos.length >= 8 && _videoUrl != null)
+                                        ? Icons.check_circle_outline
+                                        : Icons.add_photo_alternate_outlined,
+                                    color: (_photos.length >= 8 && _videoUrl != null)
+                                        ? onSurfaceVariant
+                                        : primaryColor,
+                                    size: 26,
+                                  ),
+                                  const SizedBox(height: 4),
                                   Text(
-                                    'AÑADIR',
+                                    (_photos.length >= 8 && _videoUrl != null) ? 'COMPLETO' : 'AÑADIR',
                                     style: TextStyle(
                                       fontFamily: 'Plus Jakarta Sans',
-                                      fontSize: 9,
-                                      fontWeight: FontWeight.w800,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w900,
                                       letterSpacing: 0.8,
-                                      color: primaryColor,
+                                      color: (_photos.length >= 8 && _videoUrl != null)
+                                          ? onSurfaceVariant
+                                          : primaryColor,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    (_photos.length >= 8 && _videoUrl != null) ? 'Límites listos' : 'Foto o Video',
+                                    style: TextStyle(
+                                      fontFamily: 'Plus Jakarta Sans',
+                                      fontSize: 8.5,
+                                      color: onSurfaceVariant,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
                           ),
-                          // Photos List
+
+                          // Lista de Fotografías Reordenables (1 a 8)
                           ...List.generate(_photos.length, (index) {
                             final photo = _photos[index];
                             final isSelected = _selectedPhotoIndex == index;
                             final isAssetPhoto = photo.startsWith('assets/');
+                            final isPrincipal = index == 0;
 
-                            return GestureDetector(
-                              onTap: () => setState(() => _selectedPhotoIndex = index),
-                              child: Container(
-                                width: 88,
-                                height: 88,
-                                margin: const EdgeInsets.only(right: 12),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(
-                                    color: isSelected ? primaryColor : outlineColor,
-                                    width: isSelected ? 2.5 : 1,
-                                  ),
-                                  boxShadow: const [
-                                    BoxShadow(color: Color(0x0A000000), blurRadius: 4),
-                                  ],
+                            return Container(
+                              width: 104,
+                              height: 118,
+                              margin: const EdgeInsets.only(right: 12),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(
+                                  color: isPrincipal
+                                      ? const Color(0xFF016042)
+                                      : (isSelected ? primaryColor : outlineColor),
+                                  width: isPrincipal ? 2.5 : (isSelected ? 2.0 : 1.0),
                                 ),
-                                child: Stack(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: isAssetPhoto
-                                          ? Image.asset(
-                                              photo,
-                                              width: double.infinity,
-                                              height: double.infinity,
-                                              fit: BoxFit.cover,
-                                              errorBuilder: (context, error, stackTrace) => const Icon(Icons.image),
-                                            )
-                                          : Image.network(
-                                              photo,
-                                              width: double.infinity,
-                                              height: double.infinity,
-                                              fit: BoxFit.cover,
-                                              errorBuilder: (context, error, stackTrace) => const Icon(Icons.image),
-                                            ),
+                                boxShadow: const [
+                                  BoxShadow(color: Color(0x0E000000), blurRadius: 4, offset: Offset(0, 2)),
+                                ],
+                              ),
+                              child: Stack(
+                                children: [
+                                  // Imagen
+                                  Positioned.fill(
+                                    child: GestureDetector(
+                                      onTap: () => setState(() => _selectedPhotoIndex = index),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: isAssetPhoto
+                                            ? Image.asset(
+                                                photo,
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (context, error, stackTrace) =>
+                                                    const Icon(Icons.image),
+                                              )
+                                            : Image.network(
+                                                photo,
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (context, error, stackTrace) =>
+                                                    const Icon(Icons.image),
+                                              ),
+                                      ),
                                     ),
-                                    if (index == 0)
-                                      Positioned(
-                                        bottom: 4,
-                                        left: 4,
-                                        right: 4,
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(vertical: 2),
-                                          decoration: BoxDecoration(
-                                            color: Colors.black.withValues(alpha: 0.65),
-                                            borderRadius: BorderRadius.circular(6),
-                                          ),
-                                          child: const Text(
-                                            'PRINCIPAL',
-                                            style: TextStyle(
-                                              fontFamily: 'Plus Jakarta Sans',
-                                              fontSize: 8,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
+                                  ),
+
+                                  // Gradiente Superior para legibilidad de insignias
+                                  Positioned(
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    height: 32,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            Colors.black.withValues(alpha: 0.65),
+                                            Colors.transparent,
+                                          ],
                                         ),
                                       ),
-                                    if (_photos.length > 1)
-                                      Positioned(
-                                        top: 4,
-                                        right: 4,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              _photos.removeAt(index);
-                                              if (_selectedPhotoIndex >= _photos.length) {
-                                                _selectedPhotoIndex = _photos.length - 1;
-                                              }
-                                            });
-                                          },
+                                    ),
+                                  ),
+
+                                  // Barra Superior: Tag Posición / Principal y Botón Eliminar
+                                  Positioned(
+                                    top: 4,
+                                    left: 4,
+                                    right: 4,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        // Badge de Posición
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: isPrincipal
+                                                ? const Color(0xFF016042)
+                                                : Colors.black.withValues(alpha: 0.65),
+                                            borderRadius: BorderRadius.circular(6),
+                                            border: Border.all(
+                                              color: isPrincipal ? const Color(0xFF34D399) : Colors.white24,
+                                              width: 0.8,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              if (isPrincipal) ...[
+                                                const Icon(Icons.star_rounded, size: 11, color: Color(0xFFFFD700)),
+                                                const SizedBox(width: 2),
+                                              ],
+                                              Text(
+                                                isPrincipal ? 'PORTADA' : '#${index + 1}',
+                                                style: const TextStyle(
+                                                  fontFamily: 'Plus Jakarta Sans',
+                                                  fontSize: 8,
+                                                  fontWeight: FontWeight.w900,
+                                                  color: Colors.white,
+                                                  letterSpacing: 0.4,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+
+                                        // Botón Eliminar
+                                        GestureDetector(
+                                          onTap: () => _removePhoto(index),
                                           child: Container(
                                             padding: const EdgeInsets.all(3),
                                             decoration: BoxDecoration(
-                                              color: Colors.white.withValues(alpha: 0.9),
+                                              color: Colors.white.withValues(alpha: 0.92),
                                               shape: BoxShape.circle,
                                               boxShadow: const [
-                                                BoxShadow(color: Colors.black12, blurRadius: 2),
+                                                BoxShadow(color: Colors.black26, blurRadius: 3),
                                               ],
                                             ),
                                             child: const Icon(
                                               Icons.close,
-                                              size: 14,
+                                              size: 13,
                                               color: errorColor,
                                             ),
                                           ),
                                         ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  // Barra Inferior de Control de Posición y Selección Principal
+                                  Positioned(
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withValues(alpha: 0.78),
+                                        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(12)),
                                       ),
-                                  ],
-                                ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          // Mover hacia la izquierda (◀)
+                                          GestureDetector(
+                                            onTap: index > 0 ? () => _movePhotoLeft(index) : null,
+                                            child: Opacity(
+                                              opacity: index > 0 ? 1.0 : 0.25,
+                                              child: Container(
+                                                padding: const EdgeInsets.all(3),
+                                                decoration: BoxDecoration(
+                                                  color: index > 0
+                                                      ? Colors.white.withValues(alpha: 0.15)
+                                                      : Colors.transparent,
+                                                  borderRadius: BorderRadius.circular(4),
+                                                ),
+                                                child: const Icon(
+                                                  Icons.arrow_back_ios_rounded,
+                                                  size: 12,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+
+                                          // Botón / Indicador Principal (★)
+                                          GestureDetector(
+                                            onTap: !isPrincipal ? () => _setMainPhoto(index) : null,
+                                            child: Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                              decoration: BoxDecoration(
+                                                color: isPrincipal
+                                                    ? const Color(0xFFFFD700).withValues(alpha: 0.25)
+                                                    : Colors.white.withValues(alpha: 0.12),
+                                                borderRadius: BorderRadius.circular(6),
+                                              ),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Icon(
+                                                    isPrincipal ? Icons.star_rounded : Icons.star_border_rounded,
+                                                    size: 13,
+                                                    color: isPrincipal ? const Color(0xFFFFD700) : Colors.white,
+                                                  ),
+                                                  if (!isPrincipal) ...[
+                                                    const SizedBox(width: 2),
+                                                    const Text(
+                                                      'Principal',
+                                                      style: TextStyle(
+                                                        fontFamily: 'Plus Jakarta Sans',
+                                                        fontSize: 7.5,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+
+                                          // Mover hacia la derecha (▶)
+                                          GestureDetector(
+                                            onTap: index < _photos.length - 1 ? () => _movePhotoRight(index) : null,
+                                            child: Opacity(
+                                              opacity: index < _photos.length - 1 ? 1.0 : 0.25,
+                                              child: Container(
+                                                padding: const EdgeInsets.all(3),
+                                                decoration: BoxDecoration(
+                                                  color: index < _photos.length - 1
+                                                      ? Colors.white.withValues(alpha: 0.15)
+                                                      : Colors.transparent,
+                                                  borderRadius: BorderRadius.circular(4),
+                                                ),
+                                                child: const Icon(
+                                                  Icons.arrow_forward_ios_rounded,
+                                                  size: 12,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             );
                           }),
+
+                          // ========================================================
+                          // TARJETA DE VIDEO (ESTRICTAMENTE ANCLADA AL FINAL)
+                          // Siempre en la última posición, sin botones de reorden ni principal
+                          // ========================================================
+                          if (_videoUrl != null)
+                            Container(
+                              width: 104,
+                              height: 118,
+                              margin: const EdgeInsets.only(right: 12),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                gradient: const LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [Color(0xFF0F172A), Color(0xFF0369A1)],
+                                ),
+                                border: Border.all(
+                                  color: const Color(0xFF38BDF8),
+                                  width: 2.0,
+                                ),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Color(0x240284C7),
+                                    blurRadius: 6,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Stack(
+                                children: [
+                                  // Top Row: Badge VIDEO y Botón Eliminar
+                                  Positioned(
+                                    top: 4,
+                                    left: 4,
+                                    right: 4,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFF0284C7),
+                                            borderRadius: BorderRadius.circular(6),
+                                            border: Border.all(color: const Color(0xFF7DD3FC), width: 0.8),
+                                          ),
+                                          child: const Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(Icons.videocam, size: 10, color: Colors.white),
+                                              SizedBox(width: 2),
+                                              Text(
+                                                'VIDEO',
+                                                style: TextStyle(
+                                                  fontFamily: 'Plus Jakarta Sans',
+                                                  fontSize: 8,
+                                                  fontWeight: FontWeight.w900,
+                                                  color: Colors.white,
+                                                  letterSpacing: 0.4,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: _removeVideo,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(3),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white.withValues(alpha: 0.92),
+                                              shape: BoxShape.circle,
+                                              boxShadow: const [
+                                                BoxShadow(color: Colors.black26, blurRadius: 3),
+                                              ],
+                                            ),
+                                            child: const Icon(
+                                              Icons.close,
+                                              size: 13,
+                                              color: errorColor,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  // Centro: Icono Play representativo
+                                  Positioned.fill(
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.all(6),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white.withValues(alpha: 0.2),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Icon(
+                                              Icons.play_arrow_rounded,
+                                              color: Colors.white,
+                                              size: 26,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          const Text(
+                                            'Video Demo',
+                                            style: TextStyle(
+                                              fontFamily: 'Plus Jakarta Sans',
+                                              fontSize: 8.5,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white70,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+
+                                  // Barra Inferior: Indicador Fijo de Posición (Sin flechas de mover)
+                                  Positioned(
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withValues(alpha: 0.8),
+                                        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(12)),
+                                      ),
+                                      child: const Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.push_pin_outlined, size: 10, color: Color(0xFF38BDF8)),
+                                          SizedBox(width: 3),
+                                          Text(
+                                            'ÚLTIMA POSICIÓN',
+                                            style: TextStyle(
+                                              fontFamily: 'Plus Jakarta Sans',
+                                              fontSize: 7.5,
+                                              fontWeight: FontWeight.w900,
+                                              color: Color(0xFF38BDF8),
+                                              letterSpacing: 0.3,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -1845,8 +3138,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
     );
   }
 
-  // --- Multi-Unit Pricing Section (Max 4 Units) ---
+  // --- Multi-Unit Pricing Section (Divided into Detalle & Por Mayor, up to 4 each) ---
   Widget _buildMultiUnitPricingSection(Color cardBg) {
+    const wholesaleBlue = Color(0xFF0369A1);
+    final isDetalleActive = _activePricingTab == 'detalle';
+
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -1890,7 +3186,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       ),
                     ),
                     Text(
-                      'Configura hasta 4 unidades de medida para este producto',
+                      'Configura hasta 4 unidades al detalle y 4 al por mayor',
                       style: TextStyle(
                         fontFamily: 'Plus Jakarta Sans',
                         fontSize: 11,
@@ -1900,111 +3196,1199 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: surfaceLow,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: outlineColor),
-                ),
-                child: Text(
-                  '${_unitConfigs.length}/4',
-                  style: const TextStyle(
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: primaryColor,
-                  ),
-                ),
-              ),
             ],
           ),
           const SizedBox(height: 14),
 
-          // Render each Unit Configuration Card
-          ...List.generate(_unitConfigs.length, (idx) {
-            final config = _unitConfigs[idx];
-            return _buildSingleUnitConfigCard(config, idx, cardBg);
-          }),
-
-          // Button to Add another Unit (if < 4)
-          if (_unitConfigs.length < 4) ...[
-            const SizedBox(height: 6),
-            SizedBox(
-              width: double.infinity,
-              height: 44,
-              child: OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: primaryColor,
-                  side: const BorderSide(color: primaryColor, style: BorderStyle.solid, width: 1.2),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  backgroundColor: primaryColor.withValues(alpha: 0.04),
-                ),
-                onPressed: () {
-                  // Find next unused unit from _units list
-                  final usedUnits = _unitConfigs.map((c) => c.unit).toSet();
-                  final nextUnit = _units.firstWhere((u) => !usedUnits.contains(u), orElse: () => 'Caja');
-                  setState(() {
-                    _addUnitConfig(
-                      unit: nextUnit,
-                      saleType: 'ambos',
-                      retailPrice: '',
-                      wholesalePrice: '',
-                      minWholesale: '10',
-                      maxWholesale: '100',
-                      isDefault: false,
-                    );
-                  });
-                },
-                icon: const Icon(Icons.add_circle_outline, size: 18),
-                label: Text(
-                  'AÑADIR OTRA UNIDAD DE MEDIDA (${_unitConfigs.length}/4)',
-                  style: const TextStyle(
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 11,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ),
+          // Segmented Tab Switcher: [ Al Detalle (X/4) ] | [ Por Mayor (Y/4) ]
+          Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: surfaceLow,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: outlineColor),
             ),
-          ],
+            child: Row(
+              children: [
+                // Tab 1: Al Detalle
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _activePricingTab = 'detalle';
+                        _previewMode = 'detalle';
+                      });
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: isDetalleActive ? primaryColor : Colors.transparent,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: isDetalleActive
+                            ? const [
+                                BoxShadow(
+                                  color: Color(0x2200462F),
+                                  blurRadius: 6,
+                                  offset: Offset(0, 2),
+                                )
+                              ]
+                            : null,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.shopping_bag_outlined,
+                            size: 15,
+                            color: isDetalleActive ? Colors.white : onSurfaceVariant,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Al Detalle',
+                            style: TextStyle(
+                              fontFamily: 'Plus Jakarta Sans',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w800,
+                              color: isDetalleActive ? Colors.white : onSurface,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: isDetalleActive
+                                  ? Colors.white.withValues(alpha: 0.22)
+                                  : onSurfaceVariant.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              '${_retailConfigs.length}/4',
+                              style: TextStyle(
+                                fontFamily: 'Plus Jakarta Sans',
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: isDetalleActive ? Colors.white : onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
+
+                // Tab 2: Por Mayor
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _activePricingTab = 'mayor';
+                        _previewMode = 'mayor';
+                      });
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: !isDetalleActive ? wholesaleBlue : Colors.transparent,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: !isDetalleActive
+                            ? const [
+                                BoxShadow(
+                                  color: Color(0x220369A1),
+                                  blurRadius: 6,
+                                  offset: Offset(0, 2),
+                                )
+                              ]
+                            : null,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.inventory_2_outlined,
+                            size: 15,
+                            color: !isDetalleActive ? Colors.white : onSurfaceVariant,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Por Mayor',
+                            style: TextStyle(
+                              fontFamily: 'Plus Jakarta Sans',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w800,
+                              color: !isDetalleActive ? Colors.white : onSurface,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: !isDetalleActive
+                                  ? Colors.white.withValues(alpha: 0.22)
+                                  : onSurfaceVariant.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              '${_wholesaleConfigs.length}/4',
+                              style: TextStyle(
+                                fontFamily: 'Plus Jakarta Sans',
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: !isDetalleActive ? Colors.white : onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+
+          // Render active configuration section
+          if (isDetalleActive)
+            _buildRetailChannelSection(cardBg)
+          else
+            _buildWholesaleChannelSection(cardBg),
         ],
       ),
     );
   }
 
-  // Card for an individual Unit of Measure configuration
-  Widget _buildSingleUnitConfigCard(UnitPricingConfig config, int index, Color cardBg) {
+  // --- SECCIÓN: CONFIGURACIÓN AL DETALLE ---
+  Widget _buildRetailChannelSection(Color cardBg) {
+    final availUnits = _availableRetailUnits;
+    final currentUnit = availUnits.contains(_newRetailUnit)
+        ? _newRetailUnit
+        : (availUnits.isNotEmpty ? availUnits.first : null);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Forma de Venta al Detalle Header Banner
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: const Color(0xFFEAF2E8),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: const Color(0xFFBBD5C7)),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.shopping_bag_outlined, color: primaryColor, size: 16),
+              ),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Forma de Venta al Detalle',
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF016042),
+                      ),
+                    ),
+                    Text(
+                      'Venta por unidad o fracción para consumidor final',
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 10,
+                        color: Color(0xFF486456),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Switch.adaptive(
+                value: _enableRetail,
+                activeThumbColor: primaryColor,
+                activeTrackColor: primaryColor.withValues(alpha: 0.5),
+                onChanged: (val) {
+                  if (!val && !_enableWholesale) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Row(
+                          children: [
+                            Icon(Icons.warning_amber_rounded, color: Colors.white),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: Text('Debes mantener activa al menos una forma de venta (Al Detalle o Por Mayor).'),
+                            ),
+                          ],
+                        ),
+                        backgroundColor: const Color(0xFFC05621),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                    );
+                    return;
+                  }
+                  setState(() {
+                    _enableRetail = val;
+                    if (val && _retailConfigs.isEmpty) {
+                      _addRetailConfig(unit: 'Und', retailPrice: '28.50', isDefault: true);
+                    }
+                    if (!val && _enableWholesale) {
+                      _activePricingTab = 'mayor';
+                      _previewMode = 'mayor';
+                    }
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        if (!_enableRetail)
+          Container(
+            padding: const EdgeInsets.all(16),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: surfaceLow,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: outlineColor),
+            ),
+            child: Column(
+              children: [
+                Icon(Icons.storefront_outlined, size: 32, color: onSurfaceVariant.withValues(alpha: 0.6)),
+                const SizedBox(height: 8),
+                const Text(
+                  'Forma de Venta al Detalle Deshabilitada',
+                  style: TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: onSurface,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  'Los clientes no podrán comprar este producto por unidad ni ver precios minoristas.',
+                  style: TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontSize: 11,
+                    color: onSurfaceVariant,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: primaryColor,
+                    side: const BorderSide(color: primaryColor),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _enableRetail = true;
+                      if (_retailConfigs.isEmpty) {
+                        _addRetailConfig(unit: 'Und', retailPrice: '28.50', isDefault: true);
+                      }
+                    });
+                  },
+                  icon: const Icon(Icons.check_circle_outline, size: 16),
+                  label: const Text(
+                    'HABILITAR VENTA AL DETALLE',
+                    style: TextStyle(
+                      fontFamily: 'Plus Jakarta Sans',
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        else ...[
+          // ==========================================
+          // CAJA SUPERIOR FIJA: CONFIGURACIÓN DE PRECIOS Y UNIDADES
+          // ==========================================
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: primaryColor.withValues(alpha: 0.04),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: primaryColor.withValues(alpha: 0.25), width: 1.2),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.add_circle, color: primaryColor, size: 18),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                      child: Text(
+                        'Configurar y Agregar Unidad al Detalle',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: primaryColor,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: _retailConfigs.length >= 4
+                            ? const Color(0xFFFDEDED)
+                            : primaryColor.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color: _retailConfigs.length >= 4 ? errorColor : primaryColor.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Text(
+                        '${_retailConfigs.length}/4',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                          color: _retailConfigs.length >= 4 ? errorColor : primaryColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+
+                if (_retailConfigs.length < 4 && currentUnit != null) ...[
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Dropdown de Unidad
+                      Expanded(
+                        flex: 5,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                _buildFieldLabel('UNIDAD *'),
+                                const SizedBox(width: 4),
+                                GestureDetector(
+                                  onTap: _showUnitsInfoDialog,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 4),
+                                    child: Icon(
+                                      Icons.info_outline,
+                                      size: 13,
+                                      color: primaryColor.withValues(alpha: 0.8),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            DropdownButtonFormField<String>(
+                              key: ValueKey('retail_$currentUnit'),
+                              initialValue: currentUnit,
+                              decoration: _buildInputDecoration(),
+                              items: availUnits.map((u) {
+                                return DropdownMenuItem(
+                                  value: u,
+                                  child: Text(
+                                    u,
+                                    style: const TextStyle(
+                                      fontFamily: 'Plus Jakarta Sans',
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      color: onSurface,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (val) {
+                                if (val != null) {
+                                  setState(() => _newRetailUnit = val);
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+
+                      // Input de Precio
+                      Expanded(
+                        flex: 6,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildFieldLabel('PRECIO AL DETALLE *'),
+                            TextFormField(
+                              controller: _newRetailPriceCtrl,
+                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              decoration: _buildInputDecoration(
+                                hintText: '28.50',
+                                prefixText: '\$ ',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 40,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        foregroundColor: Colors.white,
+                        elevation: 1,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: _submitNewRetailUnit,
+                      icon: const Icon(Icons.add, size: 16),
+                      label: const Text(
+                        'AGREGAR UNIDAD AL DETALLE',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ] else if (_retailConfigs.length >= 4) ...[
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF4E5),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: const Color(0xFFFF9A04).withValues(alpha: 0.5)),
+                    ),
+                    child: const Row(
+                      children: [
+                        Icon(Icons.info_outline, color: Color(0xFFFF9A04), size: 16),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Has alcanzado el límite máximo de 4 unidades al detalle. Si deseas cambiar alguna, elimínala de la lista inferior.',
+                            style: TextStyle(
+                              fontFamily: 'Plus Jakarta Sans',
+                              fontSize: 11,
+                              color: Color(0xFF856404),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ] else ...[
+                  const Text(
+                    'No hay más unidades disponibles para agregar.',
+                    style: TextStyle(
+                      fontFamily: 'Plus Jakarta Sans',
+                      fontSize: 11,
+                      color: onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+
+          // Título de Unidades ya configuradas
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'UNIDADES CONFIGURADAS (${_retailConfigs.length})',
+                style: const TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: onSurfaceVariant,
+                  letterSpacing: 0.6,
+                ),
+              ),
+              const Text(
+                'Toca ★ para elegir la predeterminada',
+                style: TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 10,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+
+          // Listado de Tarjetas Compactas
+          ...List.generate(_retailConfigs.length, (idx) {
+            final config = _retailConfigs[idx];
+            return _buildRetailSummaryCard(config, idx, cardBg);
+          }),
+        ],
+      ],
+    );
+  }
+
+  // --- SECCIÓN: CONFIGURACIÓN AL POR MAYOR ---
+  Widget _buildWholesaleChannelSection(Color cardBg) {
+    const wholesaleBlue = Color(0xFF0369A1);
+    final availUnits = _availableWholesaleUnits;
+    final currentUnit = availUnits.contains(_newWholesaleUnit)
+        ? _newWholesaleUnit
+        : (availUnits.isNotEmpty ? availUnits.first : null);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Forma de Venta al Por Mayor Header Banner
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: const Color(0xFFE0F2FE),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: const Color(0xFFBAE6FD)),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.inventory_2_outlined, color: wholesaleBlue, size: 16),
+              ),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Forma de Venta al Por Mayor',
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: wholesaleBlue,
+                      ),
+                    ),
+                    Text(
+                      'Venta por bulto, lote o volumen para negocios y comercios',
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 10,
+                        color: Color(0xFF075985),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Switch.adaptive(
+                value: _enableWholesale,
+                activeThumbColor: wholesaleBlue,
+                activeTrackColor: wholesaleBlue.withValues(alpha: 0.5),
+                onChanged: (val) {
+                  if (!val && !_enableRetail) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Row(
+                          children: [
+                            Icon(Icons.warning_amber_rounded, color: Colors.white),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: Text('Debes mantener activa al menos una forma de venta (Al Detalle o Por Mayor).'),
+                            ),
+                          ],
+                        ),
+                        backgroundColor: const Color(0xFFC05621),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                    );
+                    return;
+                  }
+                  setState(() {
+                    _enableWholesale = val;
+                    if (val && _wholesaleConfigs.isEmpty) {
+                      _addWholesaleConfig(unit: 'Caja', wholesalePrice: '22.00', minWholesale: '10', maxWholesale: '100', isDefault: true);
+                    }
+                    if (!val && _enableRetail) {
+                      _activePricingTab = 'detalle';
+                      _previewMode = 'detalle';
+                    }
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        if (!_enableWholesale)
+          Container(
+            padding: const EdgeInsets.all(16),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: surfaceLow,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: outlineColor),
+            ),
+            child: Column(
+              children: [
+                Icon(Icons.inventory_2_outlined, size: 32, color: onSurfaceVariant.withValues(alpha: 0.6)),
+                const SizedBox(height: 8),
+                const Text(
+                  'Forma de Venta al Por Mayor Deshabilitada',
+                  style: TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: onSurface,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  'Este producto no ofrecerá precios mayoristas ni cantidades mínimas de compra por volumen.',
+                  style: TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontSize: 11,
+                    color: onSurfaceVariant,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: wholesaleBlue,
+                    side: const BorderSide(color: wholesaleBlue),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _enableWholesale = true;
+                      if (_wholesaleConfigs.isEmpty) {
+                        _addWholesaleConfig(unit: 'Caja', wholesalePrice: '22.00', minWholesale: '10', maxWholesale: '100', isDefault: true);
+                      }
+                    });
+                  },
+                  icon: const Icon(Icons.check_circle_outline, size: 16),
+                  label: const Text(
+                    'HABILITAR VENTA AL POR MAYOR',
+                    style: TextStyle(
+                      fontFamily: 'Plus Jakarta Sans',
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        else ...[
+          // ==========================================
+          // CAJA SUPERIOR FIJA: CONFIGURACIÓN DE PRECIOS Y UNIDADES
+          // ==========================================
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: wholesaleBlue.withValues(alpha: 0.04),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: wholesaleBlue.withValues(alpha: 0.25), width: 1.2),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.add_circle, color: wholesaleBlue, size: 18),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                      child: Text(
+                        'Configurar y Agregar Unidad al Por Mayor',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: wholesaleBlue,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: _wholesaleConfigs.length >= 4
+                            ? const Color(0xFFFDEDED)
+                            : wholesaleBlue.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color: _wholesaleConfigs.length >= 4 ? errorColor : wholesaleBlue.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Text(
+                        '${_wholesaleConfigs.length}/4',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                          color: _wholesaleConfigs.length >= 4 ? errorColor : wholesaleBlue,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+
+                if (_wholesaleConfigs.length < 4 && currentUnit != null) ...[
+                  // Fila 1: Unidad y Precio
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Dropdown de Unidad
+                      Expanded(
+                        flex: 5,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                _buildFieldLabel('UNIDAD *'),
+                                const SizedBox(width: 4),
+                                GestureDetector(
+                                  onTap: _showUnitsInfoDialog,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 4),
+                                    child: Icon(
+                                      Icons.info_outline,
+                                      size: 13,
+                                      color: wholesaleBlue.withValues(alpha: 0.8),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            DropdownButtonFormField<String>(
+                              key: ValueKey('wholesale_$currentUnit'),
+                              initialValue: currentUnit,
+                              decoration: _buildInputDecoration(),
+                              items: availUnits.map((u) {
+                                return DropdownMenuItem(
+                                  value: u,
+                                  child: Text(
+                                    u,
+                                    style: const TextStyle(
+                                      fontFamily: 'Plus Jakarta Sans',
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      color: onSurface,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (val) {
+                                if (val != null) {
+                                  setState(() => _newWholesaleUnit = val);
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+
+                      // Input de Precio por mayor
+                      Expanded(
+                        flex: 6,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildFieldLabel('PRECIO MAYORISTA *'),
+                            TextFormField(
+                              controller: _newWholesalePriceCtrl,
+                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              decoration: _buildInputDecoration(
+                                hintText: '22.00',
+                                prefixText: '\$ ',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Fila 2: Venta Mínima y Venta Máxima
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Venta Mínima
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildFieldLabel('VENTA MÍNIMA'),
+                            TextFormField(
+                              controller: _newWholesaleMinCtrl,
+                              keyboardType: TextInputType.number,
+                              decoration: _buildInputDecoration(
+                                hintText: '10',
+                                suffixText: currentUnit,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+
+                      // Venta Máxima con opción Sin límites
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                _buildFieldLabel('VENTA MÁXIMA'),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _newWholesaleUnlimited = !_newWholesaleUnlimited;
+                                      if (_newWholesaleUnlimited) {
+                                        _newWholesaleMaxCtrl.clear();
+                                      } else if (_newWholesaleMaxCtrl.text.isEmpty) {
+                                        _newWholesaleMaxCtrl.text = '100';
+                                      }
+                                    });
+                                  },
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 150),
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    margin: const EdgeInsets.only(bottom: 4),
+                                    decoration: BoxDecoration(
+                                      color: _newWholesaleUnlimited
+                                          ? wholesaleBlue
+                                          : wholesaleBlue.withValues(alpha: 0.08),
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(
+                                        color: _newWholesaleUnlimited ? wholesaleBlue : outlineColor,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          _newWholesaleUnlimited ? Icons.check_circle : Icons.all_inclusive,
+                                          size: 11,
+                                          color: _newWholesaleUnlimited ? Colors.white : wholesaleBlue,
+                                        ),
+                                        const SizedBox(width: 3),
+                                        Text(
+                                          'Sin límites',
+                                          style: TextStyle(
+                                            fontFamily: 'Plus Jakarta Sans',
+                                            fontSize: 9.5,
+                                            fontWeight: FontWeight.w800,
+                                            color: _newWholesaleUnlimited ? Colors.white : wholesaleBlue,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            TextFormField(
+                              controller: _newWholesaleMaxCtrl,
+                              enabled: !_newWholesaleUnlimited,
+                              keyboardType: TextInputType.number,
+                              decoration: _buildInputDecoration(
+                                hintText: _newWholesaleUnlimited ? 'Sin límites' : '100',
+                                suffixText: _newWholesaleUnlimited ? null : currentUnit,
+                                prefixIcon: _newWholesaleUnlimited ? Icons.all_inclusive : null,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Botón Agregar
+                  SizedBox(
+                    width: double.infinity,
+                    height: 40,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: wholesaleBlue,
+                        foregroundColor: Colors.white,
+                        elevation: 1,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: _submitNewWholesaleUnit,
+                      icon: const Icon(Icons.add, size: 16),
+                      label: const Text(
+                        'AGREGAR UNIDAD AL POR MAYOR',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ] else if (_wholesaleConfigs.length >= 4) ...[
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF4E5),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: const Color(0xFFFF9A04).withValues(alpha: 0.5)),
+                    ),
+                    child: const Row(
+                      children: [
+                        Icon(Icons.info_outline, color: Color(0xFFFF9A04), size: 16),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Has alcanzado el límite máximo de 4 unidades al por mayor. Si deseas cambiar alguna, elimínala de la lista inferior.',
+                            style: TextStyle(
+                              fontFamily: 'Plus Jakarta Sans',
+                              fontSize: 11,
+                              color: Color(0xFF856404),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ] else ...[
+                  const Text(
+                    'No hay más unidades disponibles para agregar.',
+                    style: TextStyle(
+                      fontFamily: 'Plus Jakarta Sans',
+                      fontSize: 11,
+                      color: onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+
+          // Título de Unidades ya configuradas
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'UNIDADES CONFIGURADAS (${_wholesaleConfigs.length})',
+                style: const TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: onSurfaceVariant,
+                  letterSpacing: 0.6,
+                ),
+              ),
+              const Text(
+                'Toca ★ para elegir la predeterminada',
+                style: TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 10,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+
+          // Listado de Tarjetas Compactas
+          ...List.generate(_wholesaleConfigs.length, (idx) {
+            final config = _wholesaleConfigs[idx];
+            return _buildWholesaleSummaryCard(config, idx, cardBg);
+          }),
+        ],
+      ],
+    );
+  }
+
+  // --- TARJETA COMPACTA DE RESUMEN: UNIDAD AL DETALLE ---
+  Widget _buildRetailSummaryCard(UnitPricingConfig config, int index, Color cardBg) {
     final bool isDefault = config.isDefault;
+    final priceStr = config.retailPriceCtrl.text.trim().isNotEmpty
+        ? config.retailPriceCtrl.text.trim()
+        : '0.00';
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: isDefault ? primaryColor.withValues(alpha: 0.03) : surfaceLow,
-        borderRadius: BorderRadius.circular(14),
+        color: isDefault ? primaryColor.withValues(alpha: 0.05) : surfaceLow,
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isDefault ? primaryColor : outlineColor,
-          width: isDefault ? 1.6 : 1,
+          width: isDefault ? 1.6 : 1.0,
+        ),
+      ),
+      child: Row(
+        children: [
+          // Unit Badge
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: isDefault ? primaryColor : onSurfaceVariant.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              config.unit,
+              style: TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                color: isDefault ? Colors.white : onSurface,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+
+          // Price Display
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '\$$priceStr',
+                style: const TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w900,
+                  color: primaryColor,
+                ),
+              ),
+              Text(
+                'Al Detalle',
+                style: TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 9,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ],
+          ),
+          const Spacer(),
+
+          // Star Default Chip
+          GestureDetector(
+            onTap: () => _setRetailDefault(index),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: isDefault ? const Color(0xFFFFF3CD) : Colors.transparent,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: isDefault ? const Color(0xFFFFC107) : outlineColor,
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    isDefault ? Icons.star : Icons.star_border,
+                    size: 14,
+                    color: isDefault ? const Color(0xFFD39E00) : onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    isDefault ? 'Predeterminada' : 'Hacer default',
+                    style: TextStyle(
+                      fontFamily: 'Plus Jakarta Sans',
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      color: isDefault ? const Color(0xFF856404) : onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 6),
+
+          // Delete Button
+          IconButton(
+            icon: const Icon(Icons.delete_outline, color: errorColor, size: 19),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            tooltip: 'Eliminar esta unidad al detalle',
+            onPressed: () => _removeRetailConfig(index),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // --- TARJETA COMPACTA DE RESUMEN: UNIDAD AL POR MAYOR ---
+  Widget _buildWholesaleSummaryCard(UnitPricingConfig config, int index, Color cardBg) {
+    const wholesaleBlue = Color(0xFF0369A1);
+    final bool isDefault = config.isDefault;
+    final priceStr = config.wholesalePriceCtrl.text.trim().isNotEmpty
+        ? config.wholesalePriceCtrl.text.trim()
+        : '0.00';
+    final minStr = config.minWholesaleCtrl.text.trim().isNotEmpty
+        ? config.minWholesaleCtrl.text.trim()
+        : '10';
+    final maxStr = config.maxWholesaleCtrl.text.trim().isNotEmpty
+        ? config.maxWholesaleCtrl.text.trim()
+        : '100';
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: isDefault ? wholesaleBlue.withValues(alpha: 0.05) : surfaceLow,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDefault ? wholesaleBlue : outlineColor,
+          width: isDefault ? 1.6 : 1.0,
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Card Header: Unit Number, Default Star, and Delete Button
           Row(
             children: [
+              // Unit Badge
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: isDefault ? primaryColor : onSurfaceVariant.withValues(alpha: 0.15),
+                  color: isDefault ? wholesaleBlue : onSurfaceVariant.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  '${index + 1}. ${config.unit}',
+                  config.unit,
                   style: TextStyle(
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: 12,
@@ -2013,11 +4397,39 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
-              // Default Selector Chip / Button
+              const SizedBox(width: 10),
+
+              // Price Display
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '\$$priceStr',
+                    style: const TextStyle(
+                      fontFamily: 'Plus Jakarta Sans',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900,
+                      color: wholesaleBlue,
+                    ),
+                  ),
+                  Text(
+                    'Por Mayor',
+                    style: TextStyle(
+                      fontFamily: 'Plus Jakarta Sans',
+                      fontSize: 9,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+              const Spacer(),
+
+              // Star Default Chip
               GestureDetector(
-                onTap: () => _setDefaultConfig(index),
-                child: Container(
+                onTap: () => _setWholesaleDefault(index),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 150),
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: isDefault ? const Color(0xFFFFF3CD) : Colors.transparent,
@@ -2036,7 +4448,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        isDefault ? 'PREDETERMINADA (TARJETA)' : 'Hacer Predeterminada',
+                        isDefault ? 'Predeterminada' : 'Hacer default',
                         style: TextStyle(
                           fontFamily: 'Plus Jakarta Sans',
                           fontSize: 10,
@@ -2048,292 +4460,47 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   ),
                 ),
               ),
-              const Spacer(),
-              if (_unitConfigs.length > 1)
-                IconButton(
-                  icon: const Icon(Icons.delete_outline, color: errorColor, size: 18),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  tooltip: 'Eliminar esta unidad',
-                  onPressed: () => _removeUnitConfig(index),
-                ),
-            ],
-          ),
-          const SizedBox(height: 12),
+              const SizedBox(width: 6),
 
-          // Unit Selector Row with Info Dialog Button
-          Row(
-            children: [
-              _buildFieldLabel('UNIDAD DE MEDIDA *'),
-              const SizedBox(width: 4),
-              GestureDetector(
-                onTap: _showUnitsInfoDialog,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  child: Icon(
-                    Icons.info_outline,
-                    size: 14,
-                    color: primaryColor.withValues(alpha: 0.8),
-                  ),
-                ),
+              // Delete Button
+              IconButton(
+                icon: const Icon(Icons.delete_outline, color: errorColor, size: 19),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                tooltip: 'Eliminar esta unidad al por mayor',
+                onPressed: () => _removeWholesaleConfig(index),
               ),
             ],
           ),
-          DropdownButtonFormField<String>(
-            initialValue: config.unit,
-            decoration: _buildInputDecoration(),
-            items: _units.map((u) {
-              return DropdownMenuItem(
-                value: u,
-                child: Text(
-                  u,
+          const SizedBox(height: 6),
+          // Tier volume indicator
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: surfaceColor,
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(color: outlineColor, width: 0.8),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.layers_outlined, size: 12, color: wholesaleBlue),
+                const SizedBox(width: 4),
+                Text(
+                  (maxStr.toLowerCase().contains('sin l') || maxStr.toLowerCase().contains('ilimitad'))
+                      ? 'Volumen: Mín. $minStr ${config.unit}  •  Sin límites'
+                      : 'Volumen: Mín. $minStr ${config.unit}  •  Máx. $maxStr ${config.unit}',
                   style: const TextStyle(
                     fontFamily: 'Plus Jakarta Sans',
-                    fontSize: 13,
-                    color: onSurface,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: wholesaleBlue,
                   ),
                 ),
-              );
-            }).toList(),
-            onChanged: (val) {
-              if (val != null) {
-                setState(() {
-                  config.unit = val;
-                });
-              }
-            },
+              ],
+            ),
           ),
-          const SizedBox(height: 12),
-
-          // Sale Type Selector (Ambos / Al Detalle / Por Mayor)
-          _buildFieldLabel('TIPO DE VENTA DISPONIBLE *'),
-          Row(
-            children: [
-              _buildSaleTypeConfigOption(config, 'ambos', 'Ambos', Icons.all_inclusive),
-              const SizedBox(width: 6),
-              _buildSaleTypeConfigOption(config, 'detalle', 'Al Detalle', Icons.shopping_bag_outlined),
-              const SizedBox(width: 6),
-              _buildSaleTypeConfigOption(config, 'mayor', 'Por Mayor', Icons.inventory_2_outlined),
-            ],
-          ),
-          const SizedBox(height: 12),
-
-          // Dynamic Pricing Fields based on selected saleType
-          if (config.saleType == 'ambos') ...[
-            // Ambos: Show both Retail and Wholesale prices
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildFieldLabel('PRECIO AL DETALLE (\$) *'),
-                      TextFormField(
-                        controller: config.retailPriceCtrl,
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        validator: (val) {
-                          if (val == null || val.trim().isEmpty) return 'Requerido';
-                          if (double.tryParse(val) == null) return 'Inválido';
-                          return null;
-                        },
-                        decoration: _buildInputDecoration(
-                          hintText: '28.50',
-                          prefixText: '\$ ',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildFieldLabel('PRECIO POR MAYOR (\$) *'),
-                      TextFormField(
-                        controller: config.wholesalePriceCtrl,
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        validator: (val) {
-                          if (val == null || val.trim().isEmpty) return 'Requerido';
-                          if (double.tryParse(val) == null) return 'Inválido';
-                          return null;
-                        },
-                        decoration: _buildInputDecoration(
-                          hintText: '22.00',
-                          prefixText: '\$ ',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            // Min and Max for wholesale
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildFieldLabel('MÍNIMO POR MAYOR'),
-                      TextFormField(
-                        controller: config.minWholesaleCtrl,
-                        keyboardType: TextInputType.number,
-                        decoration: _buildInputDecoration(
-                          hintText: '10',
-                          suffixText: config.unit,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildFieldLabel('MÁXIMO POR MAYOR'),
-                      TextFormField(
-                        controller: config.maxWholesaleCtrl,
-                        keyboardType: TextInputType.number,
-                        decoration: _buildInputDecoration(
-                          hintText: '100',
-                          suffixText: config.unit,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ] else if (config.saleType == 'detalle') ...[
-            // Al Detalle: Only Retail Price is visible
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildFieldLabel('PRECIO AL DETALLE (\$) *'),
-                TextFormField(
-                  controller: config.retailPriceCtrl,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  validator: (val) {
-                    if (val == null || val.trim().isEmpty) return 'Requerido';
-                    if (double.tryParse(val) == null) return 'Inválido';
-                    return null;
-                  },
-                  decoration: _buildInputDecoration(
-                    hintText: '28.50',
-                    prefixText: '\$ ',
-                  ),
-                ),
-              ],
-            ),
-          ] else if (config.saleType == 'mayor') ...[
-            // Por Mayor: Only Wholesale Price and Min/Max are visible
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildFieldLabel('PRECIO POR MAYOR (\$) *'),
-                TextFormField(
-                  controller: config.wholesalePriceCtrl,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  validator: (val) {
-                    if (val == null || val.trim().isEmpty) return 'Requerido';
-                    if (double.tryParse(val) == null) return 'Inválido';
-                    return null;
-                  },
-                  decoration: _buildInputDecoration(
-                    hintText: '22.00',
-                    prefixText: '\$ ',
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildFieldLabel('MÍNIMO POR MAYOR'),
-                          TextFormField(
-                            controller: config.minWholesaleCtrl,
-                            keyboardType: TextInputType.number,
-                            decoration: _buildInputDecoration(
-                              hintText: '10',
-                              suffixText: config.unit,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildFieldLabel('MÁXIMO POR MAYOR'),
-                          TextFormField(
-                            controller: config.maxWholesaleCtrl,
-                            keyboardType: TextInputType.number,
-                            decoration: _buildInputDecoration(
-                              hintText: '100',
-                              suffixText: config.unit,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
         ],
-      ),
-    );
-  }
-
-  Widget _buildSaleTypeConfigOption(UnitPricingConfig config, String value, String label, IconData icon) {
-    final isSelected = config.saleType == value;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => setState(() => config.saleType = value),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-          decoration: BoxDecoration(
-            color: isSelected ? primaryColor : surfaceColor,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: isSelected ? primaryColor : outlineColor,
-              width: 1,
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 13,
-                color: isSelected ? Colors.white : onSurfaceVariant,
-              ),
-              const SizedBox(width: 4),
-              Flexible(
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontSize: 10.5,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                    color: isSelected ? Colors.white : onSurface,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

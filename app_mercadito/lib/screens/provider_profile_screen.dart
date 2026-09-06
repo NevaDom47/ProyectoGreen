@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../widgets/product_card.dart';
 import '../widgets/skeleton_loading.dart';
 import '../widgets/animated_favorite_button.dart';
+import '../widgets/quality_info_bottom_sheet.dart';
 import '../data/global_state.dart';
 
 class ProviderProfileScreen extends StatefulWidget {
@@ -14,8 +14,9 @@ class ProviderProfileScreen extends StatefulWidget {
   State<ProviderProfileScreen> createState() => _ProviderProfileScreenState();
 }
 
-class _ProviderProfileScreenState extends State<ProviderProfileScreen> with SingleTickerProviderStateMixin {
+class _ProviderProfileScreenState extends State<ProviderProfileScreen> with TickerProviderStateMixin {
   bool _isLoading = true;
+  final Map<String, String> _selectedProductModes = {};
 
   @override
   void initState() {
@@ -266,9 +267,9 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Sing
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        _buildStatColumn(Icons.star, widget.provider['rating'] ?? '', 'Valoración', isIcon: true),
-                                        _buildStatColumn(null, widget.provider['traded'] ?? '', 'Ventas'),
-                                        _buildStatColumn(null, '15', 'Productos'),
+                                        _buildStatColumn(Icons.star, widget.provider['rating']?.toString() ?? '4.8', 'Valoración', isIcon: true),
+                                        _buildStatColumn(null, widget.provider['traded']?.toString() ?? widget.provider['sales']?.toString() ?? '1,240', 'Ventas'),
+                                        _buildStatColumn(null, widget.provider['productsCount']?.toString() ?? '15', 'Productos'),
                                       ],
                                     ),
                                   ),
@@ -403,23 +404,772 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Sing
     );
   }
 
+  void _runFlyToCartAnimation(BuildContext itemContext, Map<String, dynamic> data) {
+    final RenderBox? renderBox = itemContext.findRenderObject() as RenderBox?;
+    if (renderBox == null) return;
+    final Offset startPosition = renderBox.localToGlobal(Offset.zero);
+    final Size size = renderBox.size;
+    
+    final Size screenSize = MediaQuery.of(itemContext).size;
+    // Proximate cart icon in bottom nav bar
+    final Offset endPosition = Offset(screenSize.width * 0.35, screenSize.height - 40);
+
+    final overlay = Overlay.of(itemContext);
+    late OverlayEntry overlayEntry;
+    
+    AnimationController controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+
+    Animation<Offset> positionAnimation = Tween<Offset>(
+      begin: startPosition,
+      end: endPosition,
+    ).animate(CurvedAnimation(
+      parent: controller,
+      curve: Curves.easeInOutCubic,
+    ));
+
+    Animation<double> scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.1,
+    ).animate(CurvedAnimation(
+      parent: controller,
+      curve: Curves.easeIn,
+    ));
+
+    overlayEntry = OverlayEntry(
+      builder: (context) {
+        return AnimatedBuilder(
+          animation: controller,
+          builder: (context, child) {
+            return Positioned(
+              left: positionAnimation.value.dx,
+              top: positionAnimation.value.dy,
+              child: Transform.scale(
+                scale: scaleAnimation.value,
+                child: Material(
+                  color: Colors.transparent,
+                  elevation: 12,
+                  borderRadius: BorderRadius.circular(16),
+                  clipBehavior: Clip.antiAlias,
+                  child: Container(
+                    width: size.width,
+                    height: size.height,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 105,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: NetworkImage(data['image'] ?? data['img'] ?? 'https://via.placeholder.com/150'),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Expanded(child: Container(color: Colors.white)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    overlay.insert(overlayEntry);
+    controller.forward().then((_) {
+      overlayEntry.remove();
+      controller.dispose();
+      
+      addToCart(data);
+      
+      ScaffoldMessenger.of(itemContext).clearSnackBars();
+      ScaffoldMessenger.of(itemContext).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.shopping_cart_checkout, color: Colors.white, size: 20),
+              const SizedBox(width: 12),
+              const Expanded(child: Text('Agregado al carrito exitosamente', style: TextStyle(fontWeight: FontWeight.bold))),
+            ],
+          ),
+          backgroundColor: const Color(0xFF016142),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    });
+  }
+
+  String _getProductSku(Map<String, dynamic> item) {
+    if (item['sku'] != null && item['sku'].toString().isNotEmpty) {
+      return item['sku'].toString();
+    }
+    final name = (item['title'] ?? item['name'] ?? 'PRD').toString();
+    final parts = name.split(' ');
+    final catCode = parts.isNotEmpty && parts[0].length >= 3
+        ? parts[0].substring(0, 3).toUpperCase()
+        : 'AGR';
+    final subCode = parts.length > 1 && parts[1].length >= 3
+        ? parts[1].substring(0, 3).toUpperCase()
+        : 'GEN';
+    final int hashVal = (name.hashCode.abs() % 90) + 10;
+    return '$catCode-$subCode-$hashVal';
+  }
+
+  Widget _buildProductImage(String? src) {
+    final imgSrc = (src != null && src.isNotEmpty) ? src : 'https://via.placeholder.com/400';
+    if (imgSrc.startsWith('assets/')) {
+      return Image.asset(
+        imgSrc,
+        width: double.infinity,
+        height: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => Container(color: Colors.grey[200]),
+      );
+    }
+    return Image.network(
+      imgSrc,
+      width: double.infinity,
+      height: double.infinity,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) => Container(color: Colors.grey[200]),
+    );
+  }
+
+  Widget? _buildSalesModeBadge(
+    String? salesMode,
+    ThemeData theme,
+    bool isDark, {
+    required String productName,
+  }) {
+    if (salesMode == null) return null;
+
+    if (salesMode == 'both') {
+      final currentMode = _selectedProductModes[productName] ?? 'retail';
+      final bool isRetailSelected = currentMode == 'retail';
+      final bool isWholesaleSelected = currentMode == 'wholesale';
+
+      return Container(
+        padding: const EdgeInsets.all(1.5),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF111827) : const Color(0xFFF3F4F6),
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(
+            color: isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB),
+            width: 0.8,
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedProductModes[productName] = 'retail';
+                  });
+                },
+                behavior: HitTestBehavior.opaque,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  padding: const EdgeInsets.symmetric(vertical: 2.5),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: isRetailSelected
+                        ? (isDark ? const Color(0xFF047857) : const Color(0xFF059669))
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Detalle',
+                      style: TextStyle(
+                        fontFamily: 'Manrope',
+                        color: isRetailSelected
+                            ? Colors.white
+                            : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                        fontSize: 9.5,
+                        fontWeight: isRetailSelected ? FontWeight.w700 : FontWeight.w500,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 2),
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedProductModes[productName] = 'wholesale';
+                  });
+                },
+                behavior: HitTestBehavior.opaque,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  padding: const EdgeInsets.symmetric(vertical: 2.5),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: isWholesaleSelected
+                        ? (isDark ? const Color(0xFF0284C7) : const Color(0xFF0369A1))
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Por Mayor',
+                      style: TextStyle(
+                        fontFamily: 'Manrope',
+                        color: isWholesaleSelected
+                            ? Colors.white
+                            : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                        fontSize: 9.5,
+                        fontWeight: isWholesaleSelected ? FontWeight.w700 : FontWeight.w500,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final bool isRetailOnly = salesMode == 'retail_only' || salesMode == 'retail';
+    final String label = isRetailOnly ? 'Solo al Detalle' : 'Solo por Mayor';
+    final IconData icon = isRetailOnly ? Icons.shopping_bag_outlined : Icons.inventory_2_outlined;
+
+    final Color bgColor = isRetailOnly
+        ? (isDark ? const Color(0xFF064E3B).withValues(alpha: 0.35) : const Color(0xFFECFDF5))
+        : (isDark ? const Color(0xFF075985).withValues(alpha: 0.35) : const Color(0xFFF0F9FF));
+    final Color borderColor = isRetailOnly
+        ? (isDark ? const Color(0xFF059669).withValues(alpha: 0.4) : const Color(0xFFA7F3D0))
+        : (isDark ? const Color(0xFF0284C7).withValues(alpha: 0.4) : const Color(0xFFBAE6FD));
+    final Color textColor = isRetailOnly
+        ? (isDark ? const Color(0xFF6EE7B7) : const Color(0xFF047857))
+        : (isDark ? const Color(0xFF7DD3FC) : const Color(0xFF0369A1));
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(5),
+        border: Border.all(color: borderColor, width: 0.8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 10, color: textColor),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(
+              label,
+              style: TextStyle(
+                color: textColor,
+                fontSize: 9,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.1,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProviderProductCard({
+    required BuildContext context,
+    required ThemeData theme,
+    required Color surfaceColor,
+    required Color primaryColor,
+    required bool isDark,
+    required Map<String, dynamic> data,
+  }) {
+    final String productName = (data['title'] ?? data['name'] ?? '').toString();
+    final String qualityStr = (data['quality'] ?? data['badge'] ?? 'Primera Calidad').toString();
+    final String lowerQuality = qualityStr.toLowerCase();
+    Color badgeColor = primaryColor;
+    if (lowerQuality.contains('segunda')) {
+      badgeColor = const Color(0xFFFF8A5B);
+    } else if (lowerQuality.contains('tercera')) {
+      badgeColor = Colors.red[400]!;
+    }
+
+    final salesMode = data['salesMode'] ?? 'both';
+    final currentMode = (salesMode == 'both')
+        ? (_selectedProductModes[productName] ?? 'retail')
+        : (salesMode == 'wholesale_only' ? 'wholesale' : 'retail');
+    final bool isWholesale = currentMode == 'wholesale';
+
+    final String displayPrice = isWholesale
+        ? (data['wholesalePrice'] ?? data['price'] ?? '16.50').toString()
+        : (data['price'] ?? '22.50').toString();
+    final String displayPriceFormatted = displayPrice.startsWith('\$') ? displayPrice : '\$$displayPrice';
+
+    final String displayUnitText;
+    if (isWholesale) {
+      displayUnitText = data['wholesaleMin'] != null
+          ? 'por mayor (${data['wholesaleMin'].toString().toLowerCase()})'
+          : 'por mayor';
+    } else {
+      final rawUnit = (data['unit'] ?? 'lb').toString().replaceAll('/', '').trim();
+      displayUnitText = _formatUnit(rawUnit).toLowerCase();
+    }
+
+    final salesBadge = _buildSalesModeBadge(
+      salesMode,
+      theme,
+      isDark,
+      productName: productName,
+    );
+
+    final itemForDetail = {
+      ...data,
+      'name': productName,
+      'title': productName,
+      'price': displayPriceFormatted,
+      'unit': displayUnitText,
+      'image': data['image'] ?? data['img'],
+      'quality': qualityStr,
+      'salesMode': salesMode,
+      'saleType': isWholesale ? 'mayor' : 'detalle',
+      'selectedMode': currentMode,
+      'supplier': widget.provider['name'] ?? 'Don Pedro H.',
+      'location': widget.provider['location'] ?? 'Tecomán, Colima',
+    };
+
+    final String? discount = data['discount'];
+
+    return GestureDetector(
+      onTap: () => context.push('/product_detail', extra: itemForDetail),
+      child: Container(
+        decoration: BoxDecoration(
+          color: surfaceColor,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isDark ? Colors.grey[800]! : const Color(0xFFE2E8F0),
+            width: 1.0,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 1. Top Image Stack
+            Stack(
+              children: [
+                SizedBox(
+                  height: 105,
+                  width: double.infinity,
+                  child: _buildProductImage(data['image'] ?? data['img']),
+                ),
+                // Top-Left Discount Pill
+                if (discount != null && discount.isNotEmpty)
+                  Positioned(
+                    top: 8,
+                    left: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.65),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.bolt, color: Colors.amber, size: 11),
+                          const SizedBox(width: 2),
+                          Text(
+                            discount,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 8.5,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                // Top-Right Floating Heart Button
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    width: 28,
+                    height: 28,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.12),
+                          blurRadius: 4,
+                          offset: const Offset(0, 1),
+                        ),
+                      ],
+                    ),
+                    child: ValueListenableBuilder<List<Map<String, dynamic>>>(
+                      valueListenable: globalFavorites,
+                      builder: (context, favs, child) {
+                        final bool fav = isFavorite(productName);
+                        return AnimatedFavoriteButton(
+                          isFavorite: fav,
+                          size: 16,
+                          onTap: () {
+                            toggleFavorite(data);
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(fav ? 'Eliminado de favoritos: $productName' : 'Agregado a favoritos: $productName'),
+                                backgroundColor: fav ? Colors.red[600] : const Color(0xFF016142),
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                duration: const Duration(seconds: 2),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                // Bottom-Right Verified Badge
+                Positioned(
+                  bottom: 8,
+                  right: 8,
+                  child: Container(
+                    padding: const EdgeInsets.all(3.5),
+                    decoration: BoxDecoration(
+                      color: primaryColor,
+                      borderRadius: BorderRadius.circular(6),
+                      boxShadow: const [
+                        BoxShadow(color: Colors.black26, blurRadius: 3),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.verified,
+                      color: Colors.white,
+                      size: 12,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            // 2. Card Content Body
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(8, 6, 8, 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title
+                    Text(
+                      productName,
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.bold,
+                        height: 1.15,
+                        color: isDark ? Colors.white : const Color(0xFF0F172A),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 1),
+                    // SKU
+                    Text(
+                      'SKU: ${_getProductSku(data)}',
+                      style: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontSize: 8.5,
+                        fontWeight: FontWeight.w500,
+                        color: isDark ? Colors.grey.shade400 : const Color(0xFF94A3B8),
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+
+                    // Sales Mode Switcher [ Detalle | Por Mayor ]
+                    if (salesBadge != null) ...[
+                      salesBadge,
+                      const SizedBox(height: 4),
+                    ],
+
+                    // Metadata Row: CALIDAD
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) => QualityInfoBottomSheet(quality: qualityStr),
+                        );
+                      },
+                      behavior: HitTestBehavior.opaque,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 18,
+                            height: 18,
+                            decoration: BoxDecoration(
+                              color: badgeColor.withValues(alpha: 0.15),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(Icons.workspace_premium, color: badgeColor, size: 11),
+                          ),
+                          const SizedBox(width: 5),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'CALIDAD',
+                                  style: TextStyle(
+                                    fontSize: 7.5,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                    letterSpacing: 0.3,
+                                    height: 1.0,
+                                  ),
+                                ),
+                                Text(
+                                  qualityStr.toUpperCase(),
+                                  style: TextStyle(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w800,
+                                    color: badgeColor,
+                                    height: 1.1,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Note: PROVEEDOR and UBICACIÓN rows are intentionally omitted
+                    // as requested since all products in this screen belong to the provider.
+                    const Spacer(),
+
+                    // Price & Unit
+                    SizedBox(
+                      width: double.infinity,
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 180),
+                        child: SizedBox(
+                          key: ValueKey<String>('$displayPriceFormatted-$displayUnitText'),
+                          width: double.infinity,
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: displayPriceFormatted,
+                                  style: TextStyle(
+                                    fontSize: 14.5,
+                                    fontWeight: FontWeight.w900,
+                                    color: isWholesale
+                                        ? (isDark ? const Color(0xFF38BDF8) : const Color(0xFF0284C7))
+                                        : primaryColor,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: ' / $displayUnitText',
+                                  style: TextStyle(
+                                    fontSize: 9.5,
+                                    fontWeight: FontWeight.w600,
+                                    color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
+                                    letterSpacing: 0.1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+
+                    // Action Button
+                    Builder(
+                      builder: (btnContext) {
+                        return ValueListenableBuilder<List<Map<String, dynamic>>>(
+                          valueListenable: globalCart,
+                          builder: (context, cart, child) {
+                            final bool inCart = isInCart(itemForDetail);
+                            return SizedBox(
+                              width: double.infinity,
+                              height: 30,
+                              child: ElevatedButton.icon(
+                                onPressed: inCart
+                                    ? null
+                                    : () {
+                                        _runFlyToCartAnimation(btnContext, itemForDetail);
+                                      },
+                                icon: Icon(inCart ? Icons.check : Icons.shopping_cart_outlined, size: 12),
+                                label: Text(
+                                  inCart ? 'EN EL CARRITO' : 'AGREGAR AL CARRITO',
+                                  style: const TextStyle(
+                                    fontSize: 8.5,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 0.2,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: primaryColor,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                                  disabledBackgroundColor: isDark ? Colors.grey[800] : Colors.grey[300],
+                                  disabledForegroundColor: isDark ? Colors.grey[500] : Colors.grey[600],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  elevation: 0,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildProductsTab(BuildContext context) {
     // Mock data for Primera (4 products)
     final primera = [
-      {'title': 'Fresas Extra', 'price': '8.500', 'unit': '/lb', 'image': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCnW6_MorKLz7ezxkGcHG6rQjhSFNPk8HPgeIsUbUJgp9DUy5kB2jUbGf4NDVs02rHGeJ4ro5fC_o-CVgZdBbzfhnoIX6Oz-YBKAMbwvBnKt0DUNJfnQJ-4cR8YhjFg7n2YTsCUja9uRWf099e4MF7xhxHmzFwjLCdCgywatNoUU6oNbjKVFR4AvgIv8s4ecmGAnIR2EtLvlghaKIOjsvzYQBd-K2z9jJ0Zk9LsA0e7JsmFHImz82G7W_vMJG5zDP64iTEgJpRLJF0'},
-      {'title': 'Zanahoria Orgánica', 'price': '3.200', 'unit': '/kg', 'image': 'https://lh3.googleusercontent.com/aida-public/AB6AXuAUP07pMS-fkGRl_e-A_ksfxKmrKWa-uMZFZ7hvjE42DscxBHwUsx6fScNLD5TRZrw8Uh6fGNy9JYfNt6iISLHMW5-uMUFqybHPkrQwig52Qn0dn7Rix-GwCC_XihkPXq3G1-sGNzsnk3yb8ZB3mcXS7lnPrYUf_ovpd-ND9zD970NSGVKIzVbzFZiEz2lcIUcI03Ezq9NjBZrvVnut5BAKWvqPARC1Cef9NKXci0FArJHZlt8dqNTLc9Zl80YSPAtDKDEH0cl8mEw'},
-      {'title': 'Tomates Premium', 'price': '2.100', 'unit': '/lb', 'image': 'https://images.unsplash.com/photo-1592924357228-91a4daadc239?q=80&w=300&auto=format&fit=crop'},
-      {'title': 'Lechuga Hidropónica', 'price': '1.500', 'unit': '/unidad', 'image': 'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?q=80&w=300&auto=format&fit=crop'},
+      {
+        'title': 'Fresas Extra',
+        'price': '8.500',
+        'unit': 'lb',
+        'wholesalePrice': '6.800',
+        'wholesaleMin': 'Caja 10 lb',
+        'salesMode': 'both',
+        'sku': 'FRU-FRE-01',
+        'quality': 'Primera Calidad',
+        'discount': '-15%',
+        'image': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCnW6_MorKLz7ezxkGcHG6rQjhSFNPk8HPgeIsUbUJgp9DUy5kB2jUbGf4NDVs02rHGeJ4ro5fC_o-CVgZdBbzfhnoIX6Oz-YBKAMbwvBnKt0DUNJfnQJ-4cR8YhjFg7n2YTsCUja9uRWf099e4MF7xhxHmzFwjLCdCgywatNoUU6oNbjKVFR4AvgIv8s4ecmGAnIR2EtLvlghaKIOjsvzYQBd-K2z9jJ0Zk9LsA0e7JsmFHImz82G7W_vMJG5zDP64iTEgJpRLJF0',
+      },
+      {
+        'title': 'Zanahoria Orgánica',
+        'price': '3.200',
+        'unit': 'kg',
+        'wholesalePrice': '2.400',
+        'wholesaleMin': 'Bulto 25 kg',
+        'salesMode': 'both',
+        'sku': 'RAI-ZAN-02',
+        'quality': 'Primera Calidad',
+        'image': 'https://lh3.googleusercontent.com/aida-public/AB6AXuAUP07pMS-fkGRl_e-A_ksfxKmrKWa-uMZFZ7hvjE42DscxBHwUsx6fScNLD5TRZrw8Uh6fGNy9JYfNt6iISLHMW5-uMUFqybHPkrQwig52Qn0dn7Rix-GwCC_XihkPXq3G1-sGNzsnk3yb8ZB3mcXS7lnPrYUf_ovpd-ND9zD970NSGVKIzVbzFZiEz2lcIUcI03Ezq9NjBZrvVnut5BAKWvqPARC1Cef9NKXci0FArJHZlt8dqNTLc9Zl80YSPAtDKDEH0cl8mEw',
+      },
+      {
+        'title': 'Tomates Premium',
+        'price': '2.100',
+        'unit': 'lb',
+        'wholesalePrice': '1.600',
+        'wholesaleMin': 'Caja 20 lb',
+        'salesMode': 'both',
+        'sku': 'HOR-TOM-03',
+        'quality': 'Primera Calidad',
+        'image': 'https://images.unsplash.com/photo-1592924357228-91a4daadc239?q=80&w=300&auto=format&fit=crop',
+      },
+      {
+        'title': 'Lechuga Hidropónica',
+        'price': '1.500',
+        'unit': 'unidad',
+        'wholesalePrice': '1.100',
+        'wholesaleMin': 'Caja 24 un',
+        'salesMode': 'both',
+        'sku': 'HOR-LEC-04',
+        'quality': 'Primera Calidad',
+        'image': 'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?q=80&w=300&auto=format&fit=crop',
+      },
     ];
     // Mock data for Segunda (2 products)
     final segunda = [
-      {'title': 'Fresa Mediana', 'price': '5.500', 'unit': '/lb', 'image': 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=300&auto=format&fit=crop'},
-      {'title': 'Zanahoria Estándar', 'price': '2.000', 'unit': '/kg', 'image': 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?q=80&w=300&auto=format&fit=crop'},
+      {
+        'title': 'Fresa Mediana',
+        'price': '5.500',
+        'unit': 'lb',
+        'wholesalePrice': '4.200',
+        'wholesaleMin': 'Caja 10 lb',
+        'salesMode': 'both',
+        'sku': 'FRU-FRE-05',
+        'quality': 'Segunda Calidad',
+        'image': 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=300&auto=format&fit=crop',
+      },
+      {
+        'title': 'Zanahoria Estándar',
+        'price': '2.000',
+        'unit': 'kg',
+        'wholesalePrice': '1.500',
+        'wholesaleMin': 'Bulto 25 kg',
+        'salesMode': 'both',
+        'sku': 'RAI-ZAN-06',
+        'quality': 'Segunda Calidad',
+        'image': 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?q=80&w=300&auto=format&fit=crop',
+      },
     ];
     // Mock data for Tercera (2 products)
     final tercera = [
-      {'title': 'Hortalizas para Caldo', 'price': '2.000', 'unit': '/atado', 'image': 'https://images.unsplash.com/photo-1601648764658-cf37e8c89b70?q=80&w=300&auto=format&fit=crop'},
-      {'title': 'Tomate para Guiso', 'price': '1.000', 'unit': '/lb', 'image': 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?q=80&w=300&auto=format&fit=crop'},
+      {
+        'title': 'Hortalizas para Caldo',
+        'price': '2.000',
+        'unit': 'atado',
+        'wholesalePrice': '1.400',
+        'wholesaleMin': 'Atado x10',
+        'salesMode': 'both',
+        'sku': 'HOR-CAL-07',
+        'quality': 'Tercera Calidad',
+        'image': 'https://images.unsplash.com/photo-1601648764658-cf37e8c89b70?q=80&w=300&auto=format&fit=crop',
+      },
+      {
+        'title': 'Tomate para Guiso',
+        'price': '1.000',
+        'unit': 'lb',
+        'wholesalePrice': '750',
+        'wholesaleMin': 'Caja 25 lb',
+        'salesMode': 'both',
+        'sku': 'HOR-TOM-08',
+        'quality': 'Tercera Calidad',
+        'image': 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?q=80&w=300&auto=format&fit=crop',
+      },
     ];
 
     return ListView(
@@ -434,7 +1184,15 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Sing
     );
   }
 
-  Widget _buildSection(BuildContext context, String title, String badgeText, List<Map<String, String>> items, {bool isPrimera = false, bool isSegunda = false, bool isTercera = false}) {
+  Widget _buildSection(
+    BuildContext context,
+    String title,
+    String badgeText,
+    List<Map<String, dynamic>> items, {
+    bool isPrimera = false,
+    bool isSegunda = false,
+    bool isTercera = false,
+  }) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     
@@ -442,8 +1200,17 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Sing
     Widget header = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Expanded(
+          child: Text(
+            title,
+            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        const SizedBox(width: 8),
         Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -478,92 +1245,43 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Sing
               onPressed: () {},
               child: Text('Ver todo', style: TextStyle(color: theme.colorScheme.primary, fontSize: 12, fontWeight: FontWeight.bold)),
             )
-          ]
-        )
+          ],
+        ),
       ],
     );
 
-    // List of items
-    Widget content;
-    if (isTercera) {
-       // Tercera is a smaller horizontal list-tile style layout
-       content = Column(
-         children: items.asMap().entries.map((entry) {
-          final index = entry.key;
-          final p = entry.value;
-          return _EntranceAnimation(
-            delay: 200 + (index * 100),
-            child: GestureDetector(
-              onTap: () => context.push('/product_detail', extra: {
-                'name': p['title'],
-                'price': p['price'],
-                'unit': p['unit'],
-                'image': p['image'],
-                'quality': 'Tercera',
-              }),
-              child: Container(
-                margin: const EdgeInsets.only(bottom: 12),
-              decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1a2f26) : Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
-              ),
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(8),
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(p['image']!, width: 60, height: 60, fit: BoxFit.cover),
-                ),
-                title: Text(p['title']!, style: const TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: const Text('Mezcla surtida (tamaño irregular)', style: TextStyle(fontSize: 12, color: Colors.grey)), 
-                trailing: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text('\$${p['price']}', style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 16)),
-                    Text(_formatUnit(p['unit']!), style: const TextStyle(color: Colors.grey, fontSize: 12)),
-                  ],
-                ),
-              ),
-            ),
-          ));
-        }).toList()
-       );
-    } else {
-       // Primera and Segunda use product card grids
-         content = GridView.builder(
-           shrinkWrap: true,
-           physics: const NeverScrollableScrollPhysics(),
-           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-             crossAxisCount: 2,
-             crossAxisSpacing: 12,
-             mainAxisSpacing: 12,
-             mainAxisExtent: 205, // Fixed height specifically calculated to prevent empty space
-           ),
-           itemCount: items.length,
-           itemBuilder: (context, index) {
-             final p = items[index];
-             return _EntranceAnimation(
-               delay: 200 + (index * 100),
-               child: GestureDetector(
-                 onTap: () => context.push('/product_detail', extra: {
-                   'name': p['title'],
-                   'price': p['price'],
-                   'unit': p['unit'],
-                   'image': p['image'],
-                   'quality': isPrimera ? 'Primera' : (isSegunda ? 'Segunda' : 'Tercera'),
-                 }),
-                 child: ProductCard(
-                   imageUrl: p['image']!,
-                   title: p['title']!,
-                   price: p['price']!,
-                   priceUnit: p['unit']!,
-                 ),
-               ),
-             );
-           },
-       );
-    }
+    // List of items in 2 columns
+    Widget content = GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 12,
+        mainAxisExtent: 268,
+      ),
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final p = items[index];
+        final defaultQuality = isPrimera ? 'Primera Calidad' : (isSegunda ? 'Segunda Calidad' : 'Tercera Calidad');
+        return _EntranceAnimation(
+          delay: 200 + (index * 100),
+          child: _buildProviderProductCard(
+            context: context,
+            theme: theme,
+            surfaceColor: isDark ? const Color(0xFF1a2f26) : Colors.white,
+            primaryColor: theme.colorScheme.primary,
+            isDark: isDark,
+            data: {
+              ...p,
+              'quality': p['quality'] ?? defaultQuality,
+              'supplier': widget.provider['name'] ?? 'Don Pedro H.',
+              'location': widget.provider['location'] ?? 'Tecomán, Colima',
+            },
+          ),
+        );
+      },
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 final ValueNotifier<List<Map<String, dynamic>>> globalFlashOffers = ValueNotifier([
   {
     'name': 'Papa Blanca Alpha',
+    'sku': 'TUB-PAP-01',
     'category': 'Tubérculos',
     'discount': '-20%',
     'discountNumber': 20,
@@ -29,6 +30,7 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFlashOffers = ValueNotifie
   },
   {
     'name': 'Zanahoria Orgánica',
+    'sku': 'RAI-ZAN-02',
     'category': 'Raíces',
     'discount': '-22%',
     'discountNumber': 22,
@@ -49,6 +51,7 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFlashOffers = ValueNotifie
   },
   {
     'name': 'Fresas de Campo Extras',
+    'sku': 'FRU-FRE-03',
     'category': 'Frutas',
     'discount': '-25%',
     'discountNumber': 25,
@@ -69,6 +72,7 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFlashOffers = ValueNotifie
   },
   {
     'name': 'Saco de Papas Blancas',
+    'sku': 'TUB-SAC-04',
     'category': 'Tubérculos',
     'discount': '-12%',
     'discountNumber': 12,
@@ -89,6 +93,7 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFlashOffers = ValueNotifie
   },
   {
     'name': 'Tomate Cherry Orgánico',
+    'sku': 'HOR-TOM-05',
     'category': 'Hortalizas',
     'discount': '-30%',
     'discountNumber': 30,
@@ -109,6 +114,7 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFlashOffers = ValueNotifie
   },
   {
     'name': 'Zanahoria Nantesa Lavada',
+    'sku': 'RAI-ZAN-06',
     'category': 'Raíces',
     'discount': '-50%',
     'discountNumber': 50,
@@ -129,6 +135,7 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFlashOffers = ValueNotifie
   },
   {
     'name': 'Limón Sutil Primera',
+    'sku': 'CIT-LIM-07',
     'category': 'Cítricos',
     'discount': '-25%',
     'discountNumber': 25,
@@ -149,6 +156,7 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFlashOffers = ValueNotifie
   },
   {
     'name': 'Mix de Ajíes Frescos',
+    'sku': 'HOR-AJI-08',
     'category': 'Hortalizas',
     'discount': '-22%',
     'discountNumber': 22,
@@ -191,6 +199,7 @@ void startGlobalFlashTimer() {
 final ValueNotifier<List<Map<String, dynamic>>> globalFavorites = ValueNotifier([
   {
     'name': 'Fresas Orgánicas Extras',
+    'sku': 'FRU-FRE-03',
     'category': 'Frutas',
     'supplier': 'AgroFresas',
     'price': '\$4.50',
@@ -202,6 +211,7 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFavorites = ValueNotifier(
   },
   {
     'name': 'Aguacate Hass',
+    'sku': 'VER-AGU-12',
     'category': 'Verduras',
     'supplier': 'Huasca Farms',
     'price': '\$2.25',
@@ -213,6 +223,7 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFavorites = ValueNotifier(
   },
   {
     'name': 'Tomates Cherry',
+    'sku': 'VER-TOM-08',
     'category': 'Verduras',
     'supplier': 'Finca La Huerta',
     'price': '\$3.10',
@@ -221,6 +232,36 @@ final ValueNotifier<List<Map<String, dynamic>>> globalFavorites = ValueNotifier(
     'quality': 'Tercera Calidad',
     'tags': ['Verduras', 'Frescas'],
     'image': 'https://lh3.googleusercontent.com/aida-public/AB6AXuBHOb892B5me7rsHN9BLjAtuvcsEpGo1VrRV6dP2J5F5FeDlnP9fSbAhWTNBrHo7AfCBa2UJ9hXp_j2GBSUqZg-GX-VyRBv5JXlV6MiHw_s4HSUtqGzVZ3-magpGmcXWQiyIr_8sXxrAHlcLE5lukc_T12APAyR2UuP9qfurDDd-0QzCJ-yVftAtJGCoPKTAp7_oH_h2fVZsZKNWwWUJlrN_fLxTVMmupW98Id5ESA5rGGS_XndVfkw7hHV26apec7jtihZ2G1fHgk',
+  },
+  {
+    'name': 'Zanahoria Orgánica',
+    'sku': 'RAI-ZAN-02',
+    'category': 'Verduras',
+    'supplier': 'Granja Sol',
+    'location': 'Valle Verde, Puebla',
+    'price': '\$1.80',
+    'unit': 'por manojo',
+    'rating': '4.9',
+    'quality': 'Primera Calidad',
+    'tags': ['Verduras', 'Orgánico'],
+    'salesMode': 'retail_only',
+    'image': 'assets/images/ZanahoriaGemini.png',
+  },
+  {
+    'name': 'Saco de Papas Blancas',
+    'sku': 'TUB-SAC-04',
+    'category': 'Verduras',
+    'supplier': 'Hermanos Ruiz',
+    'location': 'Galeana, Nuevo León',
+    'price': '\$280.00',
+    'wholesalePrice': '\$250.00',
+    'wholesaleMin': '2 SACOS',
+    'unit': 'por saco',
+    'rating': '4.6',
+    'quality': 'Segunda Calidad',
+    'tags': ['Verduras', 'Mayorista'],
+    'salesMode': 'wholesale_only',
+    'image': 'assets/images/PapaGemini.png',
   },
 ]);
 
@@ -238,6 +279,7 @@ void toggleFavorite(Map<String, dynamic> product) {
     // Standardize map format if it's coming from different screens (like home feed which has 'img' instead of 'image')
     currentFavorites.add({
       'name': product['name'] ?? '',
+      'sku': product['sku'] ?? '',
       'category': product['category'] ?? 'General',
       'supplier': product['supplier'] ?? 'Proveedor Local',
       'price': product['price'] ?? '\$0.00',

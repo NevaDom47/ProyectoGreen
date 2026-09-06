@@ -840,6 +840,17 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
     );
   }
 
+  String _getProductSku(Map<String, dynamic> item) {
+    if (item['sku'] != null && item['sku'].toString().trim().isNotEmpty) {
+      return item['sku'].toString().trim();
+    }
+    final name = (item['name'] ?? 'PROD').toString().replaceAll(' ', '').toUpperCase();
+    final nameCode = name.length >= 3 ? name.substring(0, 3) : name.padRight(3, 'X');
+    final cat = (item['category'] ?? 'GEN').toString().replaceAll(' ', '').toUpperCase();
+    final catCode = cat.length >= 3 ? cat.substring(0, 3) : cat.padRight(3, 'X');
+    return '$catCode-$nameCode-01';
+  }
+
   Widget _buildVariantCard(
     BuildContext context,
     ThemeData theme,
@@ -1068,6 +1079,17 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                               ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              'SKU: ${_getProductSku(data)}',
+                              style: TextStyle(
+                                fontFamily: 'Manrope',
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.w500,
+                                color: isDark ? Colors.grey.shade400 : const Color(0xFF94A3B8),
+                                letterSpacing: 0.2,
+                              ),
                             ),
                             const SizedBox(height: 6),
                             Builder(
@@ -1641,6 +1663,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
     final traded = [
       {
         'name': 'Café de Altura',
+        'sku': 'BEB-CAF-01',
         'overlayText': '85 negociados',
         'price': '\$85.00',
         'rating': '4.7',
@@ -1652,6 +1675,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
       },
       {
         'name': 'Aguacate Hass',
+        'sku': 'VER-AGU-02',
         'overlayText': '42 negociados',
         'price': '\$45.00',
         'rating': '5.0',
@@ -1663,6 +1687,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
       },
       {
         'name': 'Chinola Fresca (Maracuyá)',
+        'sku': 'FRU-CHI-03',
         'overlayText': '112 negociados',
         'price': '\$55.00',
         'rating': '4.8',
@@ -1674,6 +1699,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
       },
       {
         'name': 'Tomate Bola Rojo',
+        'sku': 'HOR-TOM-04',
         'overlayText': '38 negociados',
         'price': '\$22.00',
         'rating': '4.5',
@@ -1685,6 +1711,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
       },
       {
         'name': 'Plátano Macho Especial',
+        'sku': 'FRU-PLA-05',
         'overlayText': '56 negociados',
         'price': '\$16.50',
         'rating': '4.9',
@@ -1747,8 +1774,12 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
     final List<Map<String, dynamic>> forYouItems = [
       {
         'name': 'Jitomate Saladet',
+        'sku': 'HOR-JIT-01',
         'badge': 'Primera Calidad',
         'price': '\$22.00/kg',
+        'wholesalePrice': '\$16.50/kg',
+        'wholesaleMin': 'Caja 20kg',
+        'salesMode': 'both',
         'supplier': 'Hacienda San Miguel',
         'location': 'Rancho San José, Querétaro',
         'rating': '4.6 (120)',
@@ -1758,8 +1789,12 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
       },
       {
         'name': 'Lechuga Francesa',
+        'sku': 'HOR-LEC-02',
         'badge': 'Segunda Calidad',
         'price': '\$15.00/pza',
+        'wholesalePrice': '\$10.50/pza',
+        'wholesaleMin': 'Caja 24 pzas',
+        'salesMode': 'both',
         'supplier': 'El Huerto Verde',
         'location': 'Valle Verde, Puebla',
         'rating': '4.8 (85)',
@@ -1769,31 +1804,46 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
       },
       {
         'name': 'Fresas Orgánicas Extras',
+        'sku': 'FRU-FRE-03',
         'badge': 'Primera Calidad',
         'price': '\$45.00/kg',
+        'wholesalePrice': '\$36.00/kg',
+        'wholesaleMin': 'Caja 10kg',
+        'salesMode': 'both',
         'supplier': 'AgroFresas',
         'location': 'Zamora, Michoacán',
         'rating': '4.9 (240)',
+        'tags': ['Frutas', 'Orgánico'],
         'img':
             'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250620_1233_Fresas%20en%20Fondo%20Rosado_simple_compose_01jy72ypjmeccafrqb33rfm1q8.png',
       },
       {
         'name': 'Ajíes Variados Mix',
+        'sku': 'HOR-AJI-04',
         'badge': 'Tercera Calidad',
         'price': '\$38.00/kg',
+        'wholesalePrice': '\$28.50/kg',
+        'wholesaleMin': 'Saco 15kg',
+        'salesMode': 'both',
         'supplier': 'Picantes del Sur',
         'location': 'Mérida, Yucatán',
         'rating': '4.9 (98)',
+        'tags': ['Hortalizas', 'Picante'],
         'img':
             'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1549_Variedad%20de%20Aj%C3%ADes_simple_compose_01jwvncbmqfpvb7qv6rs3vh22x.png',
       },
       {
         'name': 'Plátano Verde Tabasco',
+        'sku': 'FRU-PLA-05',
         'badge': 'Primera Calidad',
         'price': '\$15.00/kg',
+        'wholesalePrice': '\$11.00/kg',
+        'wholesaleMin': 'Caja 18kg',
+        'salesMode': 'both',
         'supplier': 'Frutales del Sureste',
         'location': 'Teapa, Tabasco',
         'rating': '4.5 (80)',
+        'tags': ['Frutas', 'Local'],
         'img':
             'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1515_Pl%C3%A1tano%20sobre%20Fondo%20Verde_simple_compose_01jwvkfvz0etrr0gg640b8nxwd.png',
       },
@@ -1840,6 +1890,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
           else
             Column(
               children: forYouItems.map((item) {
+                final String productName = item['name'] as String;
                 final String badge = (item['badge'] ?? 'Primera Calidad')
                     .toString();
                 Color badgeColor = theme.colorScheme.primary;
@@ -1850,8 +1901,32 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                   badgeColor = Colors.red[400]!;
                 }
 
+                final salesMode = item['salesMode'] ?? 'both';
+                final currentMode = (salesMode == 'both')
+                    ? (_selectedProductModes[productName] ?? 'retail')
+                    : (salesMode == 'wholesale_only' ? 'wholesale' : 'retail');
+                final bool isWholesale = currentMode == 'wholesale';
+
+                final String displayPrice = isWholesale
+                    ? (item['wholesalePrice'] ?? item['price'] as String)
+                    : (item['price'] as String);
+
+                final salesBadge = _buildSalesModeBadge(
+                  salesMode,
+                  theme,
+                  isDark,
+                  productName: productName,
+                );
+
+                final itemForDetail = {
+                  ...item,
+                  'salesMode': salesMode,
+                  'saleType': isWholesale ? 'mayor' : 'detalle',
+                  'selectedMode': currentMode,
+                };
+
                 return GestureDetector(
-                  onTap: () => context.push('/product_detail', extra: item),
+                  onTap: () => context.push('/product_detail', extra: itemForDetail),
                   child: Container(
                     margin: const EdgeInsets.only(bottom: 12),
                     padding: const EdgeInsets.all(12),
@@ -1863,37 +1938,62 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                       ),
                     ),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Image.network(
                             item['img'] as String,
                             width: 96,
-                            height: 96,
+                            height: 104,
                             fit: BoxFit.cover,
                             errorBuilder: (c, e, s) => Container(
                               width: 96,
-                              height: 96,
+                              height: 104,
                               color: Colors.grey,
                             ),
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: 14),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    item['name'] as String,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item['name'] as String,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          'SKU: ${_getProductSku(item)}',
+                                          style: TextStyle(
+                                            fontFamily: 'Manrope',
+                                            fontSize: 9.0,
+                                            fontWeight: FontWeight.w500,
+                                            color: isDark
+                                                ? Colors.grey.shade400
+                                                : const Color(0xFF94A3B8),
+                                            letterSpacing: 0.2,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
+                                  const SizedBox(width: 8),
                                   Container(
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 6,
@@ -1914,14 +2014,46 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                item['price'] as String,
-                                style: TextStyle(
-                                  color: theme.colorScheme.primary,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              if (salesBadge != null) ...[
+                                const SizedBox(height: 6),
+                                salesBadge,
+                              ],
+                              const SizedBox(height: 6),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                textBaseline: TextBaseline.alphabetic,
+                                children: [
+                                  AnimatedSwitcher(
+                                    duration: const Duration(milliseconds: 200),
+                                    child: Text(
+                                      displayPrice,
+                                      key: ValueKey<String>(displayPrice),
+                                      style: TextStyle(
+                                        color: isWholesale
+                                            ? (isDark
+                                                ? const Color(0xFF38BDF8)
+                                                : const Color(0xFF0284C7))
+                                            : theme.colorScheme.primary,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  if (isWholesale &&
+                                      item['wholesaleMin'] != null) ...[
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      '(${item['wholesaleMin']})',
+                                      style: TextStyle(
+                                        fontSize: 9,
+                                        fontWeight: FontWeight.w600,
+                                        color: isDark
+                                            ? const Color(0xFF7DD3FC)
+                                            : const Color(0xFF0284C7),
+                                      ),
+                                    ),
+                                  ],
+                                ],
                               ),
                               if (item['tags'] != null &&
                                   (item['tags'] as List).isNotEmpty) ...[
@@ -2339,6 +2471,17 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                     onTap: () {
                       context.pop();
                       context.push('/coupons');
+                    },
+                  ),
+                  _buildDrawerItem(
+                    'Productos favoritos',
+                    Icons.favorite_rounded,
+                    itemTextColor,
+                    itemHoverBg,
+                    false,
+                    onTap: () {
+                      context.pop();
+                      context.push('/favorites');
                     },
                   ),
                   _buildDrawerItem(

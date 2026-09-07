@@ -27,6 +27,147 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
   bool _isLoading = true;
   final Map<String, String> _selectedProductModes = {};
 
+  final List<Map<String, dynamic>> _groceryEssentials = [
+    {
+      'name': 'DOÑA GALLINA Caldo 6ud (131) (AP)',
+      'price': 'RD\$48.00',
+      'rawPrice': 48.0,
+      'wholesalePrice': 'RD\$38.00',
+      'wholesaleRawPrice': 38.0,
+      'oldPrice': 'RD\$56.00',
+      'unit': '6ud',
+      'unitText': 'POR CAJA',
+      'wholesaleUnitText': 'POR BULTO (24)',
+      'available_units': ['6ud', '12ud', 'Caja'],
+      'quality': 'Primera Calidad',
+      'badge': 'PRIMERA CALIDAD',
+      'rating': '4.8',
+      'supplier': 'Hipermercados Olé',
+      'location': 'Villa Mella, Santo Domingo',
+      'category': 'Abarrotes',
+      'tags': ['Condimentos', 'Oferta'],
+      'salesMode': 'both',
+      'img':
+          'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1549_Variedad%20de%20Aj%C3%ADes_simple_compose_01jwvncbmqfpvb7qv6rs3vh22x.png',
+      'icon': Icons.soup_kitchen,
+    },
+    {
+      'name': 'Chuleta Ahumada Especial Lb',
+      'price': 'RD\$124.00',
+      'rawPrice': 124.0,
+      'wholesalePrice': 'RD\$105.00',
+      'wholesaleRawPrice': 105.0,
+      'oldPrice': 'RD\$145.00',
+      'unit': 'lb',
+      'unitText': 'POR LIBRA',
+      'wholesaleUnitText': 'POR CAJA 50LB',
+      'available_units': ['lb', 'kg'],
+      'quality': 'Primera Calidad',
+      'badge': 'PRIMERA CALIDAD',
+      'rating': '4.9',
+      'supplier': 'Hipermercados Olé',
+      'location': 'Villa Mella, Santo Domingo',
+      'category': 'Carnes',
+      'tags': ['Carnes', 'Fresco'],
+      'salesMode': 'both',
+      'img':
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuBXcsVfAn4SXFQcHddnB5qMtM4renFwAuqO-lGdtcJtIIEmGl9tMDsFQiPgu60XnCWVebJO7iP0Ibk5dtJIqrh9Aanp9rZWGv7faUFsthP816CnkwG06d3lv6JAtK1L0AlnAz_e_RO8MTnW4_KInOanUlNL5k2AshcmFlzprpJxW1x81-1wvtFdgqmQ27XRJXCS6DLiTryvA9pgF60utXXNGEKTfgzyHZfbGio0iMIq4G_RBnQepN2i0vJ1-mywwHJNnmaXt1UMSH8',
+      'icon': Icons.kebab_dining,
+    },
+    {
+      'name': 'Papa Blanca Alpha Premium',
+      'price': 'RD\$85.00',
+      'rawPrice': 85.0,
+      'wholesalePrice': 'RD\$65.00',
+      'wholesaleRawPrice': 65.0,
+      'oldPrice': 'RD\$95.00',
+      'unit': 'kg',
+      'unitText': 'POR KILO',
+      'wholesaleUnitText': 'POR SACO 50KG',
+      'available_units': ['kg', 'lb', 'saco'],
+      'quality': 'Primera Calidad',
+      'badge': 'PRIMERA CALIDAD',
+      'rating': '4.8',
+      'supplier': 'Hipermercados Olé',
+      'location': 'Villa Mella, Santo Domingo',
+      'category': 'Tubérculos',
+      'tags': ['Tubérculos', 'Oferta'],
+      'salesMode': 'both',
+      'img':
+          'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1556_Sacos%20de%20Papas_simple_compose_01jwvnskaee6evykbzreq6j8wm.png',
+      'icon': Icons.grass,
+    },
+    {
+      'name': 'MARIA Tortillas de Trigo 10ud 9oz',
+      'price': 'RD\$73.00',
+      'rawPrice': 73.0,
+      'wholesalePrice': 'RD\$58.00',
+      'wholesaleRawPrice': 58.0,
+      'oldPrice': 'RD\$88.00',
+      'unit': '10ud',
+      'unitText': 'POR PAQUETE',
+      'wholesaleUnitText': 'POR CAJA (12)',
+      'available_units': ['10ud', '20ud'],
+      'quality': 'Primera Calidad',
+      'badge': 'PRIMERA CALIDAD',
+      'rating': '4.7',
+      'supplier': 'Hipermercados Olé',
+      'location': 'Villa Mella, Santo Domingo',
+      'category': 'Panadería',
+      'tags': ['Panadería', 'Oferta'],
+      'salesMode': 'both',
+      'img':
+          'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1515_Pl%C3%A1tano%20sobre%20Fondo%20Verde_simple_compose_01jwvkfvz0etrr0gg640b8nxwd.png',
+      'icon': Icons.breakfast_dining,
+    },
+    {
+      'name': 'Arroz Premium La Garza 5 Lb',
+      'price': 'RD\$215.00',
+      'rawPrice': 215.0,
+      'wholesalePrice': 'RD\$185.00',
+      'wholesaleRawPrice': 185.0,
+      'oldPrice': 'RD\$240.00',
+      'unit': '5 Lb',
+      'unitText': 'POR FUNDA',
+      'wholesaleUnitText': 'POR FARDO (10)',
+      'available_units': ['5 Lb', '10 Lb', 'Saco 100 Lb'],
+      'quality': 'Primera Calidad',
+      'badge': 'PRIMERA CALIDAD',
+      'rating': '4.9',
+      'supplier': 'Hipermercados Olé',
+      'location': 'Villa Mella, Santo Domingo',
+      'category': 'Granos',
+      'tags': ['Granos', 'Popular'],
+      'salesMode': 'both',
+      'img':
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuCN-hVTSx1rNbAD9eHpKDImU8vYJNZFoITfQVx73EZIsla3sFfOoX1WKcFfcivkoGD6cfKSKUvwKe2quKBgEgLxJFpQkv0inpNh-tvY1FVwe61aMojskS1J6eWlmYdoEFeaMUrxyGhzKBbn_rAkmvNeu9kgAeCVKeg4IZmh1p7gEOG8Ww0k6j5HLcgnH5larlnuSK9k2mF0Lw782V2ktGYYAR6k1m1pN-ffQWT0y4L2ZJRKh-QiDe1Wr-XvoTyrT8hhyTgO0PSlWBE',
+      'icon': Icons.rice_bowl,
+    },
+    {
+      'name': 'Aceite Vegetal Crisol 64 Oz',
+      'price': 'RD\$189.00',
+      'rawPrice': 189.0,
+      'wholesalePrice': 'RD\$160.00',
+      'wholesaleRawPrice': 160.0,
+      'oldPrice': 'RD\$210.00',
+      'unit': '64 Oz',
+      'unitText': 'POR BOTELLA',
+      'wholesaleUnitText': 'POR CAJA (8)',
+      'available_units': ['64 Oz', '128 Oz'],
+      'quality': 'Primera Calidad',
+      'badge': 'PRIMERA CALIDAD',
+      'rating': '4.8',
+      'supplier': 'Hipermercados Olé',
+      'location': 'Villa Mella, Santo Domingo',
+      'category': 'Aceites',
+      'tags': ['Aceites', 'Oferta'],
+      'salesMode': 'both',
+      'img':
+          'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1524_Tomate%20Fresco%20Expuesto_simple_compose_01jwvkz8qsfxdazzgv3zd2wnv0.png',
+      'icon': Icons.opacity,
+    },
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -42,6 +183,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
 
   @override
   void dispose() {
+    stopGlobalFlashTimer();
     super.dispose();
   }
 
@@ -76,7 +218,9 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
               _buildNearbySuppliers(theme, surfaceColor, isDark),
               const SizedBox(height: 32),
               _buildFlashOffers(theme, surfaceColor, isDark),
-              const SizedBox(height: 24),
+              const SizedBox(height: 32),
+              _buildGroceryEssentials(theme, surfaceColor, isDark),
+              const SizedBox(height: 32),
               _buildMostTraded(theme, surfaceColor, isDark),
               const SizedBox(height: 32),
               _buildForYou(theme, surfaceColor, isDark),
@@ -536,10 +680,12 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
             width: 0.8,
           ),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            GestureDetector(
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
               onTap: () {
                 setState(() {
                   _selectedProductModes[productName] = 'retail';
@@ -650,8 +796,9 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
             ),
           ],
         ),
-      );
-    }
+      ),
+    );
+  }
 
     final bool isRetailOnly =
         salesMode == 'retail_only' || salesMode == 'retail';
@@ -855,8 +1002,20 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
     BuildContext context,
     ThemeData theme,
     Map<String, dynamic> data,
-    bool isDark,
-  ) {
+    bool isDark, {
+    bool showCartButton = false,
+    bool showBottomCartButton = false,
+    bool showSupplier = true,
+    bool showLocation = true,
+    bool isCompact = false,
+  }) {
+    final double cardWidth = isCompact ? 220.0 : 280.0;
+    final double imageHeight = isCompact ? 120.0 : 180.0;
+    final double cardRadius = isCompact ? 18.0 : 24.0;
+    final EdgeInsets contentPadding = isCompact
+        ? const EdgeInsets.symmetric(horizontal: 12, vertical: 10)
+        : const EdgeInsets.symmetric(horizontal: 16, vertical: 14);
+
     final String badge = (data['badge'] ?? 'Primera Calidad').toString();
     Color badgeColor = theme.colorScheme.primary;
     final lowerBadge = badge.toLowerCase();
@@ -900,10 +1059,10 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
         }
       },
       child: Container(
-        width: 280,
+        width: cardWidth,
         decoration: BoxDecoration(
           color: isDark ? const Color(0xFF1f2937) : Colors.white,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(cardRadius),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.05),
@@ -918,8 +1077,8 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(24),
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(cardRadius),
                   ),
                   child: Builder(
                     builder: (context) {
@@ -927,40 +1086,40 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                       if (imgSrc.startsWith('assets/')) {
                         return Image.asset(
                           imgSrc,
-                          height: 180,
+                          height: imageHeight,
                           width: double.infinity,
                           fit: BoxFit.cover,
                           errorBuilder: (c, e, s) =>
-                              Container(height: 180, color: Colors.grey[300]),
+                              Container(height: imageHeight, color: Colors.grey[300]),
                         );
                       }
                       return Image.network(
                         imgSrc,
-                        height: 180,
+                        height: imageHeight,
                         width: double.infinity,
                         fit: BoxFit.cover,
                         errorBuilder: (c, e, s) =>
-                            Container(height: 180, color: Colors.grey[300]),
+                            Container(height: imageHeight, color: Colors.grey[300]),
                       );
                     },
                   ),
                 ),
                 if (data['discount'] != null)
                   Positioned(
-                    top: 16,
-                    left: 16,
+                    top: isCompact ? 10 : 16,
+                    left: isCompact ? 10 : 16,
                     child: AnimatedDiscountBadge(
                       discountText: data['discount'].toString(),
                       isExpired: isExpired,
                     ),
                   ),
                 Positioned(
-                  top: 16,
-                  right: 16,
+                  top: isCompact ? 10 : 16,
+                  right: isCompact ? 10 : 16,
                   child: ValueListenableBuilder<List<Map<String, dynamic>>>(
                     valueListenable: globalFavorites,
                     builder: (context, favoritesList, child) {
-                      final bool isFav = isFavorite(data['name']!);
+                      final bool isFav = isFavorite(data['name']?.toString() ?? '');
                       return AnimatedFavoriteButton(
                         isFavorite: isFav,
                         onTap: () {
@@ -1003,23 +1162,111 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                   ),
                 ),
                 Positioned(
-                  bottom: 12,
-                  right: 16,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primary,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: const [
-                        BoxShadow(color: Colors.black26, blurRadius: 4),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.verified,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
+                  bottom: isCompact ? 8 : 12,
+                  right: isCompact ? 10 : 16,
+                  child: showCartButton
+                      ? Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              final cartItem = {
+                                ...data,
+                                'price': isWholesale
+                                    ? (data['wholesalePrice'] ?? data['price'])
+                                    : data['price'],
+                                'rawPrice': isWholesale
+                                    ? (data['wholesaleRawPrice'] ?? data['rawPrice'])
+                                    : data['rawPrice'],
+                                'saleType':
+                                    isWholesale ? 'Por Mayor' : 'Al Detalle',
+                                'isWholesale': isWholesale,
+                                'supplier':
+                                    data['supplier'] ?? 'Hipermercados Olé',
+                              };
+                              addToCart(cartItem);
+                              ScaffoldMessenger.of(context).clearSnackBars();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.shopping_cart,
+                                        color: Colors.white,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: Text(
+                                          'Añadido al carrito ($productName)',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  backgroundColor: const Color(0xFF016142),
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                            },
+                            borderRadius: BorderRadius.circular(20),
+                            child: Container(
+                              width: isCompact ? 34 : 38,
+                              height: isCompact ? 34 : 38,
+                              decoration: BoxDecoration(
+                                color: isDark
+                                    ? const Color(0xFF064E3B).withValues(alpha: 0.6)
+                                    : const Color(0xFFDFF0E8),
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: isDark
+                                      ? const Color(0xFF059669).withValues(alpha: 0.7)
+                                      : const Color(0xFF88C8A8),
+                                  width: 1.2,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.15),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.shopping_cart_outlined,
+                                  size: isCompact ? 18 : 20,
+                                  color: isDark
+                                      ? const Color(0xFF6EE7B7)
+                                      : const Color(0xFF1B4D3E),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primary,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: const [
+                              BoxShadow(color: Colors.black26, blurRadius: 4),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.verified,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
                 ),
                 if (data.containsKey('overlayText') &&
                     data['overlayText'] != null)
@@ -1059,7 +1306,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              padding: contentPadding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -1071,9 +1318,9 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              data['name']!,
-                              style: const TextStyle(
-                                fontSize: 17,
+                              data['name']?.toString() ?? '',
+                              style: TextStyle(
+                                fontSize: isCompact ? 13.5 : 17,
                                 fontWeight: FontWeight.bold,
                                 height: 1.2,
                               ),
@@ -1085,128 +1332,25 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                               'SKU: ${_getProductSku(data)}',
                               style: TextStyle(
                                 fontFamily: 'Manrope',
-                                fontSize: 9.5,
+                                fontSize: isCompact ? 8.5 : 9.5,
                                 fontWeight: FontWeight.w500,
                                 color: isDark ? Colors.grey.shade400 : const Color(0xFF94A3B8),
                                 letterSpacing: 0.2,
                               ),
                             ),
-                            const SizedBox(height: 6),
-                            Builder(
-                              builder: (context) {
-                                final salesBadge = _buildSalesModeBadge(
-                                  data['salesMode'],
-                                  theme,
-                                  isDark,
-                                  productName: productName,
-                                );
-                                final hasTags =
-                                    data['tags'] != null &&
-                                    (data['tags'] as List).isNotEmpty;
-                                if (!hasTags && salesBadge == null) {
-                                  return const SizedBox.shrink();
-                                }
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Wrap(
-                                      spacing: 6,
-                                      runSpacing: 4,
-                                      children: [
-                                        ...salesBadge != null
-                                            ? [salesBadge]
-                                            : <Widget>[],
-                                        if (hasTags)
-                                          ...(data['tags'] as List).map((tag) {
-                                            return Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 6,
-                                                    vertical: 2,
-                                                  ),
-                                              decoration: BoxDecoration(
-                                                color: theme.colorScheme.primary
-                                                    .withValues(alpha: 0.1),
-                                                borderRadius:
-                                                    BorderRadius.circular(4),
-                                                border: Border.all(
-                                                  color: theme
-                                                      .colorScheme
-                                                      .primary
-                                                      .withValues(alpha: 0.3),
-                                                ),
-                                              ),
-                                              child: Text(
-                                                tag.toString(),
-                                                style: TextStyle(
-                                                  color: isDark
-                                                      ? const Color(0xFF6ee7b7)
-                                                      : theme
-                                                            .colorScheme
-                                                            .primary, // emerald-300 or primary
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            );
-                                          }),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 6),
-                                  ],
-                                );
-                              },
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  backgroundColor: Colors.transparent,
-                                  builder: (context) =>
-                                      ProductReviewsModal(product: data),
-                                );
-                              },
-                              behavior: HitTestBehavior.opaque,
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.star,
-                                    color: Colors.orange,
-                                    size: 15,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    data['rating']!,
-                                    style: const TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  const Text(
-                                    '(128 reseñas)',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                           ],
                         ),
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 8),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           if (displayOldPrice != null)
                             Text(
                               displayOldPrice,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: Colors.grey,
-                                fontSize: 11,
+                                fontSize: isCompact ? 9.5 : 11,
                                 decoration: TextDecoration.lineThrough,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -1218,16 +1362,22 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                                   opacity: animation,
                                   child: child,
                                 ),
-                            child: Text(
-                              displayPrice,
+                            child: FittedBox(
                               key: ValueKey<String>(displayPrice),
-                              style: TextStyle(
-                                color: isWholesale
-                                    ? const Color(0xFF0284C7)
-                                    : theme.colorScheme.primary,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w900,
-                                height: 1.1,
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                displayPrice,
+                                maxLines: 1,
+                                softWrap: false,
+                                style: TextStyle(
+                                  color: isWholesale
+                                      ? const Color(0xFF0284C7)
+                                      : theme.colorScheme.primary,
+                                  fontSize: isCompact ? 16.5 : 20,
+                                  fontWeight: FontWeight.w900,
+                                  height: 1.1,
+                                ),
                               ),
                             ),
                           ),
@@ -1244,9 +1394,9 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                               children: [
                                 if (isWholesale) ...[
                                   Text(
-                                    'POR MAYOR',
+                                    data['wholesaleUnitText']?.toString() ?? 'POR MAYOR',
                                     style: TextStyle(
-                                      fontSize: 8,
+                                      fontSize: isCompact ? 7.5 : 8,
                                       fontWeight: FontWeight.w800,
                                       color: isDark
                                           ? const Color(0xFF38BDF8)
@@ -1258,7 +1408,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                                     Text(
                                       '(${data['wholesaleMin']})',
                                       style: TextStyle(
-                                        fontSize: 7,
+                                        fontSize: isCompact ? 6.5 : 7,
                                         fontWeight: FontWeight.w700,
                                         color:
                                             (isDark
@@ -1270,9 +1420,9 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                                     ),
                                 ] else ...[
                                   Text(
-                                    'POR KILO',
+                                    data['unitText']?.toString() ?? 'POR KILO',
                                     style: TextStyle(
-                                      fontSize: 8,
+                                      fontSize: isCompact ? 7.5 : 8,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.grey[600],
                                       letterSpacing: 0.3,
@@ -1286,9 +1436,112 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
-                  const Divider(color: Color(0xFFE0E3DF), thickness: 1),
-                  const SizedBox(height: 12),
+                  SizedBox(height: isCompact ? 6 : 8),
+                  Builder(
+                    builder: (context) {
+                      final salesBadge = _buildSalesModeBadge(
+                        data['salesMode'],
+                        theme,
+                        isDark,
+                        productName: productName,
+                      );
+                      final hasTags =
+                          data['tags'] != null &&
+                          (data['tags'] as List).isNotEmpty;
+                      if (!hasTags && salesBadge == null) {
+                        return const SizedBox.shrink();
+                      }
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Wrap(
+                            spacing: 6,
+                            runSpacing: 4,
+                            children: [
+                              ...salesBadge != null
+                                  ? [salesBadge]
+                                  : <Widget>[],
+                              if (hasTags)
+                                ...(data['tags'] as List).map((tag) {
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6,
+                                      vertical: 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: theme.colorScheme.primary
+                                          .withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(4),
+                                      border: Border.all(
+                                        color: theme.colorScheme.primary
+                                            .withValues(alpha: 0.3),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      tag.toString(),
+                                      style: TextStyle(
+                                        color: isDark
+                                            ? const Color(0xFF6ee7b7)
+                                            : theme.colorScheme.primary,
+                                        fontSize: isCompact ? 9 : 10,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  );
+                                }),
+                            ],
+                          ),
+                          SizedBox(height: isCompact ? 4 : 6),
+                        ],
+                      );
+                    },
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) =>
+                            ProductReviewsModal(product: data),
+                      );
+                    },
+                    behavior: HitTestBehavior.opaque,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.star,
+                            color: Colors.orange,
+                            size: isCompact ? 13 : 15,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            data['rating']?.toString() ?? '4.8',
+                            style: TextStyle(
+                              fontSize: isCompact ? 11.5 : 13,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '(128 reseñas)',
+                            style: TextStyle(
+                              fontSize: isCompact ? 9 : 10,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: isCompact ? 8 : 12),
+                  const Divider(color: Color(0xFFE0E3DF), thickness: 0.8),
+                  SizedBox(height: isCompact ? 8 : 12),
+                  // CALIDAD Row
                   GestureDetector(
                     onTap: () {
                       showModalBottomSheet(
@@ -1303,8 +1556,8 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                     child: Row(
                       children: [
                         Container(
-                          width: 32,
-                          height: 32,
+                          width: isCompact ? 28 : 32,
+                          height: isCompact ? 28 : 32,
                           decoration: BoxDecoration(
                             color: badgeColor.withValues(alpha: 0.15),
                             shape: BoxShape.circle,
@@ -1312,134 +1565,226 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                           child: Icon(
                             Icons.workspace_premium,
                             color: badgeColor,
-                            size: 16,
+                            size: isCompact ? 14 : 16,
                           ),
                         ),
                         const SizedBox(width: 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'CALIDAD',
-                              style: TextStyle(
-                                fontSize: 9,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey,
-                                letterSpacing: 0.5,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'CALIDAD',
+                                style: TextStyle(
+                                  fontSize: isCompact ? 8 : 9,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                  letterSpacing: 0.5,
+                                ),
                               ),
-                            ),
-                            Text(
-                              badge.toUpperCase(),
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w900,
-                                color: badgeColor,
+                              Text(
+                                badge.toUpperCase(),
+                                style: TextStyle(
+                                  fontSize: isCompact ? 10.5 : 12,
+                                  fontWeight: FontWeight.w900,
+                                  color: badgeColor,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  GestureDetector(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (context) =>
-                            SupplierQuickViewBottomSheet(supplierData: data),
-                      );
-                    },
-                    behavior: HitTestBehavior.opaque,
-                    child: Row(
+                  // PROVEEDOR Row (conditionally displayed)
+                  if (showSupplier) ...[
+                    SizedBox(height: isCompact ? 8 : 12),
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) =>
+                              SupplierQuickViewBottomSheet(supplierData: data),
+                        );
+                      },
+                      behavior: HitTestBehavior.opaque,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: isCompact ? 28 : 32,
+                            height: isCompact ? 28 : 32,
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primary.withValues(
+                                alpha: 0.15,
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.local_florist,
+                              color: theme.colorScheme.primary,
+                              size: isCompact ? 14 : 16,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'PROVEEDOR',
+                                  style: TextStyle(
+                                    fontSize: isCompact ? 8 : 9,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                                Text(
+                                  data['supplier'] ?? 'Granja El Sol',
+                                  style: TextStyle(
+                                    fontSize: isCompact ? 11.5 : 13,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  // UBICACIÓN Row (conditionally displayed)
+                  if (showLocation) ...[
+                    SizedBox(height: isCompact ? 8 : 12),
+                    Row(
                       children: [
                         Container(
-                          width: 32,
-                          height: 32,
+                          width: isCompact ? 28 : 32,
+                          height: isCompact ? 28 : 32,
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.primary.withValues(
-                              alpha: 0.15,
-                            ),
+                            color: Colors.grey[200],
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
-                            Icons.local_florist,
-                            color: theme.colorScheme.primary,
-                            size: 16,
+                            Icons.location_on,
+                            color: Colors.grey,
+                            size: isCompact ? 14 : 16,
                           ),
                         ),
                         const SizedBox(width: 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'PROVEEDOR',
-                              style: TextStyle(
-                                fontSize: 9,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey,
-                                letterSpacing: 0.5,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'UBICACIÓN',
+                                style: TextStyle(
+                                  fontSize: isCompact ? 8 : 9,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                  letterSpacing: 0.5,
+                                ),
                               ),
-                            ),
-                            Text(
-                              data['supplier'] ?? 'Granja El Sol',
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
+                              Text(
+                                data['location'] ?? 'Valle de Santiago, GTO',
+                                style: TextStyle(
+                                  fontSize: isCompact ? 11.5 : 13,
+                                  color: Colors.grey,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.location_on,
-                          color: Colors.grey,
+                  ],
+                  if (showBottomCartButton) ...[
+                    SizedBox(height: isCompact ? 10 : 14),
+                    SizedBox(
+                      width: double.infinity,
+                      height: isCompact ? 36 : 40,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          final cartItem = {
+                            ...data,
+                            'price': isWholesale
+                                ? (data['wholesalePrice'] ?? data['price'])
+                                : data['price'],
+                            'rawPrice': isWholesale
+                                ? (data['wholesaleRawPrice'] ?? data['rawPrice'])
+                                : data['rawPrice'],
+                            'saleType':
+                                isWholesale ? 'Por Mayor' : 'Al Detalle',
+                            'isWholesale': isWholesale,
+                            'supplier':
+                                data['supplier'] ?? 'Hipermercados Olé',
+                          };
+                          addToCart(cartItem);
+                          ScaffoldMessenger.of(context).clearSnackBars();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.shopping_cart,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      'Añadido al carrito ($productName)',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              backgroundColor: const Color(0xFF016142),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.shopping_cart_outlined,
                           size: 16,
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'UBICACIÓN',
-                              style: TextStyle(
-                                fontSize: 9,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                            Text(
-                              data['location'] ?? 'Valle de Santiago, GTO',
-                              style: const TextStyle(
-                                fontSize: 13,
-                                color: Colors.grey,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
+                        label: const Text(
+                          'Agregar al carrito',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF047857),
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: EdgeInsets.zero,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                   if (data['secondsRemaining'] != null) ...[
-                    const SizedBox(height: 12),
+                    SizedBox(height: isCompact ? 8 : 12),
                     _buildCardCountdownBanner(
                       data['secondsRemaining'] as int,
                       isDark,
@@ -1509,59 +1854,62 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
               : const Color(0xFFD1FAE5),
         ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.schedule,
-            color: isDark ? const Color(0xFF6EE7B7) : const Color(0xFF047857),
-            size: 13,
-          ),
-          const SizedBox(width: 4),
-          Text(
-            'Termina en:',
-            style: GoogleFonts.inter(
-              fontSize: 9,
-              fontWeight: FontWeight.w600,
-              color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF3F4944),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.schedule,
+              color: isDark ? const Color(0xFF6EE7B7) : const Color(0xFF047857),
+              size: 13,
             ),
-          ),
-          const SizedBox(width: 5),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildSmallTimeUnitBox(hours, isDark),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: Text(
-                  ':',
-                  style: GoogleFonts.inter(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: isDark
-                        ? const Color(0xFF9CA3AF)
-                        : const Color(0xFF3F4944),
+            const SizedBox(width: 4),
+            Text(
+              'Termina en:',
+              style: GoogleFonts.inter(
+                fontSize: 9,
+                fontWeight: FontWeight.w600,
+                color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF3F4944),
+              ),
+            ),
+            const SizedBox(width: 5),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildSmallTimeUnitBox(hours, isDark),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: Text(
+                    ':',
+                    style: GoogleFonts.inter(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: isDark
+                          ? const Color(0xFF9CA3AF)
+                          : const Color(0xFF3F4944),
+                    ),
                   ),
                 ),
-              ),
-              _buildSmallTimeUnitBox(minutes, isDark),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: Text(
-                  ':',
-                  style: GoogleFonts.inter(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: isDark
-                        ? const Color(0xFF9CA3AF)
-                        : const Color(0xFF3F4944),
+                _buildSmallTimeUnitBox(minutes, isDark),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: Text(
+                    ':',
+                    style: GoogleFonts.inter(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: isDark
+                          ? const Color(0xFF9CA3AF)
+                          : const Color(0xFF3F4944),
+                    ),
                   ),
                 ),
-              ),
-              _buildSmallTimeUnitBox(seconds, isDark),
-            ],
-          ),
-        ],
+                _buildSmallTimeUnitBox(seconds, isDark),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1631,7 +1979,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
         ),
         const SizedBox(height: 16),
         SizedBox(
-          height: 580,
+          height: 600,
           child: ValueListenableBuilder<List<Map<String, dynamic>>>(
             valueListenable: globalFlashOffers,
             builder: (context, flashList, child) {
@@ -1651,6 +1999,148 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                     isDark,
                   );
                 },
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGroceryEssentials(
+    ThemeData theme,
+    Color surfaceColor,
+    bool isDark,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              // Store circular logo
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFCE1126),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFCE1126).withValues(alpha: 0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Olé',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 16,
+                          height: 1.0,
+                          letterSpacing: -0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 1),
+                      Text(
+                        'hipermercados',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white.withValues(alpha: 0.85),
+                          fontSize: 5,
+                          fontWeight: FontWeight.w600,
+                          height: 1.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              // Section Title and Store Subtitle
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Proveedor destacado',
+                      style: GoogleFonts.manrope(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        color: isDark ? Colors.white : const Color(0xFF111827),
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'De Hipermercados Olé Villa Mella 🛒',
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: isDark ? Colors.grey[400] : const Color(0xFF6B7280),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              // Arrow forward button
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => context.push('/search'),
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF1F2937) : const Color(0xFFF3F4F6),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB),
+                        width: 0.8,
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.arrow_forward_rounded,
+                      size: 18,
+                      color: isDark ? Colors.grey[300] : const Color(0xFF374151),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: 410,
+          child: ListView.separated(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            scrollDirection: Axis.horizontal,
+            itemCount: _isLoading ? 3 : _groceryEssentials.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 14),
+            itemBuilder: (context, index) {
+              if (_isLoading) {
+                return const SkeletonProductCard(width: 220, height: 410);
+              }
+              return _buildVariantCard(
+                context,
+                theme,
+                _groceryEssentials[index],
+                isDark,
+                showCartButton: false,
+                showBottomCartButton: true,
+                showSupplier: false,
+                showLocation: false,
+                isCompact: true,
               );
             },
           ),

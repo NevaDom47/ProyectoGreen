@@ -74,74 +74,70 @@ class SkeletonProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isCompact = width < 250;
+    final double imgHeight = isCompact ? 120 : 180;
+    final double paddingVal = isCompact ? 12 : 20;
+
     return SkeletonShimmer(
       child: Container(
         width: width,
         height: height,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(isCompact ? 18 : 24),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SkeletonContainer(width: double.infinity, height: 180, borderRadius: 24),
+            SkeletonContainer(
+              width: double.infinity,
+              height: imgHeight,
+              borderRadius: isCompact ? 18 : 24,
+            ),
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(paddingVal),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          SkeletonText(width: 120, height: 18),
-                          SizedBox(height: 6),
-                          SkeletonText(width: 60, height: 14),
-                        ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SkeletonText(width: isCompact ? 80 : 120, height: isCompact ? 14 : 18),
+                            const SizedBox(height: 6),
+                            SkeletonText(width: isCompact ? 45 : 60, height: isCompact ? 11 : 14),
+                          ],
+                        ),
                       ),
+                      const SizedBox(width: 8),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
-                        children: const [
-                          SkeletonText(width: 80, height: 22),
-                          SizedBox(height: 4),
-                          SkeletonText(width: 40, height: 10),
+                        children: [
+                          SkeletonText(width: isCompact ? 50 : 80, height: isCompact ? 18 : 22),
+                          const SizedBox(height: 4),
+                          SkeletonText(width: isCompact ? 30 : 40, height: 10),
                         ],
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: isCompact ? 10 : 16),
                   const SkeletonContainer(width: double.infinity, height: 1), // Divider
-                  const SizedBox(height: 16),
+                  SizedBox(height: isCompact ? 10 : 16),
                   Row(
-                    children: const [
-                      SkeletonContainer(width: 36, height: 36, shape: BoxShape.circle),
-                      SizedBox(width: 12),
+                    children: [
+                      SkeletonContainer(width: isCompact ? 28 : 36, height: isCompact ? 28 : 36, shape: BoxShape.circle),
+                      const SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SkeletonText(width: 50, height: 10),
-                          SizedBox(height: 4),
-                          SkeletonText(width: 100, height: 14),
+                          const SkeletonText(width: 50, height: 10),
+                          const SizedBox(height: 4),
+                          SkeletonText(width: isCompact ? 70 : 100, height: 14),
                         ],
-                      )
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: const [
-                      SkeletonContainer(width: 36, height: 36, shape: BoxShape.circle),
-                      SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SkeletonText(width: 50, height: 10),
-                          SizedBox(height: 4),
-                          SkeletonText(width: 100, height: 14),
-                        ],
-                      )
+                      ),
                     ],
                   ),
                 ],

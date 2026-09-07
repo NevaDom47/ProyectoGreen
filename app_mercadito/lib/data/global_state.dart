@@ -196,6 +196,11 @@ void startGlobalFlashTimer() {
   });
 }
 
+void stopGlobalFlashTimer() {
+  _globalFlashTimer?.cancel();
+  _globalFlashTimer = null;
+}
+
 final ValueNotifier<List<Map<String, dynamic>>> globalFavorites = ValueNotifier([
   {
     'name': 'Fresas Orgánicas Extras',
@@ -434,8 +439,17 @@ void addToCart(Map<String, dynamic> product) {
   // Parse item price
   double itemPrice = 0.0;
   if (product['price'] != null) {
-    String priceStr = product['price'].toString().replaceAll('\$', '');
-    itemPrice = double.tryParse(priceStr) ?? 0.0;
+    String priceStr = product['price']
+        .toString()
+        .replaceAll('RD\$', '')
+        .replaceAll('\$', '')
+        .replaceAll('RD', '')
+        .trim();
+    itemPrice = double.tryParse(priceStr) ??
+        (product['rawPrice'] as num?)?.toDouble() ??
+        0.0;
+  } else if (product['rawPrice'] != null) {
+    itemPrice = (product['rawPrice'] as num).toDouble();
   }
 
   // Define limits (same as in CartScreen mostly) minimum 1

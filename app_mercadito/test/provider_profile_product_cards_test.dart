@@ -156,4 +156,56 @@ void main() {
     final exception = tester.takeException();
     expect(exception, isNull);
   });
+
+  testWidgets('ProviderProfileScreen displays sector and average distance to user, and action buttons', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(375, 812);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    final providerWithSector = {
+      'name': 'Huerta Los Arcos',
+      'sector': 'Sector San Pedro',
+      'distance': 'A 5 km',
+      'banner': 'https://via.placeholder.com/600x240',
+      'img': 'https://via.placeholder.com/100',
+      'rating': 4.8,
+      'traded': '1,240 productos negociados',
+      'sales': '1,240',
+      'productsCount': 15,
+      'tags': 'Frutas y Verduras Orgánicas',
+    };
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProviderProfileScreen(provider: providerWithSector),
+      ),
+    );
+
+    await tester.pump(const Duration(milliseconds: 1400));
+    await tester.pumpAndSettle();
+
+    // 1. Verify sector and average distance are shown together in location row
+    expect(find.text('Sector San Pedro • A ~5 km prom. de ti'), findsOneWidget);
+
+    // 2. Verify stats row
+    expect(find.text('Valoración'), findsOneWidget);
+    expect(find.text('Ventas'), findsOneWidget);
+    expect(find.text('Productos'), findsNWidgets(2)); // Stat column label + Tab title
+    expect(find.text('1,240'), findsOneWidget);
+
+    // 3. Verify action buttons Seguir and Chat are rendered
+    expect(find.text('Seguir'), findsOneWidget);
+    expect(find.text('Chat'), findsOneWidget);
+
+    // 4. Verify prestige level badge (solo icono y nivel)
+    expect(find.text('Nivel 3'), findsOneWidget);
+    expect(find.byIcon(Icons.military_tech_rounded), findsOneWidget);
+
+    final exception = tester.takeException();
+    expect(exception, isNull);
+  });
 }
+

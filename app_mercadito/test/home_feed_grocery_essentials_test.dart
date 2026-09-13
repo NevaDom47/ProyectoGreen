@@ -115,12 +115,12 @@ void main() {
     // Verify section header elements
     expect(find.text('Olé'), findsWidgets);
     expect(find.text('Proveedor destacado'), findsOneWidget);
-    expect(find.text('De Hipermercados Olé Villa Mella 🛒'), findsOneWidget);
+    expect(find.text('De Hipermercados Olé Villa Mella'), findsOneWidget);
     expect(find.byIcon(Icons.arrow_forward_rounded), findsWidgets);
 
     // Verify products and prices
     expect(find.text('DOÑA GALLINA Caldo 6ud (131) (AP)'), findsOneWidget);
-    expect(find.text('RD\$48.00'), findsOneWidget);
+    expect(find.text('\$48.00'), findsOneWidget);
     expect(find.text('POR CAJA'), findsOneWidget);
 
     // Verify tags and mode switchers

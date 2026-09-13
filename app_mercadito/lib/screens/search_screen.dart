@@ -25,6 +25,22 @@ class _SearchScreenState extends State<SearchScreen> {
   final Map<String, String> _selectedUnits = {};
   final Map<String, String> _selectedProductModes = {};
 
+  bool _onlyVerified = false;
+  double? _minRating;
+  double? _maxDistance;
+  String _priceSort = 'default';
+  String? _selectedQuality;
+
+  int get _activeFiltersCount {
+    int count = 0;
+    if (_onlyVerified) count++;
+    if (_minRating != null) count++;
+    if (_maxDistance != null) count++;
+    if (_priceSort != 'default') count++;
+    if (_selectedQuality != null && _selectedQuality != 'Todas') count++;
+    return count;
+  }
+
   final List<Map<String, dynamic>> _allProducts = [
     {
       'title': 'Papa Blanca Alpha',
@@ -44,6 +60,8 @@ class _SearchScreenState extends State<SearchScreen> {
       'reviewCount': '128',
       'tags': ['Tubérculos', 'Oferta'],
       'salesMode': 'both',
+      'verified': true,
+      'distance': 4.2,
       'image': 'assets/images/PapaGemini.png',
     },
     {
@@ -64,6 +82,8 @@ class _SearchScreenState extends State<SearchScreen> {
       'reviewCount': '95',
       'tags': ['Frutas y Verduras', 'Oferta'],
       'salesMode': 'both',
+      'verified': true,
+      'distance': 4.2,
       'image': 'https://lh3.googleusercontent.com/aida-public/AB6AXuDF4fUzPGSX592_YU4gqZe1p3VUwRebja4WL0DnDH5yTSAYkaRTrfuZinxjIuia7OxOMEmPomP57T7lYPKBOGOcXDZu4blV8E0vEouSIkR19xu4nV9rovZdEsh0VWKzl-nHf4oqtXfslTT9n5tRw5qiIw5nwCTt106Syb5tyTGhM2mdBmPqvoM4EKK7wP7Ha6ZcidD1by61ld-itwhNlFPnaJQKJOC-1FJ6s2wsjzHxKYeMuFgaLZ-iMHtz5IFBpPZdVa-ZeShjYbE'
     },
     {
@@ -84,6 +104,8 @@ class _SearchScreenState extends State<SearchScreen> {
       'reviewCount': '64',
       'tags': ['Orgánico', 'Fresco'],
       'salesMode': 'retail_only',
+      'verified': true,
+      'distance': 3.0,
       'image': 'https://lh3.googleusercontent.com/aida-public/AB6AXuBpkgELbOrgnfZCX2ldQAJntDk7MuvNzM2xj3ZX-s4hk6IEkRxT-JL21rrYl0wylUNhx6ss5tQZRgA-ez-zFDASz8N8vgHjeW2WOMuST9XT-TJ4kW4pnn_Ehc9qdjoobIZGbV2QsRsF2X6ZWKyht57UvloZOBtS1P1T9LuhL5_erze1q1BEaK7Go9ox0J6pBGX9OY6POaJ76vtgX8--SU6-LvdIQUtJHtKja8tfJH9dwUOexlUhPQ5SqBpdJ7O9w-LElo_r3a9IzeA'
     },
     {
@@ -103,6 +125,8 @@ class _SearchScreenState extends State<SearchScreen> {
       'reviewCount': '42',
       'tags': ['Granos', 'Mayorista'],
       'salesMode': 'wholesale_only',
+      'verified': false,
+      'distance': 18.0,
       'image': 'https://storage.googleapis.com/a1aa/image/RjWzE83BfT1lI6I5qB1a3mQe6qQ7Gf11zVqA1Wq8zN4f20HnA.jpg'
     },
     {
@@ -122,6 +146,8 @@ class _SearchScreenState extends State<SearchScreen> {
       'reviewCount': '88',
       'tags': ['Cereales', 'Calidad'],
       'salesMode': 'both',
+      'verified': true,
+      'distance': 6.5,
       'image': 'https://storage.googleapis.com/a1aa/image/eF3K8qZ21LqV1JvH4D2nN8gX7tY9bP4wT3kR5mS2eM1aP9pI.jpg' 
     },
     {
@@ -141,6 +167,8 @@ class _SearchScreenState extends State<SearchScreen> {
       'reviewCount': '31',
       'tags': ['Nutrición', 'Granja'],
       'salesMode': 'both',
+      'verified': false,
+      'distance': 25.0,
       'image': 'https://storage.googleapis.com/a1aa/image/M3bT1aY4qP2nK8gX7tY9bP4wT3kR5mS2eM1aP9pIeF3K8qZ21.jpg'
     },
     {
@@ -160,6 +188,8 @@ class _SearchScreenState extends State<SearchScreen> {
       'reviewCount': '53',
       'tags': ['Semillas', 'Certificado'],
       'salesMode': 'both',
+      'verified': true,
+      'distance': 12.0,
       'image': 'https://storage.googleapis.com/a1aa/image/Y4qP2nK8gX7tY9bP4wT3kR5mS2eM1aP9pIeF3K8qZ21M3bT1a.jpg'
     },
     {
@@ -179,6 +209,8 @@ class _SearchScreenState extends State<SearchScreen> {
       'reviewCount': '77',
       'tags': ['Lácteos', 'Artesanal'],
       'salesMode': 'both',
+      'verified': false,
+      'distance': 9.0,
       'image': 'https://storage.googleapis.com/a1aa/image/7tY9bP4wT3kR5mS2eM1aP9pIeF3K8qZ21M3bT1aY4qP2nK8gX.jpg'
     },
     {
@@ -198,6 +230,8 @@ class _SearchScreenState extends State<SearchScreen> {
       'reviewCount': '112',
       'tags': ['Huevos', 'Fresco'],
       'salesMode': 'both',
+      'verified': true,
+      'distance': 5.5,
       'image': 'https://storage.googleapis.com/a1aa/image/wT3kR5mS2eM1aP9pIeF3K8qZ21M3bT1aY4qP2nK8gX7tY9bP4.jpg'
     },
     {
@@ -217,6 +251,8 @@ class _SearchScreenState extends State<SearchScreen> {
       'reviewCount': '90',
       'tags': ['Carnes', 'Corte Fresco'],
       'salesMode': 'both',
+      'verified': false,
+      'distance': 16.0,
       'image': 'https://storage.googleapis.com/a1aa/image/P9pIeF3K8qZ21M3bT1aY4qP2nK8gX7tY9bP4wT3kR5mS2eM1a.jpg'
     },
   ];
@@ -278,7 +314,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   List<Map<String, dynamic>> get _filteredProducts {
-    return _allProducts.where((p) {
+    var list = _allProducts.where((p) {
       if (_activeCategory.isNotEmpty && p['category'] != _activeCategory && _activeCategory != 'Todos') return false;
       
       if (_activeQuery.isNotEmpty) {
@@ -290,12 +326,454 @@ class _SearchScreenState extends State<SearchScreen> {
         }
       }
 
-      if (_activeFilter != 'Todos' && _activeFilter != 'Cerca de Mi') {
+      // Quality filter
+      if (_selectedQuality != null && _selectedQuality != 'Todas') {
+        if (p['quality'] != _selectedQuality) return false;
+      } else if (_activeFilter.contains('Calidad')) {
         if (p['quality'] != _activeFilter) return false;
       }
-      
+
+      // Verified filter
+      if (_onlyVerified || _activeFilter == 'Verificados') {
+        if (p['verified'] != true) return false;
+      }
+
+      // Rating filter
+      final double ratingVal = double.tryParse(p['rating']?.toString() ?? '0') ?? 0.0;
+      if (_minRating != null) {
+        if (ratingVal < _minRating!) return false;
+      } else if (_activeFilter == 'Mejor Valorados') {
+        if (ratingVal < 4.8) return false;
+      }
+
+      // Distance filter
+      final double distanceVal = (p['distance'] is num)
+          ? (p['distance'] as num).toDouble()
+          : (double.tryParse(p['distance']?.toString() ?? '999') ?? 999.0);
+      if (_maxDistance != null) {
+        if (distanceVal > _maxDistance!) return false;
+      } else if (_activeFilter == 'Cerca de Mi') {
+        if (distanceVal > 10.0) return false;
+      }
+
       return true;
     }).toList();
+
+    // Price sorting
+    if (_priceSort == 'low_to_high' || _activeFilter == 'Menor Precio') {
+      list.sort((a, b) {
+        final double priceA = double.tryParse((a['price'] ?? '0').toString().replaceAll('\$', '')) ?? 0.0;
+        final double priceB = double.tryParse((b['price'] ?? '0').toString().replaceAll('\$', '')) ?? 0.0;
+        return priceA.compareTo(priceB);
+      });
+    } else if (_priceSort == 'high_to_low' || _activeFilter == 'Mayor Precio') {
+      list.sort((a, b) {
+        final double priceA = double.tryParse((a['price'] ?? '0').toString().replaceAll('\$', '')) ?? 0.0;
+        final double priceB = double.tryParse((b['price'] ?? '0').toString().replaceAll('\$', '')) ?? 0.0;
+        return priceB.compareTo(priceA);
+      });
+    }
+
+    return list;
+  }
+
+  void _showAdvancedFilterModal(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Container(
+              height: MediaQuery.of(context).size.height * 0.78,
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: Column(
+                children: [
+                  const SizedBox(height: 12),
+                  Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[400],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.tune_rounded, color: theme.colorScheme.primary, size: 22),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'Filtros de Mercado',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (_activeFiltersCount > 0)
+                          TextButton(
+                            onPressed: () {
+                              setModalState(() {
+                                _onlyVerified = false;
+                                _minRating = null;
+                                _maxDistance = null;
+                                _priceSort = 'default';
+                                _selectedQuality = null;
+                                _activeFilter = 'Todos';
+                              });
+                              setState(() {});
+                            },
+                            child: Text(
+                              'Restablecer',
+                              style: TextStyle(
+                                color: Colors.red[400],
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  const Divider(),
+                  Expanded(
+                    child: ListView(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                      children: [
+                        // 1. Verificación
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? const Color(0xFF0F172A)
+                                : const Color(0xFFF8FAFC),
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: _onlyVerified
+                                  ? theme.colorScheme.primary
+                                  : (isDark ? Colors.grey[800]! : Colors.grey[300]!),
+                              width: 1.2,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF0284C7).withValues(alpha: 0.15),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(Icons.verified, color: Color(0xFF0284C7), size: 20),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Productos Verificados',
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                    ),
+                                    Text(
+                                      'Mostrar solo productos con proveedor certificado',
+                                      style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Switch(
+                                value: _onlyVerified,
+                                activeColor: theme.colorScheme.primary,
+                                onChanged: (val) {
+                                  setModalState(() {
+                                    _onlyVerified = val;
+                                    if (val) _activeFilter = 'Verificados';
+                                  });
+                                  setState(() {});
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // 2. Calificación
+                        const Text(
+                          'Calificación Mínima',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
+                        const SizedBox(height: 10),
+                        Wrap(
+                          spacing: 8,
+                          children: [
+                            _buildModalFilterChip(
+                              label: 'Cualquiera',
+                              selected: _minRating == null,
+                              onSelected: (sel) {
+                                setModalState(() => _minRating = null);
+                                setState(() {});
+                              },
+                              theme: theme,
+                              isDark: isDark,
+                            ),
+                            _buildModalFilterChip(
+                              label: '★ 4.5 o más',
+                              selected: _minRating == 4.5,
+                              onSelected: (sel) {
+                                setModalState(() => _minRating = 4.5);
+                                setState(() {});
+                              },
+                              theme: theme,
+                              isDark: isDark,
+                            ),
+                            _buildModalFilterChip(
+                              label: '★ 4.8 o más',
+                              selected: _minRating == 4.8,
+                              onSelected: (sel) {
+                                setModalState(() => _minRating = 4.8);
+                                setState(() {});
+                              },
+                              theme: theme,
+                              isDark: isDark,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+
+                        // 3. Distancia
+                        const Text(
+                          'Distancia Máxima',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
+                        const SizedBox(height: 10),
+                        Wrap(
+                          spacing: 8,
+                          children: [
+                            _buildModalFilterChip(
+                              label: 'Cualquiera',
+                              selected: _maxDistance == null,
+                              onSelected: (sel) {
+                                setModalState(() => _maxDistance = null);
+                                setState(() {});
+                              },
+                              theme: theme,
+                              isDark: isDark,
+                            ),
+                            _buildModalFilterChip(
+                              label: 'Hasta 5 km',
+                              selected: _maxDistance == 5.0,
+                              onSelected: (sel) {
+                                setModalState(() => _maxDistance = 5.0);
+                                setState(() {});
+                              },
+                              theme: theme,
+                              isDark: isDark,
+                            ),
+                            _buildModalFilterChip(
+                              label: 'Hasta 10 km',
+                              selected: _maxDistance == 10.0,
+                              onSelected: (sel) {
+                                setModalState(() => _maxDistance = 10.0);
+                                setState(() {});
+                              },
+                              theme: theme,
+                              isDark: isDark,
+                            ),
+                            _buildModalFilterChip(
+                              label: 'Hasta 20 km',
+                              selected: _maxDistance == 20.0,
+                              onSelected: (sel) {
+                                setModalState(() => _maxDistance = 20.0);
+                                setState(() {});
+                              },
+                              theme: theme,
+                              isDark: isDark,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+
+                        // 4. Ordenar por Precio
+                        const Text(
+                          'Precio',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
+                        const SizedBox(height: 10),
+                        Wrap(
+                          spacing: 8,
+                          children: [
+                            _buildModalFilterChip(
+                              label: 'Por defecto',
+                              selected: _priceSort == 'default',
+                              onSelected: (sel) {
+                                setModalState(() => _priceSort = 'default');
+                                setState(() {});
+                              },
+                              theme: theme,
+                              isDark: isDark,
+                            ),
+                            _buildModalFilterChip(
+                              label: 'Menor a mayor (\$)',
+                              selected: _priceSort == 'low_to_high',
+                              onSelected: (sel) {
+                                setModalState(() => _priceSort = 'low_to_high');
+                                setState(() {});
+                              },
+                              theme: theme,
+                              isDark: isDark,
+                            ),
+                            _buildModalFilterChip(
+                              label: 'Mayor a menor (\$\$)',
+                              selected: _priceSort == 'high_to_low',
+                              onSelected: (sel) {
+                                setModalState(() => _priceSort = 'high_to_low');
+                                setState(() {});
+                              },
+                              theme: theme,
+                              isDark: isDark,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+
+                        // 5. Calidad
+                        const Text(
+                          'Calidad del Producto',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
+                        const SizedBox(height: 10),
+                        Wrap(
+                          spacing: 8,
+                          children: [
+                            _buildModalFilterChip(
+                              label: 'Todas',
+                              selected: _selectedQuality == null || _selectedQuality == 'Todas',
+                              onSelected: (sel) {
+                                setModalState(() => _selectedQuality = null);
+                                setState(() {});
+                              },
+                              theme: theme,
+                              isDark: isDark,
+                            ),
+                            _buildModalFilterChip(
+                              label: '1ra Calidad',
+                              selected: _selectedQuality == '1ra Calidad',
+                              onSelected: (sel) {
+                                setModalState(() => _selectedQuality = '1ra Calidad');
+                                setState(() {});
+                              },
+                              theme: theme,
+                              isDark: isDark,
+                            ),
+                            _buildModalFilterChip(
+                              label: '2da Calidad',
+                              selected: _selectedQuality == '2da Calidad',
+                              onSelected: (sel) {
+                                setModalState(() => _selectedQuality = '2da Calidad');
+                                setState(() {});
+                              },
+                              theme: theme,
+                              isDark: isDark,
+                            ),
+                            _buildModalFilterChip(
+                              label: '3ra Calidad',
+                              selected: _selectedQuality == '3ra Calidad',
+                              onSelected: (sel) {
+                                setModalState(() => _selectedQuality = '3ra Calidad');
+                                setState(() {});
+                              },
+                              theme: theme,
+                              isDark: isDark,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, -4),
+                        ),
+                      ],
+                    ),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                          setState(() {});
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: theme.colorScheme.primary,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        child: Text(
+                          'Aplicar Filtros (${_filteredProducts.length} productos)',
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildModalFilterChip({
+    required String label,
+    required bool selected,
+    required ValueChanged<bool> onSelected,
+    required ThemeData theme,
+    required bool isDark,
+  }) {
+    return ChoiceChip(
+      label: Text(
+        label,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: selected ? Colors.white : (isDark ? Colors.grey[300] : Colors.black87),
+        ),
+      ),
+      selected: selected,
+      onSelected: onSelected,
+      selectedColor: theme.colorScheme.primary,
+      backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: selected ? theme.colorScheme.primary : Colors.grey.withValues(alpha: 0.2),
+        ),
+      ),
+      showCheckmark: false,
+    );
   }
 
   @override
@@ -374,40 +852,143 @@ class _SearchScreenState extends State<SearchScreen> {
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                      children: ['Todos', 'Cerca de Mi', '1ra Calidad', '2da Calidad', '3ra Calidad'].map((filter) {
-                        final isSelected = _activeFilter == filter;
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: ChoiceChip(
-                            label: Text(
-                              filter,
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.0,
-                                color: isSelected ? Colors.white : (isDark ? Colors.grey[300] : Colors.black87),
-                              ),
-                            ),
-                            selected: isSelected,
-                            onSelected: (selected) {
-                              if (selected) {
-                                setState(() {
-                                  _activeFilter = filter;
-                                });
-                              }
-                            },
-                            selectedColor: theme.colorScheme.primary,
-                            backgroundColor: surfaceColor,
-                            shape: RoundedRectangleBorder(
+                      children: [
+                        // Filter modal trigger button
+                        GestureDetector(
+                          onTap: () => _showAdvancedFilterModal(context),
+                          child: Container(
+                            margin: const EdgeInsets.only(right: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: _activeFiltersCount > 0 ? theme.colorScheme.primary : surfaceColor,
                               borderRadius: BorderRadius.circular(20),
-                              side: BorderSide(
-                                color: isSelected ? theme.colorScheme.primary : Colors.grey.withValues(alpha: 0.2),
+                              border: Border.all(
+                                color: _activeFiltersCount > 0
+                                    ? theme.colorScheme.primary
+                                    : Colors.grey.withValues(alpha: 0.3),
                               ),
                             ),
-                            showCheckmark: false,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.tune,
+                                  size: 14,
+                                  color: _activeFiltersCount > 0 ? Colors.white : theme.colorScheme.primary,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Filtros',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                    color: _activeFiltersCount > 0
+                                        ? Colors.white
+                                        : (isDark ? Colors.grey[300] : Colors.black87),
+                                  ),
+                                ),
+                                if (_activeFiltersCount > 0) ...[
+                                  const SizedBox(width: 4),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Text(
+                                      '$_activeFiltersCount',
+                                      style: TextStyle(
+                                        fontSize: 9,
+                                        fontWeight: FontWeight.w900,
+                                        color: theme.colorScheme.primary,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
                           ),
-                        );
-                      }).toList(),
+                        ),
+                        // Quick filter chips
+                        ...[
+                          {'id': 'Todos', 'label': 'Todos', 'icon': null},
+                          {'id': 'Verificados', 'label': 'Verificados', 'icon': Icons.verified_rounded},
+                          {'id': 'Mejor Valorados', 'label': 'Calificación', 'icon': Icons.star_rounded},
+                          {'id': 'Cerca de Mi', 'label': 'Cerca de Mi', 'icon': Icons.near_me_rounded},
+                          {'id': 'Menor Precio', 'label': 'Menor Precio', 'icon': Icons.arrow_downward_rounded},
+                          {'id': 'Mayor Precio', 'label': 'Mayor Precio', 'icon': Icons.arrow_upward_rounded},
+                          {'id': '1ra Calidad', 'label': '1ra Calidad', 'icon': null},
+                          {'id': '2da Calidad', 'label': '2da Calidad', 'icon': null},
+                          {'id': '3ra Calidad', 'label': '3ra Calidad', 'icon': null},
+                        ].map((item) {
+                          final filterId = item['id'] as String;
+                          final label = item['label'] as String;
+                          final icon = item['icon'] as IconData?;
+                          final isSelected = _activeFilter == filterId;
+
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: ChoiceChip(
+                              avatar: icon != null
+                                  ? Icon(
+                                      icon,
+                                      size: 14,
+                                      color: isSelected ? Colors.white : (isDark ? Colors.grey[400] : Colors.grey[700]),
+                                    )
+                                  : null,
+                              label: Text(
+                                label,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.5,
+                                  color: isSelected ? Colors.white : (isDark ? Colors.grey[300] : Colors.black87),
+                                ),
+                              ),
+                              selected: isSelected,
+                              onSelected: (selected) {
+                                setState(() {
+                                  if (filterId == 'Todos') {
+                                    _activeFilter = 'Todos';
+                                    _onlyVerified = false;
+                                    _minRating = null;
+                                    _maxDistance = null;
+                                    _priceSort = 'default';
+                                    _selectedQuality = null;
+                                  } else if (filterId == 'Verificados') {
+                                    _onlyVerified = selected;
+                                    _activeFilter = selected ? 'Verificados' : 'Todos';
+                                  } else if (filterId == 'Mejor Valorados') {
+                                    _minRating = selected ? 4.8 : null;
+                                    _activeFilter = selected ? 'Mejor Valorados' : 'Todos';
+                                  } else if (filterId == 'Cerca de Mi') {
+                                    _maxDistance = selected ? 10.0 : null;
+                                    _activeFilter = selected ? 'Cerca de Mi' : 'Todos';
+                                  } else if (filterId == 'Menor Precio') {
+                                    _priceSort = selected ? 'low_to_high' : 'default';
+                                    _activeFilter = selected ? 'Menor Precio' : 'Todos';
+                                  } else if (filterId == 'Mayor Precio') {
+                                    _priceSort = selected ? 'high_to_low' : 'default';
+                                    _activeFilter = selected ? 'Mayor Precio' : 'Todos';
+                                  } else {
+                                    _selectedQuality = selected ? filterId : null;
+                                    _activeFilter = selected ? filterId : 'Todos';
+                                  }
+                                });
+                              },
+                              selectedColor: theme.colorScheme.primary,
+                              backgroundColor: surfaceColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                side: BorderSide(
+                                  color: isSelected ? theme.colorScheme.primary : Colors.grey.withValues(alpha: 0.2),
+                                ),
+                              ),
+                              showCheckmark: false,
+                            ),
+                          );
+                        }),
+                      ],
                     ),
                   ),
                 ],
@@ -959,15 +1540,32 @@ class _SearchScreenState extends State<SearchScreen> {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   const SizedBox(height: 1.5),
-                                  Text(
-                                    'SKU: ${p['sku'] ?? _getProductSku(p)}',
-                                    style: TextStyle(
-                                      fontFamily: 'Manrope',
-                                      fontSize: 8.5,
-                                      fontWeight: FontWeight.w500,
-                                      color: isDark ? Colors.grey.shade400 : const Color(0xFF94A3B8),
-                                      letterSpacing: 0.2,
-                                    ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'SKU: ${p['sku'] ?? _getProductSku(p)}',
+                                        style: TextStyle(
+                                          fontFamily: 'Manrope',
+                                          fontSize: 8.5,
+                                          fontWeight: FontWeight.w500,
+                                          color: isDark ? Colors.grey.shade400 : const Color(0xFF94A3B8),
+                                          letterSpacing: 0.2,
+                                        ),
+                                      ),
+                                      if (p['rating'] != null) ...[
+                                        const SizedBox(width: 6),
+                                        const Icon(Icons.star, size: 10, color: Colors.orange),
+                                        const SizedBox(width: 2),
+                                        Text(
+                                          '${p['rating']}',
+                                          style: TextStyle(
+                                            fontSize: 8.5,
+                                            fontWeight: FontWeight.bold,
+                                            color: isDark ? Colors.grey[300] : const Color(0xFF475569),
+                                          ),
+                                        ),
+                                      ],
+                                    ],
                                   ),
                                 ],
                               ),
@@ -1029,7 +1627,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   'name': providerStr,
                                   'supplier': providerStr,
                                   'location': locationStr,
-                                  'isVerified': true,
+                                  'isVerified': p['verified'] == true,
                                 },
                               ),
                             );
@@ -1052,7 +1650,30 @@ class _SearchScreenState extends State<SearchScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Text('PROVEEDOR', style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.4)),
-                                    Text(providerStr, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: isDark ? Colors.white : const Color(0xFF1E293B), height: 1.1), overflow: TextOverflow.ellipsis),
+                                    Row(
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            providerStr,
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.bold,
+                                              color: isDark ? Colors.white : const Color(0xFF1E293B),
+                                              height: 1.1,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        if (p['verified'] == true) ...[
+                                          const SizedBox(width: 4),
+                                          const Icon(
+                                            Icons.verified,
+                                            size: 12,
+                                            color: Color(0xFF0284C7),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
                                   ],
                                 ),
                               ),
@@ -1061,7 +1682,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                         const SizedBox(height: 4),
 
-                        // UBICACIÃ“N Row
+                        // UBICACIÓN Row
                         Row(
                           children: [
                             Container(
@@ -1091,15 +1712,31 @@ class _SearchScreenState extends State<SearchScreen> {
                                       letterSpacing: 0.4,
                                     ),
                                   ),
-                                  Text(
-                                    locationStr,
-                                    style: TextStyle(
-                                      fontSize: 9.5,
-                                      fontWeight: FontWeight.w500,
-                                      color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
-                                      height: 1.1,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
+                                  Row(
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          locationStr,
+                                          style: TextStyle(
+                                            fontSize: 9.5,
+                                            fontWeight: FontWeight.w500,
+                                            color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
+                                            height: 1.1,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        '• A ${p['distance'] ?? 4.2} km',
+                                        style: TextStyle(
+                                          fontSize: 9.0,
+                                          fontWeight: FontWeight.bold,
+                                          color: isDark ? const Color(0xFF6EE7B7) : const Color(0xFF059669),
+                                          height: 1.1,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),

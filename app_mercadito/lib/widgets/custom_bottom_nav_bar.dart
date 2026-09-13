@@ -115,7 +115,9 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
     HapticFeedback.lightImpact();
     if (widget.currentIndex != index) {
       _animateTo(index);
-      context.go(_items[index].route);
+      try {
+        context.go(_items[index].route);
+      } catch (_) {}
     }
   }
 

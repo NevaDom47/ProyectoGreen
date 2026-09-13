@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import '../data/global_state.dart';
-
+import '../theme/app_theme.dart';
 
 class NegotiationsScreen extends StatefulWidget {
   const NegotiationsScreen({super.key});
@@ -16,6 +16,13 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
   String _searchQuery = '';
   String _roleFilter = 'Todos';
   DateTime? _selectedDate;
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   bool _matchesDate(String dateStr) {
     if (_selectedDate == null) return true;
@@ -62,85 +69,120 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
   }
 
   void _showFilterDialog() {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final surfaceColor = isDark ? AppTheme.slate800 : Colors.white;
+    final onSurfaceColor = isDark ? AppTheme.slate100 : AppTheme.slate900;
+    final borderColor = isDark ? AppTheme.slate700 : AppTheme.slate200;
+
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
       builder: (context) {
-        return Padding(
+        return Container(
+          decoration: BoxDecoration(
+            color: surfaceColor,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
           padding: const EdgeInsets.all(24.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.white24 : Colors.black12,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
               Text(
                 'Filtrar por Rol',
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                  color: onSurfaceColor,
                 ),
               ),
-              const SizedBox(height: 16),
-              _buildFilterOption('Todos'),
-              _buildFilterOption('Comprador'),
-              _buildFilterOption('Proveedor'),
-              const SizedBox(height: 24),
+              const SizedBox(height: 12),
+              _buildFilterOption('Todos', isDark, onSurfaceColor, borderColor),
+              _buildFilterOption('Comprador', isDark, onSurfaceColor, borderColor),
+              _buildFilterOption('Proveedor', isDark, onSurfaceColor, borderColor),
+              const SizedBox(height: 20),
               Text(
                 'Filtrar por Fecha',
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                  color: onSurfaceColor,
                 ),
               ),
-              const SizedBox(height: 16),
-              ListTile(
-                leading: const Icon(Icons.calendar_today, color: Color(0xFF00462f)),
-                title: Text(
-                  _selectedDate != null 
-                    ? '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
-                    : 'Seleccionar Fecha',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontWeight: _selectedDate != null ? FontWeight.bold : FontWeight.normal,
-                  ),
+              const SizedBox(height: 12),
+              Container(
+                decoration: BoxDecoration(
+                  color: isDark ? AppTheme.slate900 : const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: borderColor),
                 ),
-                trailing: _selectedDate != null 
-                    ? IconButton(
-                        icon: const Icon(Icons.clear, color: Colors.grey),
-                        onPressed: () {
-                          setState(() {
-                            _selectedDate = null;
-                          });
-                          Navigator.pop(context);
-                        },
-                      )
-                    : const Icon(Icons.chevron_right),
-                onTap: () async {
-                  final DateTime? picked = await showDatePicker(
-                    context: context,
-                    initialDate: _selectedDate ?? DateTime.now(),
-                    firstDate: DateTime(2020),
-                    lastDate: DateTime(2030),
-                    builder: (context, child) {
-                      return Theme(
-                        data: Theme.of(context).copyWith(
-                          colorScheme: const ColorScheme.light(
-                            primary: Color(0xFF0C6648),
-                            onPrimary: Colors.white,
-                            onSurface: Color(0xFF181d1a),
+                child: ListTile(
+                  leading: Icon(
+                    Icons.calendar_today_rounded,
+                    color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                    size: 20,
+                  ),
+                  title: Text(
+                    _selectedDate != null 
+                      ? '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
+                      : 'Seleccionar Fecha',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14,
+                      fontWeight: _selectedDate != null ? FontWeight.w700 : FontWeight.w500,
+                      color: onSurfaceColor,
+                    ),
+                  ),
+                  trailing: _selectedDate != null 
+                      ? IconButton(
+                          icon: const Icon(Icons.clear, size: 18),
+                          onPressed: () {
+                            setState(() {
+                              _selectedDate = null;
+                            });
+                            Navigator.pop(context);
+                          },
+                        )
+                      : const Icon(Icons.chevron_right, size: 20),
+                  onTap: () async {
+                    final DateTime? picked = await showDatePicker(
+                      context: context,
+                      initialDate: _selectedDate ?? DateTime.now(),
+                      firstDate: DateTime(2020),
+                      lastDate: DateTime(2030),
+                      builder: (context, child) {
+                        return Theme(
+                          data: Theme.of(context).copyWith(
+                            colorScheme: ColorScheme.light(
+                              primary: AppTheme.primary,
+                              onPrimary: Colors.white,
+                              onSurface: onSurfaceColor,
+                            ),
                           ),
-                        ),
-                        child: child!,
-                      );
-                    },
-                  );
-                  if (picked != null) {
-                    setState(() {
-                      _selectedDate = picked;
-                    });
-                    if (context.mounted) Navigator.pop(context);
-                  }
-                },
+                          child: child!,
+                        );
+                      },
+                    );
+                    if (picked != null) {
+                      setState(() {
+                        _selectedDate = picked;
+                      });
+                      if (context.mounted) Navigator.pop(context);
+                    }
+                  },
+                ),
               ),
               const SizedBox(height: 16),
             ],
@@ -150,21 +192,46 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
     );
   }
 
-  Widget _buildFilterOption(String role) {
-    return ListTile(
-      title: Text(
-        role,
-        style: GoogleFonts.plusJakartaSans(
-          fontWeight: _roleFilter == role ? FontWeight.bold : FontWeight.normal,
+  Widget _buildFilterOption(String role, bool isDark, Color onSurfaceColor, Color borderColor) {
+    final isSelected = _roleFilter == role;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: isSelected
+            ? (isDark ? const Color(0xFF0F3628) : const Color(0xFFE8F5EE))
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: isSelected ? AppTheme.primary : borderColor.withValues(alpha: 0.6),
+          width: isSelected ? 1.5 : 1,
         ),
       ),
-      trailing: _roleFilter == role ? const Icon(Icons.check, color: Color(0xFF00462f)) : null,
-      onTap: () {
-        setState(() {
-          _roleFilter = role;
-        });
-        Navigator.pop(context);
-      },
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 0),
+        title: Text(
+          role,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 14,
+            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+            color: isSelected
+                ? (isDark ? const Color(0xFF89D6B0) : AppTheme.primary)
+                : onSurfaceColor,
+          ),
+        ),
+        trailing: isSelected
+            ? Icon(
+                Icons.check_circle_rounded,
+                color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                size: 20,
+              )
+            : null,
+        onTap: () {
+          setState(() {
+            _roleFilter = role;
+          });
+          Navigator.pop(context);
+        },
+      ),
     );
   }
 
@@ -194,6 +261,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
       'image': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCfOelLVxfc2Z5vEipAQdeiJXE5-zkfaCdzZ_kfJhVaYK3I_YiLKxl8WYn3e1CMuyRyQIMfHNANfO72pR_S-laYQcgXKce227Aklxxz-jOTMlRenPI_8_0yD0QauhZ9tcL1QPpkt98ZSt0q9vWn4OmkqcH4TdLNmtpKld3f5aK8QDtmjgWHQH6sUFo43Cr16qh-YCODh8Xxf6nPU8e1JGGzKOdTj02eHzd-Hr3AyDl29KqdMWbobtdeOQgEdq3F3ILWDQmcqSzvGwI',
     }
   ];
+
   final List<Map<String, dynamic>> mockCompletedNegotiations = [
     {
       'invoice_id': '#FAC-88290',
@@ -250,365 +318,278 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
-    // Colores basados en el HTML
-    final surfaceColor = isDark ? const Color(0xFF181d1a) : const Color(0xFFf7faf5);
-    final surfaceContainerColor = isDark ? const Color(0xFF1c2c26) : const Color(0xFFebefea);
-    final surfaceContainerLowColor = isDark ? const Color(0xFF15221d) : const Color(0xFFf1f4f0);
-    final surfaceContainerLowestColor = isDark ? const Color(0xFF0f1613) : const Color(0xFFffffff);
-    
-    final primaryColor = isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f);
-    final onSurfaceColor = isDark ? const Color(0xFFe0e3df) : const Color(0xFF181d1a);
-    final onSurfaceVariantColor = isDark ? const Color(0xFFbec9c1) : const Color(0xFF3f4943);
-    final secondaryColor = isDark ? const Color(0xFFafcebb) : const Color(0xFF486456);
-    final outlineVariantColor = isDark ? const Color(0xFF4e6b5b) : const Color(0xFFbec9c1);
+    final bgColor = isDark ? AppTheme.backgroundDark : AppTheme.backgroundLight;
+    final surfaceColor = isDark ? AppTheme.slate800 : Colors.white;
+    final onSurfaceColor = isDark ? AppTheme.slate100 : AppTheme.slate900;
+    final secondaryTextColor = isDark ? AppTheme.slate400 : AppTheme.slate500;
+    final borderColor = isDark ? AppTheme.slate700 : AppTheme.slate200;
+    final isFilterActive = _roleFilter != 'Todos' || _selectedDate != null;
 
     return Scaffold(
-      backgroundColor: surfaceColor,
+      backgroundColor: bgColor,
       appBar: AppBar(
-        backgroundColor: isDark ? surfaceColor : surfaceContainerLowColor,
+        backgroundColor: surfaceColor,
         elevation: 0,
         scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: primaryColor),
-          onPressed: () => context.pop(),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: Center(
+            child: InkWell(
+              onTap: () {
+                if (context.canPop()) {
+                  context.pop();
+                } else {
+                  context.go('/home');
+                }
+              },
+              borderRadius: BorderRadius.circular(999),
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: isDark ? AppTheme.slate900 : const Color(0xFFF1F4F0),
+                ),
+                child: Icon(
+                  Icons.arrow_back,
+                  color: isDark ? AppTheme.slate200 : AppTheme.primary,
+                  size: 20,
+                ),
+              ),
+            ),
+          ),
         ),
         title: Text(
           'Negociaciones',
           style: GoogleFonts.plusJakartaSans(
-            color: primaryColor,
+            color: onSurfaceColor,
             fontSize: 18,
-            fontWeight: FontWeight.w800,
-            letterSpacing: -0.5,
+            fontWeight: FontWeight.w700,
+            letterSpacing: -0.3,
           ),
         ),
+        centerTitle: true,
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: CircleAvatar(
-              radius: 16,
-              backgroundColor: const Color(0xFF036042),
-              child: const Icon(Icons.handshake, color: Colors.white, size: 20),
+            padding: const EdgeInsets.only(right: 12.0),
+            child: Center(
+              child: Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF0F3628) : const Color(0xFFE8F5EE),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: isDark ? const Color(0xFF1E8262) : const Color(0xFFA5D6A7),
+                    width: 0.8,
+                  ),
+                ),
+                child: Icon(
+                  Icons.handshake_outlined,
+                  color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                  size: 19,
+                ),
+              ),
             ),
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(
+            color: borderColor,
+            height: 1,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Custom Tabs
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: surfaceContainerColor,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => setState(() => _selectedTabIndex = 0),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          decoration: BoxDecoration(
-                            color: _selectedTabIndex == 0 ? surfaceContainerLowestColor : Colors.transparent,
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: _selectedTabIndex == 0
-                                ? [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.05),
-                                      blurRadius: 2,
-                                      offset: const Offset(0, 1),
-                                    )
-                                  ]
-                                : [],
-                          ),
-                          child: Center(
-                            child: Text(
-                              'Pendientes',
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 13,
-                                fontWeight: _selectedTabIndex == 0 ? FontWeight.bold : FontWeight.w600,
-                                color: _selectedTabIndex == 0 ? primaryColor : onSurfaceVariantColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => setState(() => _selectedTabIndex = 1),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          decoration: BoxDecoration(
-                            color: _selectedTabIndex == 1 ? surfaceContainerLowestColor : Colors.transparent,
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: _selectedTabIndex == 1
-                                ? [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.05),
-                                      blurRadius: 2,
-                                      offset: const Offset(0, 1),
-                                    )
-                                  ]
-                                : [],
-                          ),
-                          child: Center(
-                            child: Text(
-                              'Completadas',
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 13,
-                                fontWeight: _selectedTabIndex == 1 ? FontWeight.bold : FontWeight.w600,
-                                color: _selectedTabIndex == 1 ? primaryColor : onSurfaceVariantColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => setState(() => _selectedTabIndex = 2),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          decoration: BoxDecoration(
-                            color: _selectedTabIndex == 2 ? surfaceContainerLowestColor : Colors.transparent,
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: _selectedTabIndex == 2
-                                ? [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.05),
-                                      blurRadius: 2,
-                                      offset: const Offset(0, 1),
-                                    )
-                                  ]
-                                : [],
-                          ),
-                          child: Center(
-                            child: Text(
-                              'Canceladas',
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 13,
-                                fontWeight: _selectedTabIndex == 2 ? FontWeight.bold : FontWeight.w600,
-                                color: _selectedTabIndex == 2 ? primaryColor : onSurfaceVariantColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
+              // Custom Segmented Switcher Tabs
+              _buildSegmentSwitcher(isDark, surfaceColor, borderColor, onSurfaceColor, secondaryTextColor),
+              const SizedBox(height: 14),
 
-              // Search & Filter
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: surfaceContainerLowColor,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: TextField(
-                        onChanged: (val) => setState(() => _searchQuery = val.toLowerCase()),
-                        decoration: InputDecoration(
-                          hintText: 'Buscar producto o comprador...',
-                          hintStyle: GoogleFonts.plusJakartaSans(
-                            color: onSurfaceVariantColor,
-                            fontSize: 14,
-                          ),
-                          prefixIcon: Icon(Icons.search, color: onSurfaceVariantColor),
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: surfaceContainerLowColor,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.02),
-                          blurRadius: 2,
-                          offset: const Offset(0, 1),
-                        )
-                      ],
-                    ),
-                    child: IconButton(
-                      icon: Icon(Icons.tune, color: (_roleFilter != 'Todos' || _selectedDate != null) ? primaryColor : onSurfaceColor),
-                      onPressed: _showFilterDialog,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32),
+              // Search Bar & Filter Button (Matching Mercado screen style)
+              _buildSearchAndFilterRow(isDark, borderColor, isFilterActive),
+              const SizedBox(height: 20),
 
-              // Section Title
+              // Section Header
               Text(
-                'Solicitudes Recientes',
+                _selectedTabIndex == 0
+                    ? 'Solicitudes Recientes'
+                    : (_selectedTabIndex == 1 ? 'Acuerdos Concretados' : 'Negociaciones Canceladas'),
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: primaryColor,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                  color: onSurfaceColor,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
 
-              // Negotiation Cards list
+              // Active Tab Content List
               if (_selectedTabIndex == 0)
                 if (_filteredPending.isEmpty)
                   _buildEmptyState(
-                    context: context,
-                    icon: Icons.inbox,
+                    icon: Icons.inbox_outlined,
                     title: 'No hay negociaciones pendientes',
-                    message: 'Actualmente no tienes solicitudes de negociación activas.',
-                    primaryColor: primaryColor,
-                    onSurfaceVariantColor: onSurfaceVariantColor,
+                    message: _searchQuery.isEmpty && !isFilterActive
+                        ? 'Actualmente no tienes solicitudes de negociación activas.'
+                        : 'No se encontraron resultados con los filtros actuales.',
+                    isDark: isDark,
+                    secondaryTextColor: secondaryTextColor,
                   )
                 else
-                  ..._filteredPending.map((negotiation) => _buildNegotiationCard(
-                      context: context,
-                      negotiation: negotiation,
-                      isDark: isDark,
-                      surfaceContainerLowestColor: surfaceContainerLowestColor,
-                      outlineVariantColor: outlineVariantColor,
-                      onSurfaceColor: onSurfaceColor,
-                      secondaryColor: secondaryColor,
-                      surfaceContainerColor: surfaceContainerColor,
-                      onSurfaceVariantColor: onSurfaceVariantColor,
-                      surfaceContainerLowColor: surfaceContainerLowColor,
-                      primaryColor: primaryColor,
-                      onCancel: () {
-                        _showCancelNegotiationBottomSheet(
-                          context: context,
-                          negotiation: negotiation,
-                          onConfirmCancel: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Text('La negociación ha sido cancelada.'),
-                                backgroundColor: Colors.red.shade700,
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      onFinalize: () {
-                        final nextId = generateNextInvoiceId();
-                        setState(() {
-                          mockNegotiations.remove(negotiation);
-                          mockCompletedNegotiations.insert(0, {
-                            'invoice_id': nextId,
-                            'product': negotiation['product'],
-                            'buyer': negotiation['buyer'],
-                            'role': negotiation['role'],
-                            'date': 'Justo ahora',
-                            'price': '\$50.00 / kg', // Mock
-                            'quantity': '100 kg', // Mock
-                            'image': negotiation['image'],
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _filteredPending.length,
+                    separatorBuilder: (context, index) => const SizedBox(height: 12),
+                    itemBuilder: (context, index) {
+                      final item = _filteredPending[index];
+                      return _buildNegotiationCard(
+                        item: item,
+                        isDark: isDark,
+                        surfaceColor: surfaceColor,
+                        onSurfaceColor: onSurfaceColor,
+                        secondaryTextColor: secondaryTextColor,
+                        borderColor: borderColor,
+                        onCancel: () {
+                          _showCancelNegotiationBottomSheet(
+                            context: context,
+                            negotiation: item,
+                            onConfirmCancel: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text('La negociación ha sido cancelada.'),
+                                  backgroundColor: Colors.red.shade700,
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        onFinalize: () {
+                          final nextId = generateNextInvoiceId();
+                          setState(() {
+                            mockNegotiations.remove(item);
+                            mockCompletedNegotiations.insert(0, {
+                              'invoice_id': nextId,
+                              'product': item['product'],
+                              'buyer': item['buyer'],
+                              'role': item['role'],
+                              'date': 'Justo ahora',
+                              'price': '\$50.00 / kg',
+                              'quantity': '100 kg',
+                              'image': item['image'],
+                            });
+                            _selectedTabIndex = 1;
                           });
-                          _selectedTabIndex = 1;
-                        });
 
-                        // Synchronize with global order history
-                        final currentOrders = List<Map<String, dynamic>>.from(globalOrders.value);
-                        currentOrders.insert(0, {
-                          'id': nextId,
-                          'invoice_no': nextId,
-                          'title': negotiation['product'],
-                          'price': '\$50.00',
-                          'seller': negotiation['buyer'] ?? 'Comprador Anónimo',
-                          'date': 'Hoy, justo ahora',
-                          'status': 'Entregado',
-                          'imageUrl': negotiation['image'],
-                          'payment_method': 'Efectivo contra entrega',
-                          'shipping_address': 'Av. de la Reforma 222, Colonia Juárez, Ciudad de México',
-                          'quantity_label': '100 kg',
-                          'initial_price': '\$50.00 / kg',
-                          'final_price': '\$50.00 / kg',
-                          'items': [
-                            {
-                              'name': negotiation['product'],
-                              'quality': 'Primera Calidad',
-                              'price': '\$50.00',
-                              'quantity': 100,
-                              'unit': 'kg',
-                              'img': negotiation['image']
-                            }
-                          ],
-                          'subtotal': '\$5,000.00',
-                          'delivery_fee': '\$5.00',
-                          'total': '\$5,005.00'
-                        });
-                        globalOrders.value = currentOrders;
+                          // Synchronize with global order history
+                          final currentOrders = List<Map<String, dynamic>>.from(globalOrders.value);
+                          currentOrders.insert(0, {
+                            'id': nextId,
+                            'invoice_no': nextId,
+                            'title': item['product'],
+                            'price': '\$50.00',
+                            'seller': item['buyer'] ?? 'Comprador Anónimo',
+                            'date': 'Hoy, justo ahora',
+                            'status': 'Entregado',
+                            'imageUrl': item['image'],
+                            'payment_method': 'Efectivo contra entrega',
+                            'shipping_address': 'Av. de la Reforma 222, Colonia Juárez, Ciudad de México',
+                            'quantity_label': '100 kg',
+                            'initial_price': '\$50.00 / kg',
+                            'final_price': '\$50.00 / kg',
+                            'items': [
+                              {
+                                'name': item['product'],
+                                'quality': 'Primera Calidad',
+                                'price': '\$50.00',
+                                'quantity': 100,
+                                'unit': 'kg',
+                                'img': item['image']
+                              }
+                            ],
+                            'subtotal': '\$5,000.00',
+                            'delivery_fee': '\$5.00',
+                            'total': '\$5,005.00'
+                          });
+                          globalOrders.value = currentOrders;
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text('Negociación finalizada y movida a Completadas.'),
-                            backgroundColor: Colors.green.shade700,
-                          ),
-                        );
-                      },
-                    ))
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text('Negociación finalizada y movida a Completadas.'),
+                              backgroundColor: AppTheme.primary,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  )
               else if (_selectedTabIndex == 1)
                 if (_filteredCompleted.isEmpty)
                   _buildEmptyState(
-                    context: context,
-                    icon: Icons.history,
+                    icon: Icons.history_rounded,
                     title: 'No hay negociaciones completadas',
-                    message: 'Aún no has completado ninguna negociación.',
-                    primaryColor: primaryColor,
-                    onSurfaceVariantColor: onSurfaceVariantColor,
+                    message: 'Aún no has completado ninguna negociación con este criterio.',
+                    isDark: isDark,
+                    secondaryTextColor: secondaryTextColor,
                   )
                 else
-                  ..._filteredCompleted.map((negotiation) => _buildCompletedCard(
-                      context: context,
-                      negotiation: negotiation,
-                      isDark: isDark,
-                      surfaceContainerLowestColor: surfaceContainerLowestColor,
-                      outlineVariantColor: outlineVariantColor,
-                      onSurfaceColor: onSurfaceColor,
-                      secondaryColor: secondaryColor,
-                      surfaceContainerColor: surfaceContainerColor,
-                      onSurfaceVariantColor: onSurfaceVariantColor,
-                      surfaceContainerLowColor: surfaceContainerLowColor,
-                      primaryColor: primaryColor,
-                    ))
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _filteredCompleted.length,
+                    separatorBuilder: (context, index) => const SizedBox(height: 12),
+                    itemBuilder: (context, index) {
+                      final item = _filteredCompleted[index];
+                      return _buildCompletedCard(
+                        item: item,
+                        isDark: isDark,
+                        surfaceColor: surfaceColor,
+                        onSurfaceColor: onSurfaceColor,
+                        secondaryTextColor: secondaryTextColor,
+                        borderColor: borderColor,
+                      );
+                    },
+                  )
               else
                 if (_filteredCancelled.isEmpty)
                   _buildEmptyState(
-                    context: context,
                     icon: Icons.cancel_outlined,
                     title: 'No hay negociaciones canceladas',
-                    message: 'No tienes registro de negociaciones canceladas.',
-                    primaryColor: primaryColor,
-                    onSurfaceVariantColor: onSurfaceVariantColor,
+                    message: 'No tienes registro de negociaciones canceladas con este criterio.',
+                    isDark: isDark,
+                    secondaryTextColor: secondaryTextColor,
                   )
                 else
-                  ..._filteredCancelled.map((negotiation) => _buildCancelledCard(
-                      context: context,
-                      negotiation: negotiation,
-                      isDark: isDark,
-                      surfaceContainerLowestColor: surfaceContainerLowestColor,
-                      outlineVariantColor: outlineVariantColor,
-                      onSurfaceColor: onSurfaceColor,
-                      secondaryColor: secondaryColor,
-                      surfaceContainerColor: surfaceContainerColor,
-                      onSurfaceVariantColor: onSurfaceVariantColor,
-                      surfaceContainerLowColor: surfaceContainerLowColor,
-                      primaryColor: primaryColor,
-                    )),
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _filteredCancelled.length,
+                    separatorBuilder: (context, index) => const SizedBox(height: 12),
+                    itemBuilder: (context, index) {
+                      final item = _filteredCancelled[index];
+                      return _buildCancelledCard(
+                        item: item,
+                        isDark: isDark,
+                        surfaceColor: surfaceColor,
+                        onSurfaceColor: onSurfaceColor,
+                        secondaryTextColor: secondaryTextColor,
+                        borderColor: borderColor,
+                      );
+                    },
+                  ),
             ],
           ),
         ),
@@ -616,227 +597,449 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
     );
   }
 
+  Widget _buildSegmentSwitcher(
+    bool isDark,
+    Color surfaceColor,
+    Color borderColor,
+    Color onSurfaceColor,
+    Color secondaryTextColor,
+  ) {
+    final activeBg = isDark ? AppTheme.slate700 : Colors.white;
+    final inactiveText = isDark ? AppTheme.slate400 : AppTheme.slate500;
+
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: isDark ? AppTheme.slate900 : const Color(0xFFE9EFEA),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: borderColor, width: 0.8),
+      ),
+      child: Row(
+        children: [
+          _buildTabItem(0, 'Pendientes', mockNegotiations.length, activeBg, onSurfaceColor, inactiveText, isDark),
+          _buildTabItem(1, 'Completadas', mockCompletedNegotiations.length, activeBg, onSurfaceColor, inactiveText, isDark),
+          _buildTabItem(2, 'Canceladas', mockCancelledNegotiations.length, activeBg, onSurfaceColor, inactiveText, isDark),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabItem(
+    int index,
+    String label,
+    int count,
+    Color activeBg,
+    Color onSurfaceColor,
+    Color inactiveText,
+    bool isDark,
+  ) {
+    final isSelected = _selectedTabIndex == index;
+
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => setState(() => _selectedTabIndex = index),
+        behavior: HitTestBehavior.opaque,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(vertical: 9),
+          decoration: BoxDecoration(
+            color: isSelected ? activeBg : Colors.transparent,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.06),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
+          ),
+          child: Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                    fontSize: 12,
+                    color: isSelected ? onSurfaceColor : inactiveText,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? AppTheme.primary.withValues(alpha: isDark ? 0.35 : 0.12)
+                        : (isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    '$count',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 10,
+                      color: isSelected ? AppTheme.primaryLight : inactiveText,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchAndFilterRow(bool isDark, Color borderColor, bool isFilterActive) {
+    final searchBgColor = isDark ? const Color(0xFF1f2937) : const Color(0xFFE5F1EB);
+
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            height: 46,
+            decoration: BoxDecoration(
+              color: searchBgColor,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.search,
+                  color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: (val) => setState(() => _searchQuery = val.toLowerCase()),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                      hintText: 'Buscar producto o comprador...',
+                      hintStyle: TextStyle(
+                        fontSize: 13,
+                        color: isDark ? Colors.grey[500] : Colors.grey[600],
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: isDark ? Colors.white : Colors.black87,
+                    ),
+                  ),
+                ),
+                if (_searchQuery.isNotEmpty)
+                  IconButton(
+                    icon: const Icon(Icons.close, size: 18),
+                    color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    onPressed: () {
+                      setState(() {
+                        _searchController.clear();
+                        _searchQuery = '';
+                      });
+                    },
+                  ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        InkWell(
+          onTap: _showFilterDialog,
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            width: 46,
+            height: 46,
+            decoration: BoxDecoration(
+              color: isFilterActive
+                  ? (isDark ? const Color(0xFF0F3628) : const Color(0xFFE8F5EE))
+                  : searchBgColor,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isFilterActive
+                    ? (isDark ? const Color(0xFF1E8262) : AppTheme.primary)
+                    : Colors.transparent,
+                width: 1,
+              ),
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Icon(
+                  Icons.tune_rounded,
+                  color: isFilterActive
+                      ? (isDark ? const Color(0xFF89D6B0) : AppTheme.primary)
+                      : (isDark ? AppTheme.slate200 : AppTheme.slate700),
+                  size: 20,
+                ),
+                if (isFilterActive)
+                  Positioned(
+                    top: 9,
+                    right: 9,
+                    child: Container(
+                      width: 7,
+                      height: 7,
+                      decoration: const BoxDecoration(
+                        color: AppTheme.primary,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildNegotiationCard({
-    required BuildContext context,
-    required Map<String, dynamic> negotiation,
+    required Map<String, dynamic> item,
     required bool isDark,
-    required Color surfaceContainerLowestColor,
-    required Color outlineVariantColor,
+    required Color surfaceColor,
     required Color onSurfaceColor,
-    required Color secondaryColor,
-    required Color surfaceContainerColor,
-    required Color onSurfaceVariantColor,
-    required Color surfaceContainerLowColor,
-    required Color primaryColor,
+    required Color secondaryTextColor,
+    required Color borderColor,
     required VoidCallback onCancel,
     required VoidCallback onFinalize,
   }) {
+    final messageBg = isDark ? AppTheme.slate900 : const Color(0xFFF6F8F6);
+
     return GestureDetector(
       onTap: () {
         context.push('/chat-detail');
       },
       child: Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: surfaceContainerLowestColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: outlineVariantColor.withValues(alpha: 0.3)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Image
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  image: DecorationImage(
-                    image: NetworkImage(negotiation['image']),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: surfaceColor,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: borderColor),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Product Image
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    item['image'],
+                    width: 70,
+                    height: 70,
                     fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      width: 70,
+                      height: 70,
+                      color: isDark ? AppTheme.slate700 : AppTheme.slate200,
+                      child: const Icon(Icons.broken_image, size: 24, color: Colors.grey),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 16),
-              // Content
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                negotiation['product'],
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: onSurfaceColor,
+                const SizedBox(width: 14),
+
+                // Details Column
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item['product'],
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: onSurfaceColor,
+                                    letterSpacing: -0.2,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-                              Text(
-                                '${negotiation['buyer']} • ${negotiation['role'] ?? 'Comprador'}',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14,
-                                  color: secondaryColor,
+                                const SizedBox(height: 3),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      item['role'] == 'Proveedor'
+                                          ? Icons.storefront_outlined
+                                          : Icons.person_outline_rounded,
+                                      size: 13,
+                                      color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Flexible(
+                                      child: Text(
+                                        '${item['buyer']} • ${item['role'] ?? 'Comprador'}',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                          color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: surfaceContainerColor,
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Text(
-                            negotiation['date'],
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: onSurfaceVariantColor,
+                              ],
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    // Message Box
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: surfaceContainerLowColor,
-                        borderRadius: BorderRadius.circular(8),
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: isDark ? AppTheme.slate900 : const Color(0xFFF1F5F2),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              item['date'],
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                                color: secondaryTextColor,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      child: Text(
-                        negotiation['message'],
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 14,
-                          fontStyle: FontStyle.italic,
-                          color: onSurfaceVariantColor,
+                      const SizedBox(height: 10),
+
+                      // Proposal message bubble
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: messageBg,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: borderColor.withValues(alpha: 0.6)),
+                        ),
+                        child: Text(
+                          item['message'],
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
+                            color: onSurfaceColor.withValues(alpha: 0.85),
+                            height: 1.35,
+                          ),
                         ),
                       ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+
+            // Action Buttons
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                OutlinedButton(
+                  onPressed: () => _showActionConfirmationDialog(
+                    context: context,
+                    title: '¿Cancelar negociación?',
+                    message: 'La solicitud de negociación será cancelada y archivada.',
+                    confirmText: 'Sí, Cancelar',
+                    confirmColor: const Color(0xFFDC2626),
+                    onConfirm: onCancel,
+                    isDark: isDark,
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size(0, 38),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    side: BorderSide(
+                      color: isDark ? const Color(0xFF5C2424) : const Color(0xFFFECACA),
                     ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          // Actions
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ElevatedButton(
-                onPressed: () => _showActionConfirmationDialog(
-                  context: context,
-                  title: '¿Cancelar negociación?',
-                  message: 'La negociación será cancelada.',
-                  confirmText: 'Si, Continuar',
-                  confirmColor: const Color(0xFFD32F2F),
-                  onConfirm: () {
-                    onCancel();
-                  },
-                  isDark: isDark,
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFFEAEA).withValues(alpha: 0.85),
-                  foregroundColor: const Color(0xFFD32F2F),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    backgroundColor: isDark ? const Color(0xFF2A1414) : const Color(0xFFFEF2F2),
+                    foregroundColor: isDark ? const Color(0xFFFCA5A5) : const Color(0xFFDC2626),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    textStyle: GoogleFonts.plusJakartaSans(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 12,
+                    ),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  minimumSize: const Size(0, 52),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  child: const Text('Cancelar'),
                 ),
-                child: Text(
-                  'Cancelar',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
+                const SizedBox(width: 8),
+                ElevatedButton.icon(
+                  onPressed: () => _showActionConfirmationDialog(
+                    context: context,
+                    title: '¿Finalizar negociación?',
+                    message: 'La negociación será cerrada exitosamente y se generará la orden.',
+                    confirmText: 'Sí, Finalizar',
+                    confirmColor: AppTheme.primary,
+                    onConfirm: onFinalize,
+                    isDark: isDark,
                   ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: () => _showActionConfirmationDialog(
-                  context: context,
-                  title: '¿Finalizar negociación?',
-                  message: 'La negociación será cerrada y marcada como completada.',
-                  confirmText: 'Si, Continuar',
-                  confirmColor: const Color(0xFF0C6648),
-                  onConfirm: () {
-                    onFinalize();
-                  },
-                  isDark: isDark,
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0C6648).withValues(alpha: 0.85),
-                  foregroundColor: const Color(0xFFFBFCFB),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  elevation: 0,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  minimumSize: const Size(0, 52),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-                child: Text(
-                  'Finalizar',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
+                  icon: const Icon(Icons.check_circle_outline_rounded, size: 15, color: Colors.white),
+                  label: const Text('Finalizar'),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(0, 38),
+                    padding: const EdgeInsets.symmetric(horizontal: 18),
+                    backgroundColor: AppTheme.primary,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    textStyle: GoogleFonts.plusJakartaSans(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
-    ));
+    );
   }
 
   Widget _buildCompletedCard({
-    required BuildContext context,
-    required Map<String, dynamic> negotiation,
+    required Map<String, dynamic> item,
     required bool isDark,
-    required Color surfaceContainerLowestColor,
-    required Color outlineVariantColor,
+    required Color surfaceColor,
     required Color onSurfaceColor,
-    required Color secondaryColor,
-    required Color surfaceContainerColor,
-    required Color onSurfaceVariantColor,
-    required Color surfaceContainerLowColor,
-    required Color primaryColor,
+    required Color secondaryTextColor,
+    required Color borderColor,
   }) {
+    final panelBg = isDark ? AppTheme.slate900 : const Color(0xFFF6F8F6);
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: surfaceContainerLowestColor,
-        borderRadius: BorderRadius.circular(12),
+        color: surfaceColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 4,
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+            blurRadius: 8,
             offset: const Offset(0, 2),
           ),
         ],
@@ -848,89 +1051,90 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Image
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: surfaceContainerColor,
-                  borderRadius: BorderRadius.circular(8),
-                  image: DecorationImage(
-                    image: NetworkImage(negotiation['image']),
-                    fit: BoxFit.cover,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  item['image'],
+                  width: 52,
+                  height: 52,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    width: 52,
+                    height: 52,
+                    color: isDark ? AppTheme.slate700 : AppTheme.slate200,
+                    child: const Icon(Icons.broken_image, size: 20),
                   ),
                 ),
               ),
               const SizedBox(width: 12),
-              // Content
+
+              // Title & Buyer
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      negotiation['product'],
+                      item['product'],
                       style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
                         color: onSurfaceColor,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
+                    const SizedBox(height: 2),
                     Text(
-                      '${negotiation['buyer']} • ${negotiation['role'] ?? 'Comprador'}',
+                      '${item['buyer']} • ${item['role'] ?? 'Comprador'}',
                       style: GoogleFonts.plusJakartaSans(
                         fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                        color: onSurfaceVariantColor,
+                        fontSize: 12,
+                        color: secondaryTextColor,
                       ),
                     ),
                   ],
                 ),
               ),
+
               // Status Badge
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFcaead7).withValues(alpha: 0.5), // secondary-container / 50
-                      borderRadius: BorderRadius.circular(6),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF0D3224) : const Color(0xFFE8F5E9),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.check_circle_rounded,
+                      size: 13,
+                      color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.check_circle, size: 14, color: Color(0xFF4e6b5b)), // on-secondary-container
-                        const SizedBox(width: 4),
-                        Text(
-                          'CERRADA',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.0,
-                            color: const Color(0xFF4e6b5b),
-                          ),
-                        ),
-                      ],
+                    const SizedBox(width: 4),
+                    Text(
+                      'CERRADA',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.8,
+                        color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    negotiation['date'],
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 12,
-                      color: onSurfaceVariantColor,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
+
           // Price and Quantity Box
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: surfaceContainerLowColor,
-              borderRadius: BorderRadius.circular(8),
+              color: panelBg,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: borderColor.withValues(alpha: 0.6)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -941,16 +1145,18 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                     Text(
                       'Precio Acordado',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 12,
-                        color: onSurfaceVariantColor,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: secondaryTextColor,
                       ),
                     ),
+                    const SizedBox(height: 2),
                     Text(
-                      negotiation['price'],
+                      item['price'],
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: primaryColor,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
                       ),
                     ),
                   ],
@@ -961,15 +1167,17 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                     Text(
                       'Cantidad Total',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 12,
-                        color: onSurfaceVariantColor,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: secondaryTextColor,
                       ),
                     ),
+                    const SizedBox(height: 2),
                     Text(
-                      negotiation['quantity'],
+                      item['quantity'],
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
                         color: onSurfaceColor,
                       ),
                     ),
@@ -979,37 +1187,302 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
             ),
           ),
           const SizedBox(height: 8),
-          // Ver Detalle Button
+
+          // Ver Detalle Action
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TextButton(
+              TextButton.icon(
                 onPressed: () {
-                  context.push('/negotiation-detail', extra: negotiation);
+                  context.push('/negotiation-detail', extra: item);
                 },
+                icon: Text(
+                  'Ver Detalle',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13,
+                    color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                  ),
+                ),
+                label: Icon(
+                  Icons.arrow_forward_rounded,
+                  size: 16,
+                  color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                ),
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCancelledCard({
+    required Map<String, dynamic> item,
+    required bool isDark,
+    required Color surfaceColor,
+    required Color onSurfaceColor,
+    required Color secondaryTextColor,
+    required Color borderColor,
+  }) {
+    final panelBg = isDark ? AppTheme.slate900 : const Color(0xFFF6F8F6);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: surfaceColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: borderColor),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Image
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  item['image'],
+                  width: 52,
+                  height: 52,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    width: 52,
+                    height: 52,
+                    color: isDark ? AppTheme.slate700 : AppTheme.slate200,
+                    child: const Icon(Icons.broken_image, size: 20),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+
+              // Title & Buyer
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item['product'],
+                      style: GoogleFonts.plusJakartaSans(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                        color: onSurfaceColor,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${item['buyer']} • ${item['role'] ?? 'Comprador'}',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                        color: secondaryTextColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Status Badge
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF3B1E1E) : const Color(0xFFFFECEC),
+                  borderRadius: BorderRadius.circular(6),
+                ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      'Ver Detalle',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        color: primaryColor,
-                      ),
+                    Icon(
+                      Icons.cancel_rounded,
+                      size: 13,
+                      color: isDark ? const Color(0xFFFF8B8B) : const Color(0xFFD32F2F),
                     ),
                     const SizedBox(width: 4),
-                    Icon(Icons.arrow_forward, size: 18, color: primaryColor),
+                    Text(
+                      'CANCELADA',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.8,
+                        color: isDark ? const Color(0xFFFF8B8B) : const Color(0xFFD32F2F),
+                      ),
+                    ),
                   ],
                 ),
               ),
             ],
           ),
+          const SizedBox(height: 10),
+
+          // Request and Cancel Dates Row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Solicitado: ${item['requestDate']}',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  color: secondaryTextColor,
+                ),
+              ),
+              Text(
+                'Cancelado: ${item['cancelDate']}',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: isDark ? const Color(0xFFFF8B8B) : const Color(0xFFD32F2F),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+
+          // Price and Quantity Box
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: panelBg,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: borderColor.withValues(alpha: 0.6)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Precio Ofrecido',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: secondaryTextColor,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${item['price']}',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: onSurfaceColor,
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      'Cantidad',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: secondaryTextColor,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${item['quantity']} (${item['saleType']})',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: onSurfaceColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          // Reason Box
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF231717) : const Color(0xFFFFF6F6),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: isDark ? const Color(0xFF4C2A2A) : const Color(0xFFFFE3E3)),
+            ),
+            child: Text(
+              'Motivo: ${item['reason']}',
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 12,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w600,
+                color: isDark ? const Color(0xFFFFB4B4) : const Color(0xFFB71C1C),
+              ),
+            ),
+          ),
+
+          // Note if present
+          if (item['comments'] != null && item['comments'].toString().isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1F1515) : const Color(0xFFFFFDFD),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: isDark ? const Color(0xFF4C2A2A) : const Color(0xFFFFECEC)),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.edit_note_rounded,
+                    color: isDark ? const Color(0xFFFFB4B4) : const Color(0xFFB71C1C),
+                    size: 18,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item['role'] == 'Proveedor' ? 'NOTA DEL PROVEEDOR' : 'NOTA DEL COMPRADOR',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.8,
+                            color: isDark ? const Color(0xFFFFB4B4) : const Color(0xFFB71C1C),
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '${item['comments']}',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
+                            color: onSurfaceColor.withValues(alpha: 0.85),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -1024,411 +1497,152 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
     required VoidCallback onConfirm,
     required bool isDark,
   }) {
+    final surfaceColor = isDark ? AppTheme.slate800 : Colors.white;
+    final onSurfaceColor = isDark ? AppTheme.slate100 : AppTheme.slate900;
+    final secondaryTextColor = isDark ? AppTheme.slate400 : AppTheme.slate500;
+    final borderColor = isDark ? AppTheme.slate700 : AppTheme.slate200;
+
     showDialog(
       context: context,
       builder: (context) => Dialog(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Container(
-              padding: const EdgeInsets.fromLTRB(28, 32, 28, 28),
-              decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1c2c26) : Colors.white,
-                borderRadius: BorderRadius.circular(32),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.15),
-                    blurRadius: 30,
-                    offset: const Offset(0, 15),
-                  ),
-                ],
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: surfaceColor,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.2),
+                blurRadius: 24,
+                offset: const Offset(0, 8),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: onSurfaceColor,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                message,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 14,
+                  height: 1.45,
+                  color: secondaryTextColor,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
                 children: [
-                  Text(
-                    title,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: isDark ? Colors.white : const Color(0xFF181d1a),
-                      height: 1.2,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    message,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 16,
-                      height: 1.5,
-                      color: isDark ? Colors.grey[400] : Colors.grey[700],
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: TextButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 18),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                          ),
-                          child: Text(
-                            'No',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 14,
-                              letterSpacing: 1.2,
-                              color: isDark ? Colors.white38 : Colors.grey[400],
-                            ),
-                          ),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        side: BorderSide(color: borderColor),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                      child: Text(
+                        'No, Volver',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13,
+                          color: secondaryTextColor,
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        flex: 2,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            onConfirm();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: confirmColor,
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-                            padding: const EdgeInsets.symmetric(vertical: 18),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                          ),
-                          child: Text(
-                            confirmText,
-                            style: GoogleFonts.plusJakartaSans(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 14,
-                              letterSpacing: 1.2,
-                            ),
-                          ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        onConfirm();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: confirmColor,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                      child: Text(
+                        confirmText,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13,
                         ),
                       ),
-                    ],
+                    ),
                   ),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildEmptyState({
-    required BuildContext context,
     required IconData icon,
     required String title,
     required String message,
-    required Color primaryColor,
-    required Color onSurfaceVariantColor,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 24),
-      width: double.infinity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: primaryColor.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              size: 64,
-              color: primaryColor.withValues(alpha: 0.5),
-            ),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: primaryColor,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 14,
-              color: onSurfaceVariantColor,
-              height: 1.5,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCancelledCard({
-    required BuildContext context,
-    required Map<String, dynamic> negotiation,
     required bool isDark,
-    required Color surfaceContainerLowestColor,
-    required Color outlineVariantColor,
-    required Color onSurfaceColor,
-    required Color secondaryColor,
-    required Color surfaceContainerColor,
-    required Color onSurfaceVariantColor,
-    required Color surfaceContainerLowColor,
-    required Color primaryColor,
+    required Color secondaryTextColor,
   }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: surfaceContainerLowestColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: outlineVariantColor.withValues(alpha: 0.15)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Image
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: surfaceContainerColor,
-                  borderRadius: BorderRadius.circular(8),
-                  image: DecorationImage(
-                    image: NetworkImage(negotiation['image']),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              // Content
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      negotiation['product'],
-                      style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: onSurfaceColor,
-                      ),
-                    ),
-                    Text(
-                      '${negotiation['buyer']} • ${negotiation['role'] ?? 'Comprador'}',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                        color: onSurfaceVariantColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Status Badge
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF3B1E1E) : const Color(0xFFFFECEC),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.cancel, size: 14, color: isDark ? const Color(0xFFFF8B8B) : const Color(0xFFD32F2F)),
-                        const SizedBox(width: 4),
-                        Text(
-                          'CANCELADA',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.0,
-                            color: isDark ? const Color(0xFFFF8B8B) : const Color(0xFFD32F2F),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          
-          // Request and Cancel Dates Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Solicitado: ${negotiation['requestDate']}',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: onSurfaceVariantColor,
-                ),
-              ),
-              Text(
-                'Cancelado: ${negotiation['cancelDate']}',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: isDark ? const Color(0xFFFF8B8B) : const Color(0xFFD32F2F),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          
-          // Price and Quantity Box
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: surfaceContainerLowColor,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Precio Ofrecido',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 12,
-                        color: onSurfaceVariantColor,
-                      ),
-                    ),
-                    Text(
-                      '${negotiation['price']}',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: onSurfaceColor,
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      'Cantidad',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 12,
-                        color: onSurfaceVariantColor,
-                      ),
-                    ),
-                    Text(
-                      '${negotiation['quantity']} (${negotiation['saleType']})',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: onSurfaceColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          
-          // Reason box
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF231717) : const Color(0xFFFFF6F6),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: isDark ? const Color(0xFF4C2A2A) : const Color(0xFFFFE3E3)),
-            ),
-            child: Text(
-              'Motivo: ${negotiation['reason']}',
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 12,
-                fontStyle: FontStyle.italic,
-                fontWeight: FontWeight.w600,
-                color: isDark ? const Color(0xFFFFB4B4) : const Color(0xFFB71C1C),
-              ),
-            ),
-          ),
-          if (negotiation['comments'] != null && negotiation['comments'].toString().isNotEmpty) ...[
-            const SizedBox(height: 8),
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
             Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              width: 76,
+              height: 76,
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1F1515) : const Color(0xFFFFFDFD),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: isDark ? const Color(0xFF4C2A2A) : const Color(0xFFFFECEC)),
+                color: isDark ? AppTheme.slate800 : const Color(0xFFE8F2EC),
+                shape: BoxShape.circle,
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    Icons.edit_note_rounded, 
-                    color: isDark ? const Color(0xFFFFB4B4) : const Color(0xFFB71C1C), 
-                    size: 18
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          negotiation['role'] == 'Proveedor' ? 'NOTA DEL PROVEEDOR' : 'NOTA DEL COMPRADOR',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 9,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 0.8,
-                            color: isDark ? const Color(0xFFFFB4B4) : const Color(0xFFB71C1C),
-                          ),
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          '${negotiation['comments']}',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 12,
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.w500,
-                            color: isDark ? Colors.grey[300] : Colors.grey[800],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+              child: Icon(
+                icon,
+                size: 36,
+                color: AppTheme.primaryLight,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: isDark ? AppTheme.slate100 : AppTheme.slate800,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 13,
+                color: secondaryTextColor,
+                height: 1.45,
               ),
             ),
           ],
-        ],
+        ),
       ),
     );
   }
@@ -1438,8 +1652,11 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
     required Map<String, dynamic> negotiation,
     required VoidCallback onConfirmCancel,
   }) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final surfaceColor = isDark ? AppTheme.slate800 : Colors.white;
+    final onSurfaceColor = isDark ? AppTheme.slate100 : AppTheme.slate900;
+    final secondaryTextColor = isDark ? AppTheme.slate400 : AppTheme.slate500;
+    final borderColor = isDark ? AppTheme.slate700 : AppTheme.slate200;
     
     String selectedReason = 'Encontré un mejor precio';
     final TextEditingController commentsController = TextEditingController();
@@ -1452,319 +1669,298 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
         return StatefulBuilder(
           builder: (context, setModalState) {
             return Container(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.9,
+              ),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF181d1a) : const Color(0xFFf7faf5),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.15),
-                    blurRadius: 20,
-                    offset: const Offset(0, -5),
-                  )
-                ],
+                color: surfaceColor,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
               ),
               padding: EdgeInsets.only(
-                left: 24,
-                right: 24,
+                left: 20,
+                right: 20,
                 top: 16,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 20,
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 48,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: isDark ? Colors.white24 : Colors.black12,
-                        borderRadius: BorderRadius.circular(2),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 36,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: isDark ? Colors.white24 : Colors.black12,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Cancelar Negociación',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                      color: isDark ? const Color(0xFFffdad6) : const Color(0xFF93000a),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Cancelar Negociación',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        color: isDark ? const Color(0xFFFF8B8B) : const Color(0xFFDC2626),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Lamentamos que la negociación no haya concluido. Por favor, ayúdanos a entender el motivo.',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 13,
-                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    const SizedBox(height: 4),
+                    Text(
+                      'Por favor, indícanos el motivo por el cual deseas cancelar esta solicitud.',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 13,
+                        color: secondaryTextColor,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  
-                  // Product Preview Card
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF0f1613) : Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: isDark ? Colors.white12 : Colors.grey[200]!),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 48,
-                          height: 48,
-                          decoration: BoxDecoration(
+                    const SizedBox(height: 16),
+                    
+                    // Product Preview Card
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: isDark ? AppTheme.slate900 : const Color(0xFFF8FAFC),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: borderColor),
+                      ),
+                      child: Row(
+                        children: [
+                          ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            image: DecorationImage(
-                              image: NetworkImage(negotiation['image']),
+                            child: Image.network(
+                              negotiation['image'],
+                              width: 44,
+                              height: 44,
                               fit: BoxFit.cover,
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'PRODUCTO',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 1.0,
-                                  color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f),
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                negotiation['product'],
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: isDark ? Colors.white : Colors.black87,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  // Reasons List
-                  ...[
-                    'Encontré un mejor precio',
-                    'El producto ya no está disponible',
-                    'Cambio de planes',
-                    'Problemas con el proveedor',
-                    'Otro (especificar)',
-                  ].map((reason) {
-                    final isSelected = selectedReason == reason;
-                    return InkWell(
-                      onTap: () {
-                        setModalState(() {
-                          selectedReason = reason;
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 20,
-                              height: 20,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: isSelected 
-                                      ? (isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f))
-                                      : (isDark ? Colors.white30 : Colors.black26),
-                                  width: isSelected ? 6 : 2,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Text(
-                              reason,
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 14,
-                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                color: isSelected 
-                                    ? (isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f))
-                                    : (isDark ? Colors.grey[300] : Colors.black87),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }),
-                  
-                  const SizedBox(height: 16),
-                  
-                  // Comments area header with character counter and mandatory label
-                  Builder(
-                    builder: (context) {
-                      final bool isCommentRequired = selectedReason == 'Problemas con el proveedor' || selectedReason == 'Otro (especificar)';
-                      final int currentLength = commentsController.text.trim().length;
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                isCommentRequired ? 'Cuéntanos más (Obligatorio)*' : 'Cuéntanos más (Opcional)',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: isCommentRequired 
-                                      ? (isDark ? const Color(0xFFFFB4AB) : const Color(0xFFBA1A1A))
-                                      : (isDark ? Colors.grey[400] : Colors.grey[700]),
-                                ),
-                              ),
-                              Text(
-                                '$currentLength/500',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 11,
-                                  color: isDark ? Colors.white38 : Colors.black38,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: isDark ? const Color(0xFF0f1613) : Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: isCommentRequired && currentLength < 28
-                                    ? (isDark ? const Color(0xFFBA1A1A) : const Color(0xFFFFDAD6))
-                                    : (isDark ? Colors.white12 : Colors.grey[200]!),
-                                width: isCommentRequired && currentLength < 28 ? 1.5 : 1.0,
-                              ),
-                            ),
-                            child: TextField(
-                              controller: commentsController,
-                              maxLines: 3,
-                              maxLength: 500,
-                              onChanged: (text) {
-                                setModalState(() {});
-                              },
-                              style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 13),
-                              decoration: InputDecoration(
-                                hintText: isCommentRequired 
-                                    ? 'Por favor, detalle el motivo (mínimo 28 caracteres)...' 
-                                    : 'Cuéntanos más...',
-                                hintStyle: TextStyle(color: isDark ? Colors.grey[500] : Colors.grey[400], fontSize: 13),
-                                contentPadding: const EdgeInsets.all(12),
-                                border: InputBorder.none,
-                                counterText: '',
-                              ),
-                            ),
-                          ),
-                          if (isCommentRequired && currentLength < 28) ...[
-                            const SizedBox(height: 6),
-                            Row(
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Icon(
-                                  Icons.error_outline_rounded, 
-                                  color: isDark ? const Color(0xFFFFB4AB) : const Color(0xFFBA1A1A), 
-                                  size: 14
+                                Text(
+                                  negotiation['product'],
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                    color: onSurfaceColor,
+                                  ),
                                 ),
-                                const SizedBox(width: 6),
-                                Expanded(
-                                  child: Text(
-                                    'Por favor brinde más detalles (faltan ${28 - currentLength} caracteres).',
-                                    style: GoogleFonts.plusJakartaSans(
-                                      color: isDark ? const Color(0xFFFFB4AB) : const Color(0xFFBA1A1A),
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                Text(
+                                  '${negotiation['buyer']} • ${negotiation['role'] ?? 'Comprador'}',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 12,
+                                    color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
                             ),
-                          ],
+                          ),
                         ],
-                      );
-                    }
-                  ),
-                  
-                  const SizedBox(height: 20),
-                  
-                  // Buttons
-                  Builder(
-                    builder: (context) {
-                      final bool isCommentRequired = selectedReason == 'Problemas con el proveedor' || selectedReason == 'Otro (especificar)';
-                      final int currentLength = commentsController.text.trim().length;
-                      final bool isButtonEnabled = !isCommentRequired || (currentLength >= 28 && currentLength <= 500);
-                      
-                      return ElevatedButton(
-                        onPressed: isButtonEnabled ? () {
-                          final finalReason = selectedReason == 'Otro (especificar)' 
-                              ? (commentsController.text.isNotEmpty ? commentsController.text : 'Otro motivo')
-                              : selectedReason;
-                          
-                          Navigator.pop(context);
-                          
-                          // Add to Cancelled Negotiations list
-                          setState(() {
-                            mockNegotiations.remove(negotiation);
-                            mockCancelledNegotiations.insert(0, {
-                              'product': negotiation['product'],
-                              'buyer': negotiation['buyer'],
-                              'role': negotiation['role'],
-                              'requestDate': negotiation['date'],
-                              'cancelDate': 'Justo ahora',
-                              'price': '\$22.00 / caja', // Mocked price/quantity
-                              'quantity': '20',
-                              'saleType': 'caja',
-                              'reason': finalReason,
-                              'comments': commentsController.text,
-                              'image': negotiation['image'],
-                            });
-                            _selectedTabIndex = 2; // Auto-switch to Cancelled tab!
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    
+                    // Reasons List
+                    ...[
+                      'Encontré un mejor precio',
+                      'El producto ya no está disponible',
+                      'Cambio de planes',
+                      'Problemas con el proveedor',
+                      'Otro (especificar)',
+                    ].map((reason) {
+                      final isSelected = selectedReason == reason;
+                      return InkWell(
+                        onTap: () {
+                          setModalState(() {
+                            selectedReason = reason;
                           });
-                          
-                          onConfirmCancel();
-                        } : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: isButtonEnabled ? const Color(0xFFba1a1a) : (isDark ? Colors.white12 : Colors.black12),
-                          foregroundColor: isButtonEnabled ? Colors.white : (isDark ? Colors.white30 : Colors.black38),
-                          minimumSize: const Size(double.infinity, 48),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          elevation: 0,
-                        ),
-                        child: Text(
-                          'Confirmar Cancelación',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                        },
+                        borderRadius: BorderRadius.circular(8),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 18,
+                                height: 18,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: isSelected 
+                                        ? AppTheme.primary
+                                        : (isDark ? Colors.white30 : Colors.black26),
+                                    width: isSelected ? 5 : 1.5,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                reason,
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 13,
+                                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                                  color: isSelected ? onSurfaceColor : secondaryTextColor,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       );
-                    }
-                  ),
-                  const SizedBox(height: 8),
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: TextButton.styleFrom(
-                      foregroundColor: isDark ? Colors.grey[300] : Colors.grey[700],
-                      minimumSize: const Size(double.infinity, 48),
+                    }),
+                    
+                    const SizedBox(height: 12),
+                    
+                    // Comments Area
+                    Builder(
+                      builder: (context) {
+                        final bool isCommentRequired = selectedReason == 'Problemas con el proveedor' || selectedReason == 'Otro (especificar)';
+                        final int currentLength = commentsController.text.trim().length;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  isCommentRequired ? 'Detalles (Obligatorio)*' : 'Comentarios adicionales',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w700,
+                                    color: isCommentRequired 
+                                        ? (isDark ? const Color(0xFFFFB4AB) : const Color(0xFFDC2626))
+                                        : secondaryTextColor,
+                                  ),
+                                ),
+                                Text(
+                                  '$currentLength/500',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 10,
+                                    color: secondaryTextColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: isDark ? AppTheme.slate900 : const Color(0xFFF8FAFC),
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: isCommentRequired && currentLength < 28
+                                      ? (isDark ? const Color(0xFFBA1A1A) : const Color(0xFFFECACA))
+                                      : borderColor,
+                                ),
+                              ),
+                              child: TextField(
+                                controller: commentsController,
+                                maxLines: 3,
+                                maxLength: 500,
+                                onChanged: (text) {
+                                  setModalState(() {});
+                                },
+                                style: GoogleFonts.plusJakartaSans(fontSize: 13, color: onSurfaceColor),
+                                decoration: InputDecoration(
+                                  hintText: isCommentRequired 
+                                      ? 'Por favor, detalla el motivo (mínimo 28 caracteres)...' 
+                                      : 'Escribe cualquier detalle adicional...',
+                                  hintStyle: GoogleFonts.plusJakartaSans(fontSize: 12, color: secondaryTextColor),
+                                  contentPadding: const EdgeInsets.all(12),
+                                  border: InputBorder.none,
+                                  counterText: '',
+                                ),
+                              ),
+                            ),
+                            if (isCommentRequired && currentLength < 28) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                'Faltan ${28 - currentLength} caracteres para el mínimo requerido.',
+                                style: GoogleFonts.plusJakartaSans(
+                                  color: isDark ? const Color(0xFFFFB4AB) : const Color(0xFFDC2626),
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ],
+                        );
+                      }
                     ),
-                    child: Text(
-                      'Volver',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
+                    
+                    const SizedBox(height: 18),
+                    
+                    // Action Buttons
+                    Builder(
+                      builder: (context) {
+                        final bool isCommentRequired = selectedReason == 'Problemas con el proveedor' || selectedReason == 'Otro (especificar)';
+                        final int currentLength = commentsController.text.trim().length;
+                        final bool isButtonEnabled = !isCommentRequired || (currentLength >= 28 && currentLength <= 500);
+                        
+                        return ElevatedButton(
+                          onPressed: isButtonEnabled ? () {
+                            final finalReason = selectedReason == 'Otro (especificar)' 
+                                ? (commentsController.text.isNotEmpty ? commentsController.text : 'Otro motivo')
+                                : selectedReason;
+                            
+                            Navigator.pop(context);
+                            
+                            setState(() {
+                              mockNegotiations.remove(negotiation);
+                              mockCancelledNegotiations.insert(0, {
+                                'product': negotiation['product'],
+                                'buyer': negotiation['buyer'],
+                                'role': negotiation['role'],
+                                'requestDate': negotiation['date'],
+                                'cancelDate': 'Justo ahora',
+                                'price': '\$22.00 / caja',
+                                'quantity': '20',
+                                'saleType': 'caja',
+                                'reason': finalReason,
+                                'comments': commentsController.text,
+                                'image': negotiation['image'],
+                              });
+                              _selectedTabIndex = 2; // Auto-switch to Cancelled tab
+                            });
+                            
+                            onConfirmCancel();
+                          } : null,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: isButtonEnabled ? const Color(0xFFDC2626) : (isDark ? Colors.white12 : Colors.black12),
+                            foregroundColor: isButtonEnabled ? Colors.white : (isDark ? Colors.white30 : Colors.black38),
+                            minimumSize: const Size(double.infinity, 44),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            elevation: 0,
+                          ),
+                          child: Text(
+                            'Confirmar Cancelación',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 13,
+                            ),
+                          ),
+                        );
+                      }
+                    ),
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: TextButton.styleFrom(
+                        foregroundColor: secondaryTextColor,
+                        minimumSize: const Size(double.infinity, 40),
+                      ),
+                      child: Text(
+                        'Volver',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },

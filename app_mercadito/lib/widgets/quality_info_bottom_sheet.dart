@@ -9,7 +9,7 @@ class QualityInfoBottomSheet extends StatelessWidget {
   static const Map<String, dynamic> _qualityData = {
     'PRIMERA': {
       'title': 'Calidad Premium',
-      'color': Color(0xFF00462F),
+      'color': Color(0xFF285E44),
       'icon': Icons.workspace_premium,
       'description': 'Los productos de Primera Calidad son seleccionados a mano por nuestros agricultores bajo los más altos estándares de frescura, sabor y apariencia.',
       'points': [
@@ -21,7 +21,7 @@ class QualityInfoBottomSheet extends StatelessWidget {
     },
     'SEGUNDA': {
       'title': 'Segunda Calidad',
-      'color': Color(0xFFF59E0B),
+      'color': Color(0xFFF09065),
       'icon': Icons.eco,
       'description': 'Son productos frescos y nutritivos con pequeñas imperfecciones estéticas que no afectan su sabor ni calidad nutricional, a un precio más accesible.',
       'points': [

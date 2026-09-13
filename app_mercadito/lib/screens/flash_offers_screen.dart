@@ -1033,13 +1033,28 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                                 letterSpacing: 0.3,
                               ),
                             ),
-                            Text(
-                              data['location'] ?? 'Tecomán, Colima',
-                              style: const TextStyle(
-                                fontSize: 10,
-                                color: Colors.grey,
-                              ),
-                              overflow: TextOverflow.ellipsis,
+                            Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    data['location'] ?? 'Tecomán, Colima',
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.grey,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '• A ${data['distance'] != null ? data['distance'].toString() : '4.2'} km',
+                                  style: TextStyle(
+                                    fontSize: 9.5,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDark ? const Color(0xFF6EE7B7) : const Color(0xFF059669),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),

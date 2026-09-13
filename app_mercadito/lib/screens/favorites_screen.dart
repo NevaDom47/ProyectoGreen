@@ -925,14 +925,30 @@ class _FavoritesScreenState extends State<FavoritesScreen> with TickerProviderSt
                                   height: 1.0,
                                 ),
                               ),
-                              Text(
-                                locationStr,
-                                style: TextStyle(
-                                  fontSize: 9,
-                                  color: isDark ? Colors.grey[300] : Colors.grey[700],
-                                  height: 1.1,
-                                ),
-                                overflow: TextOverflow.ellipsis,
+                              Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      locationStr,
+                                      style: TextStyle(
+                                        fontSize: 9,
+                                        color: isDark ? Colors.grey[300] : Colors.grey[700],
+                                        height: 1.1,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '• A ${data['distance'] != null ? data['distance'].toString() : '4.2'} km',
+                                    style: TextStyle(
+                                      fontSize: 8.5,
+                                      fontWeight: FontWeight.bold,
+                                      color: isDark ? const Color(0xFF6EE7B7) : const Color(0xFF059669),
+                                      height: 1.1,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),

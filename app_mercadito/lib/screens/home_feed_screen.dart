@@ -30,11 +30,11 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
   final List<Map<String, dynamic>> _groceryEssentials = [
     {
       'name': 'DOÑA GALLINA Caldo 6ud (131) (AP)',
-      'price': 'RD\$48.00',
+      'price': '\$48.00',
       'rawPrice': 48.0,
-      'wholesalePrice': 'RD\$38.00',
+      'wholesalePrice': '\$38.00',
       'wholesaleRawPrice': 38.0,
-      'oldPrice': 'RD\$56.00',
+      'oldPrice': '\$56.00',
       'unit': '6ud',
       'unitText': 'POR CAJA',
       'wholesaleUnitText': 'POR BULTO (24)',
@@ -53,11 +53,11 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
     },
     {
       'name': 'Chuleta Ahumada Especial Lb',
-      'price': 'RD\$124.00',
+      'price': '\$124.00',
       'rawPrice': 124.0,
-      'wholesalePrice': 'RD\$105.00',
+      'wholesalePrice': '\$105.00',
       'wholesaleRawPrice': 105.0,
-      'oldPrice': 'RD\$145.00',
+      'oldPrice': '\$145.00',
       'unit': 'lb',
       'unitText': 'POR LIBRA',
       'wholesaleUnitText': 'POR CAJA 50LB',
@@ -76,11 +76,11 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
     },
     {
       'name': 'Papa Blanca Alpha Premium',
-      'price': 'RD\$85.00',
+      'price': '\$85.00',
       'rawPrice': 85.0,
-      'wholesalePrice': 'RD\$65.00',
+      'wholesalePrice': '\$65.00',
       'wholesaleRawPrice': 65.0,
-      'oldPrice': 'RD\$95.00',
+      'oldPrice': '\$95.00',
       'unit': 'kg',
       'unitText': 'POR KILO',
       'wholesaleUnitText': 'POR SACO 50KG',
@@ -99,11 +99,11 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
     },
     {
       'name': 'MARIA Tortillas de Trigo 10ud 9oz',
-      'price': 'RD\$73.00',
+      'price': '\$73.00',
       'rawPrice': 73.0,
-      'wholesalePrice': 'RD\$58.00',
+      'wholesalePrice': '\$58.00',
       'wholesaleRawPrice': 58.0,
-      'oldPrice': 'RD\$88.00',
+      'oldPrice': '\$88.00',
       'unit': '10ud',
       'unitText': 'POR PAQUETE',
       'wholesaleUnitText': 'POR CAJA (12)',
@@ -122,11 +122,11 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
     },
     {
       'name': 'Arroz Premium La Garza 5 Lb',
-      'price': 'RD\$215.00',
+      'price': '\$215.00',
       'rawPrice': 215.0,
-      'wholesalePrice': 'RD\$185.00',
+      'wholesalePrice': '\$185.00',
       'wholesaleRawPrice': 185.0,
-      'oldPrice': 'RD\$240.00',
+      'oldPrice': '\$240.00',
       'unit': '5 Lb',
       'unitText': 'POR FUNDA',
       'wholesaleUnitText': 'POR FARDO (10)',
@@ -145,11 +145,11 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
     },
     {
       'name': 'Aceite Vegetal Crisol 64 Oz',
-      'price': 'RD\$189.00',
+      'price': '\$189.00',
       'rawPrice': 189.0,
-      'wholesalePrice': 'RD\$160.00',
+      'wholesalePrice': '\$160.00',
       'wholesaleRawPrice': 160.0,
-      'oldPrice': 'RD\$210.00',
+      'oldPrice': '\$210.00',
       'unit': '64 Oz',
       'unitText': 'POR BOTELLA',
       'wholesaleUnitText': 'POR CAJA (8)',
@@ -1268,41 +1268,6 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                           ),
                         ),
                 ),
-                if (data.containsKey('overlayText') &&
-                    data['overlayText'] != null)
-                  Positioned(
-                    bottom: 12,
-                    left: 12,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.65),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.trending_up,
-                            color: Colors.white,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            data['overlayText']!,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
               ],
             ),
             Padding(
@@ -1659,6 +1624,62 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                       ),
                     ),
                   ],
+                  // NEGOCIACIONES Row (conditionally displayed after PROVEEDOR)
+                  if (data['negotiations'] != null || data['overlayText'] != null) ...[
+                    SizedBox(height: isCompact ? 8 : 12),
+                    Row(
+                      children: [
+                        Container(
+                          width: isCompact ? 28 : 32,
+                          height: isCompact ? 28 : 32,
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? const Color(0xFF064E3B).withValues(alpha: 0.5)
+                                : const Color(0xFFE8F5E9),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.handshake_outlined,
+                            color: isDark
+                                ? const Color(0xFF6EE7B7)
+                                : const Color(0xFF2E7D32),
+                            size: isCompact ? 14 : 16,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'NEGOCIACIONES',
+                                style: TextStyle(
+                                  fontSize: isCompact ? 8 : 9,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                              Text(
+                                (data['negotiations'] ?? data['overlayText'] ?? '')
+                                    .toString()
+                                    .replaceAll('negociados', 'realizadas'),
+                                style: TextStyle(
+                                  fontSize: isCompact ? 11.5 : 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: isDark
+                                      ? const Color(0xFF6EE7B7)
+                                      : const Color(0xFF2E7D32),
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                   // UBICACIÓN Row (conditionally displayed)
                   if (showLocation) ...[
                     SizedBox(height: isCompact ? 8 : 12),
@@ -1691,13 +1712,28 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                                   letterSpacing: 0.5,
                                 ),
                               ),
-                              Text(
-                                data['location'] ?? 'Valle de Santiago, GTO',
-                                style: TextStyle(
-                                  fontSize: isCompact ? 11.5 : 13,
-                                  color: Colors.grey,
-                                ),
-                                overflow: TextOverflow.ellipsis,
+                              Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      data['location'] ?? 'Valle de Santiago, GTO',
+                                      style: TextStyle(
+                                        fontSize: isCompact ? 11.5 : 13,
+                                        color: Colors.grey,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '• A ${data['distance'] != null ? data['distance'].toString() : '4.2'} km',
+                                    style: TextStyle(
+                                      fontSize: isCompact ? 10 : 11.5,
+                                      fontWeight: FontWeight.bold,
+                                      color: isDark ? const Color(0xFF6EE7B7) : const Color(0xFF059669),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -2020,82 +2056,148 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
           child: Row(
             children: [
               // Store circular logo
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFCE1126),
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFFCE1126).withValues(alpha: 0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
+              GestureDetector(
+                onTap: () => context.push(
+                  '/provider',
+                  extra: {
+                    'name': 'Hipermercados Olé',
+                    'location': 'Villa Mella, Santo Domingo',
+                    'rating': '4.9',
+                    'distance': 'A 2.5 km',
+                    'verified': true,
+                    'open': true,
+                    'closeTime': '22:00',
+                    'tags': 'Supermercado, Alimentos y Abarrotes',
+                    'reviews': '128 reseñas de clientes',
+                    'traded': '3,450 productos negociados',
+                    'salesType': 'Ambos',
+                    'phone': '+1 (809) 555-0199',
+                    'img':
+                        'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1549_Variedad%20de%20Aj%C3%ADes_simple_compose_01jwvncbmqfpvb7qv6rs3vh22x.png',
+                    'banner':
+                        'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1549_Variedad%20de%20Aj%C3%ADes_simple_compose_01jwvncbmqfpvb7qv6rs3vh22x.png',
+                  },
                 ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Olé',
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 16,
-                          height: 1.0,
-                          letterSpacing: -0.5,
-                        ),
-                      ),
-                      const SizedBox(height: 1),
-                      Text(
-                        'hipermercados',
-                        style: GoogleFonts.poppins(
-                          color: Colors.white.withValues(alpha: 0.85),
-                          fontSize: 5,
-                          fontWeight: FontWeight.w600,
-                          height: 1.0,
-                        ),
+                child: Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFCE1126),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFCE1126).withValues(alpha: 0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
                       ),
                     ],
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Olé',
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 16,
+                            height: 1.0,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 1),
+                        Text(
+                          'hipermercados',
+                          style: GoogleFonts.poppins(
+                            color: Colors.white.withValues(alpha: 0.85),
+                            fontSize: 5,
+                            fontWeight: FontWeight.w600,
+                            height: 1.0,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
               const SizedBox(width: 12),
               // Section Title and Store Subtitle
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Proveedor destacado',
-                      style: GoogleFonts.manrope(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        color: isDark ? Colors.white : const Color(0xFF111827),
-                        letterSpacing: -0.3,
+                child: GestureDetector(
+                  onTap: () => context.push(
+                    '/provider',
+                    extra: {
+                      'name': 'Hipermercados Olé',
+                      'location': 'Villa Mella, Santo Domingo',
+                      'rating': '4.9',
+                      'distance': 'A 2.5 km',
+                      'verified': true,
+                      'open': true,
+                      'closeTime': '22:00',
+                      'tags': 'Supermercado, Alimentos y Abarrotes',
+                      'reviews': '128 reseñas de clientes',
+                      'traded': '3,450 productos negociados',
+                      'salesType': 'Ambos',
+                      'phone': '+1 (809) 555-0199',
+                      'img':
+                          'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1549_Variedad%20de%20Aj%C3%ADes_simple_compose_01jwvncbmqfpvb7qv6rs3vh22x.png',
+                      'banner':
+                          'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1549_Variedad%20de%20Aj%C3%ADes_simple_compose_01jwvncbmqfpvb7qv6rs3vh22x.png',
+                    },
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Proveedor destacado',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: isDark ? Colors.white : const Color(0xFF111827),
+                          letterSpacing: -0.3,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      'De Hipermercados Olé Villa Mella 🛒',
-                      style: GoogleFonts.inter(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                        color: isDark ? Colors.grey[400] : const Color(0xFF6B7280),
+                      const SizedBox(height: 2),
+                      Text(
+                        'De Hipermercados Olé Villa Mella',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: isDark ? Colors.grey[400] : const Color(0xFF6B7280),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               // Arrow forward button
               Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: () => context.push('/search'),
+                  onTap: () => context.push(
+                    '/provider',
+                    extra: {
+                      'name': 'Hipermercados Olé',
+                      'location': 'Villa Mella, Santo Domingo',
+                      'rating': '4.9',
+                      'distance': 'A 2.5 km',
+                      'verified': true,
+                      'open': true,
+                      'closeTime': '22:00',
+                      'tags': 'Supermercado, Alimentos y Abarrotes',
+                      'reviews': '128 reseñas de clientes',
+                      'traded': '3,450 productos negociados',
+                      'salesType': 'Ambos',
+                      'phone': '+1 (809) 555-0199',
+                      'img':
+                          'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1549_Variedad%20de%20Aj%C3%ADes_simple_compose_01jwvncbmqfpvb7qv6rs3vh22x.png',
+                      'banner':
+                          'https://raw.githubusercontent.com/NevaDom47/imagenes/refs/heads/main/20250603_1549_Variedad%20de%20Aj%C3%ADes_simple_compose_01jwvncbmqfpvb7qv6rs3vh22x.png',
+                    },
+                  ),
                   borderRadius: BorderRadius.circular(20),
                   child: Container(
                     width: 38,
@@ -2154,7 +2256,8 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
       {
         'name': 'Café de Altura',
         'sku': 'BEB-CAF-01',
-        'overlayText': '85 negociados',
+        'negotiations': '85 realizadas',
+        'overlayText': '85 realizadas',
         'price': '\$85.00',
         'rating': '4.7',
         'badge': 'PRIMERA CALIDAD',
@@ -2166,7 +2269,8 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
       {
         'name': 'Aguacate Hass',
         'sku': 'VER-AGU-02',
-        'overlayText': '42 negociados',
+        'negotiations': '42 realizadas',
+        'overlayText': '42 realizadas',
         'price': '\$45.00',
         'rating': '5.0',
         'badge': 'PRIMERA CALIDAD',
@@ -2178,7 +2282,8 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
       {
         'name': 'Chinola Fresca (Maracuyá)',
         'sku': 'FRU-CHI-03',
-        'overlayText': '112 negociados',
+        'negotiations': '112 realizadas',
+        'overlayText': '112 realizadas',
         'price': '\$55.00',
         'rating': '4.8',
         'badge': 'SEGUNDA CALIDAD',
@@ -2190,7 +2295,8 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
       {
         'name': 'Tomate Bola Rojo',
         'sku': 'HOR-TOM-04',
-        'overlayText': '38 negociados',
+        'negotiations': '38 realizadas',
+        'overlayText': '38 realizadas',
         'price': '\$22.00',
         'rating': '4.5',
         'badge': 'TERCERA CALIDAD',
@@ -2202,7 +2308,8 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
       {
         'name': 'Plátano Macho Especial',
         'sku': 'FRU-PLA-05',
-        'overlayText': '56 negociados',
+        'negotiations': '56 realizadas',
+        'overlayText': '56 realizadas',
         'price': '\$16.50',
         'rating': '4.9',
         'badge': 'PRIMERA CALIDAD',
@@ -2508,43 +2615,6 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                                 const SizedBox(height: 6),
                                 salesBadge,
                               ],
-                              const SizedBox(height: 6),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.baseline,
-                                textBaseline: TextBaseline.alphabetic,
-                                children: [
-                                  AnimatedSwitcher(
-                                    duration: const Duration(milliseconds: 200),
-                                    child: Text(
-                                      displayPrice,
-                                      key: ValueKey<String>(displayPrice),
-                                      style: TextStyle(
-                                        color: isWholesale
-                                            ? (isDark
-                                                ? const Color(0xFF38BDF8)
-                                                : const Color(0xFF0284C7))
-                                            : theme.colorScheme.primary,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  if (isWholesale &&
-                                      item['wholesaleMin'] != null) ...[
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      '(${item['wholesaleMin']})',
-                                      style: TextStyle(
-                                        fontSize: 9,
-                                        fontWeight: FontWeight.w600,
-                                        color: isDark
-                                            ? const Color(0xFF7DD3FC)
-                                            : const Color(0xFF0284C7),
-                                      ),
-                                    ),
-                                  ],
-                                ],
-                              ),
                               if (item['tags'] != null &&
                                   (item['tags'] as List).isNotEmpty) ...[
                                 const SizedBox(height: 6),
@@ -2576,7 +2646,25 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                                   }).toList(),
                                 ),
                               ],
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 6),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.star,
+                                    color: Colors.orange,
+                                    size: 12,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    item['rating'] as String,
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 4),
                               Row(
                                 children: [
                                   const Icon(
@@ -2604,35 +2692,69 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                                     color: Colors.grey,
                                   ),
                                   const SizedBox(width: 4),
+                                  Flexible(
+                                    child: Text(
+                                      item['location'] as String,
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.grey,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
                                   Text(
-                                    item['location'] as String,
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.grey,
+                                    '• A ${item['distance'] != null ? item['distance'].toString() : '4.2'} km',
+                                    style: TextStyle(
+                                      fontSize: 9.5,
+                                      fontWeight: FontWeight.bold,
+                                      color: isDark ? const Color(0xFF6EE7B7) : const Color(0xFF059669),
                                     ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 6),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.baseline,
+                                    textBaseline: TextBaseline.alphabetic,
                                     children: [
-                                      const Icon(
-                                        Icons.star,
-                                        color: Colors.orange,
-                                        size: 12,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        item['rating'] as String,
-                                        style: const TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
+                                      AnimatedSwitcher(
+                                        duration:
+                                            const Duration(milliseconds: 200),
+                                        child: Text(
+                                          displayPrice,
+                                          key: ValueKey<String>(displayPrice),
+                                          style: TextStyle(
+                                            color: isWholesale
+                                                ? (isDark
+                                                    ? const Color(0xFF38BDF8)
+                                                    : const Color(0xFF0284C7))
+                                                : theme.colorScheme.primary,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
+                                      if (isWholesale &&
+                                          item['wholesaleMin'] != null) ...[
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          '(${item['wholesaleMin']})',
+                                          style: TextStyle(
+                                            fontSize: 9,
+                                            fontWeight: FontWeight.w600,
+                                            color: isDark
+                                                ? const Color(0xFF7DD3FC)
+                                                : const Color(0xFF0284C7),
+                                          ),
+                                        ),
+                                      ],
                                     ],
                                   ),
                                   ValueListenableBuilder<

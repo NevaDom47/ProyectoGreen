@@ -18,6 +18,46 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
   bool _isLoading = true;
   final Map<String, String> _selectedProductModes = {};
 
+  String get _providerSector {
+    final rawSector = widget.provider['sector'];
+    if (rawSector != null && rawSector.toString().trim().isNotEmpty) {
+      return rawSector.toString().trim();
+    }
+    final name = (widget.provider['name'] ?? '').toString().toLowerCase();
+    if (name.contains('arcos')) return 'Sector San Pedro';
+    if (name.contains('josé') || name.contains('jose')) return 'Sector El Valle';
+    if (name.contains('toño') || name.contains('tono')) return 'Sector El Salto';
+    final location = (widget.provider['location'] ?? '').toString().trim();
+    if (location.isNotEmpty) return 'Sector $location';
+    return 'Sector Central';
+  }
+
+  String get _providerAverageDistance {
+    final custom = widget.provider['avgDistance'] ?? widget.provider['averageDistance'];
+    if (custom != null && custom.toString().trim().isNotEmpty) {
+      final val = custom.toString().trim();
+      return val.toLowerCase().startsWith('a ') ? val : 'A $val';
+    }
+    final rawDistance = (widget.provider['distance'] ?? '5 km').toString();
+    final cleanDist = rawDistance.replaceAll(RegExp(r'^[Aa]\s*'), '').trim();
+    if (cleanDist.isEmpty) return 'Distancia prom. no disponible';
+    return 'A ~$cleanDist prom. de ti';
+  }
+
+  String get _providerPrestigeLevel {
+    final rawLevel = widget.provider['level'] ?? widget.provider['prestigeLevel'];
+    if (rawLevel != null && rawLevel.toString().trim().isNotEmpty) {
+      final lvl = rawLevel.toString().trim();
+      return lvl.toLowerCase().startsWith('nivel') ? lvl : 'Nivel $lvl';
+    }
+    final name = (widget.provider['name'] ?? '').toString().toLowerCase();
+    if (name.contains('arcos')) return 'Nivel 3';
+    if (name.contains('josé') || name.contains('jose')) return 'Nivel 4';
+    if (name.contains('toño') || name.contains('tono')) return 'Nivel 2';
+    return 'Nivel 3';
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -208,9 +248,23 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        const Icon(Icons.location_on, size: 16, color: Colors.grey),
+                                        Icon(
+                                          Icons.location_on,
+                                          size: 16,
+                                          color: isDark ? const Color(0xFF8BD8B2) : theme.colorScheme.primary,
+                                        ),
                                         const SizedBox(width: 4),
-                                        Text(widget.provider['distance'] ?? '', style: const TextStyle(color: Colors.grey)),
+                                        Flexible(
+                                          child: Text(
+                                            '$_providerSector • $_providerAverageDistance',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: isDark ? Colors.grey[300] : Colors.grey[700],
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -231,34 +285,70 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                                   const SizedBox(height: 10),
                                   _EntranceAnimation(
                                     delay: 550,
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                      decoration: BoxDecoration(
-                                        color: isDark ? const Color(0xFF16251E) : const Color(0xFFEAF2E8),
-                                        borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(
-                                          color: isDark ? const Color(0xFF23352B) : theme.colorScheme.primary.withValues(alpha: 0.2),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            Icons.sell_outlined,
-                                            size: 14,
-                                            color: isDark ? const Color(0xFF8BD8B2) : theme.colorScheme.primary,
-                                          ),
-                                          const SizedBox(width: 6),
-                                          Text(
-                                            widget.provider['salesType'] ?? 'Al Detalle',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                              color: isDark ? const Color(0xFF8BD8B2) : theme.colorScheme.primary,
+                                    child: Wrap(
+                                      alignment: WrapAlignment.center,
+                                      spacing: 8,
+                                      runSpacing: 6,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                          decoration: BoxDecoration(
+                                            color: isDark ? const Color(0xFF16251E) : const Color(0xFFEAF2E8),
+                                            borderRadius: BorderRadius.circular(20),
+                                            border: Border.all(
+                                              color: isDark ? const Color(0xFF23352B) : theme.colorScheme.primary.withValues(alpha: 0.2),
                                             ),
                                           ),
-                                        ],
-                                      ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.sell_outlined,
+                                                size: 14,
+                                                color: isDark ? const Color(0xFF8BD8B2) : theme.colorScheme.primary,
+                                              ),
+                                              const SizedBox(width: 6),
+                                              Text(
+                                                widget.provider['salesType'] ?? 'Al Detalle',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: isDark ? const Color(0xFF8BD8B2) : theme.colorScheme.primary,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                          decoration: BoxDecoration(
+                                            color: isDark ? const Color(0xFF262012) : const Color(0xFFFEF3C7),
+                                            borderRadius: BorderRadius.circular(20),
+                                            border: Border.all(
+                                              color: isDark ? const Color(0xFF624A1D) : const Color(0xFFFCD34D),
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const Icon(
+                                                Icons.military_tech_rounded,
+                                                size: 16,
+                                                color: Color(0xFFD97706),
+                                              ),
+                                              const SizedBox(width: 5),
+                                              Text(
+                                                _providerPrestigeLevel,
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: isDark ? const Color(0xFFFBBF24) : const Color(0xFFB45309),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   const SizedBox(height: 16),
@@ -268,11 +358,17 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
                                         _buildStatColumn(Icons.star, widget.provider['rating']?.toString() ?? '4.8', 'Valoración', isIcon: true),
-                                        _buildStatColumn(null, widget.provider['traded']?.toString() ?? widget.provider['sales']?.toString() ?? '1,240', 'Ventas'),
+                                        _buildStatColumn(
+                                          null, 
+                                          widget.provider['sales']?.toString() ?? 
+                                              (widget.provider['traded']?.toString().split(' ').first ?? '1,240'), 
+                                          'Ventas',
+                                        ),
                                         _buildStatColumn(null, widget.provider['productsCount']?.toString() ?? '15', 'Productos'),
                                       ],
                                     ),
                                   ),
+                                  const SizedBox(height: 18),
                                   // Action buttons
                                   Row(
                                     children: [
@@ -295,7 +391,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                                                           : 'Ahora sigues a ${widget.provider['name']}',
                                                         style: const TextStyle(fontWeight: FontWeight.bold),
                                                       ),
-                                                      backgroundColor: const Color(0xFF00462f),
+                                                      backgroundColor: const Color(0xFF285E44),
                                                       behavior: SnackBarBehavior.floating,
                                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                                       duration: const Duration(seconds: 2),
@@ -312,7 +408,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                                                 ),
                                                 style: ElevatedButton.styleFrom(
                                                   backgroundColor: isFollowing
-                                                      ? const Color(0xFF00462f)
+                                                      ? const Color(0xFF285E44)
                                                       : theme.colorScheme.primary.withValues(alpha: 0.1),
                                                   foregroundColor: isFollowing
                                                       ? Colors.white
@@ -390,16 +486,31 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
 
   Widget _buildStatColumn(IconData? icon, String value, String label, {bool isIcon = false}) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (isIcon && icon != null) Icon(icon, color: Colors.amber, size: 16),
+            if (isIcon && icon != null) const Icon(Icons.star, color: Colors.amber, size: 16),
             if (isIcon && icon != null) const SizedBox(width: 4),
-            Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              value, 
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+              ),
+            ),
           ],
         ),
-        Text(label, style: const TextStyle(fontSize: 10, color: Colors.grey)),
+        const SizedBox(height: 3),
+        Text(
+          label, 
+          style: const TextStyle(
+            fontSize: 11, 
+            color: Colors.grey,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ],
     );
   }
@@ -1212,39 +1323,53 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: isPrimera 
-                    ? theme.colorScheme.primary.withValues(alpha: 0.1)
-                    : isSegunda 
-                        ? const Color(0xFFFF8A5B).withValues(alpha: 0.15) // Mamey
-                        : Colors.red.withValues(alpha: 0.1), // Tercera/Red
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                badgeText, 
-                style: TextStyle(
-                  fontSize: 10, 
-                  fontWeight: FontWeight.bold, 
-                  color: isPrimera 
-                      ? theme.colorScheme.primary 
-                      : isSegunda 
-                          ? const Color(0xFFFF8A5B) // Mamey
-                          : Colors.red[700] // Tercera/Red
-                )
+            GestureDetector(
+              onTap: () {
+                context.push('/quality-products', extra: {
+                  'quality': isPrimera ? 'Primera Calidad' : (isSegunda ? 'Segunda Calidad' : 'Tercera Calidad'),
+                  'provider': widget.provider,
+                  'products': items,
+                });
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: isPrimera 
+                          ? theme.colorScheme.primary.withValues(alpha: 0.1)
+                          : isSegunda 
+                              ? const Color(0xFFFF8A5B).withValues(alpha: 0.15) // Mamey
+                              : Colors.red.withValues(alpha: 0.1), // Tercera/Red
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      badgeText, 
+                      style: TextStyle(
+                        fontSize: 10, 
+                        fontWeight: FontWeight.bold, 
+                        color: isPrimera 
+                            ? theme.colorScheme.primary 
+                            : isSegunda 
+                                ? const Color(0xFFFF8A5B) // Mamey
+                                : Colors.red[700] // Tercera/Red
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Ver todo',
+                    style: TextStyle(
+                      color: theme.colorScheme.primary,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(width: 4),
-            TextButton(
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                minimumSize: const Size(0, 0),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-              onPressed: () {},
-              child: Text('Ver todo', style: TextStyle(color: theme.colorScheme.primary, fontSize: 12, fontWeight: FontWeight.bold)),
-            )
           ],
         ),
       ],
@@ -1414,10 +1539,17 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.secondary.withValues(alpha: 0.1),
+                        color: const Color(0xFF285E44),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Text('8:00 AM - 6:00 PM', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: theme.colorScheme.primary)),
+                      child: const Text(
+                        '8:00 AM - 6:00 PM',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFFFFFFF),
+                        ),
+                      ),
                     )
                   ],
                 ),

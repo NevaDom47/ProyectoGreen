@@ -27,6 +27,7 @@ import '../screens/legal_policies_screen.dart';
 import '../screens/coupons_screen.dart';
 import '../screens/cart_screen.dart';
 import '../screens/provider_profile_screen.dart';
+import '../screens/quality_products_screen.dart';
 import '../screens/account_config_screen.dart';
 import '../screens/active_devices_screen.dart';
 import '../screens/two_factor_auth_screen.dart';
@@ -202,6 +203,33 @@ final GoRouter appRouter = GoRouter(
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return SlideTransition(
               position: animation.drive(Tween(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(CurveTween(curve: Curves.easeOutCubic))),
+              child: child,
+            );
+          },
+        );
+      },
+    ),
+    GoRoute(
+      path: '/quality-products',
+      pageBuilder: (context, state) {
+        final extra = state.extra is Map<String, dynamic> ? state.extra as Map<String, dynamic> : <String, dynamic>{};
+        final quality = extra['quality']?.toString() ?? 'Primera Calidad';
+        final provider = extra['provider'] as Map<String, dynamic>?;
+        final products = (extra['products'] as List?)?.cast<Map<String, dynamic>>();
+
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: QualityProductsScreen(
+            quality: quality,
+            provider: provider,
+            products: products,
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: animation.drive(
+                Tween(begin: const Offset(1.0, 0.0), end: Offset.zero)
+                    .chain(CurveTween(curve: Curves.easeOutCubic)),
+              ),
               child: child,
             );
           },

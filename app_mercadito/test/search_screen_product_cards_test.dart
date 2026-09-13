@@ -169,5 +169,68 @@ void main() {
     // Reverts to $22.50
     expect(find.text('\$22.50'), findsOneWidget);
   });
+
+  testWidgets('SearchScreen filters products by Verificados quick chip', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 2.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: SearchScreen(),
+      ),
+    );
+
+    await tester.pump(const Duration(milliseconds: 1600));
+    await tester.pumpAndSettle();
+
+    // Tap on the 'Verificados' chip in the horizontal filter list
+    final verificadoChip = find.text('Verificados');
+    expect(verificadoChip, findsOneWidget);
+    await tester.tap(verificadoChip);
+    await tester.pumpAndSettle();
+
+    // Papa Blanca Alpha is verified
+    expect(find.text('Papa Blanca Alpha'), findsOneWidget);
+
+    // Maíz Blanco is verified: false, so it should not appear
+    expect(find.text('Maíz Blanco'), findsNothing);
+  });
+
+  testWidgets('SearchScreen opens advanced filters bottom sheet when tapping Filtros button', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 2.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: SearchScreen(),
+      ),
+    );
+
+    await tester.pump(const Duration(milliseconds: 1600));
+    await tester.pumpAndSettle();
+
+    // Tap 'Filtros' button
+    final filtrosButton = find.text('Filtros');
+    expect(filtrosButton, findsOneWidget);
+    await tester.tap(filtrosButton);
+    await tester.pumpAndSettle();
+
+    // Bottom sheet should open with title and filter sections
+    expect(find.text('Filtros de Mercado'), findsOneWidget);
+    expect(find.text('Productos Verificados'), findsOneWidget);
+    expect(find.text('Calificación Mínima'), findsOneWidget);
+    expect(find.text('Distancia Máxima'), findsOneWidget);
+    expect(find.text('Precio'), findsOneWidget);
+    expect(find.text('Calidad del Producto'), findsOneWidget);
+    expect(find.textContaining('Aplicar Filtros'), findsOneWidget);
+  });
 }
 

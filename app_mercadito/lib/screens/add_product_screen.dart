@@ -2300,14 +2300,30 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                               letterSpacing: 0.3,
                                             ),
                                           ),
-                                          Text(
-                                            'Tecomán, Colima',
-                                            style: TextStyle(
-                                              fontFamily: 'Plus Jakarta Sans',
-                                              fontSize: 10,
-                                              color: Colors.grey[600],
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
+                                          Row(
+                                            children: [
+                                              Flexible(
+                                                child: Text(
+                                                  'Tecomán, Colima',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Plus Jakarta Sans',
+                                                    fontSize: 10,
+                                                    color: Colors.grey[600],
+                                                  ),
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 4),
+                                              const Text(
+                                                '• A 4.2 km',
+                                                style: TextStyle(
+                                                  fontFamily: 'Plus Jakarta Sans',
+                                                  fontSize: 9.5,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xFF059669),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),

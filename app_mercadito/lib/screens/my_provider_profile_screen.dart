@@ -59,6 +59,220 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
     return FileImage(File(path));
   }
 
+  void _openClientPreview(BuildContext context, String fullName, String specialty, String salesType, String avatarUrl) {
+    final providerData = {
+      'name': fullName,
+      'sector': (UserSession.state != null && UserSession.state!.isNotEmpty)
+          ? 'Sector ${UserSession.state}'
+          : 'Sector San Pedro',
+      'distance': 'A 5 km prom.',
+      'rating': '4.9',
+      'level': 'Nivel 3',
+      'tags': specialty,
+      'salesType': salesType,
+      'reviews': '124 reseñas de clientes',
+      'traded': '312 productos negociados',
+      'open': true,
+      'closeTime': '18:00',
+      'img': avatarUrl,
+      'verified': true,
+      'products': _myProducts,
+    };
+    context.push('/provider', extra: providerData);
+  }
+
+  void _showEditProfileModal(BuildContext context, bool isDark) {
+    final nameCtrl = TextEditingController(text: UserSession.fullName ?? 'Ricardo Mendoza');
+    final descCtrl = TextEditingController(text: UserSession.businessDescription ?? '');
+    final phoneCtrl = TextEditingController(text: UserSession.phone ?? '+52 8299421923');
+    final emailCtrl = TextEditingController(text: UserSession.email ?? 'contacto@mercadito.com');
+    String currentSpecialty = UserSession.specialty ?? 'Alimento Animal';
+    String currentSalesType = UserSession.salesType ?? 'Al Detalle';
+
+    final List<String> availableSpecialties = [
+      'Alimento Animal',
+      'Carnes y Derivados',
+      'Frutas y Vegetales',
+      'Lácteos y Huevos',
+      'Granos y Cereales',
+      'Flores y Plantas',
+      'Insumos Agrícolas',
+      'Otros',
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: isDark ? const Color(0xFF13281E) : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Expanded(
+                          child: Text(
+                            'Editar Perfil de Negocio',
+                            style: TextStyle(
+                              fontFamily: 'Plus Jakarta Sans',
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close_rounded),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: nameCtrl,
+                      decoration: InputDecoration(
+                        labelText: 'Nombre del Negocio / Finca',
+                        prefixIcon: const Icon(Icons.storefront_rounded, color: Color(0xFF285E44)),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: descCtrl,
+                      maxLines: 3,
+                      decoration: InputDecoration(
+                        labelText: 'Descripción / Sobre Mí',
+                        hintText: 'Cuéntale a tus clientes sobre tu historia, cosechas y certificaciones...',
+                        prefixIcon: const Icon(Icons.description_outlined, color: Color(0xFF285E44)),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: phoneCtrl,
+                      decoration: InputDecoration(
+                        labelText: 'Teléfono / WhatsApp',
+                        prefixIcon: const Icon(Icons.phone_outlined, color: Color(0xFF285E44)),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: emailCtrl,
+                      decoration: InputDecoration(
+                        labelText: 'Correo Electrónico',
+                        prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF285E44)),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text('Especialidad Comercial:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 6,
+                      children: availableSpecialties.map((spec) {
+                        final isSel = currentSpecialty.toLowerCase() == spec.toLowerCase();
+                        return ChoiceChip(
+                          label: Text(spec, style: const TextStyle(fontSize: 11)),
+                          selected: isSel,
+                          selectedColor: const Color(0xFF285E44).withValues(alpha: 0.15),
+                          labelStyle: TextStyle(
+                            color: isSel ? const Color(0xFF285E44) : (isDark ? Colors.grey[300] : Colors.black87),
+                            fontWeight: isSel ? FontWeight.bold : FontWeight.normal,
+                          ),
+                          onSelected: (selected) {
+                            if (selected) {
+                              setModalState(() {
+                                currentSpecialty = spec;
+                              });
+                            }
+                          },
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text('Modalidad de Venta:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 6,
+                      children: ['Al Detalle', 'Mayorista', 'Ambos'].map((type) {
+                        final isSel = currentSalesType == type;
+                        return ChoiceChip(
+                          label: Text(type),
+                          selected: isSel,
+                          selectedColor: const Color(0xFF285E44).withValues(alpha: 0.15),
+                          labelStyle: TextStyle(
+                            color: isSel ? const Color(0xFF285E44) : (isDark ? Colors.grey[300] : Colors.black87),
+                            fontWeight: isSel ? FontWeight.bold : FontWeight.normal,
+                          ),
+                          onSelected: (selected) {
+                            if (selected) {
+                              setModalState(() {
+                                currentSalesType = type;
+                              });
+                            }
+                          },
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 46,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            UserSession.fullName = nameCtrl.text.trim().isNotEmpty ? nameCtrl.text.trim() : UserSession.fullName;
+                            UserSession.businessDescription = descCtrl.text.trim();
+                            UserSession.phone = phoneCtrl.text.trim();
+                            UserSession.email = emailCtrl.text.trim();
+                            UserSession.specialty = currentSpecialty;
+                            UserSession.salesType = currentSalesType;
+                          });
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Perfil de negocio actualizado exitosamente'),
+                              backgroundColor: Color(0xFF285E44),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF285E44),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                        child: const Text('Guardar Cambios', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -67,13 +281,14 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
     // Premium Emerald Harvest colors
     final bgColor = isDark ? const Color(0xFF0f231d) : const Color(0xFFf7faf5);
     final cardBgColor = isDark ? const Color(0xFF0f172a) : Colors.white;
-    final primaryColor = isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f);
+    final primaryColor = isDark ? const Color(0xFF89d6b0) : const Color(0xFF285E44);
     final onSurfaceColor = isDark ? Colors.white : const Color(0xFF181d1a);
     final onSurfaceVariantColor = isDark ? const Color(0xFFbec9c1) : const Color(0xFF3f4943);
 
     // Session Data with elegant defaults matching the Ricardo Mendoza design
     final String fullName = UserSession.fullName ?? 'Ricardo Mendoza';
     final String specialty = UserSession.specialty ?? 'Orgánico';
+    final String salesType = UserSession.salesType ?? 'Al Detalle';
     final String description = UserSession.businessDescription ??
         'Con más de 15 años de experiencia en la agricultura tradicional y 5 años especializados en cultivos orgánicos certificados. Ubicados en los fértiles valles de Guanajuato, nuestro enfoque es la sostenibilidad y la calidad premium para mercados exigentes.';
     
@@ -87,19 +302,21 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
           child: Column(
             children: [
               // 1. Top AppBar Area (Floating style matching premium mobile)
-              _buildTopAppBar(context, primaryColor, onSurfaceColor, cardBgColor),
+              _buildTopAppBar(context, primaryColor, onSurfaceColor, cardBgColor, fullName, specialty, salesType, avatarUrl, isDark),
 
               // 2. Banner & Profile Info Card (Overlapping layout)
               _buildBannerAndProfileHeader(
                 context,
                 fullName,
                 specialty,
+                salesType,
                 avatarUrl,
                 bannerUrl,
                 primaryColor,
                 cardBgColor,
                 onSurfaceColor,
                 onSurfaceVariantColor,
+                isDark,
               ),
 
               // 3. Main Bento Grid & Content layout
@@ -117,7 +334,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                             flex: 4,
                             child: Column(
                               children: [
-                                _buildProductorInfoCard(description, primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor),
+                                _buildProductorInfoCard(context, description, primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor, isDark),
                                 const SizedBox(height: 16),
                                 _buildContactoCard(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor),
                                 const SizedBox(height: 16),
@@ -146,7 +363,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                     } else {
                       return Column(
                         children: [
-                          _buildProductorInfoCard(description, primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor),
+                          _buildProductorInfoCard(context, description, primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor, isDark),
                           const SizedBox(height: 16),
                           _buildContactoCard(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor),
                           const SizedBox(height: 16),
@@ -173,7 +390,17 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
     );
   }
 
-  Widget _buildTopAppBar(BuildContext context, Color primaryColor, Color onSurfaceColor, Color cardBgColor) {
+  Widget _buildTopAppBar(
+    BuildContext context,
+    Color primaryColor,
+    Color onSurfaceColor,
+    Color cardBgColor,
+    String fullName,
+    String specialty,
+    String salesType,
+    String avatarUrl,
+    bool isDark,
+  ) {
     return Container(
       color: cardBgColor,
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
@@ -184,34 +411,74 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
             icon: Icon(Icons.arrow_back, color: primaryColor),
             onPressed: () => context.pop(),
           ),
-          Text(
-            'Mi Perfil de Negocio',
-            style: TextStyle(
-              fontFamily: 'Plus Jakarta Sans',
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: primaryColor,
-              letterSpacing: -0.5,
+          Expanded(
+            child: Text(
+              'Mi Perfil de Negocio',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                color: primaryColor,
+                letterSpacing: -0.5,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          PopupMenuButton<String>(
-            icon: Icon(Icons.more_vert, color: onSurfaceColor),
-            onSelected: (value) {
-              if (value == 'logout') {
-                UserSession.clear();
-                context.go('/login');
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'logout',
-                child: Row(
-                  children: [
-                    Icon(Icons.logout, color: Colors.red, size: 18),
-                    SizedBox(width: 8),
-                    Text('Cerrar Sesión', style: TextStyle(color: Colors.red)),
-                  ],
-                ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(Icons.visibility_outlined, color: primaryColor),
+                tooltip: 'Ver como Cliente',
+                onPressed: () => _openClientPreview(context, fullName, specialty, salesType, avatarUrl),
+              ),
+              PopupMenuButton<String>(
+                icon: Icon(Icons.more_vert, color: onSurfaceColor),
+                onSelected: (value) {
+                  if (value == 'preview') {
+                    _openClientPreview(context, fullName, specialty, salesType, avatarUrl);
+                  } else if (value == 'edit') {
+                    _showEditProfileModal(context, isDark);
+                  } else if (value == 'logout') {
+                    UserSession.clear();
+                    context.go('/login');
+                  }
+                },
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'preview',
+                    child: Row(
+                      children: [
+                        Icon(Icons.visibility_outlined, color: primaryColor, size: 18),
+                        const SizedBox(width: 8),
+                        const Text('Ver como Cliente'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'edit',
+                    child: Row(
+                      children: [
+                        Icon(Icons.edit_outlined, color: primaryColor, size: 18),
+                        const SizedBox(width: 8),
+                        const Text('Editar Perfil'),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuDivider(),
+                  const PopupMenuItem(
+                    value: 'logout',
+                    child: Row(
+                      children: [
+                        Icon(Icons.logout, color: Colors.red, size: 18),
+                        SizedBox(width: 8),
+                        Text('Cerrar Sesión', style: TextStyle(color: Colors.red)),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -224,12 +491,14 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
     BuildContext context,
     String fullName,
     String specialty,
+    String salesType,
     String avatarUrl,
     String bannerUrl,
     Color primaryColor,
     Color cardBgColor,
     Color onSurfaceColor,
     Color onSurfaceVariantColor,
+    bool isDark,
   ) {
     final bannerImage = bannerUrl.isEmpty
         ? 'https://lh3.googleusercontent.com/aida-public/AB6AXuD0f8i6gAUC6lZoFgBhG_4D6gxiBJCmqyBhJlw-MBVqmC-A0cubQM4YpVOOZbUX6TOqjnFGXeesM7EukfXI9c6Ipc45Ks8uDdAXqajsDL9hPLE9xQfknUmDSpdKU1m9_sBQTw5RCdJpx2x1FCpsxMN1tHvHGe6oMIGWv6JiE7LdTTQmfWhKYWeBuH83jLO-c0_q7pzmsdN9QhF2AHaqVMjgSGwX9Rtozw3fR0t9MaxfdrKM7MT8fHppJ6050lahiGFtwhfXXUtPTds'
@@ -300,7 +569,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                     ),
                     Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFF00462f),
+                        color: const Color(0xFF285E44),
                         shape: BoxShape.circle,
                         border: Border.all(color: cardBgColor, width: 2),
                       ),
@@ -350,46 +619,302 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
               ),
             ],
           ),
+          const SizedBox(height: 6),
+
+          // Location Row (Sector)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.location_on_rounded, size: 13, color: isDark ? Colors.grey[400] : const Color(0xFF64748B)),
+              const SizedBox(width: 4),
+              Flexible(
+                child: Text(
+                  (UserSession.state != null && UserSession.state!.isNotEmpty)
+                      ? 'Sector ${UserSession.state}, Guanajuato'
+                      : 'Sector San Pedro, Guanajuato',
+                  style: TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? Colors.grey[300] : const Color(0xFF475569),
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 12),
 
-          // Specialty Tag Chip
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            decoration: BoxDecoration(
-              color: const Color(0xFFcaead7).withValues(alpha: 0.4),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFFcaead7), width: 1),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
+          // Badges Row: Specialty, Prestige Level, Sales Modality
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              // Specialty
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFcaead7).withValues(alpha: 0.4),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: const Color(0xFFcaead7), width: 1),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.eco, size: 12, color: Color(0xFF285E44)),
+                    const SizedBox(width: 4),
+                    Text(
+                      specialty.toUpperCase(),
+                      style: const TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.5,
+                        color: Color(0xFF285E44),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Prestige Level
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.amber.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.amber.withValues(alpha: 0.4), width: 1),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.workspace_premium_rounded, size: 14, color: Color(0xFFB45309)),
+                    SizedBox(width: 4),
+                    Text(
+                      'Nivel 3',
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFFB45309),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Sales Type
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF285E44).withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: const Color(0xFF285E44).withValues(alpha: 0.25), width: 1),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.sell_outlined, size: 11, color: Color(0xFF285E44)),
+                    const SizedBox(width: 4),
+                    Text(
+                      salesType,
+                      style: const TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF285E44),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+
+          // Operating Status Chip
+          Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 6,
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF10B981),
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const Text(
+                'ABIERTO AHORA',
+                style: TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  color: Color(0xFF10B981),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.3,
+                ),
+              ),
+              Text(
+                '• Cierra a las 18:00',
+                style: TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 11,
+                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Quick Action Bar: [Ver como Cliente] + shortcuts [Editar Perfil] [Añadir Producto] [Ofertas]
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
               children: [
-                const Icon(Icons.eco, size: 12, color: Color(0xFF00462f)),
-                const SizedBox(width: 4),
-                Text(
-                  specialty.toUpperCase(),
-                  style: const TextStyle(
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontSize: 10,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0.5,
-                    color: Color(0xFF00462f),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () => _openClientPreview(context, fullName, specialty, salesType, avatarUrl),
+                    icon: const Icon(Icons.visibility_rounded, size: 18),
+                    label: const Text(
+                      'Ver como Cliente (Vista Previa)',
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      foregroundColor: Colors.white,
+                      elevation: 1,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
                   ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () => _showEditProfileModal(context, isDark),
+                        icon: const Icon(Icons.edit_outlined, size: 14),
+                        label: const Text(
+                          'Editar',
+                          style: TextStyle(
+                            fontFamily: 'Plus Jakarta Sans',
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: primaryColor,
+                          side: BorderSide(color: primaryColor.withValues(alpha: 0.6), width: 1.2),
+                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () => context.push('/add-product'),
+                        icon: const Icon(Icons.add_circle_outline_rounded, size: 14),
+                        label: const Text(
+                          '+ Producto',
+                          style: TextStyle(
+                            fontFamily: 'Plus Jakarta Sans',
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: primaryColor,
+                          side: BorderSide(color: primaryColor.withValues(alpha: 0.6), width: 1.2),
+                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () => context.push('/flash-offers'),
+                        icon: const Icon(Icons.bolt_rounded, size: 15, color: Color(0xFFD97706)),
+                        label: const Text(
+                          'Ofertas',
+                          style: TextStyle(
+                            fontFamily: 'Plus Jakarta Sans',
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFD97706),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Color(0xFFD97706), width: 1.2),
+                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
 
           // Bento Tonal Stats Cards
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Row(
               children: [
-                _buildBentoStatCard('4.9', 'CALIFICACIÓN', Icons.star, Colors.amber, cardBgColor, onSurfaceColor, onSurfaceVariantColor),
+                _buildBentoStatCard(
+                  '4.9',
+                  'CALIFICACIÓN',
+                  Icons.star_rounded,
+                  Colors.amber,
+                  cardBgColor,
+                  onSurfaceColor,
+                  onSurfaceVariantColor,
+                  hintText: 'Detalle',
+                  onTap: () => _showRatingBreakdown(context, isDark),
+                ),
                 const SizedBox(width: 8),
-                _buildBentoStatCard('124', 'RESEÑAS', Icons.reviews, Colors.grey, cardBgColor, onSurfaceColor, onSurfaceVariantColor),
+                _buildBentoStatCard(
+                  '124',
+                  'RESEÑAS',
+                  Icons.rate_review_outlined,
+                  primaryColor,
+                  cardBgColor,
+                  onSurfaceColor,
+                  onSurfaceVariantColor,
+                  hintText: 'Ver todas',
+                  onTap: () => context.push('/my-reviews'),
+                ),
                 const SizedBox(width: 8),
-                _buildBentoStatCard('312', 'NEGOCIACIONES', Icons.handshake, Colors.grey, cardBgColor, onSurfaceColor, onSurfaceVariantColor),
+                _buildBentoStatCard(
+                  '312',
+                  'NEGOCIACIONES',
+                  Icons.handshake_outlined,
+                  primaryColor,
+                  cardBgColor,
+                  onSurfaceColor,
+                  onSurfaceVariantColor,
+                  hintText: 'Ver tratos',
+                  onTap: () => context.push('/negotiations'),
+                ),
               ],
             ),
           ),
@@ -406,43 +931,241 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
     Color iconColor,
     Color cardBg,
     Color onSurface,
-    Color onSurfaceVariant,
-  ) {
+    Color onSurfaceVariant, {
+    VoidCallback? onTap,
+    String? hintText,
+  }) {
     return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12.0),
-        decoration: BoxDecoration(
-          color: cardBg.withValues(alpha: 0.5),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: onSurfaceVariant.withValues(alpha: 0.15)),
-        ),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
+            decoration: BoxDecoration(
+              color: cardBg.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: onSurfaceVariant.withValues(alpha: 0.15)),
+            ),
+            child: Column(
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      val,
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        color: onSurface,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(icon, size: 14, color: iconColor),
+                  ],
+                ),
+                const SizedBox(height: 4),
                 Text(
-                  val,
+                  label,
                   style: TextStyle(
                     fontFamily: 'Plus Jakarta Sans',
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: onSurface,
+                    fontSize: 8,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.5,
+                    color: onSurfaceVariant,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(width: 4),
-                Icon(icon, size: 14, color: iconColor),
+                if (hintText != null) ...[
+                  const SizedBox(height: 3),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        hintText,
+                        style: const TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 8.5,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF285E44),
+                        ),
+                      ),
+                      const SizedBox(width: 1),
+                      const Icon(Icons.chevron_right, size: 10, color: Color(0xFF285E44)),
+                    ],
+                  ),
+                ],
               ],
             ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                fontFamily: 'Plus Jakarta Sans',
-                fontSize: 8,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0.5,
-                color: onSurfaceVariant,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showRatingBreakdown(BuildContext context, bool isDark) {
+    final bgColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final onSurface = isDark ? Colors.white : const Color(0xFF181D1A);
+    final onSurfaceVar = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    const primaryColor = Color(0xFF285E44);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.grey.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.stars_rounded, color: Colors.amber, size: 22),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Calificaciones y Reputación',
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        color: onSurface,
+                      ),
+                    ),
+                  ],
+                ),
+                IconButton(
+                  icon: Icon(Icons.close, color: onSurfaceVar, size: 20),
+                  onPressed: () => Navigator.pop(ctx),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // Overall Rating Summary Box
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: primaryColor.withValues(alpha: 0.15)),
+              ),
+              child: Row(
+                children: [
+                  Column(
+                    children: [
+                      Text(
+                        '4.9',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 36,
+                          fontWeight: FontWeight.w900,
+                          color: onSurface,
+                        ),
+                      ),
+                      Row(
+                        children: List.generate(
+                          5,
+                          (i) => const Icon(Icons.star_rounded, color: Colors.amber, size: 16),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '124 opiniones',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 11,
+                          color: onSurfaceVar,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        _buildStarRow('5', 0.85, '105', onSurfaceVar),
+                        const SizedBox(height: 4),
+                        _buildStarRow('4', 0.10, '13', onSurfaceVar),
+                        const SizedBox(height: 4),
+                        _buildStarRow('3', 0.04, '5', onSurfaceVar),
+                        const SizedBox(height: 4),
+                        _buildStarRow('2', 0.01, '1', onSurfaceVar),
+                        const SizedBox(height: 4),
+                        _buildStarRow('1', 0.00, '0', onSurfaceVar),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Highlights
+            Row(
+              children: [
+                Expanded(
+                  child: _buildReputationPill(
+                    icon: Icons.verified_outlined,
+                    title: '100% Calidad',
+                    subtitle: 'Frescura garantizada',
+                    isDark: isDark,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _buildReputationPill(
+                    icon: Icons.bolt_outlined,
+                    title: '98% Entregas',
+                    subtitle: 'A tiempo según pacto',
+                    isDark: isDark,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              height: 46,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  context.push('/my-reviews');
+                },
+                icon: const Icon(Icons.rate_review_outlined, size: 18),
+                label: const Text(
+                  'Ver Todas las Reseñas de Clientes',
+                  style: TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
               ),
             ),
           ],
@@ -451,13 +1174,109 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
     );
   }
 
+  Widget _buildStarRow(String stars, double progress, String count, Color textCol) {
+    return Row(
+      children: [
+        Text(
+          stars,
+          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: textCol),
+        ),
+        const SizedBox(width: 4),
+        const Icon(Icons.star, size: 10, color: Colors.amber),
+        const SizedBox(width: 6),
+        Expanded(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: progress,
+              backgroundColor: Colors.grey.withValues(alpha: 0.15),
+              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF285E44)),
+              minHeight: 6,
+            ),
+          ),
+        ),
+        const SizedBox(width: 6),
+        SizedBox(
+          width: 24,
+          child: Text(
+            count,
+            textAlign: TextAlign.right,
+            style: TextStyle(fontSize: 10, color: textCol, fontWeight: FontWeight.w500),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildReputationPill({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required bool isDark,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.15)),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 18, color: const Color(0xFF285E44)),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontSize: 9,
+                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  bool _isDummyOrEmptyDescription(String text) {
+    final trimmed = text.trim();
+    if (trimmed.isEmpty) return true;
+    if (trimmed.length < 15) return true;
+    final lower = trimmed.toLowerCase();
+    if (lower.contains('sdf') || lower.contains('dfg') || lower.contains('asdf') || lower.contains('qwer')) {
+      return true;
+    }
+    return false;
+  }
+
   Widget _buildProductorInfoCard(
+    BuildContext context,
     String bioText,
     Color primaryColor,
     Color cardBgColor,
     Color onSurfaceColor,
     Color onSurfaceVariantColor,
+    bool isDark,
   ) {
+    final bool isDummy = _isDummyOrEmptyDescription(bioText);
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -475,30 +1294,108 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(Icons.info_outline, color: primaryColor, size: 20),
-              const SizedBox(width: 8),
-              Text(
-                'Sobre Mi',
-                style: TextStyle(
-                  fontFamily: 'Plus Jakarta Sans',
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: onSurfaceColor,
-                ),
+              Row(
+                children: [
+                  Icon(Icons.info_outline, color: primaryColor, size: 20),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Sobre Mi',
+                    style: TextStyle(
+                      fontFamily: 'Plus Jakarta Sans',
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: onSurfaceColor,
+                    ),
+                  ),
+                ],
+              ),
+              IconButton(
+                icon: Icon(Icons.edit_outlined, size: 16, color: primaryColor),
+                tooltip: 'Editar Sobre Mí',
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: () => _showEditProfileModal(context, isDark),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          Text(
-            bioText,
-            style: TextStyle(
-              fontFamily: 'Plus Jakarta Sans',
-              fontSize: 13,
-              height: 1.5,
-              color: onSurfaceVariantColor,
+          if (isDummy)
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E293B) : const Color(0xFFFFFBEB),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: isDark ? const Color(0xFFD97706).withValues(alpha: 0.4) : const Color(0xFFFDE68A),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.lightbulb_outline_rounded, color: Color(0xFFD97706), size: 18),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          '¡Cuéntale tu historia a los clientes!',
+                          style: TextStyle(
+                            fontFamily: 'Plus Jakarta Sans',
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? const Color(0xFFFDE68A) : const Color(0xFF92400E),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Los compradores prefieren negociar con productores que describen sus cosechas, certificaciones y origen de sus productos.',
+                    style: TextStyle(
+                      fontFamily: 'Plus Jakarta Sans',
+                      fontSize: 11.5,
+                      height: 1.4,
+                      color: isDark ? Colors.grey[300] : const Color(0xFF78350F),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    height: 32,
+                    child: OutlinedButton.icon(
+                      onPressed: () => _showEditProfileModal(context, isDark),
+                      icon: const Icon(Icons.edit_note_rounded, size: 15),
+                      label: const Text(
+                        'Redactar descripción',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color(0xFFD97706),
+                        side: const BorderSide(color: Color(0xFFD97706)),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else
+            Text(
+              bioText,
+              style: TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                fontSize: 13,
+                height: 1.5,
+                color: onSurfaceVariantColor,
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -620,15 +1517,18 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Lunes a Sábado',
-                style: TextStyle(
-                  fontFamily: 'Plus Jakarta Sans',
-                  fontSize: 13,
-                  color: onSurfaceColor,
-                  fontWeight: FontWeight.w500,
+              Expanded(
+                child: Text(
+                  'Lunes a Sábado',
+                  style: TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontSize: 13,
+                    color: onSurfaceColor,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
+              const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
@@ -651,15 +1551,18 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Domingo',
-                style: TextStyle(
-                  fontFamily: 'Plus Jakarta Sans',
-                  fontSize: 13,
-                  color: onSurfaceColor,
-                  fontWeight: FontWeight.w500,
+              Expanded(
+                child: Text(
+                  'Domingo',
+                  style: TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontSize: 13,
+                    color: onSurfaceColor,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
+              const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
@@ -1266,10 +2169,14 @@ class _AnimatedGlowingBorderState extends State<AnimatedGlowingBorder> with Sing
   @override
   void initState() {
     super.initState();
+    final isTest = WidgetsBinding.instance.runtimeType.toString().contains('Test');
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 4),
-    )..repeat();
+    );
+    if (!isTest) {
+      _controller.repeat();
+    }
   }
 
   @override

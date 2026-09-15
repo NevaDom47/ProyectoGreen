@@ -207,5 +207,64 @@ void main() {
     final exception = tester.takeException();
     expect(exception, isNull);
   });
+
+  testWidgets('ProviderProfileScreen displays code, member since, specialty badge, modality, and schedule chip', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(375, 812);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    final providerWithBadges = {
+      'name': 'Andherson Diaz Reyes',
+      'code': '#PRO-88291',
+      'memberSince': 'Miembro desde Enero 2022',
+      'sector': 'Sector Chuquisaca, Guanajuato',
+      'distance': 'A 5 km',
+      'banner': 'https://via.placeholder.com/600x240',
+      'img': 'https://via.placeholder.com/100',
+      'rating': 4.9,
+      'level': 'Nivel 3',
+      'specialty': 'Otros',
+      'salesType': 'Al Detalle',
+      'open': true,
+      'closeTime': '18:00',
+    };
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProviderProfileScreen(provider: providerWithBadges),
+      ),
+    );
+
+    await tester.pump(const Duration(milliseconds: 1400));
+    await tester.pumpAndSettle();
+
+    // Verify Provider name
+    expect(find.text('Andherson Diaz Reyes'), findsOneWidget);
+
+    // Verify Code & Member since row
+    expect(find.text('#PRO-88291'), findsOneWidget);
+    expect(find.text('Miembro desde Enero 2022'), findsOneWidget);
+
+    // Verify Category / Specialty badge
+    expect(find.text('OTROS'), findsOneWidget);
+    expect(find.byIcon(Icons.eco), findsOneWidget);
+
+    // Verify Prestige Level badge
+    expect(find.text('Nivel 3'), findsOneWidget);
+    expect(find.byIcon(Icons.military_tech_rounded), findsOneWidget);
+
+    // Verify Sales Modality badge
+    expect(find.text('Al Detalle'), findsOneWidget);
+
+    // Verify Live schedule chip
+    expect(find.text('ABIERTO AHORA'), findsOneWidget);
+    expect(find.text('• Cierra a las 18:00'), findsOneWidget);
+
+    final exception = tester.takeException();
+    expect(exception, isNull);
+  });
 }
 

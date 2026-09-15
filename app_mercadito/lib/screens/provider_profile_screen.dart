@@ -57,6 +57,55 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
     return 'Nivel 3';
   }
 
+  String get _providerCode {
+    final code = widget.provider['code'] ?? widget.provider['providerCode'] ?? widget.provider['id'];
+    if (code != null && code.toString().trim().isNotEmpty) {
+      final c = code.toString().trim();
+      return c.startsWith('#') ? c : '#$c';
+    }
+    return '#PRO-88291';
+  }
+
+  String get _providerMemberSince {
+    final memberSince = widget.provider['memberSince'] ?? widget.provider['member_since'];
+    if (memberSince != null && memberSince.toString().trim().isNotEmpty) {
+      final m = memberSince.toString().trim();
+      return m.toLowerCase().startsWith('miembro') ? m : 'Miembro desde $m';
+    }
+    return 'Miembro desde Enero 2022';
+  }
+
+  String get _providerSpecialty {
+    final raw = widget.provider['specialty'] ?? widget.provider['tags'] ?? widget.provider['category'];
+    if (raw != null && raw.toString().trim().isNotEmpty) {
+      return raw.toString().trim();
+    }
+    return 'Otros';
+  }
+
+  String get _providerSalesType {
+    final raw = widget.provider['salesType'] ?? widget.provider['modality'];
+    if (raw != null && raw.toString().trim().isNotEmpty) {
+      return raw.toString().trim();
+    }
+    return 'Al Detalle';
+  }
+
+  bool get _providerIsOpen {
+    final val = widget.provider['open'] ?? widget.provider['isOpen'];
+    if (val is bool) return val;
+    if (val is String) return val.toLowerCase() == 'true';
+    return true;
+  }
+
+  String get _providerCloseTime {
+    final raw = widget.provider['closeTime'] ?? widget.provider['closesAt'];
+    if (raw != null && raw.toString().trim().isNotEmpty) {
+      return raw.toString().trim();
+    }
+    return '18:00';
+  }
+
 
   @override
   void initState() {
@@ -244,6 +293,46 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                                   ),
                                   const SizedBox(height: 4),
                                   _EntranceAnimation(
+                                    delay: 350,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          _providerCode,
+                                          style: TextStyle(
+                                            fontFamily: 'Plus Jakarta Sans',
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: theme.colorScheme.primary,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Container(
+                                          width: 4,
+                                          height: 4,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Flexible(
+                                          child: Text(
+                                            _providerMemberSince,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontFamily: 'Plus Jakarta Sans',
+                                              fontSize: 12,
+                                              color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  _EntranceAnimation(
                                     delay: 400,
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -269,61 +358,48 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                                     ),
                                   ),
 
-                                  const SizedBox(height: 8),
+                                  const SizedBox(height: 12),
                                   _EntranceAnimation(
                                     delay: 500,
-                                    child: Text(
-                                      widget.provider['tags'] ?? '',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: theme.colorScheme.primary,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  _EntranceAnimation(
-                                    delay: 550,
                                     child: Wrap(
                                       alignment: WrapAlignment.center,
                                       spacing: 8,
                                       runSpacing: 6,
+                                      crossAxisAlignment: WrapCrossAlignment.center,
                                       children: [
+                                        // Specialty / Category Badge (Diseño etiquetas.txt)
                                         Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                           decoration: BoxDecoration(
-                                            color: isDark ? const Color(0xFF16251E) : const Color(0xFFEAF2E8),
-                                            borderRadius: BorderRadius.circular(20),
-                                            border: Border.all(
-                                              color: isDark ? const Color(0xFF23352B) : theme.colorScheme.primary.withValues(alpha: 0.2),
-                                            ),
+                                            color: const Color(0xFFEAF2E8),
+                                            borderRadius: BorderRadius.circular(8),
+                                            border: Border.all(color: const Color(0xFFBBD5C7), width: 1),
                                           ),
                                           child: Row(
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Icon(
-                                                Icons.sell_outlined,
-                                                size: 14,
-                                                color: isDark ? const Color(0xFF8BD8B2) : theme.colorScheme.primary,
-                                              ),
-                                              const SizedBox(width: 6),
+                                              const Icon(Icons.eco, size: 12, color: Color(0xFF016042)),
+                                              const SizedBox(width: 4),
                                               Text(
-                                                widget.provider['salesType'] ?? 'Al Detalle',
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: isDark ? const Color(0xFF8BD8B2) : theme.colorScheme.primary,
+                                                _providerSpecialty.toUpperCase(),
+                                                style: const TextStyle(
+                                                  fontFamily: 'Plus Jakarta Sans',
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.w900,
+                                                  letterSpacing: 0.5,
+                                                  color: Color(0xFF016042),
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
+
+                                        // Prestige Level Badge
                                         Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                           decoration: BoxDecoration(
                                             color: isDark ? const Color(0xFF262012) : const Color(0xFFFEF3C7),
-                                            borderRadius: BorderRadius.circular(20),
+                                            borderRadius: BorderRadius.circular(8),
                                             border: Border.all(
                                               color: isDark ? const Color(0xFF624A1D) : const Color(0xFFFCD34D),
                                             ),
@@ -340,14 +416,108 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                                               Text(
                                                 _providerPrestigeLevel,
                                                 style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
+                                                  fontFamily: 'Plus Jakarta Sans',
+                                                  fontSize: 10.5,
+                                                  fontWeight: FontWeight.w800,
                                                   color: isDark ? const Color(0xFFFBBF24) : const Color(0xFFB45309),
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
+
+                                        // Sales Modality Badge (Al Detalle / Por Mayor)
+                                        if (_providerSalesType == 'Al Detalle' || _providerSalesType == 'Ambos')
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFF059669),
+                                              borderRadius: BorderRadius.circular(8),
+                                              border: Border.all(color: const Color(0xFF059669), width: 1),
+                                            ),
+                                            child: const Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(Icons.sell_outlined, size: 11, color: Color(0xFFF1F9F7)),
+                                                SizedBox(width: 4),
+                                                Text(
+                                                  'Al Detalle',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Plus Jakarta Sans',
+                                                    fontSize: 10.5,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Color(0xFFF1F9F7),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        if (_providerSalesType == 'Mayorista' || _providerSalesType == 'Por Mayor' || _providerSalesType == 'Ambos')
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFF0369A1),
+                                              borderRadius: BorderRadius.circular(8),
+                                              border: Border.all(color: const Color(0xFF0369A1), width: 1),
+                                            ),
+                                            child: const Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(Icons.inventory_2_outlined, size: 11, color: Color(0xFFEDF4F8)),
+                                                SizedBox(width: 4),
+                                                Text(
+                                                  'Por Mayor',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Plus Jakarta Sans',
+                                                    fontSize: 10.5,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Color(0xFFEDF4F8),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+
+                                  // Live Operating Schedule Status Chip
+                                  _EntranceAnimation(
+                                    delay: 550,
+                                    child: Wrap(
+                                      alignment: WrapAlignment.center,
+                                      crossAxisAlignment: WrapCrossAlignment.center,
+                                      spacing: 6,
+                                      children: [
+                                        Container(
+                                          width: 8,
+                                          height: 8,
+                                          decoration: BoxDecoration(
+                                            color: _providerIsOpen ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                        Text(
+                                          _providerIsOpen ? 'ABIERTO AHORA' : 'CERRADO',
+                                          style: TextStyle(
+                                            fontFamily: 'Plus Jakarta Sans',
+                                            color: _providerIsOpen ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0.3,
+                                          ),
+                                        ),
+                                        if (_providerIsOpen)
+                                          Text(
+                                            '• Cierra a las $_providerCloseTime',
+                                            style: TextStyle(
+                                              fontFamily: 'Plus Jakarta Sans',
+                                              fontSize: 11,
+                                              color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
                                       ],
                                     ),
                                   ),

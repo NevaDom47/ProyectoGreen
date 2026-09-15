@@ -1,0 +1,23 @@
+Las etiquetas de calidad deben tener estos colores:
+Primera calidad: BackGround #DCE9E5 Letras #016042
+Segunda Calidad: BackGround #FFF4E5 Letras #FF9A04
+Tercera Calidad: BackGround #FDEDED Letras #F44336
+
+Necesito que los choice chips tenga este color en su diseño:
+*Cuando esten seleccionado
+-Background:  #016042
+-Letras + Icono: #FFFFFF
+-Bordes: #01604
+
+*Cuando no esten seleccionados
+-Background:  #F1F4F0
+-Letras + Icono: #737373
+-Bordes: #CCDFD9
+
+
+
+Categoria Etiquetas: BackGround  #EAF2E8 Letras #016042 Bordes #BBD5C7
+
+Etiqueta al detalle: BackGround #059669 Letras #F1F9F7 Bordes #059669
+
+Etiqueta Por Mayor Background #0369A1 Letras #EDF4F8 Bordes #0369A1

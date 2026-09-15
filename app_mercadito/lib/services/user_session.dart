@@ -19,6 +19,7 @@ class UserSession {
   static String? salesType;
   static String? businessDescription;
   static String? bannerPictureUrl;
+  static DateTime? businessNameLastChangedDate;
 
   /// Helper to check if the user has completed their onboarding role selection.
   static bool get hasRole => selectedRole != null;
@@ -40,5 +41,6 @@ class UserSession {
     salesType = null;
     businessDescription = null;
     bannerPictureUrl = null;
+    businessNameLastChangedDate = null;
   }
 }

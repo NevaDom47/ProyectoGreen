@@ -99,20 +99,23 @@ void main() {
     expect(find.text('Mi Perfil de Negocio'), findsOneWidget);
     expect(find.text('Sector San Pedro, Guanajuato'), findsOneWidget);
 
-    // Verify Action buttons
+    // Verify Action button
     expect(find.text('Ver como Cliente (Vista Previa)'), findsOneWidget);
-    expect(find.text('Editar'), findsOneWidget);
-    expect(find.text('+ Producto'), findsOneWidget);
-    expect(find.text('Ofertas'), findsOneWidget);
+    // The 3 buttons have been removed
+    expect(find.text('Editar'), findsNothing);
+    expect(find.text('+ Producto'), findsNothing);
+    expect(find.text('Ofertas'), findsNothing);
 
     // Verify Bento cards
     expect(find.text('CALIFICACIÓN'), findsOneWidget);
     expect(find.text('RESEÑAS'), findsOneWidget);
     expect(find.text('NEGOCIACIONES'), findsOneWidget);
 
-    // Verify Dummy description prompt
-    expect(find.text('¡Cuéntale tu historia a los clientes!'), findsOneWidget);
-    expect(find.text('Redactar descripción'), findsOneWidget);
+    // Verify Sobre Mi is view-only
+    expect(find.text('Sobre Mi'), findsOneWidget);
+    expect(find.text('dfgdfgdfg'), findsOneWidget);
+    expect(find.text('¡Cuéntale tu historia a los clientes!'), findsNothing);
+    expect(find.text('Redactar descripción'), findsNothing);
 
     // Tap Bento Rating card
     await tester.tap(find.text('CALIFICACIÓN'));
@@ -122,5 +125,63 @@ void main() {
     expect(find.text('Calificaciones y Reputación'), findsOneWidget);
     expect(find.text('124 opiniones'), findsOneWidget);
     expect(find.text('Ver Todas las Reseñas de Clientes'), findsOneWidget);
+
+    // Close bottom sheet
+    await tester.tap(find.byIcon(Icons.close));
+    await tester.pumpAndSettle();
+
+    // Scroll down to Settings Menu and tap 'Editar Información de Negocio'
+    final settingsTile = find.text('Editar Información de Negocio');
+    await tester.scrollUntilVisible(
+      settingsTile,
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(settingsTile);
+    await tester.pumpAndSettle();
+
+    // Verify that Editar Perfil modal opens
+    expect(find.text('Editar Perfil de Negocio'), findsOneWidget);
+    expect(find.text('Guardar Cambios'), findsOneWidget);
+  });
+
+  testWidgets('Business name cannot be changed within 3 months and shows restriction info', (tester) async {
+    UserSession.businessNameLastChangedDate = DateTime.now().subtract(const Duration(days: 30));
+
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+      UserSession.businessNameLastChangedDate = null;
+    });
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: MyProviderProfileScreen(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final settingsTile = find.text('Editar Información de Negocio');
+    await tester.scrollUntilVisible(
+      settingsTile,
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(settingsTile);
+    await tester.pumpAndSettle();
+
+    // Verify modal is open
+    expect(find.text('Editar Perfil de Negocio'), findsOneWidget);
+
+    // Verify restriction message is shown
+    expect(find.textContaining('El nombre del negocio solo se puede cambiar cada 3 meses. Próximo cambio disponible en'), findsOneWidget);
+
+    // Verify TextField is disabled
+    final textField = tester.widget<TextField>(find.widgetWithText(TextField, 'Ricardo Mendoza'));
+    expect(textField.enabled, isFalse);
   });
 }

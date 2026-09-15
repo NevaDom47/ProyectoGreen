@@ -62,6 +62,8 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
   void _openClientPreview(BuildContext context, String fullName, String specialty, String salesType, String avatarUrl) {
     final providerData = {
       'name': fullName,
+      'code': '#PRO-88291',
+      'memberSince': 'Miembro desde Enero 2022',
       'sector': (UserSession.state != null && UserSession.state!.isNotEmpty)
           ? 'Sector ${UserSession.state}'
           : 'Sector San Pedro',
@@ -69,6 +71,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
       'rating': '4.9',
       'level': 'Nivel 3',
       'tags': specialty,
+      'specialty': specialty,
       'salesType': salesType,
       'reviews': '124 reseñas de clientes',
       'traded': '312 productos negociados',
@@ -144,13 +147,83 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    TextField(
-                      controller: nameCtrl,
-                      decoration: InputDecoration(
-                        labelText: 'Nombre del Negocio / Finca',
-                        prefixIcon: const Icon(Icons.storefront_rounded, color: Color(0xFF285E44)),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                      ),
+                    Builder(
+                      builder: (context) {
+                        final lastChanged = UserSession.businessNameLastChangedDate;
+                        final now = DateTime.now();
+                        bool canChangeBusinessName = true;
+                        int daysRemaining = 0;
+                        DateTime? nextAllowedDate;
+
+                        if (lastChanged != null) {
+                          nextAllowedDate = DateTime(lastChanged.year, lastChanged.month + 3, lastChanged.day);
+                          if (now.isBefore(nextAllowedDate)) {
+                            canChangeBusinessName = false;
+                            daysRemaining = nextAllowedDate.difference(now).inDays + 1;
+                          }
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TextField(
+                              controller: nameCtrl,
+                              enabled: canChangeBusinessName,
+                              decoration: InputDecoration(
+                                labelText: 'Nombre del Negocio / Finca',
+                                prefixIcon: Icon(
+                                  canChangeBusinessName ? Icons.storefront_rounded : Icons.lock_outline_rounded,
+                                  color: canChangeBusinessName ? const Color(0xFF016042) : Colors.grey,
+                                ),
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                                filled: !canChangeBusinessName,
+                                fillColor: isDark ? Colors.white10 : const Color(0xFFF1F4F0),
+                              ),
+                            ),
+                            if (!canChangeBusinessName) ...[
+                              const SizedBox(height: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                                decoration: BoxDecoration(
+                                  color: Colors.amber.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: Colors.amber.withValues(alpha: 0.4)),
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Icon(Icons.info_outline, size: 14, color: Color(0xFFB45309)),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Text(
+                                        'El nombre del negocio solo se puede cambiar cada 3 meses. Próximo cambio disponible en $daysRemaining días (${nextAllowedDate!.day.toString().padLeft(2, '0')}/${nextAllowedDate.month.toString().padLeft(2, '0')}/${nextAllowedDate.year}).',
+                                        style: const TextStyle(
+                                          fontFamily: 'Plus Jakarta Sans',
+                                          fontSize: 10.5,
+                                          color: Color(0xFFB45309),
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ] else ...[
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4, left: 4),
+                                child: Text(
+                                  'El nombre del negocio solo se podrá cambiar cada 3 meses.',
+                                  style: TextStyle(
+                                    fontFamily: 'Plus Jakarta Sans',
+                                    fontSize: 10.5,
+                                    color: isDark ? Colors.grey[400] : const Color(0xFF737373),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        );
+                      },
                     ),
                     const SizedBox(height: 12),
                     TextField(
@@ -159,7 +232,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                       decoration: InputDecoration(
                         labelText: 'Descripción / Sobre Mí',
                         hintText: 'Cuéntale a tus clientes sobre tu historia, cosechas y certificaciones...',
-                        prefixIcon: const Icon(Icons.description_outlined, color: Color(0xFF285E44)),
+                        prefixIcon: const Icon(Icons.description_outlined, color: Color(0xFF016042)),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                     ),
@@ -168,7 +241,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                       controller: phoneCtrl,
                       decoration: InputDecoration(
                         labelText: 'Teléfono / WhatsApp',
-                        prefixIcon: const Icon(Icons.phone_outlined, color: Color(0xFF285E44)),
+                        prefixIcon: const Icon(Icons.phone_outlined, color: Color(0xFF016042)),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                     ),
@@ -177,7 +250,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                       controller: emailCtrl,
                       decoration: InputDecoration(
                         labelText: 'Correo Electrónico',
-                        prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF285E44)),
+                        prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF016042)),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                     ),
@@ -190,12 +263,22 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                       children: availableSpecialties.map((spec) {
                         final isSel = currentSpecialty.toLowerCase() == spec.toLowerCase();
                         return ChoiceChip(
-                          label: Text(spec, style: const TextStyle(fontSize: 11)),
+                          label: Text(spec),
                           selected: isSel,
-                          selectedColor: const Color(0xFF285E44).withValues(alpha: 0.15),
+                          showCheckmark: true,
+                          checkmarkColor: Colors.white,
+                          backgroundColor: const Color(0xFFF1F4F0),
+                          selectedColor: const Color(0xFF016042),
+                          side: BorderSide(
+                            color: isSel ? const Color(0xFF016042) : const Color(0xFFCCDFD9),
+                            width: 1,
+                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           labelStyle: TextStyle(
-                            color: isSel ? const Color(0xFF285E44) : (isDark ? Colors.grey[300] : Colors.black87),
-                            fontWeight: isSel ? FontWeight.bold : FontWeight.normal,
+                            color: isSel ? Colors.white : const Color(0xFF737373),
+                            fontWeight: isSel ? FontWeight.bold : FontWeight.w500,
+                            fontSize: 11,
+                            fontFamily: 'Plus Jakarta Sans',
                           ),
                           onSelected: (selected) {
                             if (selected) {
@@ -218,10 +301,20 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                         return ChoiceChip(
                           label: Text(type),
                           selected: isSel,
-                          selectedColor: const Color(0xFF285E44).withValues(alpha: 0.15),
+                          showCheckmark: true,
+                          checkmarkColor: Colors.white,
+                          backgroundColor: const Color(0xFFF1F4F0),
+                          selectedColor: const Color(0xFF016042),
+                          side: BorderSide(
+                            color: isSel ? const Color(0xFF016042) : const Color(0xFFCCDFD9),
+                            width: 1,
+                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           labelStyle: TextStyle(
-                            color: isSel ? const Color(0xFF285E44) : (isDark ? Colors.grey[300] : Colors.black87),
-                            fontWeight: isSel ? FontWeight.bold : FontWeight.normal,
+                            color: isSel ? Colors.white : const Color(0xFF737373),
+                            fontWeight: isSel ? FontWeight.bold : FontWeight.w500,
+                            fontSize: 11.5,
+                            fontFamily: 'Plus Jakarta Sans',
                           ),
                           onSelected: (selected) {
                             if (selected) {
@@ -239,8 +332,24 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                       height: 46,
                       child: ElevatedButton(
                         onPressed: () {
+                          final lastChanged = UserSession.businessNameLastChangedDate;
+                          final now = DateTime.now();
+                          bool canChange = true;
+                          if (lastChanged != null) {
+                            final nextAllowed = DateTime(lastChanged.year, lastChanged.month + 3, lastChanged.day);
+                            if (now.isBefore(nextAllowed)) {
+                              canChange = false;
+                            }
+                          }
+
+                          final newName = nameCtrl.text.trim();
+                          final bool nameChanged = newName.isNotEmpty && newName != (UserSession.fullName ?? '');
+
                           setState(() {
-                            UserSession.fullName = nameCtrl.text.trim().isNotEmpty ? nameCtrl.text.trim() : UserSession.fullName;
+                            if (canChange && nameChanged) {
+                              UserSession.fullName = newName;
+                              UserSession.businessNameLastChangedDate = DateTime.now();
+                            }
                             UserSession.businessDescription = descCtrl.text.trim();
                             UserSession.phone = phoneCtrl.text.trim();
                             UserSession.email = emailCtrl.text.trim();
@@ -251,12 +360,12 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('Perfil de negocio actualizado exitosamente'),
-                              backgroundColor: Color(0xFF285E44),
+                              backgroundColor: Color(0xFF016042),
                             ),
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF285E44),
+                          backgroundColor: const Color(0xFF016042),
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                         ),
@@ -334,7 +443,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                             flex: 4,
                             child: Column(
                               children: [
-                                _buildProductorInfoCard(context, description, primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor, isDark),
+                                _buildProductorInfoCard(description, primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor),
                                 const SizedBox(height: 16),
                                 _buildContactoCard(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor),
                                 const SizedBox(height: 16),
@@ -363,7 +472,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                     } else {
                       return Column(
                         children: [
-                          _buildProductorInfoCard(context, description, primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor, isDark),
+                          _buildProductorInfoCard(description, primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor),
                           const SizedBox(height: 16),
                           _buildContactoCard(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor),
                           const SizedBox(height: 16),
@@ -653,18 +762,18 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
             alignment: WrapAlignment.center,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              // Specialty
+              // Specialty Category
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFcaead7).withValues(alpha: 0.4),
+                  color: const Color(0xFFEAF2E8),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: const Color(0xFFcaead7), width: 1),
+                  border: Border.all(color: const Color(0xFFBBD5C7), width: 1),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.eco, size: 12, color: Color(0xFF285E44)),
+                    const Icon(Icons.eco, size: 12, color: Color(0xFF016042)),
                     const SizedBox(width: 4),
                     Text(
                       specialty.toUpperCase(),
@@ -673,7 +782,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                         fontSize: 10,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 0.5,
-                        color: Color(0xFF285E44),
+                        color: Color(0xFF016042),
                       ),
                     ),
                   ],
@@ -704,31 +813,57 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                   ],
                 ),
               ),
-              // Sales Type
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF285E44).withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: const Color(0xFF285E44).withValues(alpha: 0.25), width: 1),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.sell_outlined, size: 11, color: Color(0xFF285E44)),
-                    const SizedBox(width: 4),
-                    Text(
-                      salesType,
-                      style: const TextStyle(
-                        fontFamily: 'Plus Jakarta Sans',
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF285E44),
+              // Sales Type (Al Detalle, Por Mayor o Ambos)
+              if (salesType == 'Al Detalle' || salesType == 'Ambos')
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF059669),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFF059669), width: 1),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.sell_outlined, size: 11, color: Color(0xFFF1F9F7)),
+                      SizedBox(width: 4),
+                      Text(
+                        'Al Detalle',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFF1F9F7),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+              if (salesType == 'Mayorista' || salesType == 'Por Mayor' || salesType == 'Ambos')
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0369A1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFF0369A1), width: 1),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.inventory_2_outlined, size: 11, color: Color(0xFFEDF4F8)),
+                      SizedBox(width: 4),
+                      Text(
+                        'Por Mayor',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFEDF4F8),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
           const SizedBox(height: 10),
@@ -770,107 +905,30 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
           ),
           const SizedBox(height: 16),
 
-          // Quick Action Bar: [Ver como Cliente] + shortcuts [Editar Perfil] [Añadir Producto] [Ofertas]
+          // Quick Action Bar: [Ver como Cliente]
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () => _openClientPreview(context, fullName, specialty, salesType, avatarUrl),
-                    icon: const Icon(Icons.visibility_rounded, size: 18),
-                    label: const Text(
-                      'Ver como Cliente (Vista Previa)',
-                      style: TextStyle(
-                        fontFamily: 'Plus Jakarta Sans',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      foregroundColor: Colors.white,
-                      elevation: 1,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () => _openClientPreview(context, fullName, specialty, salesType, avatarUrl),
+                icon: const Icon(Icons.visibility_rounded, size: 18),
+                label: const Text(
+                  'Ver como Cliente (Vista Previa)',
+                  style: TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
                   ),
                 ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () => _showEditProfileModal(context, isDark),
-                        icon: const Icon(Icons.edit_outlined, size: 14),
-                        label: const Text(
-                          'Editar',
-                          style: TextStyle(
-                            fontFamily: 'Plus Jakarta Sans',
-                            fontSize: 11.5,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: primaryColor,
-                          side: BorderSide(color: primaryColor.withValues(alpha: 0.6), width: 1.2),
-                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () => context.push('/add-product'),
-                        icon: const Icon(Icons.add_circle_outline_rounded, size: 14),
-                        label: const Text(
-                          '+ Producto',
-                          style: TextStyle(
-                            fontFamily: 'Plus Jakarta Sans',
-                            fontSize: 11.5,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: primaryColor,
-                          side: BorderSide(color: primaryColor.withValues(alpha: 0.6), width: 1.2),
-                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () => context.push('/flash-offers'),
-                        icon: const Icon(Icons.bolt_rounded, size: 15, color: Color(0xFFD97706)),
-                        label: const Text(
-                          'Ofertas',
-                          style: TextStyle(
-                            fontFamily: 'Plus Jakarta Sans',
-                            fontSize: 11.5,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFFD97706),
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Color(0xFFD97706), width: 1.2),
-                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                        ),
-                      ),
-                    ),
-                  ],
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  foregroundColor: Colors.white,
+                  elevation: 1,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-              ],
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -1255,28 +1313,13 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
     );
   }
 
-  bool _isDummyOrEmptyDescription(String text) {
-    final trimmed = text.trim();
-    if (trimmed.isEmpty) return true;
-    if (trimmed.length < 15) return true;
-    final lower = trimmed.toLowerCase();
-    if (lower.contains('sdf') || lower.contains('dfg') || lower.contains('asdf') || lower.contains('qwer')) {
-      return true;
-    }
-    return false;
-  }
-
   Widget _buildProductorInfoCard(
-    BuildContext context,
     String bioText,
     Color primaryColor,
     Color cardBgColor,
     Color onSurfaceColor,
     Color onSurfaceVariantColor,
-    bool isDark,
   ) {
-    final bool isDummy = _isDummyOrEmptyDescription(bioText);
-
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -1294,108 +1337,32 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Icon(Icons.info_outline, color: primaryColor, size: 20),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Sobre Mi',
-                    style: TextStyle(
-                      fontFamily: 'Plus Jakarta Sans',
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: onSurfaceColor,
-                    ),
-                  ),
-                ],
-              ),
-              IconButton(
-                icon: Icon(Icons.edit_outlined, size: 16, color: primaryColor),
-                tooltip: 'Editar Sobre Mí',
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                onPressed: () => _showEditProfileModal(context, isDark),
+              Icon(Icons.info_outline, color: primaryColor, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                'Sobre Mi',
+                style: TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: onSurfaceColor,
+                ),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          if (isDummy)
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1E293B) : const Color(0xFFFFFBEB),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: isDark ? const Color(0xFFD97706).withValues(alpha: 0.4) : const Color(0xFFFDE68A),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.lightbulb_outline_rounded, color: Color(0xFFD97706), size: 18),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          '¡Cuéntale tu historia a los clientes!',
-                          style: TextStyle(
-                            fontFamily: 'Plus Jakarta Sans',
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: isDark ? const Color(0xFFFDE68A) : const Color(0xFF92400E),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Los compradores prefieren negociar con productores que describen sus cosechas, certificaciones y origen de sus productos.',
-                    style: TextStyle(
-                      fontFamily: 'Plus Jakarta Sans',
-                      fontSize: 11.5,
-                      height: 1.4,
-                      color: isDark ? Colors.grey[300] : const Color(0xFF78350F),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    height: 32,
-                    child: OutlinedButton.icon(
-                      onPressed: () => _showEditProfileModal(context, isDark),
-                      icon: const Icon(Icons.edit_note_rounded, size: 15),
-                      label: const Text(
-                        'Redactar descripción',
-                        style: TextStyle(
-                          fontFamily: 'Plus Jakarta Sans',
-                          fontSize: 11.5,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFFD97706),
-                        side: const BorderSide(color: Color(0xFFD97706)),
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )
-          else
-            Text(
-              bioText,
-              style: TextStyle(
-                fontFamily: 'Plus Jakarta Sans',
-                fontSize: 13,
-                height: 1.5,
-                color: onSurfaceVariantColor,
-              ),
+          Text(
+            bioText.trim().isNotEmpty
+                ? bioText
+                : 'Sin descripción registrada.',
+            style: TextStyle(
+              fontFamily: 'Plus Jakarta Sans',
+              fontSize: 13,
+              height: 1.5,
+              color: onSurfaceVariantColor,
             ),
+          ),
         ],
       ),
     );
@@ -1785,30 +1752,38 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                         // Quality, Rating & Reviews Row
                         Row(
                           children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: p['quality'] == 'PRIMERA'
-                                    ? primaryColor.withValues(alpha: 0.1)
-                                    : p['quality'] == 'SEGUNDA'
-                                        ? const Color(0xFFFF8A5B).withValues(alpha: 0.15)
-                                        : Colors.red.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                '${p['quality'] ?? "PRIMERA"} CALIDAD',
-                                style: TextStyle(
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.w900,
-                                  color: p['quality'] == 'PRIMERA'
-                                      ? primaryColor
-                                      : p['quality'] == 'SEGUNDA'
-                                          ? const Color(0xFFFF8A5B)
-                                          : Colors.red[700],
-                                  fontFamily: 'Plus Jakarta Sans',
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
+                            Builder(
+                              builder: (context) {
+                                final String qual = (p['quality'] ?? 'PRIMERA').toString().toUpperCase();
+                                final Color qBg = qual == 'PRIMERA'
+                                    ? const Color(0xFFDCE9E5)
+                                    : qual == 'SEGUNDA'
+                                        ? const Color(0xFFFFF4E5)
+                                        : const Color(0xFFFDEDED);
+                                final Color qText = qual == 'PRIMERA'
+                                    ? const Color(0xFF016042)
+                                    : qual == 'SEGUNDA'
+                                        ? const Color(0xFFFF9A04)
+                                        : const Color(0xFFF44336);
+
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: qBg,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    '$qual CALIDAD',
+                                    style: TextStyle(
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w900,
+                                      color: qText,
+                                      fontFamily: 'Plus Jakarta Sans',
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                             const Spacer(),
                             Row(
@@ -2055,12 +2030,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
             onSurfaceColor,
             isDark,
             true,
-            onTap: () {
-              // Simula el ingreso a la edición
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Edición de datos de negocio (Simulado)')),
-              );
-            },
+            onTap: () => _showEditProfileModal(context, isDark),
           ),
           _buildSettingsTile(
             'Gestionar Horarios de Atención',

@@ -302,7 +302,42 @@ void toggleFavorite(Map<String, dynamic> product) {
 // ---------------------------------------------------------
 // Global Favorite Providers
 // ---------------------------------------------------------
-final ValueNotifier<List<Map<String, dynamic>>> globalFavoriteProviders = ValueNotifier([]);
+final ValueNotifier<List<Map<String, dynamic>>> globalFavoriteProviders = ValueNotifier([
+  {
+    'name': 'Huerta Los Arcos',
+    'rating': '4.8',
+    'sector': 'Sector San Pedro',
+    'distance': 'A 5 km',
+    'level': 'Nivel 3',
+    'verified': true,
+    'open': true,
+    'closeTime': '18:00',
+    'tags': 'Frutas y verduras',
+    'reviews': '120 reseñas de clientes',
+    'traded': '1,240 productos negociados',
+    'sales': '1,240',
+    'img': 'https://eldinero.com.do/wp-content/uploads/mercados-productos-precios.jpg',
+    'banner': 'https://eldinero.com.do/wp-content/uploads/mercados-productos-precios.jpg',
+    'salesType': 'Al Detalle',
+  },
+  {
+    'name': 'La Granja de Toño',
+    'rating': '4.7',
+    'sector': 'Sector El Salto',
+    'distance': 'A 8 km',
+    'level': 'Nivel 2',
+    'verified': true,
+    'open': true,
+    'closeTime': '17:30',
+    'tags': 'Huevos',
+    'reviews': '210 reseñas de clientes',
+    'traded': '850 productos negociados',
+    'sales': '850',
+    'img': 'assets/images/siembra-directa-sobre-campo-argentino-scaled.jpg',
+    'banner': 'assets/images/siembra-directa-sobre-campo-argentino-scaled.jpg',
+    'salesType': 'Ambos',
+  },
+]);
 
 bool isFavoriteProvider(String providerName) {
   return globalFavoriteProviders.value.any((item) => item['name'] == providerName);
@@ -316,17 +351,173 @@ void toggleFavoriteProvider(Map<String, dynamic> provider) {
     currentFavorites.removeAt(index);
   } else {
     currentFavorites.add({
+      ...provider,
       'name': provider['name'] ?? '',
-      'image': provider['image'] ?? provider['url'] ?? '',
-      'rating': provider['rating'] ?? '0.0',
-      'distance': provider['distance'] ?? '',
-      'tags': provider['tags'] ?? '',
+      'image': provider['image'] ?? provider['url'] ?? provider['img'] ?? '',
+      'banner': provider['banner'] ?? provider['img'] ?? provider['image'] ?? '',
+      'rating': provider['rating']?.toString() ?? '4.8',
+      'distance': provider['distance']?.toString() ?? 'A 5 km',
+      'tags': provider['tags']?.toString() ?? 'Frutas y verduras',
       'verified': provider['verified'] ?? true,
+      'open': provider['open'] ?? true,
+      'closeTime': provider['closeTime']?.toString() ?? '18:00',
+      'salesType': provider['salesType']?.toString() ?? 'Al Detalle',
+      'level': provider['level']?.toString() ?? 'Nivel 3',
+      'traded': provider['traded']?.toString() ?? '1,240 productos negociados',
+      'reviews': provider['reviews']?.toString() ?? '120 reseñas de clientes',
     });
   }
   
   globalFavoriteProviders.value = currentFavorites;
 }
+
+// ---------------------------------------------------------
+// Global Marketplace Buyers & Favorite Buyers (Compradores)
+// ---------------------------------------------------------
+final List<Map<String, dynamic>> initialMarketplaceBuyers = [
+  {
+    'id': 'BUY-88291',
+    'name': 'Juan Pérez',
+    'avatar': 'https://lh3.googleusercontent.com/aida-public/AB6AXuBOBm3AJ4VYxbzbRzgMljFcavkBL1mO5vkPxvl92Sud6wfyV3-6zceYF-SBkeFWu-zD4Oe5NET6_9EW7ctaL-Ym2ANb_Cm46jU-S23oFmts4lQgOeUbabNTCi7s2I-iIxAznyiCi4wm0llPtmEMPbIJNcFKDattVIZSHd927tPvZMzIwaAex55vGhV0dXTCREP_Gn5-0XQSu2hHePddUf8s-IasIAd_VEzbwYq6COLTsDCgb1gyVzScTnMXY3jrd8Zvaro5gZj1ySo',
+    'location': 'Central de Abastos • Cuauhtémoc, CDMX',
+    'sector': 'Cuauhtémoc, CDMX',
+    'distance': 'A 4.2 km',
+    'businessType': 'Restaurante & Tienda Gourmet',
+    'memberSince': 'Enero 2023',
+    'rating': 4.9,
+    'totalReviews': 14,
+    'negotiationsCount': 15,
+    'onTimePaymentPercent': 100,
+    'satisfactionPercent': 98,
+    'verified': true,
+    'goodPayer': true,
+    'purchaseVolume': 'Semanal • 150-300 kg',
+    'preferredPayment': 'Transferencia SPEI Inmediata',
+    'preferredModality': 'Ambos (Mayoreo y Detalle)',
+    'frequentCategories': ['Hortalizas', 'Frutas', 'Aguacates', 'Cítricos'],
+    'frequentProducts': ['Tomate Saladette', 'Aguacate Hass', 'Limón Colima'],
+  },
+  {
+    'id': 'BUY-99102',
+    'name': 'Mariana Ortiz',
+    'avatar': 'https://lh3.googleusercontent.com/aida-public/AB6AXuBYJzD8Jv__HCofoE_9GXHz6ThLuAmE4GY780JgKF_CnF0e0Ag7eeBdUuo91rwB6Zu0SQvC0ZQxHfm-2ptRUB-8M06caS-RMrBIzj8QHpqkj5QX6vhBO9445gMwzqiu6Yt5juCbYloMuTe9AcbgO7tyDHdemyOCuU_oA7_LQpePOm4X00XfFhNY8SIY-x6DalOZ5-JMFeO2FTK_BoTu-2i9_A-FY9mHZui7BXNQCnwMBtaGINBTm0JmtYFeZAcAz2D5DX2EJlMSLnM',
+    'location': 'Mercado Corona • Guadalajara, Jal.',
+    'sector': 'Guadalajara, Jal.',
+    'distance': 'A 6.8 km',
+    'businessType': 'Frutería La Selecta',
+    'memberSince': 'Marzo 2023',
+    'rating': 4.8,
+    'totalReviews': 24,
+    'negotiationsCount': 28,
+    'onTimePaymentPercent': 98,
+    'satisfactionPercent': 96,
+    'verified': true,
+    'goodPayer': true,
+    'purchaseVolume': 'Quincenal • 400-800 kg',
+    'preferredPayment': 'Contra Entrega • Factura',
+    'preferredModality': 'Por Mayor',
+    'frequentCategories': ['Frutas de temporada', 'Fresas', 'Moras', 'Cítricos'],
+    'frequentProducts': ['Fresas Extras', 'Zanahorias', 'Naranjas'],
+  },
+  {
+    'id': 'BUY-77403',
+    'name': 'Roberto Gómez',
+    'avatar': 'https://lh3.googleusercontent.com/aida-public/AB6AXuC86MsmWl10UM74dTqXN5cvWFEfmYUHsvKCR-y0wD2lYq9QbU1pPOuisx8V-kTEWaa2qDlT0WLBok7LgAyVI4oYfdDfTjkty2sjutfWf8TgR-dczjEg_hjEjyNx_Jt4gpAXDFR7Dgw2FV4_Lhg89Dm7gXQfTgCGY6TtUH9-Gra8NJFrRaoI6KS_t8z3wZKcmelvinox1Ah-7VlOqLa6B1FsrxJQwJPtzLlVN6e8tC5R9kIwziSN6peMLip0X-9igzwYS5lNu2tOSA0',
+    'location': 'San Andrés Cholula • Puebla, Pue.',
+    'sector': 'San Andrés Cholula, Pue.',
+    'distance': 'A 11.5 km',
+    'businessType': 'Tienda Naturista El Edén',
+    'memberSince': 'Agosto 2023',
+    'rating': 4.7,
+    'totalReviews': 8,
+    'negotiationsCount': 10,
+    'onTimePaymentPercent': 95,
+    'satisfactionPercent': 94,
+    'verified': true,
+    'goodPayer': true,
+    'purchaseVolume': 'Mensual • 80-150 kg',
+    'preferredPayment': 'Transferencia SPEI',
+    'preferredModality': 'Al Detalle',
+    'frequentCategories': ['Miel y derivados', 'Orgánicos', 'Frutos secos'],
+    'frequentProducts': ['Miel Silvestre', 'Papas Orgánicas', 'Nueces'],
+  },
+  {
+    'id': 'BUY-55204',
+    'name': 'Sofía Ramírez',
+    'avatar': 'https://lh3.googleusercontent.com/aida-public/AB6AXuA3EDGPZ5hvKmtWotekXUFESqC8YslpjM2XGKTpwHD-9BY0Z5mTAqFpV1yX_nEcnJE7VlOOfKXHgQ73gwxWA1X5LpF6S-4jw8Lh3T0GcDypcsxjTLfv-oAeEcAD5YLQ-5t23fTOMYw-wyYACFXIqlVx-4M5iEpcYbeJG_bIruh_pZB4byz5LiIpOKbd4XABzs7I6FxBuqeoxl4N_Iz4endCgswH9lQC1x_EDnb9fZI47loT5ijY8HpbPb6EBt8Ni_zLbRKUuMvlypM',
+    'location': 'Mercado de Abastos • Monterrey, N.L.',
+    'sector': 'Monterrey, N.L.',
+    'distance': 'A 8.3 km',
+    'businessType': 'Distribuidora Verde Central',
+    'memberSince': 'Febrero 2022',
+    'rating': 5.0,
+    'totalReviews': 32,
+    'negotiationsCount': 35,
+    'onTimePaymentPercent': 100,
+    'satisfactionPercent': 100,
+    'verified': true,
+    'goodPayer': true,
+    'purchaseVolume': 'Semanal • 1,000-2,500 kg',
+    'preferredPayment': 'Contra Entrega • Transferencia',
+    'preferredModality': 'Por Mayor',
+    'frequentCategories': ['Tubérculos', 'Papas', 'Cebollas', 'Granos'],
+    'frequentProducts': ['Sacos de Papa', 'Cebolla Blanca', 'Frijol Negro'],
+  },
+  {
+    'id': 'BUY-33105',
+    'name': 'Carlos Mendoza',
+    'avatar': 'https://lh3.googleusercontent.com/aida-public/AB6AXuBjICzybPKvS5Xqs5EgqqAa5omMklKIYUcyKDaRL_07LUHApmJPULuU_BJ1BSfuxjDNuOJN4_BUJ78BS5ynmTkM1oYFgbZ6NpSZmRSNZ8eBgQybBhxe1cfxRN2suyyZ71WQq-Oodoe2-TigzReePlYj8obUTsbIptPvEXrgcyCW0lwCNDwVDjN3iDhSNbGWZ2ogRZYyPAvoOhZG-PRqCeIecaAhdGT_irbaIDi_hGq2eLMhZurCKAf8wh4KNUDW7KrBSGkxU582zB4',
+    'location': 'Juriquilla • Querétaro, Qro.',
+    'sector': 'Juriquilla, Qro.',
+    'distance': 'A 14.0 km',
+    'businessType': 'Chef Ejecutivo Bistro Campo',
+    'memberSince': 'Noviembre 2023',
+    'rating': 4.9,
+    'totalReviews': 11,
+    'negotiationsCount': 12,
+    'onTimePaymentPercent': 100,
+    'satisfactionPercent': 97,
+    'verified': true,
+    'goodPayer': true,
+    'purchaseVolume': 'Semanal • 60-120 kg',
+    'preferredPayment': 'Tarjeta • Transferencia',
+    'preferredModality': 'Al Detalle',
+    'frequentCategories': ['Hortalizas Gourmet', 'Tomates Heirloom', 'Hierbas finas'],
+    'frequentProducts': ['Tomates Heirloom', 'Espinacas Baby', 'Zanahorias'],
+  },
+];
+
+final ValueNotifier<List<Map<String, dynamic>>> globalMarketplaceBuyers =
+    ValueNotifier(List<Map<String, dynamic>>.from(initialMarketplaceBuyers));
+
+final ValueNotifier<List<Map<String, dynamic>>> globalFavoriteBuyers =
+    ValueNotifier([
+  Map<String, dynamic>.from(initialMarketplaceBuyers[0]), // Juan Pérez
+  Map<String, dynamic>.from(initialMarketplaceBuyers[1]), // Mariana Ortiz
+]);
+
+bool isFavoriteBuyer(String identifier) {
+  return globalFavoriteBuyers.value.any(
+    (item) => item['id'] == identifier || item['name'] == identifier,
+  );
+}
+
+void toggleFavoriteBuyer(Map<String, dynamic> buyer) {
+  final currentFavorites = List<Map<String, dynamic>>.from(globalFavoriteBuyers.value);
+  final buyerId = (buyer['id'] ?? buyer['name'] ?? '').toString();
+  final index = currentFavorites.indexWhere(
+    (item) => (item['id'] ?? item['name'] ?? '').toString() == buyerId,
+  );
+
+  if (index >= 0) {
+    currentFavorites.removeAt(index);
+  } else {
+    currentFavorites.add(Map<String, dynamic>.from(buyer));
+  }
+
+  globalFavoriteBuyers.value = currentFavorites;
+}
+
 
 // ---------------------------------------------------------
 // Global Followed Sellers (Vendedores Seguidos)

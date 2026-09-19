@@ -20,25 +20,6 @@ class CountryPhoneCode {
   });
 }
 
-class DaySchedule {
-  final String dayName;
-  bool isActive;
-  TimeOfDay openTime;
-  TimeOfDay closeTime;
-
-  DaySchedule({
-    required this.dayName,
-    this.isActive = true,
-    this.openTime = const TimeOfDay(hour: 8, minute: 0),
-    this.closeTime = const TimeOfDay(hour: 18, minute: 0),
-  });
-
-  String formatTime(BuildContext context, TimeOfDay time) {
-    final localizations = MaterialLocalizations.of(context);
-    return localizations.formatTimeOfDay(time, alwaysUse24HourFormat: false);
-  }
-}
-
 class ProviderOnboardingScreen extends StatefulWidget {
   const ProviderOnboardingScreen({super.key});
 
@@ -458,6 +439,7 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
     UserSession.specialty = _selectedSpecialty;
     UserSession.salesType = _selectedSalesType;
     UserSession.businessDescription = _descriptionController.text.trim();
+    UserSession.saveWeeklySchedule(_weeklySchedule);
     UserSession.isProviderOnboarded = true;
 
     // Show premium confirmation SnackBar

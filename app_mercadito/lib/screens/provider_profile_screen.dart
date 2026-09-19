@@ -4,6 +4,8 @@ import '../widgets/skeleton_loading.dart';
 import '../widgets/animated_favorite_button.dart';
 import '../widgets/quality_info_bottom_sheet.dart';
 import '../data/global_state.dart';
+import '../services/user_session.dart';
+import '../services/reviews_service.dart';
 
 class ProviderProfileScreen extends StatefulWidget {
   final Map<String, dynamic> provider;
@@ -17,6 +19,8 @@ class ProviderProfileScreen extends StatefulWidget {
 class _ProviderProfileScreenState extends State<ProviderProfileScreen> with TickerProviderStateMixin {
   bool _isLoading = true;
   final Map<String, String> _selectedProductModes = {};
+  String _selectedReviewFilter = 'MÁS RECIENTES';
+  final Set<String> _expandedReputationReviews = {};
 
   String get _providerSector {
     final rawSector = widget.provider['sector'];
@@ -98,12 +102,41 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
     return true;
   }
 
+  static String _formatTo12h(String timeStr) {
+    final trimmed = timeStr.trim();
+    if (trimmed.isEmpty) return '6:00 PM';
+    if (RegExp(r'\b(AM|PM|am|pm)\b').hasMatch(trimmed)) {
+      return trimmed.toUpperCase();
+    }
+    final match = RegExp(r'^(\d{1,2}):(\d{2})').firstMatch(trimmed);
+    if (match != null) {
+      final hour24 = int.tryParse(match.group(1)!);
+      final minute = int.tryParse(match.group(2)!);
+      if (hour24 != null && minute != null) {
+        final period = hour24 >= 12 ? 'PM' : 'AM';
+        var hour12 = hour24 % 12;
+        if (hour12 == 0) hour12 = 12;
+        final minuteStr = minute.toString().padLeft(2, '0');
+        return '$hour12:$minuteStr $period';
+      }
+    }
+    return trimmed;
+  }
+
   String get _providerCloseTime {
     final raw = widget.provider['closeTime'] ?? widget.provider['closesAt'];
     if (raw != null && raw.toString().trim().isNotEmpty) {
-      return raw.toString().trim();
+      return _formatTo12h(raw.toString().trim());
     }
-    return '18:00';
+    return '6:00 PM';
+  }
+
+  List<String> get _providerPolicies {
+    final raw = widget.provider['policies'] ?? widget.provider['sellerPolicies'];
+    if (raw is List) {
+      return raw.map((e) => e.toString()).toList();
+    }
+    return UserSession.currentSellerPolicies;
   }
 
 
@@ -1595,6 +1628,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
     final borderColor = Colors.grey.withValues(alpha: 0.1);
 
     return ListView(
+      key: const Key('info_tab_listview'),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       children: [
         // Sobre el Vendedor
@@ -1653,26 +1687,29 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                     Column(
-                       crossAxisAlignment: CrossAxisAlignment.start,
-                       children: [
-                         const Text('TELÉFONO DIRECTO', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Colors.grey, letterSpacing: 1.0)),
-                         const SizedBox(height: 4),
-                         const Text('+52 464 123 4567', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                       ],
+                     Expanded(
+                       child: Column(
+                         crossAxisAlignment: CrossAxisAlignment.start,
+                         children: [
+                           const Text('TELÉFONO DIRECTO', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Colors.grey, letterSpacing: 1.0)),
+                           const SizedBox(height: 4),
+                           const Text('+52 464 123 4567', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
+                         ],
+                       ),
                      ),
-                       ElevatedButton.icon(
-                         onPressed: () {},
-                         icon: const Icon(Icons.chat, size: 16),
-                         label: const Text('WHATSAPP', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.0)),
-                         style: ElevatedButton.styleFrom(
-                           backgroundColor: const Color(0xFF25D366),
-                           foregroundColor: Colors.white,
-                           elevation: 2,
-                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                           minimumSize: Size.zero, 
-                         ),
-                       )
+                     const SizedBox(width: 8),
+                     ElevatedButton.icon(
+                       onPressed: () {},
+                       icon: const Icon(Icons.chat, size: 16),
+                       label: const Text('WHATSAPP', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.0)),
+                       style: ElevatedButton.styleFrom(
+                         backgroundColor: const Color(0xFF25D366),
+                         foregroundColor: Colors.white,
+                         elevation: 2,
+                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                         minimumSize: Size.zero, 
+                       ),
+                     )
                   ],
                 )
               ],
@@ -1705,7 +1742,10 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Lunes a Sábado', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                    const Expanded(
+                      child: Text('Lunes a Sábado', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
+                    ),
+                    const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                       decoration: BoxDecoration(
@@ -1727,7 +1767,10 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Domingo', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                    const Expanded(
+                      child: Text('Domingo', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
+                    ),
+                    const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                       decoration: BoxDecoration(
@@ -1802,6 +1845,65 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
           ),
         ),
 
+        // Políticas del Vendedor
+        _EntranceAnimation(
+          delay: 450,
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            margin: const EdgeInsets.only(bottom: 24),
+            decoration: BoxDecoration(
+              color: surfaceColor,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: borderColor),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.policy_outlined, color: theme.colorScheme.primary, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Políticas del Vendedor',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : const Color(0xFF1E293B),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                for (int i = 0; i < _providerPolicies.length; i++) ...[
+                  if (i > 0) const SizedBox(height: 8),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(Icons.check_circle_outline, size: 16, color: theme.colorScheme.primary),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          _providerPolicies[i],
+                          style: TextStyle(
+                            fontFamily: 'Plus Jakarta Sans',
+                            fontSize: 12,
+                            height: 1.4,
+                            color: isDark ? Colors.grey[400] : Colors.grey[700],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+
         // Report
         _EntranceAnimation(
           delay: 500,
@@ -1846,6 +1948,59 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
   Widget _buildReviewsTab(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final providerId = (widget.provider['id'] ?? widget.provider['code'] ?? widget.provider['name'] ?? 'prov_granja_sol').toString();
+    final directReviews = ReviewsService.getDirectReviews(providerId);
+
+    final filterOptions = [
+      'MÁS RECIENTES',
+      'REPUTACIÓN',
+      'CON FOTOS',
+      'ALTA CALIFICACIÓN',
+      'BAJA CALIFICACIÓN',
+    ];
+
+    final productReviews = [
+      {
+        'id': 'prod_rev_1',
+        'name': 'Mariana Ortiz',
+        'date': 'hace 2 días',
+        'avatar': 'https://lh3.googleusercontent.com/aida-public/AB6AXuBYJzD8Jv__HCofoE_9GXHz6ThLuAmE4GY780JgKF_CnF0e0Ag7eeBdUuo91rwB6Zu0SQvC0ZQxHfm-2ptRUB-8M06caS-RMrBIzj8QHpqkj5QX6vhBO9445gMwzqiu6Yt5juCbYloMuTe9AcbgO7tyDHdemyOCuU_oA7_LQpePOm4X00XfFhNY8SIY-x6DalOZ5-JMFeO2FTK_BoTu-2i9_A-FY9mHZui7BXNQCnwMBtaGINBTm0JmtYFeZAcAz2D5DX2EJlMSLnM',
+        'rating': 5,
+        'text': 'Los tomates llegaron frescos y a tiempo, excelente proveedor. La calidad es mucho mejor que la del supermercado tradicional.',
+        'images': [
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuBfAcdyVzjhfvN9bCOWgt1hQ64s4Hx-8jspVL2MsfJBefubpqPK10mJ5FHQdP5Asyxm_lL7ms8LgpEJZGwsf2ZkdV4H4QrFNK2fHOwcS3YMV_sc0UV-Z5tUSuho5AC1mK6ZN6CMLzpeJ-5DZPw5NDktO7wbqmNGnx0eioi__Is31kw3J_xbksGQjIt34jambbxhRB2oPS0BqU7HyozLkQPRfmQZxNHC4dkqvqe3-v5uil4IMQ8z8oAn23hB4ElnFsNIxIqyJaQWwdY',
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuCEBY6N0chL89FL7-rhhhwW_ggemOEv9BIecv0foRE0qNYml9czEo9CuAY2boBe2sUVluP7ouBl7Tms3r6vhfCRH1fgbJJRizEBAQLkonmgKyPJq-sUMMExfk9N4NDFzI508xE_Z6BCtPIy2xS4eGiMs64YiDOO0Hzf3YO-OofiyKSH9OB2J0YVUlYawViIAcFqk_1C-X0cbMRW0dIRDvrTRhxKwpugSFoY-vS6v_z0WL3o7HIKur7qd1mA0vbMt1R1j9bQId0Rm30'
+        ],
+        'productBought': 'COMPRÓ: TOMATES SALADETTE',
+        'sellerResponse': '¡Muchas gracias por tu confianza Mariana! Nos esforzamos por seleccionar siempre lo mejor de la cosecha.',
+      },
+      {
+        'id': 'prod_rev_2',
+        'name': 'Roberto G.',
+        'date': 'hace 1 semana',
+        'avatar': 'https://lh3.googleusercontent.com/aida-public/AB6AXuC86MsmWl10UM74dTqXN5cvWFEfmYUHsvKCR-y0wD2lYq9QbU1pPOuisx8V-kTEWaa2qDlT0WLBok7LgAyVI4oYfdDfTjkty2sjutfWf8TgR-dczjEg_hjEjyNx_Jt4gpAXDFR7Dgw2FV4_Lhg89Dm7gXQfTgCGY6TtUH9-Gra8NJFrRaoI6KS_t8z3wZKcmelvinox1Ah-7VlOqLa6B1FsrxJQwJPtzLlVN6e8tC5R9kIwziSN6peMLip0X-9igzwYS5lNu2tOSA0',
+        'rating': 4,
+        'text': 'Muy buen servicio. El aguacate estaba en su punto exacto. Solo un detalle con el empaque que venía un poco golpeado pero el producto intacto.',
+        'images': <String>[],
+        'productBought': 'COMPRÓ: AGUACATE HASS PREMIUM',
+        'sellerResponse': null,
+      },
+    ];
+
+    final filteredProductReviews = productReviews.where((r) {
+      if (_selectedReviewFilter == 'REPUTACIÓN') return false;
+      if (_selectedReviewFilter == 'CON FOTOS') return (r['images'] as List).isNotEmpty;
+      if (_selectedReviewFilter == 'ALTA CALIFICACIÓN') return (r['rating'] as int) >= 4;
+      if (_selectedReviewFilter == 'BAJA CALIFICACIÓN') return (r['rating'] as int) < 4;
+      return true;
+    }).toList();
+
+    final filteredDirectReviews = directReviews.where((r) {
+      if (_selectedReviewFilter == 'CON FOTOS') return false;
+      if (_selectedReviewFilter == 'ALTA CALIFICACIÓN') return r.averageScore >= 4.0;
+      if (_selectedReviewFilter == 'BAJA CALIFICACIÓN') return r.averageScore < 4.0;
+      return true; // MÁS RECIENTES o REPUTACIÓN
+    }).toList();
 
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -1900,15 +2055,15 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _buildStarBar(5, 0.85, theme),
+                        _buildStarBar(5, 0.85, 108, theme),
                         const SizedBox(height: 8),
-                        _buildStarBar(4, 0.10, theme),
+                        _buildStarBar(4, 0.10, 12, theme),
                         const SizedBox(height: 8),
-                        _buildStarBar(3, 0.03, theme),
+                        _buildStarBar(3, 0.03, 4, theme),
                         const SizedBox(height: 8),
-                        _buildStarBar(2, 0.01, theme),
+                        _buildStarBar(2, 0.01, 2, theme),
                         const SizedBox(height: 8),
-                        _buildStarBar(1, 0.01, theme),
+                        _buildStarBar(1, 0.01, 2, theme),
                       ],
                     ),
                   ),
@@ -1918,6 +2073,13 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
           ),
         ),
         const SizedBox(height: 16),
+
+        // Verified Provider Reputation Card
+        _EntranceAnimation(
+          delay: 150,
+          child: _buildReputationMetricsCard(context, theme, isDark),
+        ),
+        const SizedBox(height: 16),
         
         // Filters
         _EntranceAnimation(
@@ -1925,70 +2087,67 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
-              children: [
-                _buildFilterChip('MÁS RECIENTES', true, theme),
-                _buildFilterChip('CON FOTOS', false, theme),
-                _buildFilterChip('ALTA CALIFICACIÓN', false, theme),
-                _buildFilterChip('BAJA CALIFICACIÓN', false, theme),
-              ],
+              children: filterOptions.map((opt) => _buildFilterChip(opt, _selectedReviewFilter == opt, theme)).toList(),
             ),
           ),
         ),
         const SizedBox(height: 24),
 
-        // Reviews List
-        _EntranceAnimation(
-          delay: 300,
-          child: _buildReviewCard(
-            context: context,
-            name: 'Mariana Ortiz',
-            date: 'hace 2 días',
-            avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBYJzD8Jv__HCofoE_9GXHz6ThLuAmE4GY780JgKF_CnF0e0Ag7eeBdUuo91rwB6Zu0SQvC0ZQxHfm-2ptRUB-8M06caS-RMrBIzj8QHpqkj5QX6vhBO9445gMwzqiu6Yt5juCbYloMuTe9AcbgO7tyDHdemyOCuU_oA7_LQpePOm4X00XfFhNY8SIY-x6DalOZ5-JMFeO2FTK_BoTu-2i9_A-FY9mHZui7BXNQCnwMBtaGINBTm0JmtYFeZAcAz2D5DX2EJlMSLnM',
-            rating: 5,
-            text: 'Los tomates llegaron frescos y a tiempo, excelente proveedor. La calidad es mucho mejor que la del supermercado tradicional.',
-            images: [
-              'https://lh3.googleusercontent.com/aida-public/AB6AXuBfAcdyVzjhfvN9bCOWgt1hQ64s4Hx-8jspVL2MsfJBefubpqPK10mJ5FHQdP5Asyxm_lL7ms8LgpEJZGwsf2ZkdV4H4QrFNK2fHOwcS3YMV_sc0UV-Z5tUSuho5AC1mK6ZN6CMLzpeJ-5DZPw5NDktO7wbqmNGnx0eioi__Is31kw3J_xbksGQjIt34jambbxhRB2oPS0BqU7HyozLkQPRfmQZxNHC4dkqvqe3-v5uil4IMQ8z8oAn23hB4ElnFsNIxIqyJaQWwdY',
-              'https://lh3.googleusercontent.com/aida-public/AB6AXuCEBY6N0chL89FL7-rhhhwW_ggemOEv9BIecv0foRE0qNYml9czEo9CuAY2boBe2sUVluP7ouBl7Tms3r6vhfCRH1fgbJJRizEBAQLkonmgKyPJq-sUMMExfk9N4NDFzI508xE_Z6BCtPIy2xS4eGiMs64YiDOO0Hzf3YO-OofiyKSH9OB2J0YVUlYawViIAcFqk_1C-X0cbMRW0dIRDvrTRhxKwpugSFoY-vS6v_z0WL3o7HIKur7qd1mA0vbMt1R1j9bQId0Rm30'
-            ],
-            productBought: 'COMPRÓ: TOMATES SALADETTE',
-            sellerResponse: '¡Muchas gracias por tu confianza Mariana! Nos esforzamos por seleccionar siempre lo mejor de la cosecha.',
-          ),
-        ),
-        const SizedBox(height: 16),
-        _EntranceAnimation(
-          delay: 400,
-          child: _buildReviewCard(
-            context: context,
-            name: 'Roberto G.',
-            date: 'hace 1 semana',
-            avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC86MsmWl10UM74dTqXN5cvWFEfmYUHsvKCR-y0wD2lYq9QbU1pPOuisx8V-kTEWaa2qDlT0WLBok7LgAyVI4oYfdDfTjkty2sjutfWf8TgR-dczjEg_hjEjyNx_Jt4gpAXDFR7Dgw2FV4_Lhg89Dm7gXQfTgCGY6TtUH9-Gra8NJFrRaoI6KS_t8z3wZKcmelvinox1Ah-7VlOqLa6B1FsrxJQwJPtzLlVN6e8tC5R9kIwziSN6peMLip0X-9igzwYS5lNu2tOSA0',
-            rating: 4,
-            text: 'Muy buen servicio. El aguacate estaba en su punto exacto. Solo un detalle con el empaque que venía un poco golpeado pero el producto intacto.',
-            productBought: 'COMPRÓ: AGUACATE HASS PREMIUM',
-          ),
-        ),
-
-        const SizedBox(height: 24),
-        // Write Review CTA
-        Center(
-          child: ElevatedButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.edit_note, size: 20),
-            label: const Text('ESCRIBIR MI RESEÑA', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 10, letterSpacing: 2.0)),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: theme.colorScheme.primary,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        // Product Reviews
+        ...filteredProductReviews.map((r) => Padding(
+          padding: const EdgeInsets.only(bottom: 16.0),
+          child: _EntranceAnimation(
+            delay: 300,
+            child: _buildReviewCard(
+              context: context,
+              name: r['name'] as String,
+              date: r['date'] as String,
+              avatar: r['avatar'] as String,
+              rating: r['rating'] as int,
+              text: r['text'] as String,
+              images: (r['images'] as List).cast<String>(),
+              productBought: r['productBought'] as String,
+              sellerResponse: r['sellerResponse'] as String?,
             ),
           ),
-        ),
-        const SizedBox(height: 24),
+        )),
+
+        // Direct Reputation Reviews (appear below the product reviews)
+        ...filteredDirectReviews.map((dRev) => Padding(
+          padding: const EdgeInsets.only(bottom: 16.0),
+          child: _EntranceAnimation(
+            delay: 350,
+            child: _buildReputationReviewCard(
+              context: context,
+              review: dRev,
+              theme: theme,
+              isDark: isDark,
+            ),
+          ),
+        )),
+
+        if (filteredProductReviews.isEmpty && filteredDirectReviews.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 32.0),
+            child: Center(
+              child: Text(
+                'No hay reseñas en esta categoría.',
+                style: TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 13,
+                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                ),
+              ),
+            ),
+          ),
+
+        const SizedBox(height: 32),
       ],
     );
   }
 
-  Widget _buildStarBar(int star, double percentage, ThemeData theme) {
+  Widget _buildStarBar(int star, double percentage, int count, ThemeData theme) {
+    final isDark = theme.brightness == Brightness.dark;
     return Row(
       children: [
         SizedBox(width: 12, child: Text(star.toString(), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold))),
@@ -2012,26 +2171,46 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
             ),
           ),
         ),
+        const SizedBox(width: 8),
+        SizedBox(
+          width: 24,
+          child: Text(
+            count.toString(),
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: isDark ? Colors.grey[400] : Colors.grey[600],
+            ),
+          ),
+        ),
       ],
     );
   }
 
   Widget _buildFilterChip(String label, bool isSelected, ThemeData theme) {
-    return Container(
-      margin: const EdgeInsets.only(right: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: isSelected ? theme.colorScheme.primary : (theme.brightness == Brightness.dark ? const Color(0xFF1a2f26) : const Color(0xFFf1f4f0)),
-        borderRadius: BorderRadius.circular(20),
-        border: isSelected ? null : Border.all(color: Colors.grey.withValues(alpha: 0.2)),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: isSelected ? Colors.white : Colors.grey[700],
-          fontSize: 10,
-          fontWeight: FontWeight.w900,
-          letterSpacing: 1.0,
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedReviewFilter = label;
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.only(right: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? theme.colorScheme.primary : (theme.brightness == Brightness.dark ? const Color(0xFF1a2f26) : const Color(0xFFf1f4f0)),
+          borderRadius: BorderRadius.circular(20),
+          border: isSelected ? null : Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : (theme.brightness == Brightness.dark ? Colors.grey[300] : Colors.grey[700]),
+            fontSize: 10,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1.0,
+          ),
         ),
       ),
     );
@@ -2164,6 +2343,275 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
     );
   }
 
+  Widget _buildReputationReviewCard({
+    required BuildContext context,
+    required DirectProfileReview review,
+    required ThemeData theme,
+    required bool isDark,
+  }) {
+    final isExpanded = _expandedReputationReviews.contains(review.id);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1a2f26) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark ? const Color(0xFF10B981).withValues(alpha: 0.3) : const Color(0xFF016042).withValues(alpha: 0.2),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header Row: Avatar, Name, Date, and Star Rating
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    backgroundImage: (review.authorAvatar != null && review.authorAvatar!.isNotEmpty)
+                        ? NetworkImage(review.authorAvatar!)
+                        : null,
+                    radius: 20,
+                    backgroundColor: const Color(0xFF016042).withValues(alpha: 0.15),
+                    child: (review.authorAvatar == null || review.authorAvatar!.isEmpty)
+                        ? const Icon(Icons.person, color: Color(0xFF016042))
+                        : null,
+                  ),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        review.authorName,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        _formatReviewDate(review.createdAt),
+                        style: const TextStyle(
+                          fontSize: 10,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              // Calificación General
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF262012) : const Color(0xFFFEF8E3),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: const Color(0xFFF3AF43)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.star_rounded, size: 14, color: Color(0xFFF2A439)),
+                    const SizedBox(width: 3),
+                    Text(
+                      review.averageScore.toStringAsFixed(1),
+                      style: const TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFFF2A439),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+
+          // Tag making reference that it is a review of type Reputación
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF0f231d) : const Color(0xFFF0FDF4),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: const Color(0xFF10B981).withValues(alpha: 0.35)),
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.verified_user_rounded, size: 12, color: Color(0xFF10B981)),
+                SizedBox(width: 6),
+                Text(
+                  'RESEÑA DE REPUTACIÓN',
+                  style: TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF065F46),
+                    letterSpacing: 0.6,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          // Comentario del comprador si lo colocó
+          if (review.comment.trim().isNotEmpty) ...[
+            Text(
+              review.comment,
+              style: TextStyle(
+                fontSize: 14,
+                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                height: 1.5,
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
+
+          // Botón que despliega el detalle de la calificación colocada
+          InkWell(
+            onTap: () {
+              setState(() {
+                if (_expandedReputationReviews.contains(review.id)) {
+                  _expandedReputationReviews.remove(review.id);
+                } else {
+                  _expandedReputationReviews.add(review.id);
+                }
+              });
+            },
+            borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    isExpanded ? 'Ocultar detalle de calificación' : 'Ver detalle de calificación',
+                    style: TextStyle(
+                      fontFamily: 'Plus Jakarta Sans',
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF016042),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Icon(
+                    isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                    size: 16,
+                    color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF016042),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Detalle desplegado con los 7 criterios evaluados
+          if (isExpanded) ...[
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF0f231d) : const Color(0xFFF7FAF8),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.withValues(alpha: 0.15)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Detalle por Criterios Evaluados',
+                    style: TextStyle(
+                      fontFamily: 'Plus Jakarta Sans',
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      color: isDark ? Colors.white70 : Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ...review.scores.entries.map((entry) => _buildCriteriaScoreMiniRow(
+                    entry.key,
+                    entry.value,
+                    isDark,
+                  )),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCriteriaScoreMiniRow(String label, double score, bool isDark) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3.0),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 5,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                fontSize: 11,
+                color: isDark ? Colors.grey[300] : Colors.grey[700],
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            flex: 4,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(3),
+              child: LinearProgressIndicator(
+                value: score / 5.0,
+                minHeight: 5,
+                backgroundColor: isDark ? Colors.white10 : Colors.grey[200],
+                valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF016042)),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          SizedBox(
+            width: 22,
+            child: Text(
+              score.toStringAsFixed(1),
+              style: TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                fontSize: 10.5,
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white70 : Colors.black87,
+              ),
+              textAlign: TextAlign.right,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatReviewDate(DateTime dt) {
+    final diff = DateTime.now().difference(dt);
+    if (diff.inDays == 0) return 'Hoy';
+    if (diff.inDays == 1) return 'hace 1 día';
+    if (diff.inDays < 7) return 'hace ${diff.inDays} días';
+    if (diff.inDays < 30) return 'hace ${(diff.inDays / 7).round()} semanas';
+    return 'hace ${(diff.inDays / 30).round()} meses';
+  }
+
   Widget _buildSkeletonLoader(BuildContext context) {
     return SkeletonShimmer(
       child: ListView(
@@ -2214,6 +2662,369 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                   ),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReputationMetricsCard(BuildContext context, ThemeData theme, bool isDark) {
+    final providerId = (widget.provider['id'] ?? widget.provider['code'] ?? widget.provider['name'] ?? 'prov_granja_sol').toString();
+    final providerName = (widget.provider['name'] ?? 'Proveedor').toString();
+    final providerAvatar = (widget.provider['img'] ?? widget.provider['banner'] ?? '').toString();
+
+    final rep = ReviewsService.getProviderReputation(providerId);
+    final criteria = ReviewsService.getProviderCriteria(providerId);
+    final currentUserId = UserSession.selectedRole == 'proveedor' ? 'prov_current' : 'buyer_current';
+    final isOwner = widget.provider['isOwner'] == true;
+    final hasNegotiated = ReviewsService.hasNegotiatedWith(currentUserId, providerId);
+    final hasReviewed = ReviewsService.hasDirectReview(currentUserId, providerId);
+
+    final cardBg = isDark ? const Color(0xFF1a2f26) : Colors.white;
+    final borderColor = isDark ? Colors.white12 : Colors.grey.withValues(alpha: 0.15);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: borderColor),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF016042).withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.verified_user_rounded, color: Color(0xFF016042), size: 18),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'REPUTACIÓN DEL PROVEEDOR',
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 11,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.8,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                    Text(
+                      'Evaluación directa y cumplimiento comercial',
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 11,
+                        color: Colors.grey[500],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF262012) : const Color(0xFFFEF8E3),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFF3AF43)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.star_rounded, size: 15, color: Color(0xFFF2A439)),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${rep['overallRating']} · ${rep['totalReviews']} reseñas',
+                      style: const TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFFF2A439),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // 3 Confidence Pillars (User explicit requirement)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF0f231d) : const Color(0xFFF0FDF4),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFF10B981).withValues(alpha: 0.25)),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _buildReputationMetricBadge(
+                    icon: Icons.check_circle_outline_rounded,
+                    value: '${rep['compliancePercent']}%',
+                    label: 'Cumplimiento',
+                    color: const Color(0xFF10B981),
+                    isDark: isDark,
+                  ),
+                ),
+                Container(width: 1, height: 28, color: Colors.grey.withValues(alpha: 0.2)),
+                Expanded(
+                  child: _buildReputationMetricBadge(
+                    icon: Icons.bolt_rounded,
+                    value: '${rep['fastResponsePercent']}%',
+                    label: 'Responde rápido',
+                    color: const Color(0xFF0284C7),
+                    isDark: isDark,
+                  ),
+                ),
+                Container(width: 1, height: 28, color: Colors.grey.withValues(alpha: 0.2)),
+                Expanded(
+                  child: _buildReputationMetricBadge(
+                    icon: Icons.thumb_up_alt_outlined,
+                    value: '${rep['recommendationPercent']}%',
+                    label: 'Lo recomiendan',
+                    color: const Color(0xFFD97706),
+                    isDark: isDark,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Sub-evaluations criteria breakdown (7 exact criteria)
+          Text(
+            'Desglose de Calidad de Negociación',
+            style: TextStyle(
+              fontFamily: 'Plus Jakarta Sans',
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white70 : Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 10),
+          _buildCriteriaScoreRow('Recomendación', criteria['Recomendación'] ?? 4.9, isDark),
+          _buildCriteriaScoreRow('Calidad del servicio', criteria['Calidad del servicio'] ?? 4.9, isDark),
+          _buildCriteriaScoreRow('Puntualidad', criteria['Puntualidad'] ?? 4.8, isDark),
+          _buildCriteriaScoreRow('Comunicación', criteria['Comunicación'] ?? 4.9, isDark),
+          _buildCriteriaScoreRow('Cumplimiento', criteria['Cumplimiento'] ?? 4.9, isDark),
+          _buildCriteriaScoreRow('Confiabilidad', criteria['Confiabilidad'] ?? 4.8, isDark),
+          _buildCriteriaScoreRow('Correspondencia con lo ofrecido', criteria['Correspondencia con lo ofrecido'] ?? 4.7, isDark),
+
+          // Direct Review CTA for Buyers
+          if (!isOwner) ...[
+            const SizedBox(height: 16),
+            if (hasReviewed) ...[
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF0D281E) : const Color(0xFFECFDF5),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: const Color(0xFF10B981).withValues(alpha: 0.4)),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.check_circle_rounded, color: Color(0xFF10B981), size: 18),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Ya enviaste tu reseña de perfil a este proveedor (máx. 1 reseña por contraparte).',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF065F46),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ] else if (hasNegotiated) ...[
+              SizedBox(
+                width: double.infinity,
+                height: 44,
+                child: ElevatedButton.icon(
+                  onPressed: () async {
+                    final res = await context.push('/direct-profile-review', extra: {
+                      'targetType': 'provider',
+                      'targetRole': 'proveedor',
+                      'targetId': providerId,
+                      'targetName': providerName,
+                      'targetAvatar': providerAvatar,
+                    });
+                    if (res == true && mounted) {
+                      setState(() {});
+                    }
+                  },
+                  icon: const Icon(Icons.rate_review_rounded, size: 18, color: Colors.white),
+                  label: const Text(
+                    'Calificar Proveedor',
+                    style: TextStyle(
+                      fontFamily: 'Plus Jakarta Sans',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF016042),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    elevation: 0,
+                  ),
+                ),
+              ),
+            ] else ...[
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        title: const Row(
+                          children: [
+                            Icon(Icons.handshake_outlined, color: Color(0xFF016042)),
+                            SizedBox(width: 8),
+                            Text('Reseña de Proveedor', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                          ],
+                        ),
+                        content: const Text(
+                          'Las reseñas directas de reputación son exclusivas para compradores que hayan realizado al menos una negociación con el proveedor. Esto garantiza calificaciones genuinas y protege la integridad de la comunidad.',
+                          style: TextStyle(fontSize: 13, height: 1.4),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(ctx),
+                            child: const Text('Entendido', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF016042))),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.lock_outline, size: 16),
+                  label: const Text(
+                    'Calificar Proveedor (requiere negociación previa)',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: isDark ? Colors.grey[400] : Colors.grey[700],
+                    side: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReputationMetricBadge({
+    required IconData icon,
+    required String value,
+    required String label,
+    required Color color,
+    required bool isDark,
+  }) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 14, color: color),
+            const SizedBox(width: 4),
+            Text(
+              value,
+              style: TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+                color: isDark ? Colors.white : Colors.black87,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: TextStyle(
+            fontFamily: 'Plus Jakarta Sans',
+            fontSize: 9.5,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey[500],
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCriteriaScoreRow(String label, double score, bool isDark) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3.5),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 5,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                fontSize: 11,
+                color: isDark ? Colors.grey[300] : Colors.grey[700],
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            flex: 4,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(3),
+              child: LinearProgressIndicator(
+                value: score / 5.0,
+                minHeight: 6,
+                backgroundColor: isDark ? Colors.white10 : Colors.grey[200],
+                valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF016042)),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          SizedBox(
+            width: 24,
+            child: Text(
+              score.toStringAsFixed(1),
+              style: TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white70 : Colors.black87,
+              ),
+              textAlign: TextAlign.right,
             ),
           ),
         ],

@@ -3,11 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:ui';
 import '../theme/app_theme.dart';
+import '../services/user_session.dart';
 
 class MyReviewsScreen extends StatefulWidget {
   const MyReviewsScreen({super.key});
 
-  // Global/Static tracker for pending reviews so other screens or drawer can access it dynamically
+  // Global/Static tracker for pending buyer reviews
   static final List<Map<String, dynamic>> pendingReviews = [
     {
       'orderId': 'ORD-4829',
@@ -24,6 +25,7 @@ class MyReviewsScreen extends StatefulWidget {
       'savings': '\$60.00',
       'deliveryMethod': 'Entrega directa en bodega',
       'paymentTerms': 'Contra entrega • Factura aprobada',
+      'daysSinceCompleted': 4, // >= 3 -> Habilitado para reseñar
     },
     {
       'orderId': 'ORD-4712',
@@ -40,6 +42,7 @@ class MyReviewsScreen extends StatefulWidget {
       'savings': '\$30.00',
       'deliveryMethod': 'Envío asegurado en cajas especiales',
       'paymentTerms': 'Transferencia bancaria previa',
+      'daysSinceCompleted': 1, // < 3 -> Bloqueado (faltan 2 días)
     },
     {
       'orderId': 'ORD-4655',
@@ -56,10 +59,56 @@ class MyReviewsScreen extends StatefulWidget {
       'savings': '\$37.50',
       'deliveryMethod': 'Cadena de frío controlada',
       'paymentTerms': 'Crédito a 15 días tras recepción',
+      'daysSinceCompleted': 2, // < 3 -> Bloqueado (falta 1 día)
     },
   ];
 
-  static int get pendingReviewsCount => pendingReviews.length;
+  // Tracker for provider pending reviews (buyer reviews awaiting seller's response)
+  static final List<Map<String, dynamic>> providerPendingReviews = [
+    {
+      'orderId': 'ORD-4510',
+      'negotiationId': 'NEG-2026-512',
+      'productName': 'Cesta de Verduras Mixtas',
+      'buyer': 'Mariana Ortiz',
+      'buyerAvatar': 'https://lh3.googleusercontent.com/aida-public/AB6AXuDkExJjnogapAzYJSb7dQcgEWoBPwi2xrSMgswCUDDdVdRIXBZrVUKFDHMFPh8uh9DUS0PoOVg9IrZX3QGXegq2vzNujlg8qkX9oTAilz4-qbfjAC8xvPkNtl_X5ZFNpvFUAB6cbjL0rQECyadtUul-xcUGi73dT-_8e1Rr3QDvasFOTid1uiY8_3qwe0DHWwWnt-yKwa_USTLTgTbZYGYoRW7zLXOSazPfHD2Ouw_9Onw8CMHvzMiClYcBiFiabXucIHwkS4Ts75c',
+      'timeAgo': 'Hace 2 días',
+      'completedDate': '10 de Mayo, 2026',
+      'finalPrice': '\$25.00/cesta',
+      'quantity': '2 cestas',
+      'totalAmount': '\$50.00',
+      'rating': 5,
+      'tags': ['Excelente calidad', 'Frescura garantizada', 'Empaque cuidadoso'],
+      'comment': 'Excelente calidad, todo muy fresco. Los pimientos estaban espectaculares y el empaque muy cuidadoso.',
+      'productImageUrl': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCK1u8etbY5cHiRod_Fsz0_cuGTPBYf1Kj3M9WWtxHKJPGQ80EV82hmsmCV_Gt93yIiAAYRrHcpjpcGQvWY6oCOXHF5JcfmhpwXq5fj6OyrK4y_GaFvJgKHtBGGRbV3fH5b06o4tW0WeCL9448PUxQhHSfSX58eVK_lx7JUhms8WnRMbpDqcWul-oB60GyFZHNBDb6ouVvsT47SpGzBpuWhNyUDtZ7iBTFmBGB6DtwzTd28a4GMKjluGv3yihiGBfs1OZehh14Ktak',
+      'producerReply': null,
+    },
+  ];
+
+  // Tracker for provider completed reviews (buyer reviews already responded to)
+  static final List<Map<String, dynamic>> providerCompletedReviews = [
+    {
+      'orderId': 'ORD-4402',
+      'negotiationId': 'NEG-2026-440',
+      'productName': 'Aceite de Oliva Virgen Extra',
+      'buyer': 'Carlos Ruiz',
+      'buyerAvatar': 'https://lh3.googleusercontent.com/aida-public/AB6AXuDP2SAhDf3xiSDi_M640MlgD1SQS_efXAy3Nge5f61w_PC0JqfPVQnJ_kzRN9OgQrCitc4c0LnJKeKKJHU00mVz4zapAJiBALXB2tF9-vkiIl8iYScPOcNMZwg2qMrHJfOf4och7hchrTrvSDLEMP3wTPctSP4iDgSaaRlygMLAx9hQgab4WuZ3LM2naJkAN4LC7H4CrZZrEyxehsOObIA6mq_8FYKPBB7xwkEQ9p6uL63m30AzftO3X0FNrF6k_45fChAU1ky479Y',
+      'timeAgo': 'Hace 1 mes',
+      'completedDate': '28 de Abril, 2026',
+      'finalPrice': '\$14.00/botella',
+      'quantity': '5 botellas',
+      'totalAmount': '\$70.00',
+      'rating': 4,
+      'tags': ['Buen sabor', 'Puntualidad'],
+      'comment': 'Muy buen sabor, intenso y con toques frutales. Ideal para ensaladas.',
+      'productImageUrl': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCXVjjLbAdq-qPVQ_4K3NOYusCymD1EzqS1kC-Lo2r8QtaXyo5pkWNSGVhL5GRtQdbQGSokSKklmFZQkqOdUI4YyvMbTzXiN4AXEBPr5cPtwmDPhu-Xq-fe5DmDEQ7bb12IupTY6GlguVCGhQguSo9BlaDDC8cklW1Mk-PM8CK-6xz9XhSIfBgoT5YJi9nx55BRZ0yONRnrZSQ4Xft817qS_jLiuOtjEbCKVWGb-EVrUn1Ker8c_Z-DsulYXVud8E41W1UHegQnM4Q',
+      'producerReply': '¡Muchas gracias Carlos! Cuidamos cada detalle en la prensa de las olivas para garantizar ese perfil frutal único. - Huerta San Miguel',
+      'replyDate': 'Hace 3 semanas',
+    },
+  ];
+
+  static int get pendingReviewsCount => UserSession.selectedRole == 'proveedor'
+      ? providerPendingReviews.length
+      : pendingReviews.length;
 
   @override
   State<MyReviewsScreen> createState() => _MyReviewsScreenState();
@@ -118,23 +167,33 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
     super.dispose();
   }
 
+  bool get _isProvider => UserSession.selectedRole == 'proveedor';
+
+  List<Map<String, dynamic>> get _pendingSource => _isProvider
+      ? MyReviewsScreen.providerPendingReviews
+      : MyReviewsScreen.pendingReviews;
+
+  List<Map<String, dynamic>> get _completedSource => _isProvider
+      ? MyReviewsScreen.providerCompletedReviews
+      : _completedReviews;
+
   List<Map<String, dynamic>> get _filteredPendingList {
-    if (_searchQuery.trim().isEmpty) return MyReviewsScreen.pendingReviews;
+    if (_searchQuery.trim().isEmpty) return _pendingSource;
     final query = _searchQuery.toLowerCase();
-    return MyReviewsScreen.pendingReviews.where((item) {
+    return _pendingSource.where((item) {
       final name = (item['productName'] ?? '').toString().toLowerCase();
-      final vendor = (item['vendor'] ?? '').toString().toLowerCase();
+      final vendor = (item['vendor'] ?? item['buyer'] ?? '').toString().toLowerCase();
       final orderId = (item['orderId'] ?? '').toString().toLowerCase();
       return name.contains(query) || vendor.contains(query) || orderId.contains(query);
     }).toList();
   }
 
   List<Map<String, dynamic>> get _filteredCompletedList {
-    if (_searchQuery.trim().isEmpty) return _completedReviews;
+    if (_searchQuery.trim().isEmpty) return _completedSource;
     final query = _searchQuery.toLowerCase();
-    return _completedReviews.where((item) {
+    return _completedSource.where((item) {
       final name = (item['productName'] ?? '').toString().toLowerCase();
-      final vendor = (item['vendor'] ?? '').toString().toLowerCase();
+      final vendor = (item['vendor'] ?? item['buyer'] ?? '').toString().toLowerCase();
       final orderId = (item['orderId'] ?? '').toString().toLowerCase();
       return name.contains(query) || vendor.contains(query) || orderId.contains(query);
     }).toList();
@@ -304,7 +363,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Productos Negociados',
+                  _isProvider ? 'Reseñas de Clientes' : 'Productos Negociados',
                   style: GoogleFonts.plusJakartaSans(
                     color: Colors.white,
                     fontWeight: FontWeight.w800,
@@ -314,7 +373,9 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Califica la calidad de los lotes recibidos y el cumplimiento del productor tras el cierre de tus acuerdos.',
+                  _isProvider
+                      ? 'Atiende y responde las valoraciones de tus compradores para fortalecer la reputación de tu negocio.'
+                      : 'Califica la calidad de los lotes recibidos y el cumplimiento del productor tras el cierre de tus acuerdos.',
                   style: GoogleFonts.plusJakartaSans(
                     color: Colors.white.withValues(alpha: 0.88),
                     fontWeight: FontWeight.w400,
@@ -344,7 +405,9 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                           ),
                           const SizedBox(width: 6),
                           Text(
-                            '${MyReviewsScreen.pendingReviews.length} pendientes',
+                            _isProvider
+                                ? '${_pendingSource.length} por responder'
+                                : '${_pendingSource.length} pendientes',
                             style: GoogleFonts.plusJakartaSans(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
@@ -373,7 +436,9 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                           ),
                           const SizedBox(width: 6),
                           Text(
-                            '${_completedReviews.length} completadas',
+                            _isProvider
+                                ? '${_completedSource.length} respondidas'
+                                : '${_completedSource.length} completadas',
                             style: GoogleFonts.plusJakartaSans(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
@@ -435,13 +500,13 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      Icons.pending_actions_rounded,
+                      _isProvider ? Icons.mark_chat_unread_outlined : Icons.pending_actions_rounded,
                       size: 17,
                       color: _selectedTabIndex == 0 ? AppTheme.primaryLight : inactiveText,
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      'Pendientes',
+                      _isProvider ? 'Por Responder' : 'Pendientes',
                       style: GoogleFonts.plusJakartaSans(
                         fontWeight: _selectedTabIndex == 0 ? FontWeight.w700 : FontWeight.w600,
                         fontSize: 13,
@@ -458,7 +523,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
-                        '${MyReviewsScreen.pendingReviews.length}',
+                        '${_pendingSource.length}',
                         style: GoogleFonts.plusJakartaSans(
                           fontWeight: FontWeight.w800,
                           fontSize: 11,
@@ -495,13 +560,13 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      Icons.task_alt_rounded,
+                      _isProvider ? Icons.check_circle_outline_rounded : Icons.task_alt_rounded,
                       size: 17,
                       color: _selectedTabIndex == 1 ? AppTheme.primaryLight : inactiveText,
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      'Completadas',
+                      _isProvider ? 'Respondidas' : 'Completadas',
                       style: GoogleFonts.plusJakartaSans(
                         fontWeight: _selectedTabIndex == 1 ? FontWeight.w700 : FontWeight.w600,
                         fontSize: 13,
@@ -518,7 +583,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
-                        '${_completedReviews.length}',
+                        '${_completedSource.length}',
                         style: GoogleFonts.plusJakartaSans(
                           fontWeight: FontWeight.w800,
                           fontSize: 11,
@@ -608,7 +673,9 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
         icon: Icons.assignment_turned_in_outlined,
         title: _searchQuery.isEmpty ? '¡Todo al día!' : 'Sin coincidencias',
         subtitle: _searchQuery.isEmpty
-            ? 'No tienes productos negociados pendientes de reseñar en este momento.'
+            ? (_isProvider
+                ? 'No tienes reseñas de clientes pendientes de responder en este momento.'
+                : 'No tienes productos negociados pendientes de reseñar en este momento.')
             : 'No encontramos ningún acuerdo que coincida con "$_searchQuery".',
         secondaryTextColor: secondaryTextColor,
       );
@@ -621,14 +688,23 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
       separatorBuilder: (context, index) => const SizedBox(height: 14),
       itemBuilder: (context, index) {
         final item = list[index];
-        return _buildPendingNegotiatedCard(
-          item,
-          isDark,
-          surfaceColor,
-          onSurfaceColor,
-          secondaryTextColor,
-          borderColor,
-        );
+        return _isProvider
+            ? _buildProviderPendingCard(
+                item,
+                isDark,
+                surfaceColor,
+                onSurfaceColor,
+                secondaryTextColor,
+                borderColor,
+              )
+            : _buildPendingNegotiatedCard(
+                item,
+                isDark,
+                surfaceColor,
+                onSurfaceColor,
+                secondaryTextColor,
+                borderColor,
+              );
       },
     );
   }
@@ -648,7 +724,9 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
         icon: Icons.rate_review_outlined,
         title: _searchQuery.isEmpty ? 'Aún sin reseñas completadas' : 'Sin coincidencias',
         subtitle: _searchQuery.isEmpty
-            ? 'Tus valoraciones y testimonios publicados aparecerán aquí.'
+            ? (_isProvider
+                ? 'Las reseñas que hayas respondido a tus clientes aparecerán aquí.'
+                : 'Tus valoraciones y testimonios publicados aparecerán aquí.')
             : 'No encontramos ninguna reseña que coincida con "$_searchQuery".',
         secondaryTextColor: secondaryTextColor,
       );
@@ -661,14 +739,23 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
       separatorBuilder: (context, index) => const SizedBox(height: 14),
       itemBuilder: (context, index) {
         final item = list[index];
-        return _buildCompletedReviewCard(
-          item,
-          isDark,
-          surfaceColor,
-          onSurfaceColor,
-          secondaryTextColor,
-          borderColor,
-        );
+        return _isProvider
+            ? _buildProviderCompletedCard(
+                item,
+                isDark,
+                surfaceColor,
+                onSurfaceColor,
+                secondaryTextColor,
+                borderColor,
+              )
+            : _buildCompletedReviewCard(
+                item,
+                isDark,
+                surfaceColor,
+                onSurfaceColor,
+                secondaryTextColor,
+                borderColor,
+              );
       },
     );
   }
@@ -951,6 +1038,35 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
           ),
           const SizedBox(height: 14),
 
+          // 3-Day Rule check for review unlocking
+          if ((item['daysSinceCompleted'] ?? 4) < 3) ...[
+            Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF2A2008) : const Color(0xFFFEF3C7),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.5)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.lock_clock_outlined, size: 15, color: Color(0xFFD97706)),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Reseña disponible en ${(3 - (item['daysSinceCompleted'] as int? ?? 0))} ${(3 - (item['daysSinceCompleted'] as int? ?? 0)) == 1 ? "día" : "días"} (se habilita 3 días post-negociación)',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: isDark ? const Color(0xFFFBBF24) : const Color(0xFF92400E),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+
           // Actions: Escribir Reseña & Ver Acuerdo
           Row(
             children: [
@@ -977,25 +1093,72 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
 
               // Main CTA Button
               Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: () => _showWriteReviewBottomSheet(item),
-                  icon: const Icon(Icons.rate_review_outlined, size: 16, color: Colors.white),
-                  label: const Text('Escribir Reseña'),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(0, 42),
-                    backgroundColor: AppTheme.primary,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    textStyle: GoogleFonts.plusJakartaSans(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.2,
-                    ),
-                  ),
-                ),
+                child: ((item['daysSinceCompleted'] ?? 4) >= 3)
+                    ? ElevatedButton.icon(
+                        onPressed: () => _showWriteReviewBottomSheet(item),
+                        icon: const Icon(Icons.rate_review_outlined, size: 16, color: Colors.white),
+                        label: const Text('Escribir Reseña'),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(0, 42),
+                          backgroundColor: AppTheme.primary,
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          textStyle: GoogleFonts.plusJakartaSans(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.2,
+                          ),
+                        ),
+                      )
+                    : ElevatedButton.icon(
+                        onPressed: () {
+                          final rem = 3 - ((item['daysSinceCompleted'] ?? 1) as int);
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                              title: Row(
+                                children: [
+                                  const Icon(Icons.timer_outlined, color: Color(0xFFF59E0B)),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Reseña en Espera',
+                                    style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold, fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                              content: Text(
+                                'Para evitar abusos y garantizar que hayas podido comprobar la calidad del producto, las reseñas se habilitan 3 días después de la negociación.\n\nPodrás calificar este lote en $rem ${rem == 1 ? "día" : "días"}.',
+                                style: GoogleFonts.plusJakartaSans(fontSize: 13, height: 1.4),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx),
+                                  child: Text('Entendido', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold, color: AppTheme.primary)),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.lock_outline, size: 16),
+                        label: Text('Disponible en ${(3 - ((item['daysSinceCompleted'] ?? 1) as int))} ${(3 - ((item['daysSinceCompleted'] ?? 1) as int)) == 1 ? "día" : "días"}'),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(0, 42),
+                          backgroundColor: isDark ? AppTheme.slate700 : const Color(0xFFE2E8F0),
+                          foregroundColor: isDark ? AppTheme.slate400 : Colors.grey[600],
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          textStyle: GoogleFonts.plusJakartaSans(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
               ),
             ],
           ),
@@ -1358,6 +1521,659 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
     );
   }
 
+  Widget _buildProviderPendingCard(
+    Map<String, dynamic> item,
+    bool isDark,
+    Color surfaceColor,
+    Color onSurfaceColor,
+    Color secondaryTextColor,
+    Color borderColor,
+  ) {
+    final commentBubbleBg = isDark ? AppTheme.slate900 : const Color(0xFFF8FAF9);
+    final rating = (item['rating'] ?? 5) as int;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: surfaceColor,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.4)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header: Buyer info + Status Tag
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  item['buyerAvatar'] ?? '',
+                  width: 46,
+                  height: 46,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    width: 46,
+                    height: 46,
+                    color: isDark ? AppTheme.slate700 : AppTheme.slate200,
+                    child: Icon(Icons.person, color: secondaryTextColor, size: 24),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            item['buyer'] ?? 'Cliente',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 15,
+                              color: onSurfaceColor,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF59E0B).withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.4)),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.mark_chat_unread_outlined, size: 12, color: Color(0xFFD97706)),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Respuesta Pendiente',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w700,
+                                  color: const Color(0xFFD97706),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Compró: ${item['productName']} • ${item['timeAgo'] ?? item['completedDate']}',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 12,
+                        color: secondaryTextColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          // Rating Stars & Tags
+          Row(
+            children: [
+              Row(
+                children: List.generate(5, (index) {
+                  return Icon(
+                    index < rating ? Icons.star_rounded : Icons.star_outline_rounded,
+                    size: 18,
+                    color: const Color(0xFFF59E0B),
+                  );
+                }),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '$rating.0 de 5.0',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFFD97706),
+                ),
+              ),
+            ],
+          ),
+          if (item['tags'] != null && (item['tags'] as List).isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 6,
+              runSpacing: 4,
+              children: (item['tags'] as List).map<Widget>((tag) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: isDark ? AppTheme.slate700 : const Color(0xFFE8F5E9),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    tag.toString(),
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+          const SizedBox(height: 10),
+
+          // Buyer comment bubble
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: commentBubbleBg,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: borderColor.withValues(alpha: 0.6)),
+            ),
+            child: Text(
+              '"${item['comment'] ?? ''}"',
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 13,
+                fontStyle: FontStyle.italic,
+                color: onSurfaceColor.withValues(alpha: 0.9),
+                height: 1.45,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Negotiation summary & CTA button
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Negociado: ${item['quantity'] ?? ''} • ${item['totalAmount'] ?? ''}',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: secondaryTextColor,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              ElevatedButton.icon(
+                onPressed: () => _showProviderReplyBottomSheet(item),
+                icon: const Icon(Icons.reply_rounded, size: 16, color: Colors.white),
+                label: const Text('Responder'),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(0, 38),
+                  backgroundColor: AppTheme.primary,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  textStyle: GoogleFonts.plusJakartaSans(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProviderCompletedCard(
+    Map<String, dynamic> item,
+    bool isDark,
+    Color surfaceColor,
+    Color onSurfaceColor,
+    Color secondaryTextColor,
+    Color borderColor,
+  ) {
+    final commentBubbleBg = isDark ? AppTheme.slate900 : const Color(0xFFF8FAF9);
+    final rating = (item['rating'] ?? 5) as int;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: surfaceColor,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: borderColor),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header: Buyer info + Responded status
+          Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  item['buyerAvatar'] ?? '',
+                  width: 44,
+                  height: 44,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    width: 44,
+                    height: 44,
+                    color: isDark ? AppTheme.slate700 : AppTheme.slate200,
+                    child: Icon(Icons.person, color: secondaryTextColor, size: 22),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            item['buyer'] ?? 'Cliente',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                              color: onSurfaceColor,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF10B981).withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: const Color(0xFF10B981).withValues(alpha: 0.35)),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.check_circle_outline_rounded, size: 12, color: Color(0xFF10B981)),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Respondida',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w700,
+                                  color: const Color(0xFF10B981),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${item['productName']} • ${item['timeAgo'] ?? item['completedDate']}',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 12,
+                        color: secondaryTextColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+
+          // Rating
+          Row(
+            children: [
+              Row(
+                children: List.generate(5, (index) {
+                  return Icon(
+                    index < rating ? Icons.star_rounded : Icons.star_outline_rounded,
+                    size: 16,
+                    color: const Color(0xFFF59E0B),
+                  );
+                }),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                '$rating.0 de 5.0',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFFD97706),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+
+          // Buyer Comment
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: commentBubbleBg,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: borderColor.withValues(alpha: 0.6)),
+            ),
+            child: Text(
+              '"${item['comment'] ?? ''}"',
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 13,
+                fontStyle: FontStyle.italic,
+                color: onSurfaceColor.withValues(alpha: 0.9),
+                height: 1.45,
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          // Producer Reply Bubble
+          if (item['producerReply'] != null) ...[
+            Container(
+              margin: const EdgeInsets.only(left: 8),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: isDark
+                    ? const Color(0xFF0D281E).withValues(alpha: 0.7)
+                    : const Color(0xFFE8F5EE),
+                border: Border(
+                  left: BorderSide(
+                    color: isDark ? const Color(0xFF1E8262) : AppTheme.primary,
+                    width: 3.5,
+                  ),
+                ),
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.reply_rounded,
+                        size: 14,
+                        color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        'TU RESPUESTA COMO PRODUCTOR',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w800,
+                          color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      const Spacer(),
+                      if (item['replyDate'] != null)
+                        Text(
+                          item['replyDate'],
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 10,
+                            color: secondaryTextColor,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${item['producerReply']}',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 12,
+                      color: isDark ? AppTheme.slate200 : const Color(0xFF2C4A3C),
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  void _showProviderReplyBottomSheet(Map<String, dynamic> item) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final surfaceColor = isDark ? AppTheme.slate800 : Colors.white;
+    final onSurface = isDark ? AppTheme.slate100 : AppTheme.slate900;
+    final secondaryText = isDark ? AppTheme.slate400 : AppTheme.slate500;
+    final borderColor = isDark ? AppTheme.slate700 : AppTheme.slate200;
+
+    final replyController = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (modalCtx) {
+        return StatefulBuilder(
+          builder: (statefulCtx, setModalState) {
+            final replyText = replyController.text.trim();
+            final isValid = replyText.length >= 5;
+
+            return Container(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(modalCtx).viewInsets.bottom + 20,
+                left: 20,
+                right: 20,
+                top: 20,
+              ),
+              decoration: BoxDecoration(
+                color: surfaceColor,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: borderColor,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: AppTheme.primary.withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.reply_rounded, color: AppTheme.primary, size: 20),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Responder a ${item['buyer'] ?? "Cliente"}',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: onSurface,
+                              ),
+                            ),
+                            Text(
+                              'Reseña sobre ${item['productName']}',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12,
+                                color: secondaryText,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Buyer Review Snippet
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: isDark ? AppTheme.slate900 : const Color(0xFFF9FAFB),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: borderColor),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Row(
+                              children: List.generate(5, (index) {
+                                return Icon(
+                                  index < ((item['rating'] ?? 5) as int) ? Icons.star_rounded : Icons.star_outline_rounded,
+                                  size: 14,
+                                  color: const Color(0xFFF59E0B),
+                                );
+                              }),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              '${item['rating'] ?? 5}.0',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFFD97706),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          '"${item['comment'] ?? ''}"',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
+                            color: onSurface.withValues(alpha: 0.85),
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  Text(
+                    'Tu Respuesta Pública',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: replyController,
+                    maxLines: 4,
+                    onChanged: (_) => setModalState(() {}),
+                    style: GoogleFonts.plusJakartaSans(fontSize: 13, color: onSurface),
+                    decoration: InputDecoration(
+                      hintText: 'Agradece el comentario de tu cliente, aclara dudas o dale seguimiento profesional a su compra...',
+                      hintStyle: GoogleFonts.plusJakartaSans(fontSize: 12, color: secondaryText),
+                      filled: true,
+                      fillColor: isDark ? AppTheme.slate900 : const Color(0xFFF8FAF9),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: borderColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: AppTheme.primary, width: 1.5),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  SizedBox(
+                    width: double.infinity,
+                    height: 46,
+                    child: ElevatedButton.icon(
+                      onPressed: isValid
+                          ? () {
+                              final text = replyController.text.trim();
+                              final messenger = ScaffoldMessenger.of(context);
+                              Navigator.pop(modalCtx);
+                              setState(() {
+                                item['producerReply'] = text;
+                                item['replyDate'] = 'Recién respondido';
+                                MyReviewsScreen.providerPendingReviews.remove(item);
+                                MyReviewsScreen.providerCompletedReviews.insert(0, item);
+                              });
+                              messenger.showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    '¡Tu respuesta ha sido publicada y la reseña pasó a Completadas!',
+                                    style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w600),
+                                  ),
+                                  backgroundColor: const Color(0xFF10B981),
+                                  behavior: SnackBarBehavior.floating,
+                                ),
+                              );
+                            }
+                          : null,
+                      icon: const Icon(Icons.send_rounded, size: 16, color: Colors.white),
+                      label: const Text('Publicar Respuesta'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.primary,
+                        foregroundColor: Colors.white,
+                        disabledBackgroundColor: isDark ? AppTheme.slate700 : Colors.grey[300],
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        textStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold, fontSize: 13),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   void _showAgreementDetailsModal(BuildContext context, Map<String, dynamic> item) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
@@ -1510,20 +2326,60 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                   SizedBox(
                     width: double.infinity,
                     height: 48,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        _showWriteReviewBottomSheet(item);
-                      },
-                      icon: const Icon(Icons.rate_review_outlined, color: Colors.white, size: 18),
-                      label: const Text('Escribir Reseña para este Acuerdo'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.primary,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        textStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700, fontSize: 14),
-                      ),
-                    ),
+                    child: ((item['daysSinceCompleted'] ?? 4) >= 3)
+                        ? ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              _showWriteReviewBottomSheet(item);
+                            },
+                            icon: const Icon(Icons.rate_review_outlined, color: Colors.white, size: 18),
+                            label: const Text('Escribir Reseña para este Acuerdo'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppTheme.primary,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              textStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700, fontSize: 14),
+                            ),
+                          )
+                        : ElevatedButton.icon(
+                            onPressed: () {
+                              final rem = 3 - ((item['daysSinceCompleted'] ?? 1) as int);
+                              showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                  title: Row(
+                                    children: [
+                                      const Icon(Icons.timer_outlined, color: Color(0xFFF59E0B)),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        'Reseña en Espera',
+                                        style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold, fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                  content: Text(
+                                    'Para evitar abusos y garantizar que hayas podido comprobar la calidad del producto, las reseñas se habilitan 3 días después de la negociación.\n\nPodrás calificar este lote en $rem ${rem == 1 ? "día" : "días"}.',
+                                    style: GoogleFonts.plusJakartaSans(fontSize: 13, height: 1.4),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(ctx),
+                                      child: Text('Entendido', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold, color: AppTheme.primary)),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.lock_outline, size: 18),
+                            label: Text('Disponible en ${(3 - ((item['daysSinceCompleted'] ?? 1) as int))} ${(3 - ((item['daysSinceCompleted'] ?? 1) as int)) == 1 ? "día" : "días"}'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: isDark ? AppTheme.slate700 : const Color(0xFFE2E8F0),
+                              foregroundColor: isDark ? AppTheme.slate400 : Colors.grey[600],
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              textStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700, fontSize: 13),
+                            ),
+                          ),
                   ),
                   const SizedBox(height: 10),
                 ],

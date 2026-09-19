@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/image_verification_service.dart';
+import '../services/reviews_service.dart';
 import '../widgets/typing_indicator.dart';
 
 class ChatDetailScreen extends StatefulWidget {
@@ -30,6 +31,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
 
   bool _isChatLocked = false;
   String? _cancellationReason;
+  bool _showResponseTimeBanner = true;
 
   final ValueNotifier<Set<String>> _typingUsersNotifier = ValueNotifier({});
   Timer? _typingTimeoutTimer;
@@ -899,6 +901,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
               Column(
                 children: [
                   _buildAppBar(theme, isDark, borderColor),
+                  if (_showResponseTimeBanner)
+                    _buildResponseTimeBanner(theme, isDark),
                   AnimatedSize(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
@@ -1062,6 +1066,90 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
                 onPressed: () {},
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildResponseTimeBanner(ThemeData theme, bool isDark) {
+    final providerId = (widget.provider?['id'] ?? widget.provider?['code'] ?? widget.provider?['name'] ?? 'prov_granja_sol').toString();
+    final metrics = ReviewsService.getProviderResponse(providerId);
+
+    return Container(
+      key: const ValueKey('chat_response_time_banner'),
+      margin: const EdgeInsets.fromLTRB(16, 6, 16, 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF162921) : const Color(0xFFF0FDF4),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDark ? const Color(0xFF10B981).withValues(alpha: 0.3) : const Color(0xFF10B981).withValues(alpha: 0.35),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: const Color(0xFF016042).withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.bolt_rounded,
+              size: 16,
+              color: Color(0xFF016042),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '⚡ Tendrás respuesta aproximadamente en ~${metrics.formattedResponseTime} por este proveedor',
+                  style: TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w700,
+                    color: isDark ? Colors.white : const Color(0xFF065F46),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'Tiempo promedio habitual: ~${metrics.averageResponseMinutes} min (${metrics.statusLabel})',
+                  style: TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontSize: 10.5,
+                    color: isDark ? Colors.grey[400] : const Color(0xFF047857),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            key: const ValueKey('dismiss_response_time_banner'),
+            icon: Icon(
+              Icons.close_rounded,
+              size: 18,
+              color: isDark ? Colors.grey[400] : Colors.grey[600],
+            ),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+            splashRadius: 16,
+            onPressed: () {
+              setState(() {
+                _showResponseTimeBanner = false;
+              });
+            },
           ),
         ],
       ),
@@ -2044,18 +2132,23 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
                                       Text('${proposalDetails['quantity']} sacos', style: TextStyle(fontFamily: 'Plus Jakarta Sans', fontWeight: FontWeight.bold, fontSize: 14, color: isDark ? Colors.white : Colors.black87)),
                                     ],
                                   ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: theme.colorScheme.secondaryContainer,
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.info, size: 14, color: theme.colorScheme.onSecondaryContainer),
-                                        const SizedBox(width: 4),
-                                        Text('Total: \$${proposalDetails['total'].toStringAsFixed(2)}', style: TextStyle(fontFamily: 'Plus Jakarta Sans', fontWeight: FontWeight.bold, fontSize: 10, color: theme.colorScheme.onSecondaryContainer, letterSpacing: 0.5)),
-                                      ],
+                                  Flexible(
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: theme.colorScheme.secondaryContainer,
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(Icons.info, size: 14, color: theme.colorScheme.onSecondaryContainer),
+                                          const SizedBox(width: 4),
+                                          Flexible(
+                                            child: Text('Total: \$${proposalDetails['total'].toStringAsFixed(2)}', style: TextStyle(fontFamily: 'Plus Jakarta Sans', fontWeight: FontWeight.bold, fontSize: 10, color: theme.colorScheme.onSecondaryContainer, letterSpacing: 0.5), overflow: TextOverflow.ellipsis),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   )
                                 ],

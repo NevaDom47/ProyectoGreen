@@ -13,6 +13,7 @@ import '../widgets/product_reviews_modal.dart';
 import '../widgets/quality_info_bottom_sheet.dart';
 import '../widgets/supplier_quick_view_bottom_sheet.dart';
 import '../widgets/skeleton_loading.dart';
+import '../widgets/verified_badge.dart';
 import '../services/user_session.dart';
 
 class HomeFeedScreen extends StatefulWidget {
@@ -517,25 +518,25 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
         'name': 'Elena G.',
         'url':
             'https://lh3.googleusercontent.com/aida-public/AB6AXuDA08Phs1_RYQ5rPknb8I5SM_TqS1ncSGl0M9Rh2HPkK7_kq8GLAD8pN4Hnm1uW9nD4ufN5qB-Gar75NM6f9hHlnBin-CeQQvUG4gNBbVzb5Cq0tg-3ylPb804yPeXsgmf8D9wNrU-gFQK8JhbtA3SBZshFhBQFMuCFauvjCDykPl4fCKBiWvxbETlpjR1rXy4tfBQ6cqbIucFEA_x1nQHEDDZ31YEERCJSDsemGVufhdIKdWozygkrqyrtfNUEB_4nHa5Kjehjm8A',
-        'verified': false,
+        'verified': true,
       },
       {
         'name': 'Samuel P.',
         'url':
             'https://lh3.googleusercontent.com/aida-public/AB6AXuDmnB3zEA-jMklOfYpuvp664-Drza8YXnWDGsSM7oi4Kuk1LNF9GnT51DGiuRvYdEhru42AThFqcEAXe7BQxYcVCFE-PX9wYn7OYTStqi6Lyg6xlVKs9SV_4YM6rARBT79qLkwbF2KCEoBqg7alHiGexxD4yZndZ9yrPzypPAs_1dTVQAc0L01a1OPLquvenOfJOnUFgudHS139zS-Tx9kU1VDZMno9BeUjFXHUbKdoRL3SUZZ5KzfT4-94_Tr2a8sm0EmwLWrlFeg',
-        'verified': false,
+        'verified': true,
       },
       {
         'name': 'Lucía R.',
         'url':
             'https://lh3.googleusercontent.com/aida-public/AB6AXuBMK_EiApp5qkjHio277q6kwkoMvzDassxK1XfqjRTVe96VSotCSL93SB9OkZ2j9H-J31zXFdwwrkP8kJH8C6uoRsRlQVcun4UYJ85x6lEved6xfXkQuOGUtHc3wxIivlMeu6S3XqUSLCNKd9w1dyuNWIl-PfFjEJole6ui-35xc5s5uFYxxaVxfj0hhRnGqFlXj7t55i0_QWr4ejgqS9ipQ-pwZRueVNTKimU3xbYCjyztYQtZpoEZ74xZYrUOV31lFKFYYRFVbZg',
-        'verified': false,
+        'verified': true,
       },
       {
         'name': 'Martín L.',
         'url':
             'https://lh3.googleusercontent.com/aida-public/AB6AXuC5yYBOl6gRU60ro0G8b-arkhMDMmZe0Ysrnt6vi8wS8uLW0Gr5vd1RH-i2LZNm-w79Q6uI-t9QtCRs5fNRr0g5F6c4bEeOF2tkVa7PkHCyQCpEzQFbC7zcwaRnYmilu5GYjgNIVCKGBbQBHO6p1HG-8I3RUDzE62mBw_yXuDJiRE3p3-3nhlKuGMxFDOGPBpE8aCdO6JF-R9FEXZOeBk9FntU7OPBr38cItVNiY8TOTA4--fOR9lTZLlla4gD7iR6AnpQx1O-ahcI',
-        'verified': false,
+        'verified': true,
       },
     ];
 
@@ -546,16 +547,23 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Proveedores Cercanos',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
               Text(
-                'Ver todos',
-                style: TextStyle(
-                  color: theme.colorScheme.primary,
-                  fontSize: 12,
+                'Proveedores Cercanos',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black87,
+                ),
+              ),
+              GestureDetector(
+                onTap: () => context.go('/providers'),
+                child: Text(
+                  'Ver todos',
+                  style: GoogleFonts.plusJakartaSans(
+                    color: theme.colorScheme.primary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
@@ -563,7 +571,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
         ),
         const SizedBox(height: 16),
         SizedBox(
-          height: 100,
+          height: 104,
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,
@@ -573,7 +581,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
               if (_isLoading) {
                 return SkeletonShimmer(
                   child: SizedBox(
-                    width: 70,
+                    width: 72,
                     child: Column(
                       children: const [
                         SkeletonContainer(
@@ -589,63 +597,84 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                 );
               }
               final s = suppliers[index];
-              return SizedBox(
-                width: 70,
-                child: Column(
-                  children: [
-                    Stack(
-                      children: [
-                        Container(
-                          width: 64,
-                          height: 64,
-                          padding: const EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: theme.colorScheme.primary,
-                              width: 2,
-                            ),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(30),
-                            child: Image.network(
-                              s['url'] as String,
-                              fit: BoxFit.cover,
-                              errorBuilder: (c, e, s) =>
-                                  const Icon(Icons.person),
-                            ),
-                          ),
-                        ),
-                        if (s['verified'] as bool)
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(2),
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.primary,
-                                shape: BoxShape.circle,
+              final isVerified = s['verified'] as bool? ?? false;
+              return GestureDetector(
+                onTap: () {
+                  context.push('/provider', extra: {
+                    'name': s['name'],
+                    'img': s['url'],
+                    'image': s['url'],
+                    'verified': isVerified,
+                    'rating': '4.8',
+                    'sales': '1,240',
+                    'level': 'Nivel 3',
+                  });
+                },
+                child: SizedBox(
+                  width: 72,
+                  child: Column(
+                    children: [
+                      Stack(
+                        clipBehavior: Clip.none,
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: 64,
+                            height: 64,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                              border: Border.all(
+                                color: const Color(0xFF275C42),
+                                width: 2.5,
                               ),
-                              child: const Icon(
-                                Icons.verified,
-                                color: Colors.white,
-                                size: 12,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.08),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: ClipOval(
+                              child: Image.network(
+                                s['url'] as String,
+                                fit: BoxFit.cover,
+                                errorBuilder: (c, e, _) => Container(
+                                  color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+                                  child: Icon(
+                                    Icons.storefront_rounded,
+                                    size: 28,
+                                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      s['name'] as String,
-                      style: const TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
+                          if (isVerified)
+                            const Positioned(
+                              bottom: -1,
+                              right: 2,
+                              child: VerifiedBadge(
+                                size: 20,
+                                showWhiteCircle: true,
+                              ),
+                            ),
+                        ],
                       ),
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                      const SizedBox(height: 8),
+                      Text(
+                        s['name'] as String,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: isDark ? Colors.grey[200] : Colors.black87,
+                        ),
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
@@ -3105,6 +3134,17 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                     onTap: () {
                       context.pop();
                       context.push('/favorite-providers');
+                    },
+                  ),
+                  _buildDrawerItem(
+                    'Compradores favoritos',
+                    Icons.person_search_rounded,
+                    itemTextColor,
+                    itemHoverBg,
+                    false,
+                    onTap: () {
+                      context.pop();
+                      context.push('/favorite-buyers');
                     },
                   ),
                   _buildDrawerItem(

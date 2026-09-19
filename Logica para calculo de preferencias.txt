@@ -1,0 +1,270 @@
+Yo lo implementaría como un perfil de comportamiento dinámico, donde cada nueva compra actualiza los indicadores.
+
+1. Volumen habitual de compra
+
+No recomiendo usar simplemente el promedio, porque una compra excepcionalmente grande puede distorsionarlo.
+
+Puedes calcular:
+
+Volumen habitual = Mediana de las cantidades compradas por producto/operación durante un período determinado
+
+Por ejemplo, últimas 20 compras:
+
+Compra	Cantidad
+1	5 kg
+2	8 kg
+3	10 kg
+4	7 kg
+5	100 kg
+6	9 kg
+
+El promedio sería 23.2 kg, pero eso no representa realmente el comportamiento habitual.
+
+La mediana sería 8.5 kg, mucho más representativa.
+
+Puedes además clasificar:
+
+0–10 kg → Volumen bajo
+11–50 kg → Volumen medio
+51–200 kg → Volumen alto
+>200 kg → Volumen mayorista
+
+Pero estos rangos deberían ser parametrizables por producto/unidad, porque 50 cajas de tomates no equivalen a 50 sacos de arroz.
+
+2. Método de pago preferido
+
+Aquí la lógica es bastante sencilla:
+
+Método preferido =
+método de pago utilizado con mayor frecuencia
+
+Ejemplo:
+
+Método	Compras	%
+Efectivo	12	48%
+Transferencia	8	32%
+Tarjeta	4	16%
+Verifone	1	4%
+
+Resultado:
+
+Método de pago preferido: Efectivo
+
+Pero agregaría un segundo indicador:
+
+Nivel de confianza = compras con método preferido / total de compras
+
+En este caso:
+
+12 / 25 × 100 = 48%
+
+Así el sistema puede distinguir:
+
+Efectivo — Preferencia 48%
+
+de:
+
+Efectivo — Preferencia 91%
+
+Esto es mucho más útil.
+
+3. Modalidad de compra: detalle vs. mayorista
+
+Aquí recomiendo no determinarlo únicamente por cantidad, sino crear un índice.
+
+Por cada compra puedes determinar:
+
+Índice de volumen =
+cantidad comprada / cantidad considerada mayorista para ese producto
+
+Por ejemplo:
+
+Compra	Cantidad	Clasificación
+5 kg tomates	5 kg	Detalle
+8 kg tomates	8 kg	Detalle
+100 kg tomates	100 kg	Mayorista
+75 kg tomates	75 kg	Mayorista
+90 kg tomates	90 kg	Mayorista
+
+Después:
+
+Compras mayoristas = 3
+Compras totales = 5
+
+Índice mayorista = 3 / 5 × 100
+                 = 60%
+
+Entonces:
+
+0–30%   → Principalmente detalle
+31–60%  → Mixto
+61–100% → Principalmente mayorista
+
+Incluso puedes hacerlo más preciso utilizando el porcentaje del dinero gastado, no solamente el número de órdenes.
+
+Por ejemplo:
+
+% volumen mayorista =
+monto de compras mayoristas / monto total comprado × 100
+
+Esto evita que una persona haga 10 pequeñas compras y una sola compra enorme y el sistema la clasifique incorrectamente.
+
+4. Productos que suele comprar
+
+Aquí utilizaría un ranking de frecuencia + recencia + cantidad.
+
+Por ejemplo:
+
+Producto	Compras	Última compra	Cantidad total
+Tomate	15	hace 3 días	250 kg
+Plátano	12	hace 7 días	180 kg
+Yuca	8	hace 20 días	100 kg
+Aguacate	3	hace 60 días	30 kg
+
+El sistema podría generar:
+
+Productos habituales: Tomate, Plátano, Yuca.
+
+Pero aquí hay una mejora importante: utilizar decadencia temporal (time decay).
+
+Una compra realizada ayer debería pesar más que una realizada hace 6 meses.
+
+Puedes utilizar:
+
+Peso de compra = e^(-λ × días_desde_compra)
+
+Por ejemplo:
+
+Compra ayer       → peso alto
+Compra hace 30d   → peso medio
+Compra hace 180d  → peso bajo
+
+Así el perfil se adapta automáticamente.
+
+Algoritmo general que te recomiendo
+
+Para tu aplicación Emerald Harvest, yo crearía un componente llamado:
+
+BuyerBehaviorProfile
+
+Cada vez que se completa una compra:
+
+                 ┌───────────────────┐
+                 │ Compra completada │
+                 └─────────┬─────────┘
+                           ↓
+                ┌─────────────────────┐
+                │ Registrar evento    │
+                │ de compra           │
+                └─────────┬───────────┘
+                          ↓
+             ┌──────────────────────────┐
+             │ Actualizar comportamiento │
+             └────────────┬─────────────┘
+                          ↓
+        ┌─────────────────┼─────────────────┐
+        ↓                 ↓                 ↓
+   Volumen            Pago             Productos
+        ↓                 ↓                 ↓
+   Mediana /         Frecuencia       Frecuencia +
+   promedio          + recencia       recencia
+        ↓                 ↓                 ↓
+        └─────────────────┼─────────────────┘
+                          ↓
+                ┌─────────────────────┐
+                │ Clasificar perfil   │
+                └──────────┬──────────┘
+                           ↓
+              ┌─────────────────────────┐
+              │ Perfil de comprador     │
+              │                         │
+              │ Volumen: 150kg - 800kg          │
+              │ Pago: Transferencia    │
+              │ Modalidad: Mayorista    │
+              │ Productos: Tomate, Yuca │
+              └─────────────────────────┘
+Incluso puedes generar un "Buyer Score"
+
+Puedes combinar los indicadores en un perfil:
+
+BuyerBehaviorProfile
+│
+├── habitualVolume
+│   ├── value: 85 kg
+│   ├── unit: kg
+│   └── confidence: 82%
+│
+├── preferredPayment
+│   ├── method: transferencia
+│   └── confidence: 74%
+│
+├── purchaseMode
+│   ├── mode: mayorista
+│   └── confidence: 81%
+│
+└── frequentProducts
+    ├── tomate
+    ├── plátano
+    ├── yuca
+    └── aguacate
+Algo importante: separar "valor" de "confianza"
+
+Por ejemplo:
+
+Volumen habitual: 80 kg — Confianza 92%
+
+es muy diferente de:
+
+Volumen habitual: 80 kg — Confianza 28%
+
+La confianza puede depender de:
+
+cantidad de compras realizadas;
+antigüedad del historial;
+consistencia del comportamiento;
+frecuencia de compra;
+cantidad de productos diferentes;
+tiempo desde la última compra.
+Una lógica todavía más potente
+
+Para tu marketplace, yo almacenaría además:
+
+Últimas 30 días
+Últimos 90 días
+Últimos 12 meses
+Histórico total
+
+Y aplicaría mayor peso a los períodos recientes.
+
+Por ejemplo:
+
+Score =
+50% comportamiento últimos 30 días
+30% comportamiento últimos 90 días
+20% comportamiento histórico
+
+Esto permite que el sistema aprenda que el comprador cambió su comportamiento.
+
+Ejemplo:
+
+Hace un año:
+
+Compraba 5–10 kg → Detalle
+
+Últimos 3 meses:
+
+Compra 100–200 kg → Mayorista
+
+El sistema debería terminar mostrando:
+
+Modalidad actual: Mayorista
+
+en lugar de seguir clasificándolo como comprador de detalle por su historial antiguo.
+
+Y esto abre una funcionalidad muy interesante
+
+Estos datos no solo sirven para mostrar el perfil del comprador. Puedes utilizarlos posteriormente para:
+
+recomendaciones → búsqueda → negociación → proveedores → promociones → alertas → predicción de recompra.
+
+Por ejemplo, si el sistema detecta que un comprador suele comprar 100 kg de tomate cada 14 días, podría detectar que está próximo a su ciclo habitual de compra y mostrarle proveedores que tengan disponibilidad de tomate en ese volumen.

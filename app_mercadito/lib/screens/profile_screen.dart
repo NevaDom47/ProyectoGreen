@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../data/global_state.dart';
 import '../widgets/animated_favorite_button.dart';
 import '../services/user_session.dart';
+import '../services/reviews_service.dart';
 import 'my_provider_profile_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -34,6 +35,8 @@ class ProfileScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
                 child: Column(
                   children: [
+                    _buildProviderReputationSection(context, theme, isDark, cardColor),
+                    const SizedBox(height: 32),
                     _buildOrderHistory(context, theme, isDark, cardColor),
                     const SizedBox(height: 32),
                     _buildFavoritesCarousel(context, theme, isDark, cardColor),
@@ -244,15 +247,18 @@ class ProfileScreen extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'Historial de negociaciones',
-              style: TextStyle(
-                fontFamily: 'Plus Jakarta Sans',
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : Colors.black87,
+            Expanded(
+              child: Text(
+                'Historial de negociaciones',
+                style: TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black87,
+                ),
               ),
             ),
+            const SizedBox(width: 8),
             GestureDetector(
               onTap: () => context.push('/order-history'),
               child: Text(
@@ -501,7 +507,7 @@ class ProfileScreen extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         SizedBox(
-          height: 320,
+          height: 350,
           child: ValueListenableBuilder<List<Map<String, dynamic>>>(
             valueListenable: globalFavorites,
             builder: (context, favoritesList, child) {
@@ -867,6 +873,225 @@ class ProfileScreen extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(child: Text(text, style: const TextStyle(fontSize: 12, color: Colors.grey))),
       ],
+    );
+  }
+
+  Widget _buildProviderReputationSection(BuildContext context, ThemeData theme, bool isDark, Color cardColor) {
+    const buyerId = 'BUY-88291';
+    final scores = ReviewsService.getBuyerReputation(buyerId);
+    final borderColor = isDark ? Colors.grey[800]! : Colors.grey[200]!;
+    final isProviderViewing = UserSession.selectedRole == 'proveedor';
+    final hasReviewed = ReviewsService.hasDirectReview('prov_current', buyerId);
+
+    // Calculate overall buyer reputation average
+    double total = 0;
+    scores.forEach((_, v) => total += v);
+    final avg = scores.isNotEmpty ? (total / scores.length).toStringAsFixed(1) : '4.9';
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: borderColor),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF016042).withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.handshake_rounded, color: Color(0xFF016042), size: 20),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '¿Cómo lo califican los proveedores?',
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Evaluación directa basada en acuerdos y negociaciones',
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 11,
+                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF262012) : const Color(0xFFFEF8E3),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFF3AF43)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.star_rounded, size: 15, color: Color(0xFFF2A439)),
+                    const SizedBox(width: 4),
+                    Text(
+                      '$avg ⭐',
+                      style: const TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFFF2A439),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+
+          // The 5 Criteria (Requested specifically by user)
+          _buildBuyerScoreBar('Comunicación', scores['Comunicación'] ?? 4.9, isDark),
+          _buildBuyerScoreBar('Cumplimiento del acuerdo', scores['Cumplimiento'] ?? 4.8, isDark),
+          _buildBuyerScoreBar('Puntualidad en citas y recepción', scores['Puntualidad'] ?? 4.7, isDark),
+          _buildBuyerScoreBar('Trato y seriedad', scores['Trato'] ?? 5.0, isDark),
+          _buildBuyerScoreBar('Cumplimiento de pago', scores['Pago'] ?? 4.9, isDark),
+
+          // Provider CTA (if a provider views buyer's profile)
+          if (isProviderViewing) ...[
+            const SizedBox(height: 16),
+            if (hasReviewed) ...[
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF0D281E) : const Color(0xFFECFDF5),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: const Color(0xFF10B981).withValues(alpha: 0.4)),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.check_circle_rounded, color: Color(0xFF10B981), size: 18),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Ya enviaste tu reseña de perfil a este comprador (límite: 1 reseña por contraparte).',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF065F46),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ] else ...[
+              SizedBox(
+                width: double.infinity,
+                height: 44,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    context.push('/direct-profile-review', extra: {
+                      'targetType': 'buyer',
+                      'targetRole': 'comprador',
+                      'targetId': buyerId,
+                      'targetName': UserSession.fullName ?? 'Juan Pérez',
+                      'targetAvatar': UserSession.profilePictureUrl ?? '',
+                    });
+                  },
+                  icon: const Icon(Icons.rate_review_rounded, size: 18, color: Colors.white),
+                  label: const Text(
+                    'Calificar Comprador',
+                    style: TextStyle(
+                      fontFamily: 'Plus Jakarta Sans',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF016042),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    elevation: 0,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBuyerScoreBar(String label, double score, bool isDark) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 6,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: isDark ? Colors.grey[300] : Colors.grey[700],
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            flex: 4,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: score / 5.0,
+                minHeight: 7,
+                backgroundColor: isDark ? Colors.white12 : Colors.grey[200],
+                valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF016042)),
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          SizedBox(
+            width: 26,
+            child: Text(
+              score.toStringAsFixed(1),
+              style: TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white70 : Colors.black87,
+              ),
+              textAlign: TextAlign.right,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

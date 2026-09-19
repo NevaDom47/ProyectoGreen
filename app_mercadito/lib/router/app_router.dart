@@ -48,6 +48,12 @@ import '../screens/flash_offers_screen.dart';
 import '../screens/flash_offers_manager_screen.dart';
 import '../screens/product_management_screen.dart';
 import '../screens/add_product_screen.dart';
+import '../screens/seller_policies_screen.dart';
+import '../screens/business_hours_screen.dart';
+import '../screens/business_verification_screen.dart';
+import '../screens/direct_profile_review_screen.dart';
+import '../screens/favorite_buyers_screen.dart';
+import '../screens/buyer_profile_screen.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -348,6 +354,18 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
+      path: '/direct-profile-review',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>? ?? {};
+        return DirectProfileReviewScreen(
+          targetId: extra['targetId']?.toString() ?? 'TARGET-1',
+          targetName: extra['targetName']?.toString() ?? 'Perfil Comercial',
+          targetRole: extra['targetRole']?.toString() ?? 'proveedor',
+          targetAvatar: extra['targetAvatar']?.toString(),
+        );
+      },
+    ),
+    GoRoute(
       path: '/order-history',
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
@@ -550,6 +568,35 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
+      path: '/favorite-buyers',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const FavoriteBuyersScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: animation.drive(Tween(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(CurveTween(curve: Curves.easeOutCubic))),
+            child: child,
+          );
+        },
+      ),
+    ),
+    GoRoute(
+      path: '/buyer-profile',
+      pageBuilder: (context, state) {
+        final buyer = state.extra as Map<String, dynamic>? ?? {};
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: BuyerProfileScreen(buyer: buyer),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: animation.drive(Tween(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(CurveTween(curve: Curves.easeOutCubic))),
+              child: child,
+            );
+          },
+        );
+      },
+    ),
+    GoRoute(
       path: '/negotiations',
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
@@ -726,6 +773,54 @@ final GoRouter appRouter = GoRouter(
           },
         );
       },
+    ),
+    GoRoute(
+      path: '/seller-policies',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const SellerPoliciesScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: animation.drive(
+              Tween(begin: const Offset(1.0, 0.0), end: Offset.zero)
+                  .chain(CurveTween(curve: Curves.easeOutCubic)),
+            ),
+            child: child,
+          );
+        },
+      ),
+    ),
+    GoRoute(
+      path: '/business-hours',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const BusinessHoursScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: animation.drive(
+              Tween(begin: const Offset(1.0, 0.0), end: Offset.zero)
+                  .chain(CurveTween(curve: Curves.easeOutCubic)),
+            ),
+            child: child,
+          );
+        },
+      ),
+    ),
+    GoRoute(
+      path: '/business-verification',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const BusinessVerificationScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: animation.drive(
+              Tween(begin: const Offset(1.0, 0.0), end: Offset.zero)
+                  .chain(CurveTween(curve: Curves.easeOutCubic)),
+            ),
+            child: child,
+          );
+        },
+      ),
     ),
   ],
 );

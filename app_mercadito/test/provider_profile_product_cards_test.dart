@@ -259,9 +259,36 @@ void main() {
     // Verify Sales Modality badge
     expect(find.text('Al Detalle'), findsOneWidget);
 
-    // Verify Live schedule chip
+    // Verify Live schedule chip with 12h format
     expect(find.text('ABIERTO AHORA'), findsOneWidget);
-    expect(find.text('• Cierra a las 18:00'), findsOneWidget);
+    expect(find.text('• Cierra a las 6:00 PM'), findsOneWidget);
+
+    // Verify Reviews tab displays rating distribution counts
+    await tester.tap(find.text('Reseñas'));
+    await tester.pumpAndSettle();
+    expect(find.text('128 RESEÑAS'), findsOneWidget);
+    expect(find.text('108'), findsOneWidget); // 5-star count
+    expect(find.text('12'), findsOneWidget);  // 4-star count
+    expect(find.text('4'), findsNWidgets(2)); // Star 4 label and 3-star count
+    expect(find.text('ESCRIBIR MI RESEÑA'), findsNothing);
+
+    // Verify Información tab displays Políticas del Vendedor
+    await tester.tap(find.text('Información'));
+    await tester.pumpAndSettle();
+
+    final policiesFinder = find.text('Políticas del Vendedor');
+    await tester.scrollUntilVisible(
+      policiesFinder,
+      300,
+      scrollable: find.descendant(
+        of: find.byKey(const Key('info_tab_listview')),
+        matching: find.byType(Scrollable),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(policiesFinder, findsOneWidget);
+    expect(find.textContaining('Muestra disponible'), findsOneWidget);
+    expect(find.text('Gestionar'), findsNothing);
 
     final exception = tester.takeException();
     expect(exception, isNull);

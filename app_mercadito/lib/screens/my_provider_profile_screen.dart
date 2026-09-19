@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import '../services/user_session.dart';
+import '../services/reviews_service.dart';
+import 'seller_policies_screen.dart';
+import 'business_hours_screen.dart';
+import 'business_verification_screen.dart';
+import '../widgets/verified_badge.dart';
 
 class MyProviderProfileScreen extends StatefulWidget {
   const MyProviderProfileScreen({super.key});
@@ -76,10 +81,12 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
       'reviews': '124 reseñas de clientes',
       'traded': '312 productos negociados',
       'open': true,
-      'closeTime': '18:00',
+      'closeTime': '6:00 PM',
       'img': avatarUrl,
       'verified': true,
       'products': _myProducts,
+      'policies': UserSession.currentSellerPolicies,
+      'isOwner': true,
     };
     context.push('/provider', extra: providerData);
   }
@@ -248,10 +255,24 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                     const SizedBox(height: 12),
                     TextField(
                       controller: emailCtrl,
+                      enabled: false,
                       decoration: InputDecoration(
                         labelText: 'Correo Electrónico',
-                        prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF016042)),
+                        prefixIcon: const Icon(Icons.lock_outline_rounded, color: Colors.grey),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                        filled: true,
+                        fillColor: isDark ? Colors.white10 : const Color(0xFFF1F4F0),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4, left: 4),
+                      child: Text(
+                        'El correo electrónico está vinculado a tu cuenta y no puede modificarse por seguridad.',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 10.5,
+                          color: isDark ? Colors.grey[400] : const Color(0xFF737373),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -352,7 +373,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                             }
                             UserSession.businessDescription = descCtrl.text.trim();
                             UserSession.phone = phoneCtrl.text.trim();
-                            UserSession.email = emailCtrl.text.trim();
+                            // El correo electrónico no se modifica por seguridad
                             UserSession.specialty = currentSpecialty;
                             UserSession.salesType = currentSalesType;
                           });
@@ -379,6 +400,148 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
           },
         );
       },
+    );
+  }
+
+  void _openSellerPoliciesScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SellerPoliciesScreen()),
+    ).then((_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  void _openBusinessHoursScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => const BusinessHoursScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: animation.drive(
+              Tween(begin: const Offset(1.0, 0.0), end: Offset.zero)
+                  .chain(CurveTween(curve: Curves.easeOutCubic)),
+            ),
+            child: child,
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 300),
+        reverseTransitionDuration: const Duration(milliseconds: 250),
+      ),
+    ).then((_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  void _openBusinessVerificationScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => const BusinessVerificationScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: animation.drive(
+              Tween(begin: const Offset(1.0, 0.0), end: Offset.zero)
+                  .chain(CurveTween(curve: Curves.easeOutCubic)),
+            ),
+            child: child,
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 300),
+        reverseTransitionDuration: const Duration(milliseconds: 250),
+      ),
+    ).then((_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  Widget _buildOpenStatusBadge(bool isDark) {
+    final now = DateTime.now();
+    final isSunday = now.weekday == DateTime.sunday;
+    final isSaturday = now.weekday == DateTime.saturday;
+
+    bool isClosedToday = false;
+    String scheduleToday = UserSession.weekdaySchedule;
+
+    if (isSunday) {
+      isClosedToday = UserSession.isSundayClosed;
+      scheduleToday = UserSession.sundaySchedule;
+    } else if (isSaturday) {
+      isClosedToday = UserSession.isSaturdayClosed;
+      scheduleToday = UserSession.saturdaySchedule;
+    }
+
+    if (isClosedToday || scheduleToday.toLowerCase() == 'cerrado') {
+      return Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 6,
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: const BoxDecoration(
+              color: Color(0xFFEF4444),
+              shape: BoxShape.circle,
+            ),
+          ),
+          const Text(
+            'CERRADO HOY',
+            style: TextStyle(
+              fontFamily: 'Plus Jakarta Sans',
+              color: Color(0xFFEF4444),
+              fontSize: 11,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.3,
+            ),
+          ),
+          Text(
+            '• Abre próximo día hábil',
+            style: TextStyle(
+              fontFamily: 'Plus Jakarta Sans',
+              fontSize: 11,
+              color: isDark ? Colors.grey[400] : Colors.grey[600],
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      );
+    }
+
+    return Wrap(
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 6,
+      children: [
+        Container(
+          width: 8,
+          height: 8,
+          decoration: const BoxDecoration(
+            color: Color(0xFF10B981),
+            shape: BoxShape.circle,
+          ),
+        ),
+        const Text(
+          'ABIERTO AHORA',
+          style: TextStyle(
+            fontFamily: 'Plus Jakarta Sans',
+            color: Color(0xFF10B981),
+            fontSize: 11,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.3,
+          ),
+        ),
+        Text(
+          '• Horario: $scheduleToday',
+          style: TextStyle(
+            fontFamily: 'Plus Jakarta Sans',
+            fontSize: 11,
+            color: isDark ? Colors.grey[400] : Colors.grey[600],
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 
@@ -445,13 +608,17 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                               children: [
                                 _buildProductorInfoCard(description, primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor),
                                 const SizedBox(height: 16),
+                                _buildReputationCard(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor, isDark),
+                                const SizedBox(height: 16),
+                                _buildVerificationCard(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor, isDark),
+                                const SizedBox(height: 16),
                                 _buildContactoCard(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor),
                                 const SizedBox(height: 16),
                                 _buildHorarioCard(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor, isDark),
                                 const SizedBox(height: 16),
                                 _buildUbicacionCard(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor, isDark),
                                 const SizedBox(height: 16),
-                                _buildSellerPoliciesCard(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor),
+                                _buildSellerPoliciesCard(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor, isDark),
                                 const SizedBox(height: 16),
                                 _buildSettingsMenu(context, primaryColor, cardBgColor, onSurfaceColor, isDark),
                               ],
@@ -474,15 +641,19 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                         children: [
                           _buildProductorInfoCard(description, primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor),
                           const SizedBox(height: 16),
+                          _buildReputationCard(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor, isDark),
+                          const SizedBox(height: 16),
+                          _buildVerificationCard(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor, isDark),
+                          const SizedBox(height: 16),
                           _buildContactoCard(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor),
                           const SizedBox(height: 16),
                           _buildHorarioCard(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor, isDark),
                           const SizedBox(height: 16),
                           _buildUbicacionCard(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor, isDark),
                           const SizedBox(height: 16),
-                          _buildProductsListSection(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor, isDark),
+                          _buildSellerPoliciesCard(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor, isDark),
                           const SizedBox(height: 16),
-                          _buildSellerPoliciesCard(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor),
+                          _buildProductsListSection(primaryColor, cardBgColor, onSurfaceColor, onSurfaceVariantColor, isDark),
                           const SizedBox(height: 16),
                           _buildSettingsMenu(context, primaryColor, cardBgColor, onSurfaceColor, isDark),
                         ],
@@ -676,14 +847,43 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                         ),
                       ),
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF285E44),
-                        shape: BoxShape.circle,
-                        border: Border.all(color: cardBgColor, width: 2),
+                    GestureDetector(
+                      onTap: () => _openBusinessVerificationScreen(context),
+                      child: Container(
+                        width: 28,
+                        height: 28,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: cardBgColor, width: 2),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.15),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Icon(
+                            UserSession.isProviderVerified
+                                ? Icons.verified
+                                : UserSession.isVerificationPending
+                                    ? Icons.hourglass_top_rounded
+                                    : UserSession.isVerificationRejected
+                                        ? Icons.error_outline
+                                        : Icons.verified,
+                            color: UserSession.isProviderVerified
+                                ? VerifiedBadge.verifiedBlue
+                                : UserSession.isVerificationPending
+                                    ? const Color(0xFFD97706)
+                                    : UserSession.isVerificationRejected
+                                        ? const Color(0xFFDC2626)
+                                        : const Color(0xFF94A3B8),
+                            size: 19,
+                          ),
+                        ),
                       ),
-                      padding: const EdgeInsets.all(4),
-                      child: const Icon(Icons.verified, color: Colors.white, size: 14),
                     ),
                   ],
                 ),
@@ -693,14 +893,30 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
           const SizedBox(height: 60),
 
           // Business Details
-          Text(
-            fullName,
-            style: TextStyle(
-              fontFamily: 'Plus Jakarta Sans',
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: onSurfaceColor,
-            ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                child: Text(
+                  fullName,
+                  style: TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: onSurfaceColor,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (UserSession.isProviderVerified) ...[
+                const SizedBox(width: 6),
+                const Tooltip(
+                  message: 'Negocio Verificado Oficialmente (DGII & RNC)',
+                  child: VerifiedBadge(size: 22, showWhiteCircle: true),
+                ),
+              ],
+            ],
           ),
           const SizedBox(height: 4),
           Row(
@@ -869,40 +1085,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
           const SizedBox(height: 10),
 
           // Operating Status Chip
-          Wrap(
-            alignment: WrapAlignment.center,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: 6,
-            children: [
-              Container(
-                width: 8,
-                height: 8,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF10B981),
-                  shape: BoxShape.circle,
-                ),
-              ),
-              const Text(
-                'ABIERTO AHORA',
-                style: TextStyle(
-                  fontFamily: 'Plus Jakarta Sans',
-                  color: Color(0xFF10B981),
-                  fontSize: 11,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.3,
-                ),
-              ),
-              Text(
-                '• Cierra a las 18:00',
-                style: TextStyle(
-                  fontFamily: 'Plus Jakarta Sans',
-                  fontSize: 11,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
+          _buildOpenStatusBadge(isDark),
           const SizedBox(height: 16),
 
           // Quick Action Bar: [Ver como Cliente]
@@ -1178,29 +1361,6 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
-            // Highlights
-            Row(
-              children: [
-                Expanded(
-                  child: _buildReputationPill(
-                    icon: Icons.verified_outlined,
-                    title: '100% Calidad',
-                    subtitle: 'Frescura garantizada',
-                    isDark: isDark,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _buildReputationPill(
-                    icon: Icons.bolt_outlined,
-                    title: '98% Entregas',
-                    subtitle: 'A tiempo según pacto',
-                    isDark: isDark,
-                  ),
-                ),
-              ],
-            ),
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
@@ -1266,52 +1426,6 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
     );
   }
 
-  Widget _buildReputationPill({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required bool isDark,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.withValues(alpha: 0.15)),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: const Color(0xFF285E44)),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontSize: 9,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildProductorInfoCard(
     String bioText,
@@ -1361,6 +1475,260 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
               fontSize: 13,
               height: 1.5,
               color: onSurfaceVariantColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReputationCard(
+    Color primaryColor,
+    Color cardBgColor,
+    Color onSurfaceColor,
+    Color onSurfaceVariantColor,
+    bool isDark,
+  ) {
+    final providerId = UserSession.selectedRole == 'proveedor' ? 'prov_current' : 'prov_granja_sol';
+    final rep = ReviewsService.getProviderReputation(providerId);
+    final criteria = ReviewsService.getProviderCriteria(providerId);
+
+    final cardBg = cardBgColor;
+    final borderColor = isDark ? Colors.white12 : Colors.grey.withValues(alpha: 0.15);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: borderColor),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF016042).withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.verified_user_rounded, color: Color(0xFF016042), size: 18),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'REPUTACIÓN DEL PROVEEDOR',
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 11,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.8,
+                        color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF285E44),
+                      ),
+                    ),
+                    Text(
+                      'Evaluación directa y cumplimiento comercial',
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 11,
+                        color: isDark ? Colors.grey[400] : Colors.grey[500],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF262012) : const Color(0xFFFEF8E3),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFF3AF43)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.star_rounded, size: 15, color: Color(0xFFF2A439)),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${rep['overallRating']} · ${rep['totalReviews']} reseñas',
+                      style: const TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFFF2A439),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // 3 Confidence Pillars (User explicit requirement)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF0f231d) : const Color(0xFFF0FDF4),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFF10B981).withValues(alpha: 0.25)),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _buildReputationMetricBadge(
+                    icon: Icons.check_circle_outline_rounded,
+                    value: '${rep['compliancePercent']}%',
+                    label: 'Cumplimiento',
+                    color: const Color(0xFF10B981),
+                    isDark: isDark,
+                  ),
+                ),
+                Container(width: 1, height: 28, color: Colors.grey.withValues(alpha: 0.2)),
+                Expanded(
+                  child: _buildReputationMetricBadge(
+                    icon: Icons.bolt_rounded,
+                    value: '${rep['fastResponsePercent']}%',
+                    label: 'Responde rápido',
+                    color: const Color(0xFF0284C7),
+                    isDark: isDark,
+                  ),
+                ),
+                Container(width: 1, height: 28, color: Colors.grey.withValues(alpha: 0.2)),
+                Expanded(
+                  child: _buildReputationMetricBadge(
+                    icon: Icons.thumb_up_alt_outlined,
+                    value: '${rep['recommendationPercent']}%',
+                    label: 'Lo recomiendan',
+                    color: const Color(0xFFD97706),
+                    isDark: isDark,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Sub-evaluations criteria breakdown (7 exact criteria)
+          Text(
+            'Desglose de Calidad de Negociación',
+            style: TextStyle(
+              fontFamily: 'Plus Jakarta Sans',
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white70 : Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 10),
+          _buildCriteriaScoreRow('Recomendación', criteria['Recomendación'] ?? 4.8, isDark),
+          _buildCriteriaScoreRow('Calidad del servicio', criteria['Calidad del servicio'] ?? 4.9, isDark),
+          _buildCriteriaScoreRow('Puntualidad', criteria['Puntualidad'] ?? 4.8, isDark),
+          _buildCriteriaScoreRow('Comunicación', criteria['Comunicación'] ?? 4.9, isDark),
+          _buildCriteriaScoreRow('Cumplimiento', criteria['Cumplimiento'] ?? 4.9, isDark),
+          _buildCriteriaScoreRow('Confiabilidad', criteria['Confiabilidad'] ?? 4.8, isDark),
+          _buildCriteriaScoreRow('Correspondencia con lo ofrecido', criteria['Correspondencia con lo ofrecido'] ?? 4.7, isDark),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReputationMetricBadge({
+    required IconData icon,
+    required String value,
+    required String label,
+    required Color color,
+    required bool isDark,
+  }) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 14, color: color),
+            const SizedBox(width: 4),
+            Text(
+              value,
+              style: TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+                color: isDark ? Colors.white : Colors.black87,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: TextStyle(
+            fontFamily: 'Plus Jakarta Sans',
+            fontSize: 9.5,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey[500],
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCriteriaScoreRow(String label, double score, bool isDark) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3.5),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 5,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                fontSize: 11,
+                color: isDark ? Colors.grey[300] : Colors.grey[700],
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            flex: 4,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(3),
+              child: LinearProgressIndicator(
+                value: score / 5.0,
+                minHeight: 6,
+                backgroundColor: isDark ? Colors.white10 : Colors.grey[200],
+                valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF016042)),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          SizedBox(
+            width: 24,
+            child: Text(
+              score.toStringAsFixed(1),
+              style: TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white70 : Colors.black87,
+              ),
+              textAlign: TextAlign.right,
             ),
           ),
         ],
@@ -1449,6 +1817,28 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
     Color onSurfaceVariantColor,
     bool isDark,
   ) {
+    final weekly = UserSession.currentWeeklySchedule;
+    final mon = weekly.firstWhere((d) => d.dayName == 'Lunes', orElse: () => weekly[0]);
+    final tue = weekly.firstWhere((d) => d.dayName == 'Martes', orElse: () => weekly[1]);
+    final wed = weekly.firstWhere((d) => d.dayName == 'Miércoles', orElse: () => weekly[2]);
+    final thu = weekly.firstWhere((d) => d.dayName == 'Jueves', orElse: () => weekly[3]);
+    final fri = weekly.firstWhere((d) => d.dayName == 'Viernes', orElse: () => weekly[4]);
+    final sat = weekly.firstWhere((d) => d.dayName == 'Sábado', orElse: () => weekly[5]);
+    final sun = weekly.firstWhere((d) => d.dayName == 'Domingo', orElse: () => weekly[6]);
+
+    final bool monToFriSame = [tue, wed, thu, fri].every((d) =>
+        d.isActive == mon.isActive &&
+        d.openTime.hour == mon.openTime.hour &&
+        d.openTime.minute == mon.openTime.minute &&
+        d.closeTime.hour == mon.closeTime.hour &&
+        d.closeTime.minute == mon.closeTime.minute);
+
+    final bool satSameAsMon = sat.isActive == mon.isActive &&
+        sat.openTime.hour == mon.openTime.hour &&
+        sat.openTime.minute == mon.openTime.minute &&
+        sat.closeTime.hour == mon.closeTime.hour &&
+        sat.closeTime.minute == mon.closeTime.minute;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -1466,90 +1856,126 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(Icons.schedule_outlined, color: primaryColor, size: 20),
+              Expanded(
+                child: Row(
+                  children: [
+                    Icon(Icons.schedule_outlined, color: primaryColor, size: 20),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        'Horario de Atención',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: onSurfaceColor,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(width: 8),
-              Text(
-                'Horario de Atención',
-                style: TextStyle(
-                  fontFamily: 'Plus Jakarta Sans',
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: onSurfaceColor,
+              InkWell(
+                borderRadius: BorderRadius.circular(8),
+                onTap: () => _openBusinessHoursScreen(context),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  child: Row(
+                    children: [
+                      Icon(Icons.edit_outlined, size: 15, color: primaryColor),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Gestionar',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: primaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  'Lunes a Sábado',
-                  style: TextStyle(
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontSize: 13,
-                    color: onSurfaceColor,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: primaryColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  '8:00 AM - 6:00 PM',
-                  style: TextStyle(
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: primaryColor,
-                  ),
-                ),
+          if (monToFriSame && satSameAsMon && mon.isActive) ...[
+            _buildScheduleRow('Lunes a Sábado', mon.formattedRange, primaryColor, onSurfaceColor, isDark, false),
+            const SizedBox(height: 8),
+            _buildScheduleRow('Domingo', sun.formattedRange, primaryColor, onSurfaceColor, isDark, !sun.isActive),
+          ] else if (monToFriSame && mon.isActive) ...[
+            _buildScheduleRow('Lunes a Viernes', mon.formattedRange, primaryColor, onSurfaceColor, isDark, false),
+            const SizedBox(height: 8),
+            _buildScheduleRow('Sábado', sat.formattedRange, primaryColor, onSurfaceColor, isDark, !sat.isActive),
+            const SizedBox(height: 8),
+            _buildScheduleRow('Domingo', sun.formattedRange, primaryColor, onSurfaceColor, isDark, !sun.isActive),
+          ] else ...[
+            for (int i = 0; i < weekly.length; i++) ...[
+              if (i > 0) const SizedBox(height: 8),
+              _buildScheduleRow(
+                weekly[i].dayName,
+                weekly[i].formattedRange,
+                primaryColor,
+                onSurfaceColor,
+                isDark,
+                !weekly[i].isActive,
               ),
             ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  'Domingo',
-                  style: TextStyle(
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontSize: 13,
-                    color: onSurfaceColor,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: isDark ? Colors.grey[800] : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  'Cerrado',
-                  style: TextStyle(
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
-                  ),
-                ),
-              ),
-            ],
-          ),
+          ],
         ],
       ),
+    );
+  }
+
+  Widget _buildScheduleRow(
+    String day,
+    String schedule,
+    Color primaryColor,
+    Color onSurfaceColor,
+    bool isDark,
+    bool isClosed,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Text(
+            day,
+            style: TextStyle(
+              fontFamily: 'Plus Jakarta Sans',
+              fontSize: 13,
+              color: onSurfaceColor,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          decoration: BoxDecoration(
+            color: isClosed
+                ? (isDark ? Colors.grey[800] : Colors.grey[200])
+                : primaryColor.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            schedule,
+            style: TextStyle(
+              fontFamily: 'Plus Jakarta Sans',
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+              color: isClosed
+                  ? (isDark ? Colors.grey[400] : Colors.grey[600])
+                  : primaryColor,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -1938,7 +2364,10 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
     Color cardBgColor,
     Color onSurfaceColor,
     Color onSurfaceVariantColor,
+    bool isDark,
   ) {
+    final policies = UserSession.currentSellerPolicies;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -1956,26 +2385,58 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(Icons.policy_outlined, color: primaryColor, size: 20),
+              Expanded(
+                child: Row(
+                  children: [
+                    Icon(Icons.policy_outlined, color: primaryColor, size: 20),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        'Políticas del Vendedor',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: onSurfaceColor,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(width: 8),
-              Text(
-                'Políticas del Vendedor',
-                style: TextStyle(
-                  fontFamily: 'Plus Jakarta Sans',
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: onSurfaceColor,
+              InkWell(
+                borderRadius: BorderRadius.circular(8),
+                onTap: () => _openSellerPoliciesScreen(context),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  child: Row(
+                    children: [
+                      Icon(Icons.edit_outlined, size: 15, color: primaryColor),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Gestionar',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: primaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          _buildPolicyRow('Muestra disponible para órdenes mayores a 5 toneladas.', onSurfaceVariantColor),
-          const SizedBox(height: 8),
-          _buildPolicyRow('Negociación de precios habilitada para compras recurrentes.', onSurfaceVariantColor),
-          const SizedBox(height: 8),
-          _buildPolicyRow('Garantía de calidad Mercadito (Reembolso parcial si la merma supera el 5%).', onSurfaceVariantColor),
+          for (int i = 0; i < policies.length; i++) ...[
+            if (i > 0) const SizedBox(height: 8),
+            _buildPolicyRow(policies[i], onSurfaceVariantColor),
+          ],
         ],
       ),
     );
@@ -2033,32 +2494,6 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
             onTap: () => _showEditProfileModal(context, isDark),
           ),
           _buildSettingsTile(
-            'Gestionar Horarios de Atención',
-            Icons.schedule_outlined,
-            primaryColor,
-            onSurfaceColor,
-            isDark,
-            true,
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Gestión de horarios de atención (Simulado)')),
-              );
-            },
-          ),
-          _buildSettingsTile(
-            'Configurar Políticas de Venta',
-            Icons.rule_folder_outlined,
-            primaryColor,
-            onSurfaceColor,
-            isDark,
-            true,
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Configuración de políticas (Simulado)')),
-              );
-            },
-          ),
-          _buildSettingsTile(
             'Ajustes de Cuenta General',
             Icons.settings_outlined,
             primaryColor,
@@ -2080,6 +2515,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
     bool isDark,
     bool hasBorder, {
     VoidCallback? onTap,
+    Widget? trailingWidget,
   }) {
     return Material(
       color: Colors.transparent,
@@ -2108,10 +2544,239 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                   ),
                 ),
               ),
+              if (trailingWidget != null) ...[
+                trailingWidget,
+                const SizedBox(width: 8),
+              ],
               Icon(Icons.chevron_right, color: Colors.grey[400]),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildVerificationStatusChip() {
+    final status = UserSession.verificationStatus;
+    Color bg;
+    Color fg;
+    String label;
+    IconData icon;
+
+    if (status == 'verified') {
+      bg = const Color(0xFFF0F9FF);
+      fg = VerifiedBadge.verifiedBlue;
+      label = 'Verificado';
+      icon = Icons.verified;
+    } else if (status == 'pending') {
+      bg = const Color(0xFFFFFBEB);
+      fg = const Color(0xFFD97706);
+      label = 'En Revisión';
+      icon = Icons.hourglass_top_rounded;
+    } else if (status == 'rejected') {
+      bg = const Color(0xFFFEF2F2);
+      fg = const Color(0xFFDC2626);
+      label = 'Rechazado';
+      icon = Icons.error_outline;
+    } else {
+      bg = const Color(0xFFF1F5F9);
+      fg = const Color(0xFF64748B);
+      label = 'No Verificado';
+      icon = Icons.shield_outlined;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: fg),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontFamily: 'Plus Jakarta Sans',
+              fontSize: 10.5,
+              fontWeight: FontWeight.w700,
+              color: fg,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildVerificationCard(
+    Color primaryColor,
+    Color cardBgColor,
+    Color onSurfaceColor,
+    Color onSurfaceVariantColor,
+    bool isDark,
+  ) {
+    final bool isVerified = UserSession.isProviderVerified;
+    final bool isPending = UserSession.isVerificationPending;
+    final bool isRejected = UserSession.isVerificationRejected;
+    final bool isLockedOut = UserSession.isVerificationLockedOut;
+
+    Color badgeBg;
+    Color borderColor;
+    Widget leadingWidget;
+    Widget buttonIcon;
+    String title;
+    String description;
+    String actionLabel;
+    Color actionColor;
+
+    if (isVerified) {
+      badgeBg = isDark ? const Color(0xFF0C2438) : const Color(0xFFF0F9FF);
+      borderColor = const Color(0xFF38BDF8).withValues(alpha: 0.5);
+      leadingWidget = const VerifiedBadge(size: 36, showWhiteCircle: true);
+      buttonIcon = const VerifiedBadge(size: 16, showWhiteCircle: true);
+      actionColor = VerifiedBadge.verifiedBlue;
+      title = 'Insignia de Negocio Verificado Activa';
+      description = 'Tu comercio cuenta con acreditación oficial de RNC (${UserSession.verifiedRncNumber ?? "Activo"}) y estatus DGII regularizado.';
+      actionLabel = 'Ver Acreditación';
+    } else if (isPending) {
+      badgeBg = isDark ? const Color(0xFF78350F).withValues(alpha: 0.3) : const Color(0xFFFFFBEB);
+      borderColor = const Color(0xFFF59E0B).withValues(alpha: 0.5);
+      leadingWidget = Container(
+        width: 36,
+        height: 36,
+        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+        child: const Icon(Icons.hourglass_top_rounded, color: Color(0xFFD97706), size: 20),
+      );
+      buttonIcon = const Icon(Icons.hourglass_top_rounded, size: 16, color: Color(0xFFD97706));
+      actionColor = const Color(0xFFD97706);
+      title = 'Verificación en Proceso de Revisión';
+      description = 'Tus documentos están siendo validados. No podrás enviar otra solicitud hasta recibir una respuesta de revisión.';
+      actionLabel = 'Consultar Estado';
+    } else if (isLockedOut) {
+      badgeBg = isDark ? const Color(0xFF7F1D1D).withValues(alpha: 0.3) : const Color(0xFFFEF2F2);
+      borderColor = const Color(0xFFEF4444).withValues(alpha: 0.5);
+      leadingWidget = Container(
+        width: 36,
+        height: 36,
+        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+        child: const Icon(Icons.lock_clock_rounded, color: Color(0xFFDC2626), size: 20),
+      );
+      buttonIcon = const Icon(Icons.lock_clock_rounded, size: 16, color: Color(0xFFDC2626));
+      actionColor = const Color(0xFFDC2626);
+      final days = UserSession.lockoutDaysRemaining;
+      title = 'Verificación Bloqueada por 30 Días';
+      description = 'Has alcanzado 3 intentos rechazados. Por seguridad, podrás solicitar una nueva verificación en $days días.';
+      actionLabel = 'Consultar Bloqueo ($days días)';
+    } else if (isRejected) {
+      badgeBg = isDark ? const Color(0xFF7F1D1D).withValues(alpha: 0.3) : const Color(0xFFFEF2F2);
+      borderColor = const Color(0xFFEF4444).withValues(alpha: 0.5);
+      leadingWidget = Container(
+        width: 36,
+        height: 36,
+        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+        child: const Icon(Icons.error_outline_rounded, color: Color(0xFFDC2626), size: 20),
+      );
+      buttonIcon = const Icon(Icons.refresh_rounded, size: 16, color: Color(0xFFDC2626));
+      actionColor = const Color(0xFFDC2626);
+      final count = UserSession.verificationRejectionCount;
+      title = 'Solicitud Requiere Corrección ($count/3)';
+      description = UserSession.verificationRejectionReason ?? 'Hubo observaciones en los documentos fiscales presentados.';
+      actionLabel = 'Reintentar Solicitud';
+    } else {
+      badgeBg = isDark ? const Color(0xFF0C2438) : const Color(0xFFF0F9FF);
+      borderColor = VerifiedBadge.verifiedBlue.withValues(alpha: 0.35);
+      leadingWidget = const VerifiedBadge(size: 36, showWhiteCircle: true);
+      buttonIcon = const VerifiedBadge(size: 16, showWhiteCircle: true);
+      actionColor = VerifiedBadge.verifiedBlue;
+      title = 'Insignia Oficial de Negocio Verificado';
+      description = 'Solicita la insignia de verificado para tu negocio, asi obtienes preferencias y máxima visibilidad ante compradores.';
+      actionLabel = 'Solicitar Insignia';
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: cardBgColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: borderColor, width: 1.2),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: badgeBg,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: borderColor),
+                ),
+                child: leadingWidget,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: onSurfaceColor,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      description,
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 12,
+                        height: 1.35,
+                        color: onSurfaceVariantColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => _openBusinessVerificationScreen(context),
+              icon: buttonIcon,
+              label: Text(
+                actionLabel,
+                style: TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.bold,
+                  color: actionColor,
+                ),
+              ),
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: borderColor),
+                backgroundColor: badgeBg,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

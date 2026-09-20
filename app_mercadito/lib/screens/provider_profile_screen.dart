@@ -6,6 +6,7 @@ import '../widgets/quality_info_bottom_sheet.dart';
 import '../data/global_state.dart';
 import '../services/user_session.dart';
 import '../services/reviews_service.dart';
+import '../widgets/report_user_bottom_sheet.dart';
 
 class ProviderProfileScreen extends StatefulWidget {
   final Map<String, dynamic> provider;
@@ -1909,7 +1910,23 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
           delay: 500,
           child: Center(
             child: TextButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                final provId = _providerCode.replaceAll('#', '');
+                final provName = (widget.provider['name'] ?? 'Proveedor').toString();
+                final provAvatar = (widget.provider['img'] ?? widget.provider['avatar'] ?? '').toString();
+                final provLocation = (widget.provider['location'] ?? 'República Dominicana').toString();
+                final provSector = (widget.provider['sector'] ?? '').toString().trim().isNotEmpty
+                    ? widget.provider['sector'].toString().trim()
+                    : (provLocation.contains('•') ? provLocation.split('•').last.trim() : provLocation);
+                ReportUserBottomSheet.show(
+                  context: context,
+                  reportedId: provId,
+                  reportedName: provName,
+                  reportedRole: 'proveedor',
+                  reportedAvatar: provAvatar,
+                  reportedLocation: provSector,
+                );
+              },
               icon: const Icon(Icons.report_outlined, size: 16, color: Colors.grey),
               label: const Text('REPORTAR VENDEDOR', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Colors.grey, letterSpacing: 1.5)),
             ),

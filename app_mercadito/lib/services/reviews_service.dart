@@ -83,6 +83,7 @@ class DirectProfileReview {
   final String authorName;
   final String authorRole; // 'comprador' o 'proveedor'
   final String? authorAvatar;
+  final bool authorIsVerified;
   final String targetId;
   final String targetName;
   final String targetRole; // 'proveedor' o 'comprador'
@@ -97,6 +98,7 @@ class DirectProfileReview {
     required this.authorName,
     required this.authorRole,
     this.authorAvatar,
+    this.authorIsVerified = false,
     required this.targetId,
     required this.targetName,
     required this.targetRole,
@@ -446,6 +448,7 @@ class ReviewsService {
       authorName: 'Finca La Esperanza',
       authorRole: 'proveedor',
       authorAvatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCK1u8etbY5cHiRod_Fsz0_cuGTPBYf1Kj3M9WWtxHKJPGQ80EV82hmsmCV_Gt93yIiAAYRrHcpjpcGQvWY6oCOXHF5JcfmhpwXq5fj6OyrK4y_GaFvJgKHtBGGRbV3fH5b06o4tW0WeCL9448PUxQhHSfSX58eVK_lx7JUhms8WnRMbpDqcWul-oB60GyFZHNBDb6ouVvsT47SpGzBpuWhNyUDtZ7iBTFmBGB6DtwzTd28a4GMKjluGv3yihiGBfs1OZehh14Ktak',
+      authorIsVerified: true,
       targetId: 'BUY-88291',
       targetName: 'Juan Pérez',
       targetRole: 'comprador',
@@ -466,6 +469,7 @@ class ReviewsService {
       authorId: 'PROV-2',
       authorName: 'Apicultura Los Pinos',
       authorRole: 'proveedor',
+      authorIsVerified: true,
       targetId: 'BUY-88291',
       targetName: 'Juan Pérez',
       targetRole: 'comprador',
@@ -480,6 +484,111 @@ class ReviewsService {
       },
       averageScore: 4.8,
       createdAt: DateTime.now().subtract(const Duration(days: 15)),
+    ),
+    DirectProfileReview(
+      id: 'DIR-REV-203',
+      authorId: 'PROV-3',
+      authorName: 'Agropecuaria del Bajío',
+      authorRole: 'proveedor',
+      authorIsVerified: false,
+      targetId: 'BUY-88291',
+      targetName: 'Juan Pérez',
+      targetRole: 'comprador',
+      comment: 'Recepción ordenada y buen entendimiento comercial durante todo el proceso.',
+      scores: {
+        'Comunicación': 4.8,
+        'Puntualidad': 4.5,
+        'Cumplimiento del acuerdo': 4.9,
+        'Cumplimiento de pago': 5.0,
+        'Seriedad en la compra': 4.9,
+        'Comportamiento general': 4.8,
+      },
+      averageScore: 4.8,
+      createdAt: DateTime.now().subtract(const Duration(days: 20)),
+    ),
+    DirectProfileReview(
+      id: 'DIR-REV-204',
+      authorId: 'PROV-4',
+      authorName: 'Huertos San José',
+      authorRole: 'proveedor',
+      authorIsVerified: true,
+      targetId: 'BUY-88291',
+      targetName: 'Juan Pérez',
+      targetRole: 'comprador',
+      comment: 'Excelente comprador. Pedidos con especificaciones precisas y pago inmediato.',
+      scores: {
+        'Comunicación': 5.0,
+        'Puntualidad': 4.8,
+        'Cumplimiento del acuerdo': 5.0,
+        'Cumplimiento de pago': 5.0,
+        'Seriedad en la compra': 5.0,
+        'Comportamiento general': 5.0,
+      },
+      averageScore: 5.0,
+      createdAt: DateTime.now().subtract(const Duration(days: 25)),
+    ),
+    DirectProfileReview(
+      id: 'DIR-REV-205',
+      authorId: 'PROV-5',
+      authorName: 'Distribuidora Lácteos del Valle',
+      authorRole: 'proveedor',
+      authorIsVerified: false,
+      targetId: 'BUY-88291',
+      targetName: 'Juan Pérez',
+      targetRole: 'comprador',
+      comment: 'Descarga eficiente y trato muy cordial por parte del equipo en almacén.',
+      scores: {
+        'Comunicación': 4.6,
+        'Puntualidad': 4.5,
+        'Cumplimiento del acuerdo': 4.7,
+        'Cumplimiento de pago': 4.8,
+        'Seriedad en la compra': 4.8,
+        'Comportamiento general': 4.7,
+      },
+      averageScore: 4.7,
+      createdAt: DateTime.now().subtract(const Duration(days: 30)),
+    ),
+    DirectProfileReview(
+      id: 'DIR-REV-206',
+      authorId: 'PROV-6',
+      authorName: 'Hortalizas Don Pepe',
+      authorRole: 'proveedor',
+      authorIsVerified: true,
+      targetId: 'BUY-88291',
+      targetName: 'Juan Pérez',
+      targetRole: 'comprador',
+      comment: 'Muy recomendable para hacer tratos semanales. Pagador transparente y confiable.',
+      scores: {
+        'Comunicación': 5.0,
+        'Puntualidad': 5.0,
+        'Cumplimiento del acuerdo': 5.0,
+        'Cumplimiento de pago': 5.0,
+        'Seriedad en la compra': 5.0,
+        'Comportamiento general': 5.0,
+      },
+      averageScore: 5.0,
+      createdAt: DateTime.now().subtract(const Duration(days: 35)),
+    ),
+    DirectProfileReview(
+      id: 'DIR-REV-207',
+      authorId: 'PROV-7',
+      authorName: 'Cooperativa San Marcos',
+      authorRole: 'proveedor',
+      authorIsVerified: false,
+      targetId: 'BUY-88291',
+      targetName: 'Juan Pérez',
+      targetRole: 'comprador',
+      comment: 'Trato profesional y buena disposición para coordinar los horarios de entrega.',
+      scores: {
+        'Comunicación': 4.7,
+        'Puntualidad': 4.6,
+        'Cumplimiento del acuerdo': 4.8,
+        'Cumplimiento de pago': 4.9,
+        'Seriedad en la compra': 4.8,
+        'Comportamiento general': 4.7,
+      },
+      averageScore: 4.8,
+      createdAt: DateTime.now().subtract(const Duration(days: 42)),
     ),
   ];
 
@@ -517,6 +626,7 @@ class ReviewsService {
     required String authorName,
     required String authorRole,
     String? authorAvatar,
+    bool? authorIsVerified,
     required String targetId,
     required String targetName,
     required String targetRole,
@@ -546,6 +656,12 @@ class ReviewsService {
     final average = scores.isNotEmpty ? (sum / scores.length) : 5.0;
     final roundedAverage = double.parse(average.toStringAsFixed(1));
 
+    final isVerified = authorIsVerified ??
+        (authorRole == 'proveedor' &&
+            (authorId == 'PROV-1' ||
+                authorName.contains('Finca') ||
+                authorName.contains('Esperanza')));
+
     final newReview = DirectProfileReview(
       id: existingIndex != -1
           ? _directReviews[existingIndex].id
@@ -554,6 +670,7 @@ class ReviewsService {
       authorName: authorName,
       authorRole: authorRole,
       authorAvatar: authorAvatar,
+      authorIsVerified: isVerified,
       targetId: targetId,
       targetName: targetName,
       targetRole: targetRole,

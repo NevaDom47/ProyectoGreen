@@ -22,6 +22,7 @@ import '../screens/privacy_screen.dart';
 import '../screens/tasks_screen.dart';
 import '../screens/all_tasks_screen.dart';
 import '../screens/reported_users_screen.dart';
+import '../screens/reports_screen.dart';
 import '../screens/change_password_screen.dart';
 import '../screens/legal_policies_screen.dart';
 import '../screens/coupons_screen.dart';
@@ -137,10 +138,6 @@ final GoRouter appRouter = GoRouter(
               );
             },
           ),
-        ),
-        GoRoute(
-          path: '/favorites',
-          builder: (context, state) => const FavoritesScreen(),
         ),
         GoRoute(
           path: '/chats',
@@ -367,19 +364,22 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/order-history',
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: const OrderHistoryScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position: animation.drive(
-              Tween(begin: const Offset(1.0, 0.0), end: Offset.zero)
-                  .chain(CurveTween(curve: Curves.easeOutCubic)),
-            ),
-            child: child,
-          );
-        },
-      ),
+      pageBuilder: (context, state) {
+        final buyer = state.extra as Map<String, dynamic>?;
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: OrderHistoryScreen(buyer: buyer),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: animation.drive(
+                Tween(begin: const Offset(1.0, 0.0), end: Offset.zero)
+                    .chain(CurveTween(curve: Curves.easeOutCubic)),
+              ),
+              child: child,
+            );
+          },
+        );
+      },
     ),
     GoRoute(
       path: '/tasks',
@@ -555,6 +555,19 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
+      path: '/favorites',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const FavoritesScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: animation.drive(Tween(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(CurveTween(curve: Curves.easeOutCubic))),
+            child: child,
+          );
+        },
+      ),
+    ),
+    GoRoute(
       path: '/favorite-providers',
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
@@ -595,6 +608,19 @@ final GoRouter appRouter = GoRouter(
           },
         );
       },
+    ),
+    GoRoute(
+      path: '/reports',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const ReportsScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: animation.drive(Tween(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(CurveTween(curve: Curves.easeOutCubic))),
+            child: child,
+          );
+        },
+      ),
     ),
     GoRoute(
       path: '/negotiations',

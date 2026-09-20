@@ -10,7 +10,7 @@ import 'package:app_mercadito/screens/direct_profile_review_screen.dart';
 import 'package:app_mercadito/theme/app_theme.dart';
 import 'package:app_mercadito/services/user_session.dart';
 import 'package:app_mercadito/services/buyer_behavior_service.dart';
-import 'package:app_mercadito/services/reviews_service.dart';
+import 'package:app_mercadito/widgets/animated_favorite_button.dart';
 
 class _TestHttpOverrides extends HttpOverrides {
   @override
@@ -134,7 +134,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify Header & Tabs
-      expect(find.text('Compradores Favoritos'), findsOneWidget);
+      expect(find.text('Compradores'), findsOneWidget);
       expect(find.text('Mis Favoritos'), findsOneWidget);
       expect(find.text('Buscar Compradores'), findsOneWidget);
 
@@ -144,13 +144,28 @@ void main() {
       expect(find.text('#BUY-88291'), findsOneWidget);
       expect(find.text('#BUY-99102'), findsOneWidget);
 
-      // Search functionality
+      // Verify removal of businessType and onTimePayment puntual chip
+      expect(find.text('Restaurante & Tienda Gourmet'), findsNothing);
+      expect(find.text('Frutería La Selecta'), findsNothing);
+      expect(find.textContaining('puntual'), findsNothing);
+
+      // Verify sector display
+      expect(find.text('Cuauhtémoc, CDMX'), findsOneWidget);
+      expect(find.text('Guadalajara, Jal.'), findsOneWidget);
+
+      // Search functionality by partial name
       await tester.enterText(find.byType(TextField), 'Mariana');
       await tester.pumpAndSettle();
 
       // Only Mariana should remain
       expect(find.text('Mariana Ortiz'), findsOneWidget);
       expect(find.text('Juan Pérez'), findsNothing);
+
+      // Search functionality by BUY ID code (e.g. 88291 or BUY-88291)
+      await tester.enterText(find.byType(TextField), '88291');
+      await tester.pumpAndSettle();
+      expect(find.text('Juan Pérez'), findsOneWidget);
+      expect(find.text('Mariana Ortiz'), findsNothing);
 
       // Clear search
       await tester.enterText(find.byType(TextField), '');
@@ -165,9 +180,15 @@ void main() {
       // Should show other marketplace buyers
       expect(find.text('Sofía Ramírez'), findsOneWidget);
       expect(find.text('Carlos Mendoza'), findsOneWidget);
+
+      // Search by code in Buscar Compradores
+      await tester.enterText(find.byType(TextField), 'BUY-55204');
+      await tester.pumpAndSettle();
+      expect(find.text('Sofía Ramírez'), findsOneWidget);
+      expect(find.text('Carlos Mendoza'), findsNothing);
     });
 
-    testWidgets('Tapping favorite heart button toggles buyer in list', (WidgetTester tester) async {
+    testWidgets('Tapping animated favorite button toggles buyer in list', (WidgetTester tester) async {
       tester.view.physicalSize = const Size(1080, 2400);
       tester.view.devicePixelRatio = 2.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -182,10 +203,10 @@ void main() {
 
       expect(globalFavoriteBuyers.value.length, 2);
 
-      // Tap the first favorite heart button (for Juan Pérez)
-      final heartButtons = find.byIcon(Icons.favorite_rounded);
-      expect(heartButtons, findsWidgets);
-      await tester.tap(heartButtons.first);
+      // Tap the first animated favorite button (for Juan Pérez)
+      final favButtons = find.byType(AnimatedFavoriteButton);
+      expect(favButtons, findsWidgets);
+      await tester.tap(favButtons.first);
       await tester.pumpAndSettle();
 
       // Now only 1 favorite buyer should remain
@@ -195,8 +216,8 @@ void main() {
 
   group('BuyerProfileScreen Widget Tests', () {
     testWidgets('BuyerProfileScreen renders complete profile, 6 criteria, and actions', (WidgetTester tester) async {
-      tester.view.physicalSize = const Size(1080, 2400);
-      tester.view.devicePixelRatio = 2.0;
+      tester.view.physicalSize = const Size(1080, 5000);
+      tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
 
       final testBuyer = Map<String, dynamic>.from(initialMarketplaceBuyers[0]);
@@ -217,19 +238,20 @@ void main() {
       expect(find.text('Restaurante & Tienda Gourmet'), findsNothing);
       expect(find.text('Cuauhtémoc, CDMX'), findsOneWidget);
       expect(find.text('Comprador Verificado'), findsOneWidget);
-      expect(find.text('Buen Pagador'), findsOneWidget);
+      expect(find.text('Nivel 3'), findsOneWidget);
+      expect(find.byIcon(Icons.military_tech_rounded), findsWidgets);
       expect(find.textContaining('Cliente desde Enero 2023'), findsOneWidget);
 
       // Direct Supplier Actions
       expect(find.text('Iniciar Chat'), findsOneWidget);
       expect(find.text('Enviar Oferta'), findsOneWidget);
 
-      // 2 Metrics Tiles (Pago Puntual removed)
+      // 3 Metrics Stat Boxes (Reseñas, Calificación, Negociaciones)
       expect(find.text('15'), findsOneWidget);
-      expect(find.text('Negociaciones'), findsOneWidget);
-      expect(find.text('Pago Puntual'), findsNothing);
-      expect(find.text('4.9 ★'), findsOneWidget);
-      expect(find.text('Calificación'), findsOneWidget);
+      expect(find.text('NEGOCIACIONES'), findsOneWidget);
+      expect(find.text('RESEÑAS'), findsOneWidget);
+      expect(find.text('4.9'), findsWidgets);
+      expect(find.text('CALIFICACIÓN'), findsOneWidget);
 
       // Section: ¿Cómo lo califican los proveedores? (Nivel A+ removed)
       expect(find.text('¿Cómo lo califican los proveedores?'), findsOneWidget);
@@ -237,18 +259,34 @@ void main() {
       expect(find.text('98% satisfacción'), findsOneWidget);
 
       // 6 Criteria
-      expect(find.text('Comunicación'), findsOneWidget);
-      expect(find.text('Puntualidad'), findsOneWidget);
-      expect(find.text('Cumplimiento del acuerdo'), findsOneWidget);
-      expect(find.text('Cumplimiento de pago'), findsOneWidget);
-      expect(find.text('Seriedad en la compra'), findsOneWidget);
-      expect(find.text('Comportamiento general'), findsOneWidget);
+      expect(find.text('Comunicación'), findsWidgets);
+      expect(find.text('Puntualidad'), findsWidgets);
+      expect(find.text('Cumplimiento del acuerdo'), findsWidgets);
+      expect(find.text('Cumplimiento de pago'), findsWidgets);
+      expect(find.text('Seriedad en la compra'), findsWidgets);
+      expect(find.text('Comportamiento general'), findsWidgets);
 
       // Calificar Comprador button
       expect(find.text('Calificar Comprador'), findsOneWidget);
 
-      // Provider comments and preferences with calculation
+      // Provider comments with verified badge and dates
       expect(find.text('Comentarios de Proveedores'), findsOneWidget);
+      expect(find.text('Finca La Esperanza'), findsOneWidget);
+      expect(find.text('Página 1 de 2'), findsOneWidget);
+      expect(find.text('Siguiente'), findsOneWidget);
+
+      // Test expandable rating details
+      expect(find.text('Ver detalle de calificación'), findsWidgets);
+      await tester.tap(find.text('Ver detalle de calificación').first);
+      await tester.pumpAndSettle();
+      expect(find.text('Ocultar desglose'), findsOneWidget);
+
+      // Test pagination to page 2
+      await tester.tap(find.text('Siguiente'));
+      await tester.pumpAndSettle();
+      expect(find.text('Página 2 de 2'), findsOneWidget);
+
+      // Preferences with calculation
       expect(find.text('Preferencias de Compra'), findsOneWidget);
       expect(find.text('Lógica de cálculo'), findsOneWidget);
       expect(find.textContaining('Volumen habitual'), findsOneWidget);
@@ -259,8 +297,8 @@ void main() {
     });
 
     testWidgets('Calificar Comprador button opens DirectProfileReviewScreen', (WidgetTester tester) async {
-      tester.view.physicalSize = const Size(1080, 2400);
-      tester.view.devicePixelRatio = 2.0;
+      tester.view.physicalSize = const Size(1080, 5000);
+      tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
 
       final testBuyer = Map<String, dynamic>.from(initialMarketplaceBuyers[0]);
@@ -275,7 +313,6 @@ void main() {
 
       // Tap Calificar Comprador
       final rateButton = find.text('Calificar Comprador');
-      await tester.ensureVisible(rateButton);
       await tester.tap(rateButton);
       await tester.pumpAndSettle();
 
@@ -285,8 +322,8 @@ void main() {
     });
 
     testWidgets('Provider can submit rating to BUY-88291 successfully without error', (WidgetTester tester) async {
-      tester.view.physicalSize = const Size(1080, 2400);
-      tester.view.devicePixelRatio = 2.0;
+      tester.view.physicalSize = const Size(1080, 3000);
+      tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
 
       await tester.pumpWidget(
@@ -308,7 +345,6 @@ void main() {
 
       // Tap Publicar Reseña de Perfil
       final submitButton = find.text('Publicar Reseña de Perfil');
-      await tester.ensureVisible(submitButton);
       await tester.tap(submitButton);
       await tester.pumpAndSettle();
 
@@ -338,7 +374,7 @@ void main() {
   });
 
   group('Drawer Navigation Integration', () {
-    testWidgets('HomeFeedScreen drawer displays Compradores favoritos option', (WidgetTester tester) async {
+    testWidgets('HomeFeedScreen drawer displays Compradores option', (WidgetTester tester) async {
       tester.view.physicalSize = const Size(1080, 2400);
       tester.view.devicePixelRatio = 2.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -360,7 +396,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 350));
 
       // Verify Drawer items
-      expect(find.text('Compradores favoritos'), findsOneWidget);
+      expect(find.text('Compradores'), findsWidgets);
       expect(find.text('Proveedores favoritos'), findsOneWidget);
       expect(find.text('Productos favoritos'), findsOneWidget);
     });

@@ -6,7 +6,10 @@ import '../data/global_state.dart';
 import '../widgets/animated_favorite_button.dart';
 import '../services/user_session.dart';
 import '../services/reviews_service.dart';
+import '../widgets/quality_info_bottom_sheet.dart';
+import '../widgets/supplier_quick_view_bottom_sheet.dart';
 import 'my_provider_profile_screen.dart';
+import '../widgets/report_user_bottom_sheet.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -93,7 +96,20 @@ class ProfileScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   backgroundColor: Colors.red.withValues(alpha: 0.1),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  final targetName = UserSession.fullName ?? 'Carlos Mendoza';
+                  final targetId = userRole == 'comprador' ? 'BUY-88291' : 'PROV-1024';
+                  final targetRole = userRole;
+                  final targetLocation = '${UserSession.state ?? "Distrito Nacional"}, ${UserSession.country ?? "DO"}';
+                  ReportUserBottomSheet.show(
+                    context: context,
+                    reportedId: targetId,
+                    reportedName: targetName,
+                    reportedRole: targetRole,
+                    reportedAvatar: avatarUrl,
+                    reportedLocation: targetLocation,
+                  );
+                },
               ),
             ],
           ),
@@ -263,11 +279,11 @@ class ProfileScreen extends StatelessWidget {
               onTap: () => context.push('/order-history'),
               child: Text(
                 'Ver todo',
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: 'Plus Jakarta Sans',
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.primary,
+                  color: Color(0xFF016042),
                 ),
               ),
             ),
@@ -277,7 +293,13 @@ class ProfileScreen extends StatelessWidget {
         ValueListenableBuilder<List<Map<String, dynamic>>>(
           valueListenable: globalOrders,
           builder: (context, orders, child) {
-            if (orders.isEmpty) {
+            // Filter only completed and cancelled negotiations
+            final filteredOrders = orders.where((order) {
+              final status = (order['status'] ?? '').toString();
+              return status == 'Entregado' || status == 'Completado' || status == 'Cancelado';
+            }).toList();
+
+            if (filteredOrders.isEmpty) {
               return const SizedBox(
                 height: 60,
                 child: Center(
@@ -293,94 +315,82 @@ class ProfileScreen extends StatelessWidget {
               );
             }
             // Always display the last 3 negotiations of the history (newest first)
-            final previewOrders = orders.reversed.take(3).toList();
+            final previewOrders = filteredOrders.reversed.take(3).toList();
             return Column(
               children: previewOrders.map((order) {
-                final String status = order['status'] ?? 'Entregado';
-                Color statusColor = theme.colorScheme.primary;
-                if (status == 'En camino') {
-                  statusColor = Colors.orange;
-                } else if (status == 'Cancelado') {
-                  statusColor = const Color(0xFFba1a1a);
-                }
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12.0),
                   child: _buildOrderCard(
-                    title: order['title'] ?? '',
-                    price: order['final_price'] ?? order['price'] ?? '',
-                    seller: order['seller'] ?? '',
-                    date: order['date'] ?? '',
-                    status: status,
-                    statusColor: statusColor,
-                    imageUrl: order['imageUrl'] ?? 'https://via.placeholder.com/150',
-                    quantity: order['quantity_label'] ?? '1 unidad',
+                    context: context,
+                    order: order,
                     isDark: isDark,
                     cardColor: cardColor,
                   ),
                 );
               }).toList(),
             );
-          }
+          },
         ),
       ],
     );
   }
 
   Widget _buildOrderCard({
-    required String title,
-    required String price,
-    required String seller,
-    required String date,
-    required String status,
-    required Color statusColor,
-    required String imageUrl,
-    required String quantity,
+    required BuildContext context,
+    required Map<String, dynamic> order,
     required bool isDark,
     required Color cardColor,
   }) {
-    final borderColor = isDark ? Colors.grey[800]! : Colors.grey[200]!;
+    final title = (order['title'] ?? '').toString();
+    final seller = (order['seller'] ?? '').toString();
+    final date = (order['date'] ?? '').toString();
+    final status = (order['status'] ?? 'Entregado').toString();
+    final imageUrl = (order['imageUrl'] ?? '').toString();
+    final quantity = order['quantity']?.toString() ?? '1';
+    final unit = (order['unit'] ?? order['quantity_label'] ?? 'unidad').toString();
+    final unitPrice = (order['unit_price'] ?? order['final_price'] ?? order['price'] ?? '').toString();
+    final totalPrice = (order['total_price'] ?? order['subtotal'] ?? order['price'] ?? '').toString();
 
-    // Dynamic map labels
-    String badgeLabel = status;
-    if (status == 'Entregado') {
-      badgeLabel = 'Completado';
-    } else if (status == 'En camino') {
-      badgeLabel = 'Pendiente';
-    } else if (status == 'Cancelado') {
-      badgeLabel = 'Cancelado';
-    }
+    final isCompleted = status == 'Entregado' || status == 'Completado';
+    final statusColor = isCompleted ? const Color(0xFF016042) : const Color(0xFFBA1A1A);
+    final statusBgColor = isCompleted
+        ? const Color(0xFF016042).withValues(alpha: 0.1)
+        : const Color(0xFFBA1A1A).withValues(alpha: 0.1);
+    final statusLabel = isCompleted ? 'COMPLETADO' : 'CANCELADO';
+    final borderColor = isDark ? const Color(0xFF22382E) : const Color(0xFFE2E8F0);
 
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: cardColor,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 4,
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+            blurRadius: 6,
             offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. Imagen del producto
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              imageUrl,
-              width: 64,
-              height: 64,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                width: 64,
-                height: 64,
-                color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.04),
-                child: const Icon(
-                  Icons.image_outlined,
-                  color: Colors.grey,
+          // 1. Imagen del producto (interactiva)
+          GestureDetector(
+            onTap: () => _navigateToProduct(context, order),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                imageUrl,
+                width: 72,
+                height: 72,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  width: 72,
+                  height: 72,
+                  color: isDark ? Colors.white10 : const Color(0xFFF1F4F0),
+                  child: const Icon(Icons.image_outlined, color: Colors.grey, size: 28),
                 ),
               ),
             ),
@@ -391,83 +401,35 @@ class ProfileScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Fila 1: Título y Badge de Estado
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Nombre del producto
                     Expanded(
-                      child: Text(
-                        title,
-                        style: TextStyle(
-                          fontFamily: 'Plus Jakarta Sans',
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.white : Colors.black87,
+                      child: GestureDetector(
+                        onTap: () => _navigateToProduct(context, order),
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            fontFamily: 'Plus Jakarta Sans',
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? Colors.white : const Color(0xFF1E293B),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
                       ),
                     ),
                     const SizedBox(width: 8),
-                    // Precio final negociado
-                    Text(
-                      price,
-                      style: const TextStyle(
-                        fontFamily: 'Plus Jakarta Sans',
-                        fontSize: 14,
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xFF00462f),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                // Nombre de proveedor
-                Row(
-                  children: [
-                    Icon(
-                      Icons.storefront_outlined,
-                      size: 12,
-                      color: isDark ? Colors.grey[400] : const Color(0xFF486456),
-                    ),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Text(
-                        'Negociado con: $seller',
-                        style: TextStyle(
-                          fontFamily: 'Plus Jakarta Sans',
-                          fontSize: 11,
-                          fontWeight: FontWeight.w500,
-                          color: isDark ? Colors.grey[400] : const Color(0xFF486456),
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Fecha y cantidad negociada
-                    Text(
-                      '$date • Cant: $quantity',
-                      style: TextStyle(
-                        fontFamily: 'Plus Jakarta Sans',
-                        fontSize: 10,
-                        color: isDark ? Colors.grey[500] : Colors.grey[400],
-                      ),
-                    ),
-                    // Status badge
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: statusColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(12),
+                        color: statusBgColor,
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        badgeLabel.toUpperCase(),
+                        statusLabel,
                         style: TextStyle(
                           fontFamily: 'Plus Jakarta Sans',
                           fontSize: 9,
@@ -479,12 +441,199 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+                const SizedBox(height: 4),
+
+                // Fila 2: Proveedor con Icono (interactivo)
+                GestureDetector(
+                  onTap: () => _navigateToProvider(context, seller, order),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.storefront_outlined,
+                        size: 13,
+                        color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF016042),
+                      ),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          seller,
+                          style: TextStyle(
+                            fontFamily: 'Plus Jakarta Sans',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF016042),
+                            decoration: TextDecoration.underline,
+                            decorationColor: (isDark ? const Color(0xFF89d6b0) : const Color(0xFF016042)).withValues(alpha: 0.3),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 6),
+
+                // Fila 3: Fecha, Cantidad negociada y Unidad
+                Row(
+                  children: [
+                    Icon(
+                      Icons.calendar_today_outlined,
+                      size: 11,
+                      color: isDark ? Colors.grey[500] : const Color(0xFF64748B),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      date,
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 11,
+                        color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      '•',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: isDark ? Colors.grey[600] : const Color(0xFF94A3B8),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Cant: $quantity $unit',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          color: isDark ? Colors.grey[300] : const Color(0xFF475569),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+
+                // Fila 4: Precios (Precio negociado unitario y Precio total)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Precio unitario negociado
+                    Text(
+                      unitPrice.contains('/') ? unitPrice : '$unitPrice / $unit',
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
+                      ),
+                    ),
+                    // Total
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Total: ',
+                            style: TextStyle(
+                              fontFamily: 'Plus Jakarta Sans',
+                              fontSize: 11,
+                              color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
+                            ),
+                          ),
+                          TextSpan(
+                            text: totalPrice,
+                            style: const TextStyle(
+                              fontFamily: 'Plus Jakarta Sans',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFF016042),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  void _navigateToProduct(BuildContext context, Map<String, dynamic> order) {
+    final isAvailable = order['is_available'] as bool? ?? (order['status'] != 'Cancelado');
+    if (!isAvailable) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.info_outline, color: Colors.white, size: 18),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'El producto "${order['title'] ?? 'seleccionado'}" no está disponible actualmente.',
+                  style: const TextStyle(fontFamily: 'Plus Jakarta Sans', fontSize: 13),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: const Color(0xFF1E293B),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    final productData = <String, dynamic>{
+      'name': order['title'] ?? 'Producto',
+      'title': order['title'] ?? 'Producto',
+      'price': order['final_price'] ?? order['unit_price'] ?? order['price'] ?? '\$0.00',
+      'img': order['imageUrl'] ?? '',
+      'image': order['imageUrl'] ?? '',
+      'supplier': order['seller'] ?? 'Proveedor',
+      'provider': order['seller'] ?? 'Proveedor',
+      'unit': order['unit'] ?? order['quantity_label'] ?? 'por KG',
+      'rating': '4.9',
+      'badge': 'PRIMERA CALIDAD',
+      'salesMode': 'both',
+    };
+
+    context.push('/product_detail', extra: productData);
+  }
+
+  void _navigateToProvider(BuildContext context, String sellerName, [Map<String, dynamic>? order]) {
+    Map<String, dynamic>? match;
+    for (var p in globalFavoriteProviders.value) {
+      if (p['name'] == sellerName) {
+        match = p;
+        break;
+      }
+    }
+
+    final providerData = match ?? <String, dynamic>{
+      'name': sellerName,
+      'rating': '4.8',
+      'sector': 'Sector San Pedro',
+      'distance': 'A 5 km',
+      'level': 'Nivel 3',
+      'verified': true,
+      'open': true,
+      'sales': '1,240',
+      'reviews': '120 reseñas',
+      'traded': '1,240 productos negociados',
+      'img': order?['imageUrl'] ?? 'https://eldinero.com.do/wp-content/uploads/mercados-productos-precios.jpg',
+      'image': order?['imageUrl'] ?? 'https://eldinero.com.do/wp-content/uploads/mercados-productos-precios.jpg',
+    };
+
+    context.push('/provider', extra: providerData);
   }
 
   Widget _buildFavoritesCarousel(BuildContext context, ThemeData theme, bool isDark, Color cardColor) {
@@ -493,298 +642,67 @@ class ProfileScreen extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Mis Favoritos', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: isDark ? Colors.white : Colors.black87)),
+            Text(
+              'Mis Favoritos',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black87,
+              ),
+            ),
             TextButton(
-              onPressed: () => context.go('/favorites'),
+              onPressed: () => context.push('/favorites'),
               style: TextButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
-              child: Text('Explorar', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: theme.colorScheme.primary)),
+              child: Text(
+                'Ver todos',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: theme.colorScheme.primary,
+                ),
+              ),
             ),
           ],
         ),
         const SizedBox(height: 12),
         SizedBox(
-          height: 350,
+          height: 330,
           child: ValueListenableBuilder<List<Map<String, dynamic>>>(
             valueListenable: globalFavorites,
             builder: (context, favoritesList, child) {
               if (favoritesList.isEmpty) {
-                return const Center(child: Text('No hay favoritos aún.', style: TextStyle(color: Colors.grey)));
+                return const Center(
+                  child: Text(
+                    'No hay favoritos aún.',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                );
               }
+              // Only display the last 5 added favorites
+              final displayedFavorites = favoritesList.reversed.take(5).toList();
               return ListView.separated(
                 scrollDirection: Axis.horizontal,
-                itemCount: favoritesList.length,
-                separatorBuilder: (context, index) => const SizedBox(width: 16),
+                itemCount: displayedFavorites.length,
+                separatorBuilder: (context, index) => const SizedBox(width: 14),
                 itemBuilder: (context, index) {
-                  final data = favoritesList[index];
-                  return GestureDetector(
-                    onTap: () => context.push('/product_detail', extra: data),
-                    child: _buildProductCard(
-                      context: context,
-                      theme: theme,
-                      surfaceColor: cardColor,
-                      primaryColor: theme.colorScheme.primary,
-                      isDark: isDark,
-                      data: data,
-                    ),
+                  final data = displayedFavorites[index];
+                  return _ProfileFavoriteCard(
+                    data: data,
+                    theme: theme,
+                    surfaceColor: cardColor,
+                    primaryColor: theme.colorScheme.primary,
+                    isDark: isDark,
                   );
                 },
               );
-            }
+            },
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildProductCard({
-    required BuildContext context,
-    required ThemeData theme,
-    required Color surfaceColor,
-    required Color primaryColor,
-    required bool isDark,
-    required Map<String, dynamic> data,
-  }) {
-    final String badgeStr = (data['quality'] ?? '').toString().toUpperCase();
-    final String lowerBadge = badgeStr.toLowerCase();
-    Color badgeColor = primaryColor;
-    if (lowerBadge.contains('segunda')) {
-      badgeColor = Colors.amber[700]!;
-    } else if (lowerBadge.contains('tercera')) {
-      badgeColor = Colors.red[400]!;
-    }
-
-    return Container(
-      width: 200,
-      decoration: BoxDecoration(
-        color: isDark ? primaryColor.withValues(alpha: 0.05) : Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: primaryColor.withValues(alpha: 0.05)),
-        boxShadow: isDark
-            ? []
-            : [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.03),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              Container(
-                height: 110,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(data['image'] ?? data['img'] ?? 'https://via.placeholder.com/150'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 12,
-                right: 12,
-                child: AnimatedFavoriteButton(
-                  isFavorite: true,
-                  size: 18,
-                  onTap: () {
-                    toggleFavorite(data);
-                    ScaffoldMessenger.of(context).clearSnackBars();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Eliminado de favoritos'),
-                        backgroundColor: Colors.red,
-                        behavior: SnackBarBehavior.floating,
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (data['quality'] != null)
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 6),
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: badgeColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        badgeStr,
-                        style: TextStyle(
-                          color: badgeColor,
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  Text(
-                    data['name'] ?? '',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      height: 1.2,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  if (data['tags'] != null && (data['tags'] as List).isNotEmpty) ...[
-                    const SizedBox(height: 4),
-                    Wrap(
-                      spacing: 4,
-                      runSpacing: 4,
-                      children: (data['tags'] as List).map((tag) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: primaryColor.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            tag.toString(),
-                            style: TextStyle(
-                              color: primaryColor,
-                              fontSize: 9,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ],
-                  const SizedBox(height: 4),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                data['supplier'] ?? '',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w500,
-                                  color: primaryColor.withValues(alpha: 0.7),
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Icon(Icons.verified, size: 12, color: primaryColor),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: primaryColor.withValues(alpha: 0.05),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.star, color: Colors.amber, size: 10),
-                            const SizedBox(width: 2),
-                            Text(
-                              data['rating'] ?? '5.0',
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: primaryColor,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  Text(
-                    data['price'] ?? '',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: primaryColor,
-                    ),
-                  ),
-                  Text(
-                    data['unit'] ?? 'unidad',
-                    style: const TextStyle(
-                      fontSize: 10,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ValueListenableBuilder<List<Map<String, dynamic>>>(
-                      valueListenable: globalCart,
-                      builder: (context, cart, child) {
-                        final bool inCart = isInCart(data);
-                        return ElevatedButton.icon(
-                          onPressed: inCart ? null : () {
-                            addToCart(data);
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Row(
-                                  children: [
-                                    const Icon(Icons.shopping_cart_checkout, color: Colors.white, size: 20),
-                                    const SizedBox(width: 12),
-                                    const Expanded(child: Text('Agregado al carrito', style: TextStyle(fontWeight: FontWeight.bold))),
-                                  ],
-                                ),
-                                backgroundColor: const Color(0xFF016142),
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                duration: const Duration(seconds: 2),
-                              ),
-                            );
-                          },
-                          icon: Icon(inCart ? Icons.check : Icons.shopping_cart, size: 14),
-                          label: Text(inCart ? 'Ya en carrito' : 'Agregar', style: const TextStyle(fontSize: 12)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColor,
-                            foregroundColor: Colors.white,
-                            disabledBackgroundColor: Colors.grey.shade300,
-                            disabledForegroundColor: Colors.grey.shade600,
-                            minimumSize: const Size(0, 36),
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            elevation: inCart ? 0 : 2,
-                            shadowColor: primaryColor.withValues(alpha: 0.4),
-                          ),
-                        );
-                      }
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -1091,6 +1009,689 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ProfileFavoriteCard extends StatefulWidget {
+  final Map<String, dynamic> data;
+  final ThemeData theme;
+  final Color surfaceColor;
+  final Color primaryColor;
+  final bool isDark;
+
+  const _ProfileFavoriteCard({
+    required this.data,
+    required this.theme,
+    required this.surfaceColor,
+    required this.primaryColor,
+    required this.isDark,
+  });
+
+  @override
+  State<_ProfileFavoriteCard> createState() => _ProfileFavoriteCardState();
+}
+
+class _ProfileFavoriteCardState extends State<_ProfileFavoriteCard> {
+  late String _currentMode;
+
+  @override
+  void initState() {
+    super.initState();
+    final salesMode = widget.data['salesMode'] ?? 'both';
+    _currentMode = salesMode == 'wholesale_only' ? 'wholesale' : 'retail';
+  }
+
+  String _getProductSku(Map<String, dynamic> item) {
+    if (item['sku'] != null && item['sku'].toString().trim().isNotEmpty) {
+      return item['sku'].toString().trim();
+    }
+    final name = (item['name'] ?? 'PROD').toString().replaceAll(' ', '').toUpperCase();
+    final nameCode = name.length >= 3 ? name.substring(0, 3) : name.padRight(3, 'X');
+    final cat = (item['category'] ?? 'GEN').toString().replaceAll(' ', '').toUpperCase();
+    final catCode = cat.length >= 3 ? cat.substring(0, 3) : cat.padRight(3, 'X');
+    return '$catCode-$nameCode-01';
+  }
+
+  Widget _buildProductImage(String? src) {
+    final imgSrc = (src != null && src.isNotEmpty) ? src : 'https://via.placeholder.com/400';
+    if (imgSrc.startsWith('assets/')) {
+      return Image.asset(
+        imgSrc,
+        width: double.infinity,
+        height: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => Container(color: Colors.grey[200]),
+      );
+    }
+    return Image.network(
+      imgSrc,
+      width: double.infinity,
+      height: double.infinity,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) => Container(color: Colors.grey[200]),
+    );
+  }
+
+  Widget? _buildSalesModeBadge(String? salesMode) {
+    if (salesMode == null) return null;
+
+    if (salesMode == 'both') {
+      final bool isRetailSelected = _currentMode == 'retail';
+      final bool isWholesaleSelected = _currentMode == 'wholesale';
+
+      return Container(
+        padding: const EdgeInsets.all(1.5),
+        decoration: BoxDecoration(
+          color: widget.isDark ? const Color(0xFF111827) : const Color(0xFFF3F4F6),
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(
+            color: widget.isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB),
+            width: 0.8,
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  if (_currentMode != 'retail') {
+                    setState(() => _currentMode = 'retail');
+                  }
+                },
+                behavior: HitTestBehavior.opaque,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  padding: const EdgeInsets.symmetric(vertical: 2.5),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: isRetailSelected
+                        ? (widget.isDark ? const Color(0xFF047857) : const Color(0xFF059669))
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Detalle',
+                      style: TextStyle(
+                        fontFamily: 'Manrope',
+                        color: isRetailSelected
+                            ? Colors.white
+                            : (widget.isDark ? Colors.grey[400] : Colors.grey[600]),
+                        fontSize: 9.5,
+                        fontWeight: isRetailSelected ? FontWeight.w700 : FontWeight.w500,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 2),
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  if (_currentMode != 'wholesale') {
+                    setState(() => _currentMode = 'wholesale');
+                  }
+                },
+                behavior: HitTestBehavior.opaque,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  padding: const EdgeInsets.symmetric(vertical: 2.5),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: isWholesaleSelected
+                        ? (widget.isDark ? const Color(0xFF0284C7) : const Color(0xFF0369A1))
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Por Mayor',
+                      style: TextStyle(
+                        fontFamily: 'Manrope',
+                        color: isWholesaleSelected
+                            ? Colors.white
+                            : (widget.isDark ? Colors.grey[400] : Colors.grey[600]),
+                        fontSize: 9.5,
+                        fontWeight: isWholesaleSelected ? FontWeight.w700 : FontWeight.w500,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final bool isRetailOnly = salesMode == 'retail_only' || salesMode == 'retail';
+    final String label = isRetailOnly ? 'Solo al Detalle' : 'Solo por Mayor';
+    final IconData icon = isRetailOnly ? Icons.shopping_bag_outlined : Icons.inventory_2_outlined;
+
+    final Color bgColor = isRetailOnly
+        ? (widget.isDark ? const Color(0xFF064E3B).withValues(alpha: 0.35) : const Color(0xFFECFDF5))
+        : (widget.isDark ? const Color(0xFF075985).withValues(alpha: 0.35) : const Color(0xFFF0F9FF));
+    final Color borderColor = isRetailOnly
+        ? (widget.isDark ? const Color(0xFF059669).withValues(alpha: 0.4) : const Color(0xFFA7F3D0))
+        : (widget.isDark ? const Color(0xFF0284C7).withValues(alpha: 0.4) : const Color(0xFFBAE6FD));
+    final Color textColor = isRetailOnly
+        ? (widget.isDark ? const Color(0xFF6EE7B7) : const Color(0xFF047857))
+        : (widget.isDark ? const Color(0xFF7DD3FC) : const Color(0xFF0369A1));
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(5),
+        border: Border.all(color: borderColor, width: 0.8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 10, color: textColor),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(
+              label,
+              style: TextStyle(
+                color: textColor,
+                fontSize: 9,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.1,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final String productName = widget.data['name'] ?? '';
+    final String qualityStr = (widget.data['quality'] ?? widget.data['badge'] ?? 'Primera Calidad').toString();
+    final String lowerQuality = qualityStr.toLowerCase();
+    Color badgeColor = widget.primaryColor;
+    if (lowerQuality.contains('segunda')) {
+      badgeColor = const Color(0xFFFF8A5B);
+    } else if (lowerQuality.contains('tercera')) {
+      badgeColor = Colors.red[400]!;
+    }
+
+    final salesMode = widget.data['salesMode'] ?? 'both';
+    final currentMode = (salesMode == 'both')
+        ? _currentMode
+        : (salesMode == 'wholesale_only' ? 'wholesale' : 'retail');
+    final bool isWholesale = currentMode == 'wholesale';
+
+    final String displayPrice = isWholesale
+        ? (widget.data['wholesalePrice'] ?? widget.data['price'] ?? r'$16.50')
+        : (widget.data['price'] ?? r'$22.50');
+
+    final String displayUnitText;
+    if (isWholesale) {
+      displayUnitText = widget.data['wholesaleMin'] != null
+          ? 'por mayor (${widget.data['wholesaleMin'].toString().toLowerCase()})'
+          : 'por mayor';
+    } else {
+      final u = (widget.data['unit'] ?? 'kilo').toString().toLowerCase().trim();
+      displayUnitText = u.startsWith('por ') ? u : 'por $u';
+    }
+
+    final salesBadge = _buildSalesModeBadge(salesMode);
+
+    final itemForDetail = {
+      ...widget.data,
+      'salesMode': salesMode,
+      'saleType': isWholesale ? 'mayor' : 'detalle',
+      'selectedMode': currentMode,
+    };
+
+    final String supplierStr = widget.data['supplier'] ?? 'Don Pedro H.';
+    final String locationStr = widget.data['location'] ?? 'Tecomán, Colima';
+    final String? discount = widget.data['discount'];
+
+    return GestureDetector(
+      onTap: () => context.push('/product_detail', extra: itemForDetail),
+      child: Container(
+        width: 205,
+        decoration: BoxDecoration(
+          color: widget.surfaceColor,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: widget.isDark ? Colors.grey[800]! : const Color(0xFFE2E8F0),
+            width: 1.0,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: widget.isDark ? 0.2 : 0.04),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 1. Top Image Stack
+            Stack(
+              children: [
+                SizedBox(
+                  height: 105,
+                  width: double.infinity,
+                  child: _buildProductImage(widget.data['image'] ?? widget.data['img']),
+                ),
+                // Top-Left Discount Pill
+                if (discount != null && discount.isNotEmpty)
+                  Positioned(
+                    top: 8,
+                    left: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.65),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.bolt, color: Colors.amber, size: 11),
+                          const SizedBox(width: 2),
+                          Text(
+                            discount,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 8.5,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                // Top-Right Floating Heart Button
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    width: 28,
+                    height: 28,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: widget.isDark ? const Color(0xFF1E293B) : Colors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.12),
+                          blurRadius: 4,
+                          offset: const Offset(0, 1),
+                        ),
+                      ],
+                    ),
+                    child: AnimatedFavoriteButton(
+                      isFavorite: true,
+                      size: 16,
+                      onTap: () {
+                        toggleFavorite(widget.data);
+                        ScaffoldMessenger.of(context).clearSnackBars();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Eliminado de favoritos: $productName'),
+                            backgroundColor: Colors.red[600],
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                // Bottom-Right Verified Badge
+                Positioned(
+                  bottom: 8,
+                  right: 8,
+                  child: Container(
+                    padding: const EdgeInsets.all(3.5),
+                    decoration: BoxDecoration(
+                      color: widget.primaryColor,
+                      borderRadius: BorderRadius.circular(6),
+                      boxShadow: const [
+                        BoxShadow(color: Colors.black26, blurRadius: 3),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.verified,
+                      color: Colors.white,
+                      size: 12,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            // 2. Card Content Body
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(8, 6, 8, 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title
+                    Text(
+                      productName,
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.bold,
+                        height: 1.15,
+                        color: widget.isDark ? Colors.white : const Color(0xFF0F172A),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 1),
+                    // SKU
+                    Text(
+                      'SKU: ${_getProductSku(widget.data)}',
+                      style: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontSize: 8.5,
+                        fontWeight: FontWeight.w500,
+                        color: widget.isDark ? Colors.grey.shade400 : const Color(0xFF94A3B8),
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+
+                    // Sales Mode Switcher [ Detalle | Por Mayor ]
+                    if (salesBadge != null) ...[
+                      salesBadge,
+                      const SizedBox(height: 4),
+                    ],
+
+                    // Metadata Row 1: CALIDAD
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) => QualityInfoBottomSheet(quality: qualityStr),
+                        );
+                      },
+                      behavior: HitTestBehavior.opaque,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 18,
+                            height: 18,
+                            decoration: BoxDecoration(
+                              color: badgeColor.withValues(alpha: 0.15),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(Icons.workspace_premium, color: badgeColor, size: 11),
+                          ),
+                          const SizedBox(width: 5),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'CALIDAD',
+                                  style: TextStyle(
+                                    fontSize: 7.5,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                    letterSpacing: 0.3,
+                                    height: 1.0,
+                                  ),
+                                ),
+                                Text(
+                                  qualityStr.toUpperCase(),
+                                  style: TextStyle(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w800,
+                                    color: badgeColor,
+                                    height: 1.1,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+
+                    // Metadata Row 2: PROVEEDOR
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) => SupplierQuickViewBottomSheet(supplierData: widget.data),
+                        );
+                      },
+                      behavior: HitTestBehavior.opaque,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 18,
+                            height: 18,
+                            decoration: BoxDecoration(
+                              color: widget.primaryColor.withValues(alpha: 0.12),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(Icons.local_florist, color: widget.primaryColor, size: 11),
+                          ),
+                          const SizedBox(width: 5),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'PROVEEDOR',
+                                  style: TextStyle(
+                                    fontSize: 7.5,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                    letterSpacing: 0.3,
+                                    height: 1.0,
+                                  ),
+                                ),
+                                Text(
+                                  supplierStr,
+                                  style: const TextStyle(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.bold,
+                                    height: 1.1,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+
+                    // Metadata Row 3: UBICACIÓN
+                    Row(
+                      children: [
+                        Container(
+                          width: 18,
+                          height: 18,
+                          decoration: BoxDecoration(
+                            color: widget.isDark ? Colors.grey[800] : Colors.grey[200],
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.location_on,
+                            color: widget.isDark ? Colors.grey[300] : Colors.grey[700],
+                            size: 11,
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'UBICACIÓN',
+                                style: TextStyle(
+                                  fontSize: 7.5,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                  letterSpacing: 0.3,
+                                  height: 1.0,
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      locationStr,
+                                      style: TextStyle(
+                                        fontSize: 9,
+                                        color: widget.isDark ? Colors.grey[300] : Colors.grey[700],
+                                        height: 1.1,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '• A ${widget.data['distance'] != null ? widget.data['distance'].toString() : '4.2'} km',
+                                    style: TextStyle(
+                                      fontSize: 8.5,
+                                      fontWeight: FontWeight.bold,
+                                      color: widget.isDark ? const Color(0xFF6EE7B7) : const Color(0xFF059669),
+                                      height: 1.1,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const Spacer(),
+
+                    // Price & Unit
+                    SizedBox(
+                      width: double.infinity,
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: displayPrice,
+                              style: TextStyle(
+                                fontSize: 14.5,
+                                fontWeight: FontWeight.w900,
+                                color: isWholesale
+                                    ? (widget.isDark ? const Color(0xFF38BDF8) : const Color(0xFF0284C7))
+                                    : widget.primaryColor,
+                              ),
+                            ),
+                            TextSpan(
+                              text: ' / $displayUnitText',
+                              style: TextStyle(
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.w600,
+                                color: widget.isDark ? Colors.grey[400] : const Color(0xFF64748B),
+                                letterSpacing: 0.1,
+                              ),
+                            ),
+                          ],
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+
+                    // Action Button
+                    ValueListenableBuilder<List<Map<String, dynamic>>>(
+                      valueListenable: globalCart,
+                      builder: (context, cart, child) {
+                        final bool inCart = isInCart(itemForDetail);
+                        return SizedBox(
+                          width: double.infinity,
+                          height: 30,
+                          child: ElevatedButton.icon(
+                            onPressed: inCart
+                                ? null
+                                : () {
+                                    addToCart(itemForDetail);
+                                    ScaffoldMessenger.of(context).clearSnackBars();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Row(
+                                          children: [
+                                            const Icon(Icons.shopping_cart_checkout, color: Colors.white, size: 20),
+                                            const SizedBox(width: 12),
+                                            Expanded(
+                                              child: Text(
+                                                'Agregado al carrito: $productName',
+                                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        backgroundColor: const Color(0xFF016142),
+                                        behavior: SnackBarBehavior.floating,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                        duration: const Duration(seconds: 2),
+                                      ),
+                                    );
+                                  },
+                            icon: Icon(inCart ? Icons.check : Icons.shopping_cart_outlined, size: 12),
+                            label: Text(
+                              inCart ? 'EN EL CARRITO' : 'AGREGAR AL CARRITO',
+                              style: const TextStyle(
+                                fontSize: 8.5,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 0.2,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: widget.primaryColor,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 4),
+                              disabledBackgroundColor: widget.isDark ? Colors.grey[800] : Colors.grey[300],
+                              disabledForegroundColor: widget.isDark ? Colors.grey[500] : Colors.grey[600],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              elevation: 0,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

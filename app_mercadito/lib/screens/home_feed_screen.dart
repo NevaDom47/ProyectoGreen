@@ -15,6 +15,7 @@ import '../widgets/supplier_quick_view_bottom_sheet.dart';
 import '../widgets/skeleton_loading.dart';
 import '../widgets/verified_badge.dart';
 import '../services/user_session.dart';
+import '../services/reports_service.dart';
 
 class HomeFeedScreen extends StatefulWidget {
   const HomeFeedScreen({super.key});
@@ -3137,7 +3138,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                     },
                   ),
                   _buildDrawerItem(
-                    'Compradores favoritos',
+                    'Compradores',
                     Icons.person_search_rounded,
                     itemTextColor,
                     itemHoverBg,
@@ -3216,6 +3217,42 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                       context.pop();
                       context.push('/dashboard');
                     },
+                  ),
+                  _buildDrawerItem(
+                    'Reportes',
+                    Icons.flag_outlined,
+                    itemTextColor,
+                    itemHoverBg,
+                    false,
+                    onTap: () {
+                      context.pop();
+                      context.push('/reports');
+                    },
+                    trailing: ValueListenableBuilder(
+                      valueListenable: ReportsService.instance.reportsNotifier,
+                      builder: (context, reports, _) {
+                        final count = reports.where((r) => r.status == 'pending').length;
+                        if (count == 0) return const SizedBox.shrink();
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF20C0E),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            '$count',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                   Divider(color: dividerColor, height: 32),
                   _buildDrawerItem(

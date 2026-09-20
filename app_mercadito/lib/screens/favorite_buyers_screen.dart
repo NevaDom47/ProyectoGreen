@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import '../data/global_state.dart';
+import '../widgets/animated_favorite_button.dart';
 import 'buyer_profile_screen.dart';
 
 class FavoriteBuyersScreen extends StatefulWidget {
@@ -80,7 +81,7 @@ class _FavoriteBuyersScreenState extends State<FavoriteBuyersScreen> with Single
           onPressed: () => context.pop(),
         ),
         title: Text(
-          'Compradores Favoritos',
+          'Compradores',
           style: GoogleFonts.plusJakartaSans(
             color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
             fontWeight: FontWeight.bold,
@@ -100,17 +101,21 @@ class _FavoriteBuyersScreenState extends State<FavoriteBuyersScreen> with Single
               final filteredList = currentList.where((b) {
                 final query = _searchQuery.toLowerCase().trim();
                 if (query.isEmpty) return true;
+
+                final cleanQuery = query.replaceAll('#', '').replaceAll('-', '').replaceAll(' ', '');
                 final name = (b['name'] ?? '').toString().toLowerCase();
                 final id = (b['id'] ?? '').toString().toLowerCase();
+                final cleanId = id.replaceAll('#', '').replaceAll('-', '').replaceAll(' ', '');
                 final location = (b['location'] ?? '').toString().toLowerCase();
-                final businessType = (b['businessType'] ?? '').toString().toLowerCase();
+                final sector = (b['sector'] ?? '').toString().toLowerCase();
                 final products = (b['frequentProducts'] as List?)?.join(' ').toLowerCase() ?? '';
                 final categories = (b['frequentCategories'] as List?)?.join(' ').toLowerCase() ?? '';
 
                 return name.contains(query) ||
                     id.contains(query) ||
+                    (cleanQuery.isNotEmpty && cleanId.contains(cleanQuery)) ||
                     location.contains(query) ||
-                    businessType.contains(query) ||
+                    sector.contains(query) ||
                     products.contains(query) ||
                     categories.contains(query);
               }).toList();
@@ -362,12 +367,9 @@ class _FavoriteBuyersScreenState extends State<FavoriteBuyersScreen> with Single
     final buyerId = (buyer['id'] ?? 'BUY-88291').toString();
     final buyerName = (buyer['name'] ?? 'Comprador').toString();
     final buyerAvatar = buyer['avatar'] as String?;
-    final location = (buyer['location'] ?? '').toString();
-    final distance = (buyer['distance'] ?? '').toString();
-    final businessType = (buyer['businessType'] ?? '').toString();
+    final sector = (buyer['sector'] ?? buyer['location'] ?? '').toString();
     final rating = (buyer['rating'] ?? 4.9).toString();
     final negotiations = (buyer['negotiationsCount'] ?? 15).toString();
-    final onTimePayment = (buyer['onTimePaymentPercent'] ?? 100).toString();
     final isFav = isFavoriteBuyer(buyerId) || isFavoriteBuyer(buyerName);
     final frequentProducts = (buyer['frequentProducts'] as List?)?.cast<String>() ?? [];
 
@@ -465,17 +467,7 @@ class _FavoriteBuyersScreenState extends State<FavoriteBuyersScreen> with Single
                           ),
                         ],
                       ),
-                      if (businessType.isNotEmpty) ...[
-                        const SizedBox(height: 2),
-                        Text(
-                          businessType,
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: isDark ? Colors.grey[400] : Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                      if (location.isNotEmpty) ...[
+                      if (sector.isNotEmpty) ...[
                         const SizedBox(height: 2),
                         Row(
                           children: [
@@ -483,7 +475,7 @@ class _FavoriteBuyersScreenState extends State<FavoriteBuyersScreen> with Single
                             const SizedBox(width: 2),
                             Expanded(
                               child: Text(
-                                '$location • $distance',
+                                sector,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   fontSize: 10.5,
@@ -497,21 +489,18 @@ class _FavoriteBuyersScreenState extends State<FavoriteBuyersScreen> with Single
                     ],
                   ),
                 ),
-                IconButton(
-                  icon: Icon(
-                    isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                    color: isFav ? const Color(0xFFE11D48) : Colors.grey[400],
-                    size: 22,
-                  ),
-                  onPressed: () {
+                AnimatedFavoriteButton(
+                  isFavorite: isFav,
+                  onTap: () {
                     toggleFavoriteBuyer(buyer);
                   },
+                  size: 18,
                 ),
               ],
             ),
             const SizedBox(height: 10),
 
-            // Métricas Rápidas en Píldoras
+            // Métricas Rápidas en Píldoras (Calificación y Tratos)
             Row(
               children: [
                 _buildMiniMetric(
@@ -524,14 +513,7 @@ class _FavoriteBuyersScreenState extends State<FavoriteBuyersScreen> with Single
                 _buildMiniMetric(
                   icon: Icons.handshake_outlined,
                   iconColor: isDark ? const Color(0xFF89d6b0) : primaryGreen,
-                  text: '$negotiations tratos',
-                  isDark: isDark,
-                ),
-                const SizedBox(width: 6),
-                _buildMiniMetric(
-                  icon: Icons.payments_outlined,
-                  iconColor: const Color(0xFF10B981),
-                  text: '$onTimePayment% puntual',
+                  text: '$negotiations negociaciones',
                   isDark: isDark,
                 ),
               ],

@@ -63,14 +63,8 @@ class _AnimatedFavoriteButtonState extends State<AnimatedFavoriteButton> with Ti
         widget.onTap();
         _controller.forward(from: 0.0);
       },
-      child: AnimatedBuilder(
-        animation: _scaleAnimation,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _scaleAnimation.value,
-            child: child,
-          );
-        },
+      child: ScaleTransition(
+        scale: _scaleAnimation,
         child: Container(
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(

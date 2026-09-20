@@ -63,6 +63,9 @@ class UserReport {
     if (reporterId.trim().isEmpty || reportedId.trim().isEmpty) {
       return 'Los datos de identificación de los usuarios son obligatorios.';
     }
+    if (reporterId.trim().toLowerCase() == reportedId.trim().toLowerCase()) {
+      return 'No puedes reportarte a ti mismo.';
+    }
     return null;
   }
 

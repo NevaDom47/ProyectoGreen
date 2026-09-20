@@ -1905,32 +1905,43 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
           ),
         ),
 
-        // Report
-        _EntranceAnimation(
-          delay: 500,
-          child: Center(
-            child: TextButton.icon(
-              onPressed: () {
-                final provId = _providerCode.replaceAll('#', '');
-                final provName = (widget.provider['name'] ?? 'Proveedor').toString();
-                final provAvatar = (widget.provider['img'] ?? widget.provider['avatar'] ?? '').toString();
-                final provLocation = (widget.provider['location'] ?? 'República Dominicana').toString();
-                final provSector = (widget.provider['sector'] ?? '').toString().trim().isNotEmpty
-                    ? widget.provider['sector'].toString().trim()
-                    : (provLocation.contains('•') ? provLocation.split('•').last.trim() : provLocation);
-                ReportUserBottomSheet.show(
-                  context: context,
-                  reportedId: provId,
-                  reportedName: provName,
-                  reportedRole: 'proveedor',
-                  reportedAvatar: provAvatar,
-                  reportedLocation: provSector,
-                );
-              },
-              icon: const Icon(Icons.report_outlined, size: 16, color: Colors.grey),
-              label: const Text('REPORTAR VENDEDOR', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Colors.grey, letterSpacing: 1.5)),
-            ),
-          ),
+        // Report (only when viewing other providers)
+        Builder(
+          builder: (ctx) {
+            final currentRole = UserSession.selectedRole ?? 'comprador';
+            final currentUserId = currentRole == 'comprador' ? 'BUY-88291' : 'SELL-9942';
+            final provId = _providerCode.replaceAll('#', '');
+            final provName = (widget.provider['name'] ?? 'Proveedor').toString();
+            final isSelf = currentUserId.toLowerCase() == provId.toLowerCase() ||
+                (currentRole == 'proveedor' && (widget.provider['isMe'] == true || (UserSession.fullName != null && UserSession.fullName!.trim().toLowerCase() == provName.trim().toLowerCase())));
+
+            if (isSelf) return const SizedBox.shrink();
+
+            return _EntranceAnimation(
+              delay: 500,
+              child: Center(
+                child: TextButton.icon(
+                  onPressed: () {
+                    final provAvatar = (widget.provider['img'] ?? widget.provider['avatar'] ?? '').toString();
+                    final provLocation = (widget.provider['location'] ?? 'República Dominicana').toString();
+                    final provSector = (widget.provider['sector'] ?? '').toString().trim().isNotEmpty
+                        ? widget.provider['sector'].toString().trim()
+                        : (provLocation.contains('•') ? provLocation.split('•').last.trim() : provLocation);
+                    ReportUserBottomSheet.show(
+                      context: context,
+                      reportedId: provId,
+                      reportedName: provName,
+                      reportedRole: 'proveedor',
+                      reportedAvatar: provAvatar,
+                      reportedLocation: provSector,
+                    );
+                  },
+                  icon: const Icon(Icons.report_outlined, size: 16, color: Colors.grey),
+                  label: const Text('REPORTAR VENDEDOR', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Colors.grey, letterSpacing: 1.5)),
+                ),
+              ),
+            );
+          },
         ),
         const SizedBox(height: 32),
       ],

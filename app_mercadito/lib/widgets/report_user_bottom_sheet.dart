@@ -247,6 +247,20 @@ class _ReportUserBottomSheetState extends State<ReportUserBottomSheet> {
     final reporterName = UserSession.fullName ?? (currentRole == 'comprador' ? 'Comprador Registrado' : 'Productor Verificado');
     final reporterId = currentRole == 'comprador' ? 'BUY-88291' : 'SELL-9942';
 
+    if (reporterId.trim().toLowerCase() == widget.reportedId.trim().toLowerCase()) {
+      setState(() {
+        _isSubmitting = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: _dangerRed,
+          content: Text('No puedes auto-reportarte. Esta acción no está permitida.'),
+        ),
+      );
+      return;
+    }
+
     if (ReportsService.instance.hasActiveReport(reporterId, widget.reportedId)) {
       setState(() {
         _isSubmitting = false;
@@ -336,7 +350,9 @@ class _ReportUserBottomSheetState extends State<ReportUserBottomSheet> {
 
     final currentRole = UserSession.selectedRole ?? 'comprador';
     final reporterId = currentRole == 'comprador' ? 'BUY-88291' : 'SELL-9942';
-    final activeReport = ReportsService.instance.getActiveReport(reporterId, widget.reportedId);
+    final isSelfReport = reporterId.trim().toLowerCase() == widget.reportedId.trim().toLowerCase() ||
+        (UserSession.fullName != null && UserSession.fullName!.trim().toLowerCase() == widget.reportedName.trim().toLowerCase());
+    final activeReport = isSelfReport ? null : ReportsService.instance.getActiveReport(reporterId, widget.reportedId);
     final hasActive = activeReport != null;
 
     return Padding(
@@ -502,7 +518,49 @@ class _ReportUserBottomSheetState extends State<ReportUserBottomSheet> {
                       ),
                     ),
 
-                    if (hasActive) ...[
+                    if (isSelfReport) ...[
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: isDark ? const Color(0xFF2D1515) : const Color(0xFFFEF2F2),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: _dangerRed.withValues(alpha: 0.35)),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(Icons.block_rounded, color: _dangerRed, size: 24),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'No puedes auto-reportarte',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 13.5,
+                                      fontWeight: FontWeight.w800,
+                                      color: _dangerRed,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Esta función está destinada a reportar comportamientos irregulares de otros compradores o proveedores en la plataforma.',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 12,
+                                      color: textPrimary,
+                                      height: 1.4,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ] else if (hasActive) ...[
                       const SizedBox(height: 16),
                       Container(
                         padding: const EdgeInsets.all(16),
@@ -856,14 +914,14 @@ class _ReportUserBottomSheetState extends State<ReportUserBottomSheet> {
                 color: bgColor,
                 border: Border(top: BorderSide(color: borderColor)),
               ),
-              child: hasActive
+              child: isSelfReport
                   ? SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
                         onPressed: () => Navigator.of(context).pop(),
                         icon: const Icon(Icons.check_circle_outline, size: 18),
                         label: Text(
-                          'Entendido (Caso en Revisión)',
+                          'Entendido',
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 13.5,
                             fontWeight: FontWeight.w700,
@@ -878,7 +936,29 @@ class _ReportUserBottomSheetState extends State<ReportUserBottomSheet> {
                         ),
                       ),
                     )
-                  : Row(
+                  : (hasActive
+                      ? SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: () => Navigator.of(context).pop(),
+                            icon: const Icon(Icons.check_circle_outline, size: 18),
+                            label: Text(
+                              'Entendido (Caso en Revisión)',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 13.5,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: isDark ? const Color(0xFF334155) : const Color(0xFF0F172A),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
+                          ),
+                        )
+                      : Row(
                       children: [
                         Expanded(
                           child: OutlinedButton(
@@ -937,7 +1017,7 @@ class _ReportUserBottomSheetState extends State<ReportUserBottomSheet> {
                           ),
                         ),
                       ],
-                    ),
+                    )),
             ),
           ],
         ),

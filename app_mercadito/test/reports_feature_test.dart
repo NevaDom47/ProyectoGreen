@@ -103,6 +103,27 @@ void main() {
       expect(report.charactersLength, lessThanOrEqualTo(200));
     });
 
+    test('Self-reporting fails validation with clear error message', () {
+      final report = UserReport(
+        id: 'REP-TEST-SELF',
+        createdAt: DateTime.now(),
+        reporterId: 'BUY-88291',
+        reporterName: 'Juan Pérez',
+        reporterRole: 'comprador',
+        reporterAvatar: '',
+        reportedId: 'BUY-88291',
+        reportedName: 'Juan Pérez',
+        reportedRole: 'comprador',
+        reportedAvatar: '',
+        reportedLocation: 'Cuauhtémoc, CDMX',
+        reasons: ['Otro motivo'],
+        comment: 'Intento de auto-reporte.',
+      );
+
+      expect(report.validate(), equals('No puedes reportarte a ti mismo.'));
+      expect(report.isValid, isFalse);
+    });
+
     test('Empty comment fails validation with strict mandatory requirement', () {
       final report = UserReport(
         id: 'REP-TEST-002',
@@ -583,6 +604,28 @@ void main() {
       await tester.tap(find.text('Cerrar Resumen'));
       await tester.pumpAndSettle();
       expect(find.text('Resumen de Reporte'), findsNothing);
+    });
+
+    testWidgets('ReportUserBottomSheet prevents self-reporting and displays informational banner', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: ReportUserBottomSheet(
+              reportedId: 'BUY-88291',
+              reportedName: 'Juan Pérez',
+              reportedRole: 'comprador',
+              reportedAvatar: '',
+              reportedLocation: 'Cuauhtémoc, CDMX',
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Should show self-report warning banner
+      expect(find.text('No puedes auto-reportarte'), findsOneWidget);
+      expect(find.text('Entendido'), findsOneWidget);
+      expect(find.text('Enviar Reporte'), findsNothing);
     });
   });
 }

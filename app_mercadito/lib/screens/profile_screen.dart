@@ -9,7 +9,6 @@ import '../services/reviews_service.dart';
 import '../widgets/quality_info_bottom_sheet.dart';
 import '../widgets/supplier_quick_view_bottom_sheet.dart';
 import 'my_provider_profile_screen.dart';
-import '../widgets/report_user_bottom_sheet.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -89,28 +88,7 @@ class ProfileScreen extends StatelessWidget {
                 icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black87),
                 onPressed: () => context.pop(),
               ),
-              TextButton.icon(
-                icon: const Icon(Icons.report, color: Colors.red, size: 20),
-                label: const Text('Reportar', style: TextStyle(color: Colors.red, fontSize: 12, fontWeight: FontWeight.bold)),
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  backgroundColor: Colors.red.withValues(alpha: 0.1),
-                ),
-                onPressed: () {
-                  final targetName = UserSession.fullName ?? 'Carlos Mendoza';
-                  final targetId = userRole == 'comprador' ? 'BUY-88291' : 'PROV-1024';
-                  final targetRole = userRole;
-                  final targetLocation = '${UserSession.state ?? "Distrito Nacional"}, ${UserSession.country ?? "DO"}';
-                  ReportUserBottomSheet.show(
-                    context: context,
-                    reportedId: targetId,
-                    reportedName: targetName,
-                    reportedRole: targetRole,
-                    reportedAvatar: avatarUrl,
-                    reportedLocation: targetLocation,
-                  );
-                },
-              ),
+              const SizedBox(width: 48),
             ],
           ),
           const SizedBox(height: 16),

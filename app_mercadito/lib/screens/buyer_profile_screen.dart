@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../data/global_state.dart';
 import '../services/reviews_service.dart';
 import '../services/buyer_behavior_service.dart';
+import '../services/user_session.dart';
 import '../widgets/animated_favorite_button.dart';
 import '../widgets/report_user_bottom_sheet.dart';
 import 'direct_profile_review_screen.dart';
@@ -214,30 +215,41 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
               isDark: isDark,
               primaryGreen: primaryGreen,
             ),
-            const SizedBox(height: 16),
-            Center(
-              child: TextButton.icon(
-                onPressed: () {
-                  ReportUserBottomSheet.show(
-                    context: context,
-                    reportedId: buyerId,
-                    reportedName: buyerName,
-                    reportedRole: 'comprador',
-                    reportedAvatar: buyerAvatar ?? '',
-                    reportedLocation: sector,
-                  );
-                },
-                icon: const Icon(Icons.report_outlined, size: 16, color: Colors.grey),
-                label: const Text(
-                  'REPORTAR COMPRADOR',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.grey,
-                    letterSpacing: 1.5,
+            // Conditionally show report button only when viewing other buyers
+            Builder(
+              builder: (ctx) {
+                final currentRole = UserSession.selectedRole ?? 'comprador';
+                final currentUserId = currentRole == 'comprador' ? 'BUY-88291' : 'SELL-9942';
+                final isSelf = currentUserId.toLowerCase() == buyerId.toLowerCase() ||
+                    (currentRole == 'comprador' && (UserSession.fullName != null && UserSession.fullName!.trim().toLowerCase() == buyerName.trim().toLowerCase()));
+
+                if (isSelf) return const SizedBox.shrink();
+
+                return Center(
+                  child: TextButton.icon(
+                    onPressed: () {
+                      ReportUserBottomSheet.show(
+                        context: context,
+                        reportedId: buyerId,
+                        reportedName: buyerName,
+                        reportedRole: 'comprador',
+                        reportedAvatar: buyerAvatar ?? '',
+                        reportedLocation: sector,
+                      );
+                    },
+                    icon: const Icon(Icons.report_outlined, size: 16, color: Colors.grey),
+                    label: const Text(
+                      'REPORTAR COMPRADOR',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.grey,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
             const SizedBox(height: 32),
           ],

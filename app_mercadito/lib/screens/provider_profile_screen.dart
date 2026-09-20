@@ -1909,7 +1909,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
         Builder(
           builder: (ctx) {
             final currentRole = UserSession.selectedRole ?? 'comprador';
-            final currentUserId = currentRole == 'comprador' ? 'BUY-88291' : 'SELL-9942';
+            final currentUserId = UserSession.currentUserId;
             final provId = _providerCode.replaceAll('#', '');
             final provName = (widget.provider['name'] ?? 'Proveedor').toString();
             final isSelf = currentUserId.toLowerCase() == provId.toLowerCase() ||

@@ -10,6 +10,8 @@ import 'package:app_mercadito/screens/direct_profile_review_screen.dart';
 import 'package:app_mercadito/theme/app_theme.dart';
 import 'package:app_mercadito/services/user_session.dart';
 import 'package:app_mercadito/services/buyer_behavior_service.dart';
+import 'package:app_mercadito/screens/profile_screen.dart';
+import 'package:app_mercadito/screens/order_history_screen.dart';
 import 'package:app_mercadito/widgets/animated_favorite_button.dart';
 
 class _TestHttpOverrides extends HttpOverrides {
@@ -373,32 +375,44 @@ void main() {
     });
   });
 
-  group('Drawer Navigation Integration', () {
-    testWidgets('HomeFeedScreen drawer displays Compradores option', (WidgetTester tester) async {
+  group('Negotiation History Synchronization Tests', () {
+    testWidgets('OrderHistoryScreen displays Historial de Negociaciones title in AppBar', (WidgetTester tester) async {
       tester.view.physicalSize = const Size(1080, 2400);
       tester.view.devicePixelRatio = 2.0;
       addTearDown(tester.view.resetPhysicalSize);
 
-      UserSession.selectedRole = 'proveedor';
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.lightTheme,
+          home: const OrderHistoryScreen(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Historial de Negociaciones'), findsOneWidget);
+      expect(find.text('Mercadito'), findsNothing);
+    });
+
+    testWidgets('ProfileScreen renders InteractiveOrderCard widgets in negotiation history section', (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 2.0;
+      addTearDown(tester.view.resetPhysicalSize);
+
+      UserSession.selectedRole = 'comprador';
 
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.lightTheme,
-          home: const HomeFeedScreen(),
+          home: const ProfileScreen(),
         ),
       );
-      await tester.pump(const Duration(milliseconds: 1600));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
-      // Open drawer using the scaffold's drawer button or openDrawer
-      final scaffoldState = tester.state<ScaffoldState>(find.byType(Scaffold).first);
-      scaffoldState.openDrawer();
-      await tester.pump(const Duration(milliseconds: 350));
-
-      // Verify Drawer items
-      expect(find.text('Compradores'), findsWidgets);
-      expect(find.text('Proveedores favoritos'), findsOneWidget);
-      expect(find.text('Productos favoritos'), findsOneWidget);
+      // Verify that InteractiveOrderCard widgets are rendered in profile
+      expect(find.byType(InteractiveOrderCard), findsWidgets);
+      expect(find.text('Historial de negociaciones'), findsOneWidget);
+      expect(find.text('PRECIO FINAL NEGOCIADO'), findsWidgets);
     });
   });
 }
+

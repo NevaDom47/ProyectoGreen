@@ -2974,9 +2974,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        UserSession.selectedRole == 'comprador'
-                            ? 'ID: #BUY-88291'
-                            : 'ID: #SELL-9942',
+                        UserSession.formattedId,
                         style: TextStyle(
                           color: subtextColor,
                           fontSize: 12,
@@ -3147,6 +3145,35 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                       context.pop();
                       context.push('/favorite-buyers');
                     },
+                  ),
+                  _buildDrawerItem(
+                    'Gestión de Cupones',
+                    Icons.confirmation_number_outlined,
+                    itemTextColor,
+                    itemHoverBg,
+                    false,
+                    onTap: () {
+                      context.pop();
+                      context.push('/coupons-manager');
+                    },
+                    trailing: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF004532),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Text(
+                        'GESTIÓN',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ),
                   _buildDrawerItem(
                     'Gestor de Ofertas',

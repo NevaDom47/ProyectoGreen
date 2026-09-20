@@ -107,11 +107,11 @@ void main() {
       final report = UserReport(
         id: 'REP-TEST-SELF',
         createdAt: DateTime.now(),
-        reporterId: 'BUY-88291',
+        reporterId: 'BUY-00000001',
         reporterName: 'Juan Pérez',
         reporterRole: 'comprador',
         reporterAvatar: '',
-        reportedId: 'BUY-88291',
+        reportedId: 'BUY-00000001',
         reportedName: 'Juan Pérez',
         reportedRole: 'comprador',
         reportedAvatar: '',
@@ -550,14 +550,14 @@ void main() {
       final service = ReportsService.instance;
       service.resetToMockData();
 
-      // Ensure BUY-88291 has active report against PROV-1024
-      expect(service.hasActiveReport('BUY-88291', 'PROV-1024'), isTrue);
+      // Ensure BUY-00000001 has active report against PROV-00000001
+      expect(service.hasActiveReport('BUY-00000001', 'PROV-00000001'), isTrue);
 
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
             body: ReportUserBottomSheet(
-              reportedId: 'PROV-1024',
+              reportedId: 'PROV-00000001',
               reportedName: 'Don Pedro H. (AgroTecomán)',
               reportedRole: 'proveedor',
               reportedAvatar: '',
@@ -611,7 +611,7 @@ void main() {
         const MaterialApp(
           home: Scaffold(
             body: ReportUserBottomSheet(
-              reportedId: 'BUY-88291',
+              reportedId: 'BUY-00000001',
               reportedName: 'Juan Pérez',
               reportedRole: 'comprador',
               reportedAvatar: '',

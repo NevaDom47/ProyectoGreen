@@ -26,6 +26,7 @@ import '../screens/reports_screen.dart';
 import '../screens/change_password_screen.dart';
 import '../screens/legal_policies_screen.dart';
 import '../screens/coupons_screen.dart';
+import '../screens/coupons_manager_screen.dart';
 import '../screens/cart_screen.dart';
 import '../screens/provider_profile_screen.dart';
 import '../screens/quality_products_screen.dart';
@@ -533,6 +534,19 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
         child: const CouponsScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: animation.drive(Tween(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(CurveTween(curve: Curves.easeOutCubic))),
+            child: child,
+          );
+        },
+      ),
+    ),
+    GoRoute(
+      path: '/coupons-manager',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const CouponsManagerScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return SlideTransition(
             position: animation.drive(Tween(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(CurveTween(curve: Curves.easeOutCubic))),

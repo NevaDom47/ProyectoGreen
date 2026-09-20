@@ -50,6 +50,21 @@ class UserSession {
   /// Initially null to simulate first-time login where no role is chosen yet.
   static String? selectedRole;
 
+  /// Returns standard 8-digit formatted ID according to role:
+  /// Provider: PROV-00000001
+  /// Buyer: BUY-00000001
+  static String get currentUserId {
+    return selectedRole == 'proveedor' ? 'PROV-00000001' : 'BUY-00000001';
+  }
+
+  static String get formattedId => 'ID: #$currentUserId';
+
+  /// Standard ID generator helper for any sequence number
+  static String formatUserId(String role, int sequenceNumber) {
+    final prefix = role.toLowerCase() == 'proveedor' ? 'PROV' : 'BUY';
+    return '$prefix-${sequenceNumber.toString().padLeft(8, '0')}';
+  }
+
   // Buyer Onboarding Details
   static String? fullName;
   static String? email;

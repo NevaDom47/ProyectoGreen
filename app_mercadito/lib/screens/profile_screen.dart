@@ -9,6 +9,7 @@ import '../services/reviews_service.dart';
 import '../widgets/quality_info_bottom_sheet.dart';
 import '../widgets/supplier_quick_view_bottom_sheet.dart';
 import 'my_provider_profile_screen.dart';
+import 'order_history_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -61,7 +62,6 @@ class ProfileScreen extends StatelessWidget {
         (UserSession.selectedRole == 'proveedor'
             ? 'assets/images/Foto Sin perfil Proveedor.png'
             : 'assets/images/Foto sin perfil.png');
-    final userRole = UserSession.selectedRole ?? 'comprador';
 
     return Container(
       decoration: BoxDecoration(
@@ -138,43 +138,10 @@ class ProfileScreen extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            UserSession.selectedRole == 'comprador' ? 'ID: #BUY-88291' : 'ID: #SELL-9942',
+            UserSession.formattedId,
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
           ),
           const SizedBox(height: 8),
-          // Premium Dynamic Role Chip Badge
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: theme.colorScheme.primary.withValues(alpha: 0.2),
-                width: 1.5,
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  userRole == 'comprador' ? Icons.shopping_basket : Icons.agriculture,
-                  size: 14,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  userRole == 'proveedor' ? 'PROVEEDOR / NEGOCIANTE' : 'COMPRADOR',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.0,
-                    color: theme.colorScheme.primary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
           Text(
             'Miembro desde Enero 2023',
             style: TextStyle(fontSize: 12, color: isDark ? Colors.grey[400] : Colors.grey[600]),
@@ -298,11 +265,14 @@ class ProfileScreen extends StatelessWidget {
               children: previewOrders.map((order) {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12.0),
-                  child: _buildOrderCard(
-                    context: context,
+                  child: InteractiveOrderCard(
                     order: order,
-                    isDark: isDark,
-                    cardColor: cardColor,
+                    onProductTap: () => _navigateToProduct(context, order),
+                    onProviderTap: () => _navigateToProvider(
+                      context,
+                      (order['seller'] ?? '').toString(),
+                      order,
+                    ),
                   ),
                 );
               }).toList(),
@@ -310,237 +280,6 @@ class ProfileScreen extends StatelessWidget {
           },
         ),
       ],
-    );
-  }
-
-  Widget _buildOrderCard({
-    required BuildContext context,
-    required Map<String, dynamic> order,
-    required bool isDark,
-    required Color cardColor,
-  }) {
-    final title = (order['title'] ?? '').toString();
-    final seller = (order['seller'] ?? '').toString();
-    final date = (order['date'] ?? '').toString();
-    final status = (order['status'] ?? 'Entregado').toString();
-    final imageUrl = (order['imageUrl'] ?? '').toString();
-    final quantity = order['quantity']?.toString() ?? '1';
-    final unit = (order['unit'] ?? order['quantity_label'] ?? 'unidad').toString();
-    final unitPrice = (order['unit_price'] ?? order['final_price'] ?? order['price'] ?? '').toString();
-    final totalPrice = (order['total_price'] ?? order['subtotal'] ?? order['price'] ?? '').toString();
-
-    final isCompleted = status == 'Entregado' || status == 'Completado';
-    final statusColor = isCompleted ? const Color(0xFF016042) : const Color(0xFFBA1A1A);
-    final statusBgColor = isCompleted
-        ? const Color(0xFF016042).withValues(alpha: 0.1)
-        : const Color(0xFFBA1A1A).withValues(alpha: 0.1);
-    final statusLabel = isCompleted ? 'COMPLETADO' : 'CANCELADO';
-    final borderColor = isDark ? const Color(0xFF22382E) : const Color(0xFFE2E8F0);
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: borderColor),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 1. Imagen del producto (interactiva)
-          GestureDetector(
-            onTap: () => _navigateToProduct(context, order),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                imageUrl,
-                width: 72,
-                height: 72,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  width: 72,
-                  height: 72,
-                  color: isDark ? Colors.white10 : const Color(0xFFF1F4F0),
-                  child: const Icon(Icons.image_outlined, color: Colors.grey, size: 28),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          // 2. Info details
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Fila 1: Título y Badge de Estado
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => _navigateToProduct(context, order),
-                        child: Text(
-                          title,
-                          style: TextStyle(
-                            fontFamily: 'Plus Jakarta Sans',
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: isDark ? Colors.white : const Color(0xFF1E293B),
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: statusBgColor,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        statusLabel,
-                        style: TextStyle(
-                          fontFamily: 'Plus Jakarta Sans',
-                          fontSize: 9,
-                          fontWeight: FontWeight.w900,
-                          color: statusColor,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-
-                // Fila 2: Proveedor con Icono (interactivo)
-                GestureDetector(
-                  onTap: () => _navigateToProvider(context, seller, order),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.storefront_outlined,
-                        size: 13,
-                        color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF016042),
-                      ),
-                      const SizedBox(width: 4),
-                      Flexible(
-                        child: Text(
-                          seller,
-                          style: TextStyle(
-                            fontFamily: 'Plus Jakarta Sans',
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF016042),
-                            decoration: TextDecoration.underline,
-                            decorationColor: (isDark ? const Color(0xFF89d6b0) : const Color(0xFF016042)).withValues(alpha: 0.3),
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 6),
-
-                // Fila 3: Fecha, Cantidad negociada y Unidad
-                Row(
-                  children: [
-                    Icon(
-                      Icons.calendar_today_outlined,
-                      size: 11,
-                      color: isDark ? Colors.grey[500] : const Color(0xFF64748B),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      date,
-                      style: TextStyle(
-                        fontFamily: 'Plus Jakarta Sans',
-                        fontSize: 11,
-                        color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      '•',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: isDark ? Colors.grey[600] : const Color(0xFF94A3B8),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Cant: $quantity $unit',
-                        style: TextStyle(
-                          fontFamily: 'Plus Jakarta Sans',
-                          fontSize: 11,
-                          fontWeight: FontWeight.w500,
-                          color: isDark ? Colors.grey[300] : const Color(0xFF475569),
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-
-                // Fila 4: Precios (Precio negociado unitario y Precio total)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Precio unitario negociado
-                    Text(
-                      unitPrice.contains('/') ? unitPrice : '$unitPrice / $unit',
-                      style: TextStyle(
-                        fontFamily: 'Plus Jakarta Sans',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
-                      ),
-                    ),
-                    // Total
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'Total: ',
-                            style: TextStyle(
-                              fontFamily: 'Plus Jakarta Sans',
-                              fontSize: 11,
-                              color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
-                            ),
-                          ),
-                          TextSpan(
-                            text: totalPrice,
-                            style: const TextStyle(
-                              fontFamily: 'Plus Jakarta Sans',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w800,
-                              color: Color(0xFF016042),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 

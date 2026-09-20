@@ -131,13 +131,13 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
             ),
           ),
         ),
-        title: const Text(
-          'Mercadito',
+        title: Text(
+          'Historial de Negociaciones',
           style: TextStyle(
             fontFamily: 'Plus Jakarta Sans',
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: FontWeight.w800,
-            color: Color(0xFF016042),
+            color: isDark ? Colors.white : const Color(0xFF016042),
             letterSpacing: -0.5,
           ),
         ),
@@ -769,13 +769,16 @@ class InteractiveOrderCard extends StatelessWidget {
                                     color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
                                   ),
                                 ),
-                                Text(
-                                  quantityLabel,
-                                  style: TextStyle(
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w800,
-                                    color: isDark ? Colors.white : const Color(0xFF181D1A),
+                                Flexible(
+                                  child: Text(
+                                    quantityLabel,
+                                    style: TextStyle(
+                                      fontFamily: 'Plus Jakarta Sans',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w800,
+                                      color: isDark ? Colors.white : const Color(0xFF181D1A),
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               ],
@@ -829,75 +832,85 @@ class InteractiveOrderCard extends StatelessWidget {
                       ),
 
                       // Right pricing block
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            (isCompleted ? 'PRECIO FINAL NEGOCIADO' : 'MOTIVO').toUpperCase(),
-                            style: TextStyle(
-                              fontFamily: 'Plus Jakarta Sans',
-                              fontSize: 8,
-                              fontWeight: FontWeight.w900,
-                              color: isCompleted ? const Color(0xFF016042) : const Color(0xFFBA1A1A),
-                              letterSpacing: 0.5,
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              (isCompleted ? 'PRECIO FINAL NEGOCIADO' : 'MOTIVO').toUpperCase(),
+                              style: TextStyle(
+                                fontFamily: 'Plus Jakarta Sans',
+                                fontSize: 8,
+                                fontWeight: FontWeight.w900,
+                                color: isCompleted ? const Color(0xFF016042) : const Color(0xFFBA1A1A),
+                                letterSpacing: 0.5,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 2),
-                          if (!isCompleted)
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.warning_amber_rounded,
-                                  size: 14,
-                                  color: Color(0xFFBA1A1A),
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  cancelReason,
-                                  style: const TextStyle(
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
+                            const SizedBox(height: 2),
+                            if (!isCompleted)
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.warning_amber_rounded,
+                                    size: 14,
                                     color: Color(0xFFBA1A1A),
                                   ),
-                                ),
-                              ],
-                            )
-                          else
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.handshake_outlined,
-                                  size: 16,
-                                  color: Color(0xFF016042),
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  finalPrice,
-                                  style: const TextStyle(
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w900,
-                                    color: Color(0xFF016042),
-                                  ),
-                                ),
-                                if (totalPrice.isNotEmpty) ...[
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    '(Total: $totalPrice)',
-                                    style: TextStyle(
-                                      fontFamily: 'Plus Jakarta Sans',
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                      color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
+                                  const SizedBox(width: 4),
+                                  Flexible(
+                                    child: Text(
+                                      cancelReason,
+                                      style: const TextStyle(
+                                        fontFamily: 'Plus Jakarta Sans',
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFFBA1A1A),
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                 ],
-                              ],
-                            ),
-                        ],
+                              )
+                            else
+                              Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                alignment: WrapAlignment.end,
+                                spacing: 6,
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        Icons.handshake_outlined,
+                                        size: 16,
+                                        color: Color(0xFF016042),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        finalPrice,
+                                        style: const TextStyle(
+                                          fontFamily: 'Plus Jakarta Sans',
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w900,
+                                          color: Color(0xFF016042),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  if (totalPrice.isNotEmpty)
+                                    Text(
+                                      '(Total: $totalPrice)',
+                                      style: TextStyle(
+                                        fontFamily: 'Plus Jakarta Sans',
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w600,
+                                        color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

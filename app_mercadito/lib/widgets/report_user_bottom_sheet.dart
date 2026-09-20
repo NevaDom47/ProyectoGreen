@@ -245,7 +245,7 @@ class _ReportUserBottomSheetState extends State<ReportUserBottomSheet> {
     // Determine current user reporter info
     final currentRole = UserSession.selectedRole ?? 'comprador';
     final reporterName = UserSession.fullName ?? (currentRole == 'comprador' ? 'Comprador Registrado' : 'Productor Verificado');
-    final reporterId = currentRole == 'comprador' ? 'BUY-88291' : 'SELL-9942';
+    final reporterId = UserSession.currentUserId;
 
     if (reporterId.trim().toLowerCase() == widget.reportedId.trim().toLowerCase()) {
       setState(() {
@@ -348,8 +348,7 @@ class _ReportUserBottomSheetState extends State<ReportUserBottomSheet> {
     final currentLength = _commentController.text.runes.length;
     final isOverLimit = currentLength > _maxCommentLength;
 
-    final currentRole = UserSession.selectedRole ?? 'comprador';
-    final reporterId = currentRole == 'comprador' ? 'BUY-88291' : 'SELL-9942';
+    final reporterId = UserSession.currentUserId;
     final isSelfReport = reporterId.trim().toLowerCase() == widget.reportedId.trim().toLowerCase() ||
         (UserSession.fullName != null && UserSession.fullName!.trim().toLowerCase() == widget.reportedName.trim().toLowerCase());
     final activeReport = isSelfReport ? null : ReportsService.instance.getActiveReport(reporterId, widget.reportedId);

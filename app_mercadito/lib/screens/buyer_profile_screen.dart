@@ -219,7 +219,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
             Builder(
               builder: (ctx) {
                 final currentRole = UserSession.selectedRole ?? 'comprador';
-                final currentUserId = currentRole == 'comprador' ? 'BUY-88291' : 'SELL-9942';
+                final currentUserId = UserSession.currentUserId;
                 final isSelf = currentUserId.toLowerCase() == buyerId.toLowerCase() ||
                     (currentRole == 'comprador' && (UserSession.fullName != null && UserSession.fullName!.trim().toLowerCase() == buyerName.trim().toLowerCase()));
 

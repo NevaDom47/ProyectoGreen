@@ -1002,30 +1002,36 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                   ],
                                 ),
                               ),
-                              const SizedBox(width: 4),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: _primaryEmerald.withValues(alpha: 0.12),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  report.reporterRole.toUpperCase(),
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 8,
-                                    fontWeight: FontWeight.w800,
-                                    color: _primaryEmerald,
+                              const SizedBox(width: 6),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: _primaryEmerald.withValues(alpha: 0.12),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      report.reporterRole.toUpperCase(),
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: 7.5,
+                                        fontWeight: FontWeight.w800,
+                                        color: _primaryEmerald,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                '#${report.reporterId}',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 8.5,
-                                  fontWeight: FontWeight.w600,
-                                  color: textSecondary,
-                                ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    '#${report.reporterId}',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 8,
+                                      fontWeight: FontWeight.w600,
+                                      color: textSecondary,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -1069,32 +1075,38 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                   ],
                                 ),
                               ),
-                              const SizedBox(width: 4),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: isReportedProvider
-                                      ? Colors.orange.withValues(alpha: 0.15)
-                                      : Colors.blue.withValues(alpha: 0.15),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  report.reportedRole.toUpperCase(),
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 8,
-                                    fontWeight: FontWeight.w800,
-                                    color: isReportedProvider ? const Color(0xFFC2410C) : const Color(0xFF1D4ED8),
+                              const SizedBox(width: 6),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: isReportedProvider
+                                          ? Colors.orange.withValues(alpha: 0.15)
+                                          : Colors.blue.withValues(alpha: 0.15),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      report.reportedRole.toUpperCase(),
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: 7.5,
+                                        fontWeight: FontWeight.w800,
+                                        color: isReportedProvider ? const Color(0xFFC2410C) : const Color(0xFF1D4ED8),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                '#${report.reportedId}',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 8.5,
-                                  fontWeight: FontWeight.w600,
-                                  color: textSecondary,
-                                ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    '#${report.reportedId}',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 8,
+                                      fontWeight: FontWeight.w600,
+                                      color: textSecondary,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),

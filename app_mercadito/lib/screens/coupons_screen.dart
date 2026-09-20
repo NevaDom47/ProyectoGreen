@@ -101,6 +101,14 @@ class _CouponsScreenState extends State<CouponsScreen> {
     return Icons.local_offer;
   }
 
+  String _formatDate(DateTime dt) {
+    const months = [
+      'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+      'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
+    ];
+    return '${dt.day} ${months[dt.month - 1]} ${dt.year}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<ThemeMode>(
@@ -401,51 +409,36 @@ class _CouponsScreenState extends State<CouponsScreen> {
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
-              child: Container(
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  color: surfaceColor,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: borderColor),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
+              child: TicketCardWrapper(
+                surfaceColor: surfaceColor,
+                borderColor: borderColor,
+                isDark: isDark,
                 child: IntrinsicHeight(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Franja lateral estilo Ticket con #EDF3F0
+                      // Franja lateral estilo Ticket
                       Container(
-                        width: 90,
-                        decoration: BoxDecoration(
-                          color: stubColor,
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(13),
-                            bottomLeft: Radius.circular(13),
-                          ),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 12),
+                        width: 92,
+                        color: stubColor,
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                         child: Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(categoryIcon, color: primaryColor, size: 30),
+                              Icon(categoryIcon, color: primaryColor, size: 34),
                               const SizedBox(height: 6),
                               Text(
-                                coupon.category,
+                                coupon.category.toUpperCase(),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontFamily: 'Plus Jakarta Sans',
                                   color: primaryColor,
-                                  fontSize: 9,
+                                  fontSize: 9.5,
                                   fontWeight: FontWeight.w900,
-                                  letterSpacing: -0.3,
+                                  letterSpacing: -0.2,
+                                  height: 1.15,
                                 ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
@@ -455,21 +448,28 @@ class _CouponsScreenState extends State<CouponsScreen> {
                         ),
                       ),
 
-                      // Divisor vertical
-                      Container(
-                        width: 1,
-                        color: primaryColor.withValues(alpha: 0.15),
+                      // Línea vertical punteada (perforación de ticket)
+                      SizedBox(
+                        width: 2,
+                        child: CustomPaint(
+                          painter: DashedVerticalLinePainter(
+                            color: primaryColor.withValues(alpha: isDark ? 0.30 : 0.20),
+                            dashHeight: 4,
+                            dashSpace: 4,
+                            strokeWidth: 1.5,
+                          ),
+                        ),
                       ),
 
                       // Contenido Derecho
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.all(14),
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              // Título del beneficio y Badge
+                              // Fila Superior: Beneficio + Badge NUEVO / DISPONIBLE
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -479,52 +479,45 @@ class _CouponsScreenState extends State<CouponsScreen> {
                                       coupon.benefit.displayTitle,
                                       style: TextStyle(
                                         fontFamily: 'Plus Jakarta Sans',
-                                        fontSize: 20,
+                                        fontSize: 22,
                                         fontWeight: FontWeight.w900,
                                         color: primaryColor,
                                         height: 1.1,
                                       ),
                                     ),
                                   ),
+                                  const SizedBox(width: 8),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                     decoration: BoxDecoration(
-                                      color: primaryColor.withValues(alpha: 0.1),
-                                      borderRadius: BorderRadius.circular(8),
+                                      color: primaryColor.withValues(alpha: isDark ? 0.22 : 0.12),
+                                      borderRadius: BorderRadius.circular(100),
                                     ),
                                     child: Text(
-                                      'DISPONIBLE',
+                                      'NUEVO',
                                       style: TextStyle(
                                         fontFamily: 'Plus Jakarta Sans',
-                                        fontSize: 9,
+                                        fontSize: 9.5,
                                         fontWeight: FontWeight.w800,
                                         color: primaryColor,
+                                        letterSpacing: 0.4,
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
 
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 5),
 
-                              // Nombre y Condición
-                              Text(
-                                coupon.title,
-                                style: TextStyle(
-                                  fontFamily: 'Plus Jakarta Sans',
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                  color: textColor,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                              // Condición / Detalle
                               Text(
                                 coupon.rule.conditionSummary,
                                 style: TextStyle(
                                   fontFamily: 'Plus Jakarta Sans',
                                   fontSize: 12,
+                                  fontWeight: FontWeight.w500,
                                   color: subtextColor,
+                                  height: 1.2,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -532,73 +525,116 @@ class _CouponsScreenState extends State<CouponsScreen> {
 
                               const SizedBox(height: 10),
 
-                              // Código y Botón Copiar
+                              // Fila Inferior: VENCE EL + Fecha & Código y Botón Copiar
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: primaryColor.withValues(alpha: 0.08),
-                                      borderRadius: BorderRadius.circular(6),
-                                      border: Border.all(
-                                        color: primaryColor.withValues(alpha: 0.2),
-                                      ),
-                                    ),
-                                    child: Row(
+                                  // Vence el + fecha y código
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Icon(Icons.confirmation_number_outlined,
-                                            size: 13, color: primaryColor),
-                                        const SizedBox(width: 4),
                                         Text(
-                                          coupon.code,
+                                          'VENCE EL',
                                           style: TextStyle(
                                             fontFamily: 'Plus Jakarta Sans',
-                                            fontSize: 12,
+                                            fontSize: 9,
                                             fontWeight: FontWeight.w800,
-                                            color: primaryColor,
+                                            color: subtextColor,
                                             letterSpacing: 0.5,
                                           ),
+                                        ),
+                                        const SizedBox(height: 1),
+                                        Wrap(
+                                          crossAxisAlignment: WrapCrossAlignment.center,
+                                          spacing: 6,
+                                          children: [
+                                            Text(
+                                              _formatDate(coupon.rule.endDate),
+                                              style: TextStyle(
+                                                fontFamily: 'Plus Jakarta Sans',
+                                                fontSize: 11.5,
+                                                fontWeight: FontWeight.w800,
+                                                color: textColor,
+                                              ),
+                                            ),
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                                              decoration: BoxDecoration(
+                                                color: primaryColor.withValues(alpha: 0.08),
+                                                borderRadius: BorderRadius.circular(4),
+                                              ),
+                                              child: Text(
+                                                coupon.code,
+                                                style: TextStyle(
+                                                  fontFamily: 'Plus Jakarta Sans',
+                                                  fontSize: 9.5,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: primaryColor,
+                                                  letterSpacing: 0.3,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
                                   ),
-                                  InkWell(
+
+                                  // Botón Copiar
+                                  Material(
+                                    color: primaryColor,
                                     borderRadius: BorderRadius.circular(8),
-                                    onTap: () {
-                                      Clipboard.setData(ClipboardData(text: coupon.code));
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text('Código ${coupon.code} copiado al portapapeles'),
-                                          backgroundColor: const Color(0xFF016142),
-                                          behavior: SnackBarBehavior.floating,
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                          duration: const Duration(seconds: 2),
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                      decoration: BoxDecoration(
-                                        color: primaryColor,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: const Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(Icons.copy_rounded, size: 13, color: Colors.white),
-                                          SizedBox(width: 4),
-                                          Text(
-                                            'Copiar',
-                                            style: TextStyle(
-                                              fontFamily: 'Plus Jakarta Sans',
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(8),
+                                      onTap: () {
+                                        Clipboard.setData(ClipboardData(text: coupon.code));
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Row(
+                                              children: [
+                                                const Icon(Icons.check_circle_outline, color: Colors.white, size: 18),
+                                                const SizedBox(width: 8),
+                                                Expanded(
+                                                  child: Text(
+                                                    'Código ${coupon.code} copiado al portapapeles',
+                                                    style: const TextStyle(
+                                                      fontFamily: 'Plus Jakarta Sans',
+                                                      color: Colors.white,
+                                                      fontWeight: FontWeight.w600,
+                                                      fontSize: 12.5,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
+                                            backgroundColor: const Color(0xFF016142),
+                                            behavior: SnackBarBehavior.floating,
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                            duration: const Duration(seconds: 2),
                                           ),
-                                        ],
+                                        );
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: const [
+                                            Icon(Icons.copy_rounded, size: 13, color: Colors.white),
+                                            SizedBox(width: 5),
+                                            Text(
+                                              'Copiar',
+                                              style: TextStyle(
+                                                fontFamily: 'Plus Jakarta Sans',
+                                                fontSize: 11.5,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -678,34 +714,18 @@ class _CouponsScreenState extends State<CouponsScreen> {
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
-              child: Container(
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  color: surfaceColor,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: borderColor),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
+              child: TicketCardWrapper(
+                surfaceColor: surfaceColor,
+                borderColor: borderColor,
+                isDark: isDark,
                 child: IntrinsicHeight(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Franja lateral estilo Ticket con #EDF3F0
+                      // Franja lateral estilo Ticket con stubColor
                       Container(
-                        width: 90,
-                        decoration: BoxDecoration(
-                          color: stubColor,
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(13),
-                            bottomLeft: Radius.circular(13),
-                          ),
-                        ),
+                        width: 92,
+                        color: stubColor,
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 12),
                         child: Center(
                           child: Column(
@@ -732,10 +752,17 @@ class _CouponsScreenState extends State<CouponsScreen> {
                         ),
                       ),
 
-                      // Divisor vertical
-                      Container(
-                        width: 1,
-                        color: primaryColor.withValues(alpha: 0.15),
+                      // Línea vertical punteada (perforación de ticket)
+                      SizedBox(
+                        width: 2,
+                        child: CustomPaint(
+                          painter: DashedVerticalLinePainter(
+                            color: primaryColor.withValues(alpha: isDark ? 0.30 : 0.20),
+                            dashHeight: 4,
+                            dashSpace: 4,
+                            strokeWidth: 1.5,
+                          ),
+                        ),
                       ),
 
                       // Contenido Derecho
@@ -1077,5 +1104,208 @@ class _CouponsScreenState extends State<CouponsScreen> {
         );
       },
     );
+  }
+}
+
+/// Contenedor con silueta estilo Ticket inspirada en Stitch (.ticket-cutout).
+/// Integra muescas circulares laterales recortadas y sombra adaptativa que bordea las muescas.
+class TicketCardWrapper extends StatelessWidget {
+  final Widget child;
+  final Color surfaceColor;
+  final Color borderColor;
+  final bool isDark;
+  final double punchRadius;
+  final double cornerRadius;
+
+  const TicketCardWrapper({
+    super.key,
+    required this.child,
+    required this.surfaceColor,
+    required this.borderColor,
+    required this.isDark,
+    this.punchRadius = 9.0,
+    this.cornerRadius = 14.0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: TicketShapePainter(
+        surfaceColor: surfaceColor,
+        borderColor: borderColor,
+        isDark: isDark,
+        punchRadius: punchRadius,
+        cornerRadius: cornerRadius,
+      ),
+      child: ClipPath(
+        clipper: TicketClipper(
+          punchRadius: punchRadius,
+          cornerRadius: cornerRadius,
+        ),
+        child: child,
+      ),
+    );
+  }
+}
+
+/// Clipper que genera la silueta de ticket con esquinas redondeadas y
+/// muescas semicirculares en el lateral izquierdo (.ticket-cutout).
+class TicketClipper extends CustomClipper<Path> {
+  final double punchRadius;
+  final double cornerRadius;
+
+  const TicketClipper({
+    this.punchRadius = 9.0,
+    this.cornerRadius = 14.0,
+  });
+
+  @override
+  Path getClip(Size size) {
+    return buildTicketPath(size, punchRadius, cornerRadius);
+  }
+
+  @override
+  bool shouldReclip(covariant TicketClipper oldClipper) {
+    return oldClipper.punchRadius != punchRadius ||
+        oldClipper.cornerRadius != cornerRadius;
+  }
+
+  static Path buildTicketPath(Size size, double punchRadius, double cornerRadius) {
+    final path = Path();
+    final w = size.width;
+    final h = size.height;
+    final r = cornerRadius;
+    final pr = punchRadius;
+
+    // Calcular posiciones verticales de las dos muescas (a ~32% y ~68% de altura)
+    final y1 = (h * 0.32).clamp(r + pr + 2, h - r - pr - 2);
+    final y2 = (h * 0.68).clamp(r + pr + 2, h - r - pr - 2);
+
+    // Inicio en la arista superior tras la esquina sup-izq
+    path.moveTo(r, 0);
+    // Borde superior
+    path.lineTo(w - r, 0);
+    path.arcToPoint(Offset(w, r), radius: Radius.circular(r));
+    // Borde lateral derecho
+    path.lineTo(w, h - r);
+    path.arcToPoint(Offset(w - r, h), radius: Radius.circular(r));
+    // Borde inferior
+    path.lineTo(r, h);
+    path.arcToPoint(Offset(0, h - r), radius: Radius.circular(r));
+
+    // Borde izquierdo de abajo hacia arriba:
+    // 1. Tramo recto hasta muesca inferior
+    path.lineTo(0, y2 + pr);
+    // 2. Muesca semicircular hacia adentro
+    path.arcToPoint(
+      Offset(0, y2 - pr),
+      radius: Radius.circular(pr),
+      clockwise: true,
+    );
+
+    // 3. Tramo recto entre muescas
+    path.lineTo(0, y1 + pr);
+    // 4. Muesca semicircular superior
+    path.arcToPoint(
+      Offset(0, y1 - pr),
+      radius: Radius.circular(pr),
+      clockwise: true,
+    );
+
+    // 5. Tramo recto final hasta esquina sup-izq
+    path.lineTo(0, r);
+    path.arcToPoint(Offset(r, 0), radius: Radius.circular(r));
+
+    path.close();
+    return path;
+  }
+}
+
+/// Painter para la sombra, el fondo y el borde perimetral del ticket
+class TicketShapePainter extends CustomPainter {
+  final Color surfaceColor;
+  final Color borderColor;
+  final bool isDark;
+  final double punchRadius;
+  final double cornerRadius;
+
+  TicketShapePainter({
+    required this.surfaceColor,
+    required this.borderColor,
+    required this.isDark,
+    required this.punchRadius,
+    required this.cornerRadius,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = TicketClipper.buildTicketPath(size, punchRadius, cornerRadius);
+
+    // Sombra perimetral que acompaña la curva de las muescas
+    final shadowColor = Colors.black.withValues(alpha: isDark ? 0.35 : 0.08);
+    canvas.drawShadow(path, shadowColor, 3.5, false);
+
+    // Relleno de fondo del ticket
+    final fillPaint = Paint()
+      ..color = surfaceColor
+      ..style = PaintingStyle.fill;
+    canvas.drawPath(path, fillPaint);
+
+    // Borde sutil continuo
+    final strokePaint = Paint()
+      ..color = borderColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+    canvas.drawPath(path, strokePaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant TicketShapePainter oldDelegate) {
+    return oldDelegate.surfaceColor != surfaceColor ||
+        oldDelegate.borderColor != borderColor ||
+        oldDelegate.isDark != isDark ||
+        oldDelegate.punchRadius != punchRadius ||
+        oldDelegate.cornerRadius != cornerRadius;
+  }
+}
+
+/// Painter que dibuja la línea discontinua/punteada de perforación vertical
+class DashedVerticalLinePainter extends CustomPainter {
+  final Color color;
+  final double dashHeight;
+  final double dashSpace;
+  final double strokeWidth;
+
+  const DashedVerticalLinePainter({
+    required this.color,
+    this.dashHeight = 4.0,
+    this.dashSpace = 4.0,
+    this.strokeWidth = 1.5,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    double startY = 0;
+    final x = size.width / 2;
+
+    while (startY < size.height) {
+      final endY = (startY + dashHeight > size.height) ? size.height : startY + dashHeight;
+      canvas.drawLine(Offset(x, startY), Offset(x, endY), paint);
+      startY += dashHeight + dashSpace;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant DashedVerticalLinePainter oldDelegate) {
+    return oldDelegate.color != color ||
+        oldDelegate.dashHeight != dashHeight ||
+        oldDelegate.dashSpace != dashSpace ||
+        oldDelegate.strokeWidth != strokeWidth;
   }
 }

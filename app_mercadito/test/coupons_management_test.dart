@@ -265,9 +265,24 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Paso 4 — ¿Quién puede utilizar este cupón?'), findsOneWidget);
       expect(find.text('Guardar Cupón (Pausado)'), findsOneWidget);
+
+      // Verify badges have been removed
+      expect(find.text('Manual / Público'), findsNothing);
+      expect(find.text('Automático'), findsNothing);
+      expect(find.text('Selección manual'), findsNothing);
+
+      // Select 'Compradores seleccionados'
+      await tester.tap(find.text('Compradores seleccionados'));
+      await tester.pumpAndSettle();
+
+      // Verify buyer name in bold and buyer BUY ID underneath
+      expect(find.text('Carmen Jiménez'), findsOneWidget);
+      expect(find.text('BUY-002'), findsOneWidget);
+      expect(find.text('Rafael Marte'), findsOneWidget);
+      expect(find.text('BUY-001'), findsOneWidget);
     });
 
-    testWidgets('Tapping Motor de promociones button opens AutoPromotionsDialog', (WidgetTester tester) async {
+    testWidgets('CouponsManagerScreen filter chips work for Activos, Pausados and Finalizados without promotions tab', (WidgetTester tester) async {
       tester.view.physicalSize = const Size(1080, 2400);
       tester.view.devicePixelRatio = 2.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -280,103 +295,27 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Tap auto promotion button in appbar by tooltip
-      await tester.tap(find.byTooltip('Motor de Promociones Automáticas'));
+      // Ensure 'Promociones' chip does not exist
+      expect(find.text('Promociones'), findsNothing);
+      expect(find.byTooltip('Promociones automatizadas'), findsNothing);
+
+      // Verify default shows active coupons
+      expect(find.text('COSECHA10'), findsOneWidget);
+      expect(find.text('VERDE15'), findsOneWidget);
+
+      // Tap Pausados filter
+      await tester.tap(find.text('Pausados'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Motor de Promociones'), findsOneWidget);
-      expect(find.text('Regla Activa del Motor'), findsOneWidget);
-      expect(find.text('Guardar y Activar'), findsOneWidget);
-    });
+      expect(find.text('PAN2X1'), findsOneWidget);
+      expect(find.text('COSECHA10'), findsNothing);
 
-    testWidgets('CouponsManagerScreen displays active promotion banner with tracking metrics', (WidgetTester tester) async {
-      tester.view.physicalSize = const Size(1080, 2400);
-      tester.view.devicePixelRatio = 2.0;
-      addTearDown(tester.view.resetPhysicalSize);
-
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.lightTheme,
-          home: const CouponsManagerScreen(),
-        ),
-      );
+      // Tap Todos filter
+      await tester.tap(find.text('Todos'));
       await tester.pumpAndSettle();
 
-      // Verify active banner is visible
-      expect(find.text('MOTOR ACTIVO'), findsOneWidget);
-      expect(find.text('Fidelización Nivel Oro'), findsOneWidget);
-
-      // Verify development metrics are visible
-      expect(find.text('Cupones emitidos'), findsOneWidget);
-      expect(find.text('Canjeados'), findsWidgets);
-      expect(find.text('Otorgado'), findsOneWidget);
-      expect(find.text('18'), findsOneWidget);
-    });
-
-    testWidgets('Tapping Pausar changes state to PAUSADO and Reanudar restores MOTOR ACTIVO', (WidgetTester tester) async {
-      tester.view.physicalSize = const Size(1080, 2400);
-      tester.view.devicePixelRatio = 2.0;
-      addTearDown(tester.view.resetPhysicalSize);
-
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.lightTheme,
-          home: const CouponsManagerScreen(),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.text('MOTOR ACTIVO'), findsOneWidget);
-
-      // Tap Pausar
-      await tester.tap(find.text('Pausar'));
-      await tester.pumpAndSettle();
-
-      // Status should now be MOTOR PAUSADO
-      expect(find.text('MOTOR PAUSADO'), findsOneWidget);
-      expect(find.text('Reanudar'), findsOneWidget);
-
-      // Tap Reanudar
-      await tester.tap(find.text('Reanudar'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('MOTOR ACTIVO'), findsOneWidget);
-    });
-
-    testWidgets('Tapping Borrar and confirming removes promotion rule', (WidgetTester tester) async {
-      tester.view.physicalSize = const Size(1080, 2400);
-      tester.view.devicePixelRatio = 2.0;
-      addTearDown(tester.view.resetPhysicalSize);
-
-      // Ensure only 1 rule for this test
-      final rule = CouponsService.instance.autoPromotionsNotifier.value.first;
-      CouponsService.instance.autoPromotionsNotifier.value = [rule];
-
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.lightTheme,
-          home: const CouponsManagerScreen(),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.text('Fidelización Nivel Oro'), findsOneWidget);
-
-      // Tap Borrar
-      await tester.tap(find.text('Borrar'));
-      await tester.pumpAndSettle();
-
-      // Verify confirmation dialog appears
-      expect(find.text('¿Eliminar motor de promociones?'), findsOneWidget);
-
-      // Confirm elimination
-      await tester.tap(find.text('Eliminar'));
-      await tester.pumpAndSettle();
-
-      // Rule should now be removed from service and invitation card displayed
-      expect(CouponsService.instance.autoPromotionsNotifier.value.isEmpty, isTrue);
-      expect(find.text('Motor de Promociones Automático'), findsOneWidget);
-      expect(find.text('Activar'), findsOneWidget);
+      expect(find.text('COSECHA10'), findsOneWidget);
+      expect(find.text('PAN2X1'), findsOneWidget);
     });
   });
 

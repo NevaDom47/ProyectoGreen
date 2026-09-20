@@ -530,64 +530,6 @@ class Coupon {
   }
 }
 
-/// Regla para el motor de cupones automáticos de fidelización.
-@immutable
-class AutoPromotionRule {
-  final String id;
-  final String title;
-  final int minCompletedOrders; // e.g. >= 5 compras
-  final double minAccumulatedSpent; // e.g. >= RD$ 10,000
-  final double rewardDiscountAmount; // e.g. RD$ 500
-  final int expirationDays; // e.g. 15 días
-  final bool isEnabled;
-  final int generatedCouponsCount; // Cupones emitidos automáticamente
-  final int redeemedCouponsCount; // Cupones canjeados por clientes
-  final double totalRewardsGiven; // Total otorgado en RD$
-  final DateTime? createdAt;
-
-  const AutoPromotionRule({
-    required this.id,
-    required this.title,
-    this.minCompletedOrders = 5,
-    this.minAccumulatedSpent = 10000.0,
-    this.rewardDiscountAmount = 500.0,
-    this.expirationDays = 15,
-    this.isEnabled = true,
-    this.generatedCouponsCount = 0,
-    this.redeemedCouponsCount = 0,
-    this.totalRewardsGiven = 0.0,
-    this.createdAt,
-  });
-
-  AutoPromotionRule copyWith({
-    String? id,
-    String? title,
-    int? minCompletedOrders,
-    double? minAccumulatedSpent,
-    double? rewardDiscountAmount,
-    int? expirationDays,
-    bool? isEnabled,
-    int? generatedCouponsCount,
-    int? redeemedCouponsCount,
-    double? totalRewardsGiven,
-    DateTime? createdAt,
-  }) {
-    return AutoPromotionRule(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      minCompletedOrders: minCompletedOrders ?? this.minCompletedOrders,
-      minAccumulatedSpent: minAccumulatedSpent ?? this.minAccumulatedSpent,
-      rewardDiscountAmount: rewardDiscountAmount ?? this.rewardDiscountAmount,
-      expirationDays: expirationDays ?? this.expirationDays,
-      isEnabled: isEnabled ?? this.isEnabled,
-      generatedCouponsCount: generatedCouponsCount ?? this.generatedCouponsCount,
-      redeemedCouponsCount: redeemedCouponsCount ?? this.redeemedCouponsCount,
-      totalRewardsGiven: totalRewardsGiven ?? this.totalRewardsGiven,
-      createdAt: createdAt ?? this.createdAt,
-    );
-  }
-}
-
 /// Detalle de producto en compra con código único y modalidad de venta.
 @immutable
 class RedeemedProductItem {

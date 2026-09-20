@@ -18,15 +18,12 @@ class ClaimCouponResult {
 class CouponsService {
   CouponsService._() {
     _initSeedCoupons();
-    _initSeedAutoPromotions();
     _initSeedBuyerCoupons();
   }
 
   static final CouponsService instance = CouponsService._();
 
   final ValueNotifier<List<Coupon>> couponsNotifier = ValueNotifier<List<Coupon>>([]);
-  final ValueNotifier<List<AutoPromotionRule>> autoPromotionsNotifier =
-      ValueNotifier<List<AutoPromotionRule>>([]);
   final ValueNotifier<List<Coupon>> activeBuyerCouponsNotifier =
       ValueNotifier<List<Coupon>>([]);
   final ValueNotifier<List<CouponRedemptionHistory>> redemptionHistoryNotifier =
@@ -207,38 +204,6 @@ class CouponsService {
     ];
   }
 
-  void _initSeedAutoPromotions() {
-    final now = DateTime.now();
-    autoPromotionsNotifier.value = [
-      AutoPromotionRule(
-        id: 'AUTO-01',
-        title: 'Fidelización Nivel Oro',
-        minCompletedOrders: 5,
-        minAccumulatedSpent: 10000.0,
-        rewardDiscountAmount: 500.0,
-        expirationDays: 15,
-        isEnabled: true,
-        generatedCouponsCount: 18,
-        redeemedCouponsCount: 11,
-        totalRewardsGiven: 5500.0,
-        createdAt: now.subtract(const Duration(days: 20)),
-      ),
-      AutoPromotionRule(
-        id: 'AUTO-02',
-        title: 'Comprador Frecuente Mayorista',
-        minCompletedOrders: 10,
-        minAccumulatedSpent: 25000.0,
-        rewardDiscountAmount: 1500.0,
-        expirationDays: 30,
-        isEnabled: true,
-        generatedCouponsCount: 6,
-        redeemedCouponsCount: 4,
-        totalRewardsGiven: 6000.0,
-        createdAt: now.subtract(const Duration(days: 12)),
-      ),
-    ];
-  }
-
   // --- CRUD Operations ---
 
   void createCoupon(Coupon coupon) {
@@ -340,33 +305,6 @@ class CouponsService {
       'totalDiscount': totalDiscount,
       'totalSales': totalSales,
     };
-  }
-
-  void toggleAutoPromotion(String ruleId) {
-    final current = List<AutoPromotionRule>.from(autoPromotionsNotifier.value);
-    final idx = current.indexWhere((r) => r.id == ruleId);
-    if (idx != -1) {
-      final item = current[idx];
-      current[idx] = item.copyWith(isEnabled: !item.isEnabled);
-      autoPromotionsNotifier.value = current;
-    }
-  }
-
-  void saveAutoPromotion(AutoPromotionRule rule) {
-    final current = List<AutoPromotionRule>.from(autoPromotionsNotifier.value);
-    final idx = current.indexWhere((r) => r.id == rule.id);
-    if (idx != -1) {
-      current[idx] = rule;
-    } else {
-      current.add(rule);
-    }
-    autoPromotionsNotifier.value = current;
-  }
-
-  void deleteAutoPromotion(String ruleId) {
-    final current = List<AutoPromotionRule>.from(autoPromotionsNotifier.value);
-    current.removeWhere((r) => r.id == ruleId);
-    autoPromotionsNotifier.value = current;
   }
 
   void _initSeedBuyerCoupons() {
@@ -596,42 +534,48 @@ class CouponsService {
   List<Map<String, dynamic>> getProviderClosedNegotiationBuyers() => [
         {
           'id': 'BUY-001',
-          'name': 'Colmado San Rafael',
+          'name': 'Rafael Marte',
+          'business': 'Colmado San Rafael',
           'owner': 'Rafael Marte',
           'closedNegotiations': 8,
           'lastNegotiationDaysAgo': 4,
         },
         {
           'id': 'BUY-002',
-          'name': 'Supermercado La Fe',
+          'name': 'Carmen Jiménez',
+          'business': 'Supermercado La Fe',
           'owner': 'Carmen Jiménez',
           'closedNegotiations': 15,
           'lastNegotiationDaysAgo': 2,
         },
         {
           'id': 'BUY-003',
-          'name': 'Restaurante El Criollo',
+          'name': 'Chef Andrés Peña',
+          'business': 'Restaurante El Criollo',
           'owner': 'Chef Andrés Peña',
           'closedNegotiations': 6,
           'lastNegotiationDaysAgo': 18,
         },
         {
           'id': 'BUY-004',
-          'name': 'Frutería Hermanos Díaz',
+          'name': 'Pedro Díaz',
+          'business': 'Frutería Hermanos Díaz',
           'owner': 'Pedro Díaz',
           'closedNegotiations': 4,
           'lastNegotiationDaysAgo': 22,
         },
         {
           'id': 'BUY-005',
-          'name': 'Minimarket Esperanza',
+          'name': 'Lucía Rosario',
+          'business': 'Minimarket Esperanza',
           'owner': 'Lucía Rosario',
           'closedNegotiations': 1,
           'lastNegotiationDaysAgo': 5,
         },
         {
           'id': 'BUY-006',
-          'name': 'Hotel Boutique Colonial',
+          'name': 'Gourmet Kitchen',
+          'business': 'Hotel Boutique Colonial',
           'owner': 'Gourmet Kitchen',
           'closedNegotiations': 3,
           'lastNegotiationDaysAgo': 35,

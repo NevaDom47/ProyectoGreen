@@ -1042,9 +1042,14 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
     final filteredBuyers = buyerQuery.isEmpty
         ? allBuyers
         : allBuyers.where((b) {
-            final name = (b['name'] as String).toLowerCase();
-            final owner = (b['owner'] as String).toLowerCase();
-            return name.contains(buyerQuery) || owner.contains(buyerQuery);
+            final name = (b['name'] as String? ?? '').toLowerCase();
+            final owner = (b['owner'] as String? ?? '').toLowerCase();
+            final id = (b['id'] as String? ?? '').toLowerCase();
+            final business = (b['business'] as String? ?? '').toLowerCase();
+            return name.contains(buyerQuery) ||
+                owner.contains(buyerQuery) ||
+                id.contains(buyerQuery) ||
+                business.contains(buyerQuery);
           }).toList();
 
     return Column(
@@ -1106,44 +1111,32 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
 
             String audienceTitle;
             String audienceDescription;
-            String badgeText;
-            Color badgeColor;
             IconData iconData;
 
             switch (aud) {
               case CouponAudience.allBuyers:
                 audienceTitle = 'Todos los compradores';
                 audienceDescription = 'Cualquier usuario puede usarlo ingresando o copiando el código manualmente.';
-                badgeText = 'Manual / Público';
-                badgeColor = const Color(0xFF64748B);
                 iconData = Icons.public;
                 break;
               case CouponAudience.newBuyers:
                 audienceTitle = 'Nuevos compradores';
                 audienceDescription = 'Se envía automáticamente a clientes que apenas cerraron 1 negociación con usted.';
-                badgeText = 'Automático';
-                badgeColor = const Color(0xFF0284C7);
                 iconData = Icons.person_add_outlined;
                 break;
               case CouponAudience.frequentBuyers:
                 audienceTitle = 'Compradores frecuentes';
                 audienceDescription = 'Se envía automáticamente a clientes con más de 2 negociaciones cerradas.';
-                badgeText = 'Automático';
-                badgeColor = const Color(0xFF059669);
                 iconData = Icons.loyalty_outlined;
                 break;
               case CouponAudience.inactiveBuyers:
                 audienceTitle = 'Recuperación de clientes inactivos';
                 audienceDescription = 'Se envía automáticamente a clientes que cerraron negociaciones en el pasado pero llevan días inactivos.';
-                badgeText = 'Automático';
-                badgeColor = const Color(0xFFD97706);
                 iconData = Icons.history_toggle_off;
                 break;
               case CouponAudience.selectedBuyers:
                 audienceTitle = 'Compradores seleccionados';
                 audienceDescription = 'Selecciona manualmente a qué compradores específicos con negociaciones cerradas asignar este cupón.';
-                badgeText = 'Selección manual';
-                badgeColor = const Color(0xFF7C3AED);
                 iconData = Icons.how_to_reg_outlined;
                 break;
             }
@@ -1187,21 +1180,6 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                                     fontSize: 13,
                                     fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                                     color: text,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: badgeColor.withValues(alpha: 0.12),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  badgeText,
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    color: badgeColor,
                                   ),
                                 ),
                               ),
@@ -1279,15 +1257,18 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Compradores con Negociaciones',
-                      style: TextStyle(
-                        fontFamily: 'Plus Jakarta Sans',
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: text,
+                    Expanded(
+                      child: Text(
+                        'Compradores con Negociaciones',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: text,
+                        ),
                       ),
                     ),
+                    const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
@@ -1371,7 +1352,10 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                           separatorBuilder: (context, index) => const Divider(height: 1),
                           itemBuilder: (context, idx) {
                             final buyer = filteredBuyers[idx];
-                            final id = buyer['id'] as String;
+                            final id = (buyer['id'] ?? '').toString();
+                            final buyerName = (buyer['name'] != null && (buyer['name'] as String).trim().isNotEmpty)
+                                ? (buyer['name'] as String).trim()
+                                : (buyer['owner'] ?? 'Comprador').toString().trim();
                             final isSelected = _selectedBuyerIds.contains(id);
 
                             return InkWell(
@@ -1410,7 +1394,7 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                                       radius: 14,
                                       backgroundColor: primary.withValues(alpha: 0.15),
                                       child: Text(
-                                        (buyer['name'] as String)[0],
+                                        buyerName.isNotEmpty ? buyerName[0].toUpperCase() : 'C',
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 12,
@@ -1424,7 +1408,7 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            buyer['name'] as String,
+                                            buyerName,
                                             style: TextStyle(
                                               fontFamily: 'Plus Jakarta Sans',
                                               fontSize: 12,
@@ -1433,8 +1417,13 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                                             ),
                                           ),
                                           Text(
-                                            buyer['owner'] as String,
-                                            style: TextStyle(fontSize: 10, color: subtext),
+                                            id,
+                                            style: TextStyle(
+                                              fontFamily: 'Plus Jakarta Sans',
+                                              fontSize: 10.5,
+                                              fontWeight: FontWeight.w600,
+                                              color: subtext,
+                                            ),
                                           ),
                                         ],
                                       ),

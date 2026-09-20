@@ -6,7 +6,6 @@ import '../services/coupons_service.dart';
 import '../widgets/coupon_stats_sheet.dart';
 // import '../widgets/share_coupon_sheet.dart'; // Comentado temporalmente para futura actualización
 import '../widgets/create_coupon_wizard.dart';
-import '../widgets/auto_promotions_dialog.dart';
 
 class CouponsManagerScreen extends StatefulWidget {
   const CouponsManagerScreen({super.key});
@@ -67,11 +66,6 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
         centerTitle: false,
         actions: [
           IconButton(
-            tooltip: 'Motor de Promociones Automáticas',
-            icon: const Icon(Icons.auto_awesome_rounded, color: primaryColor),
-            onPressed: () => AutoPromotionsDialog.show(context),
-          ),
-          IconButton(
             tooltip: 'Ayuda',
             icon: const Icon(Icons.help_outline, color: primaryColor),
             onPressed: () => _showHelpDialog(context),
@@ -95,8 +89,8 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
       body: ValueListenableBuilder<List<Coupon>>(
         valueListenable: CouponsService.instance.couponsNotifier,
         builder: (context, allCoupons, _) {
-          // Filtrado
-          final filtered = allCoupons.where((c) {
+          // Filtrado de cupones
+          final filteredCoupons = allCoupons.where((c) {
             final matchesSearch = _searchQuery.isEmpty ||
                 c.code.toLowerCase().contains(_searchQuery.toLowerCase()) ||
                 c.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
@@ -119,9 +113,6 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
               // 1. Resumen superior de indicadores
               _buildMetricsHeader(metrics, isDark, primaryColor, surfaceColor, borderColor, textColor, subtextColor),
 
-              // 1.5. Motor de Promociones Automáticas (Estado activo, desarrollo de cupones, pausa y borrado)
-              _buildAutoPromotionsSection(isDark, primaryColor, surfaceColor, borderColor, textColor, subtextColor),
-
               // 2. Buscador y Filtros
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -136,13 +127,13 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
 
               // 3. Listado de Cupones
               Expanded(
-                child: filtered.isEmpty
+                child: filteredCoupons.isEmpty
                     ? _buildEmptyState(isDark, subtextColor, primaryColor)
                     : ListView.builder(
                         padding: const EdgeInsets.fromLTRB(16, 4, 16, 90),
-                        itemCount: filtered.length,
+                        itemCount: filteredCoupons.length,
                         itemBuilder: (context, index) {
-                          final coupon = filtered[index];
+                          final coupon = filteredCoupons[index];
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 16),
                             child: _buildCouponManagerCard(
@@ -755,10 +746,14 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
   }
 
   // --- Estado Vacío ---
-  Widget _buildEmptyState(bool isDark, Color subtextColor, Color primaryColor) {
+  Widget _buildEmptyState(
+    bool isDark,
+    Color subtextColor,
+    Color primaryColor,
+  ) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -768,7 +763,11 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
                 color: primaryColor.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.confirmation_number_outlined, size: 48, color: primaryColor),
+              child: Icon(
+                Icons.confirmation_number_outlined,
+                size: 48,
+                color: primaryColor,
+              ),
             ),
             const SizedBox(height: 16),
             Text(
@@ -784,7 +783,7 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Crea promociones para fidelizar compradores o recuperar clientes inactivos.',
+              'Crea cupones para fidelizar compradores o recuperar clientes inactivos.',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 13, color: subtextColor),
             ),
@@ -905,472 +904,6 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
                 ),
               ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAutoPromotionsSection(
-    bool isDark,
-    Color primaryColor,
-    Color surfaceColor,
-    Color borderColor,
-    Color textColor,
-    Color subtextColor,
-  ) {
-    return ValueListenableBuilder<List<AutoPromotionRule>>(
-      valueListenable: CouponsService.instance.autoPromotionsNotifier,
-      builder: (context, autoRules, _) {
-        if (autoRules.isEmpty) {
-          return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF13201B) : const Color(0xFFEDF3F0),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: primaryColor.withValues(alpha: 0.25),
-              ),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: primaryColor.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(Icons.auto_awesome_rounded,
-                      color: Color(0xFF016142), size: 18),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Motor de Promociones Automático',
-                        style: TextStyle(
-                          fontFamily: 'Plus Jakarta Sans',
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.w800,
-                          color: textColor,
-                        ),
-                      ),
-                      Text(
-                        'Premia la lealtad generando y enviando cupones en piloto automático.',
-                        style: TextStyle(
-                          fontFamily: 'Plus Jakarta Sans',
-                          fontSize: 11,
-                          color: subtextColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.add_circle_outline, size: 14),
-                  label: const Text('Activar'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
-                    foregroundColor: Colors.white,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    minimumSize: const Size(0, 32),
-                    textStyle: const TextStyle(
-                      fontFamily: 'Plus Jakarta Sans',
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.w700,
-                    ),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                  ),
-                  onPressed: () => AutoPromotionsDialog.show(context),
-                ),
-              ],
-            ),
-          );
-        }
-
-        final rule = autoRules.first;
-        final isEnabled = rule.isEnabled;
-
-        final badgeBg =
-            isEnabled ? const Color(0xFF016142) : const Color(0xFFD97706);
-        final containerBg = isEnabled
-            ? (isDark ? const Color(0xFF11221A) : const Color(0xFFEDF3F0))
-            : (isDark ? const Color(0xFF281E12) : const Color(0xFFFEF3C7));
-        final containerBorder = isEnabled
-            ? primaryColor.withValues(alpha: 0.35)
-            : const Color(0xFFF59E0B).withValues(alpha: 0.4);
-
-        return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: containerBg,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: containerBorder, width: 1.2),
-            boxShadow: [
-              BoxShadow(
-                color: (isEnabled ? primaryColor : Colors.amber)
-                    .withValues(alpha: 0.05),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Fila superior: Título, Badge de Estado y Resumen
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(7),
-                    decoration: BoxDecoration(
-                      color: isEnabled
-                          ? primaryColor.withValues(alpha: 0.15)
-                          : const Color(0xFFD97706).withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Icon(
-                      Icons.auto_awesome_rounded,
-                      color: isEnabled ? primaryColor : const Color(0xFFD97706),
-                      size: 16,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Flexible(
-                              child: Text(
-                                rule.title,
-                                style: TextStyle(
-                                  fontFamily: 'Plus Jakarta Sans',
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w800,
-                                  color: textColor,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            // Badge de Estado ACTIVO / PAUSADO
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 7, vertical: 2.5),
-                              decoration: BoxDecoration(
-                                color: badgeBg,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    isEnabled
-                                        ? Icons.check_circle_rounded
-                                        : Icons.pause_circle_filled_rounded,
-                                    color: Colors.white,
-                                    size: 10,
-                                  ),
-                                  const SizedBox(width: 3),
-                                  Text(
-                                    isEnabled ? 'MOTOR ACTIVO' : 'MOTOR PAUSADO',
-                                    style: const TextStyle(
-                                      fontFamily: 'Plus Jakarta Sans',
-                                      fontSize: 9.5,
-                                      fontWeight: FontWeight.w900,
-                                      color: Colors.white,
-                                      letterSpacing: 0.4,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          'Condición: ≥ ${rule.minCompletedOrders} compras y ≥ RD\$ ${rule.minAccumulatedSpent.toStringAsFixed(0)} gastados → Bono RD\$ ${rule.rewardDiscountAmount.toStringAsFixed(0)} (${rule.expirationDays}d)',
-                          style: TextStyle(
-                            fontFamily: 'Plus Jakarta Sans',
-                            fontSize: 11,
-                            color: subtextColor,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 10),
-
-              // Bloque de Métricas: Ver cómo se desarrollan los cupones
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF182A22) : Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isDark
-                        ? const Color(0xFF284838)
-                        : const Color(0xFFE2E8F0),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _buildMotorMetricItem(
-                        icon: Icons.auto_awesome,
-                        label: 'Cupones emitidos',
-                        value: '${rule.generatedCouponsCount}',
-                        color: primaryColor,
-                        isDark: isDark,
-                      ),
-                    ),
-                    Container(width: 1, height: 26, color: borderColor),
-                    Expanded(
-                      child: _buildMotorMetricItem(
-                        icon: Icons.shopping_bag_outlined,
-                        label: 'Canjeados',
-                        value:
-                            '${rule.redeemedCouponsCount} (${rule.generatedCouponsCount > 0 ? ((rule.redeemedCouponsCount / rule.generatedCouponsCount) * 100).toStringAsFixed(0) : '0'}%)',
-                        color: const Color(0xFF2563EB),
-                        isDark: isDark,
-                      ),
-                    ),
-                    Container(width: 1, height: 26, color: borderColor),
-                    Expanded(
-                      child: _buildMotorMetricItem(
-                        icon: Icons.monetization_on_outlined,
-                        label: 'Otorgado',
-                        value: 'RD\$ ${rule.totalRewardsGiven.toStringAsFixed(0)}',
-                        color: const Color(0xFF059669),
-                        isDark: isDark,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 8),
-
-              // Fila de Acciones: Pausar/Reanudar, Borrar y Configurar
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  // Botón Borrar
-                  TextButton.icon(
-                    icon: const Icon(Icons.delete_outline,
-                        size: 15, color: Color(0xFFDC2626)),
-                    label: const Text(
-                      'Borrar',
-                      style: TextStyle(
-                        fontFamily: 'Plus Jakarta Sans',
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFFDC2626),
-                      ),
-                    ),
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      minimumSize: const Size(0, 30),
-                    ),
-                    onPressed: () =>
-                        _confirmDeleteAutoPromotion(context, rule),
-                  ),
-                  const SizedBox(width: 6),
-
-                  // Botón Pausar / Reanudar
-                  OutlinedButton.icon(
-                    icon: Icon(
-                      isEnabled
-                          ? Icons.pause_rounded
-                          : Icons.play_arrow_rounded,
-                      size: 15,
-                      color: isEnabled
-                          ? const Color(0xFFD97706)
-                          : primaryColor,
-                    ),
-                    label: Text(
-                      isEnabled ? 'Pausar' : 'Reanudar',
-                      style: TextStyle(
-                        fontFamily: 'Plus Jakarta Sans',
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w700,
-                        color: isEnabled
-                            ? const Color(0xFFD97706)
-                            : primaryColor,
-                      ),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(
-                        color: isEnabled
-                            ? const Color(0xFFD97706)
-                            : primaryColor,
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
-                      minimumSize: const Size(0, 30),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                    ),
-                    onPressed: () {
-                      CouponsService.instance.toggleAutoPromotion(rule.id);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            isEnabled
-                                ? 'Motor de promociones "${rule.title}" PAUSADO.'
-                                : '¡Motor de promociones "${rule.title}" ACTIVADO!',
-                          ),
-                          backgroundColor: isEnabled
-                              ? const Color(0xFFD97706)
-                              : primaryColor,
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(width: 6),
-
-                  // Botón Configurar / Editar
-                  ElevatedButton.icon(
-                    icon: const Icon(Icons.tune_rounded, size: 14),
-                    label: const Text('Configurar'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
-                      minimumSize: const Size(0, 30),
-                      textStyle: const TextStyle(
-                        fontFamily: 'Plus Jakarta Sans',
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w700,
-                      ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                    ),
-                    onPressed: () =>
-                        AutoPromotionsDialog.show(context, rule: rule),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildMotorMetricItem({
-    required IconData icon,
-    required String label,
-    required String value,
-    required Color color,
-    required bool isDark,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: 11, color: color),
-              const SizedBox(width: 3),
-              Expanded(
-                child: Text(
-                  label,
-                  style: const TextStyle(
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontSize: 9.5,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF64748b),
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 2),
-          Text(
-            value,
-            style: TextStyle(
-              fontFamily: 'Plus Jakarta Sans',
-              fontSize: 11.5,
-              fontWeight: FontWeight.w800,
-              color: isDark ? Colors.white : const Color(0xFF0f172a),
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _confirmDeleteAutoPromotion(
-      BuildContext context, AutoPromotionRule rule) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text(
-          '¿Eliminar motor de promociones?',
-          style: TextStyle(
-            fontFamily: 'Plus Jakarta Sans',
-            fontWeight: FontWeight.w800,
-            fontSize: 16,
-          ),
-        ),
-        content: Text(
-          'Se eliminará la regla "${rule.title}" y el sistema dejará de generar cupones automáticos.',
-          style: const TextStyle(
-            fontFamily: 'Plus Jakarta Sans',
-            fontSize: 13,
-            color: Color(0xFF64748b),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancelar'),
-          ),
-          ElevatedButton.icon(
-            icon: const Icon(Icons.delete_outline, size: 16),
-            label: const Text('Eliminar'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFDC2626),
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            onPressed: () {
-              CouponsService.instance.deleteAutoPromotion(rule.id);
-              Navigator.pop(ctx);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Motor de promociones eliminado correctamente.'),
-                  backgroundColor: Color(0xFFDC2626),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            },
           ),
         ],
       ),

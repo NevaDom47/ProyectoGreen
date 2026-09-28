@@ -54,11 +54,11 @@ class _CartScreenState extends State<CartScreen> {
           builder: (context, currentMode, _) {
             final platformBrightness = MediaQuery.platformBrightnessOf(context);
             final isDark = currentMode == ThemeMode.dark || (currentMode == ThemeMode.system && platformBrightness == Brightness.dark);
-            final surfaceColor = isDark ? const Color(0xFF171717) : const Color(0xFFffffff);
-            final onSurface = isDark ? const Color(0xFFf1f5f9) : const Color(0xFF181d1a);
-            final primaryColor = const Color(0xFF00462f);
-            final outline = isDark ? const Color(0xFF64748b) : const Color(0xFF6f7a73);
-            final outlineVariant = isDark ? const Color(0xFF475569) : const Color(0xFFbec9c1);
+            final surfaceColor = isDark ? const Color(0xFF1C2924) : const Color(0xFFffffff);
+            final onSurface = isDark ? const Color(0xFFF1F5F3) : const Color(0xFF20262B);
+            final primaryColor = isDark ? const Color(0xFF67C83B) : const Color(0xFF016042);
+            final outline = isDark ? const Color(0xFF2B3A34) : const Color(0xFFE2E7E4);
+            final outlineVariant = isDark ? const Color(0xFF2B3A34) : const Color(0xFFCCDFD9);
 
             final options = [
               'Efectivo contra entrega',
@@ -128,14 +128,14 @@ class _CartScreenState extends State<CartScreen> {
             final platformBrightness = MediaQuery.platformBrightnessOf(context);
             final isDark = currentMode == ThemeMode.dark || (currentMode == ThemeMode.system && platformBrightness == Brightness.dark);
             
-            final bgColor = isDark ? const Color(0xFF0d1a15) : const Color(0xFFF8F6F6);
-            final primaryColor = const Color(0xFF00462f);
-            final surfaceColor = isDark ? const Color(0xFF1E293B) : Colors.white; 
-            final textColor = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0f172a);
-            final subtextColor = isDark ? const Color(0xFF94a3b8) : const Color(0xFF64748b);
-            final borderColor = primaryColor.withValues(alpha: 0.1);
+            final bgColor = isDark ? const Color(0xFF101815) : const Color(0xFFF7F9F8);
+            final primaryColor = isDark ? const Color(0xFF67C83B) : const Color(0xFF016042);
+            final surfaceColor = isDark ? const Color(0xFF1C2924) : Colors.white; 
+            final textColor = isDark ? const Color(0xFFF1F5F3) : const Color(0xFF20262B);
+            final subtextColor = isDark ? const Color(0xFFAAB8B1) : const Color(0xFF697177);
+            final borderColor = isDark ? const Color(0xFF2B3A34) : const Color(0xFFE2E7E4);
 
-            final outlineVariant = isDark ? const Color(0xFF475569) : const Color(0xFFbec9c1);
+            final outlineVariant = isDark ? const Color(0xFF2B3A34) : const Color(0xFFCCDFD9);
 
             return Container(
               height: MediaQuery.of(context).size.height * 0.85,
@@ -356,20 +356,21 @@ class _CartScreenState extends State<CartScreen> {
         final platformBrightness = MediaQuery.platformBrightnessOf(context);
         final isDark = currentMode == ThemeMode.dark || (currentMode == ThemeMode.system && platformBrightness == Brightness.dark);
         
-        final surfaceColor = isDark ? const Color(0xFF171717) : const Color(0xFFf7faf5); 
-        final surfaceContainerLow = isDark ? const Color(0xFF262626) : const Color(0xFFf1f4f0);
-        final surfaceContainerLowest = isDark ? const Color(0xFF1a1a1a) : const Color(0xFFffffff);
-        final surfaceContainer = isDark ? const Color(0xFF404040) : const Color(0xFFebefea);
+        final surfaceColor = isDark ? const Color(0xFF101815) : const Color(0xFFF7F9F8); 
+        final surfaceContainerLow = isDark ? const Color(0xFF17221E) : const Color(0xFFEEF5F1);
+        final surfaceContainerLowest = isDark ? const Color(0xFF1C2924) : const Color(0xFFffffff);
+        final surfaceContainer = isDark ? const Color(0xFF22332C) : const Color(0xFFE8F2ED);
         
-        final primaryColor = const Color(0xFF00462f);
-        final primaryDark = const Color(0xFF34d399); 
-        final onSurface = isDark ? const Color(0xFFf1f5f9) : const Color(0xFF181d1a);
-        final secondary = isDark ? const Color(0xFF9ca3af) : const Color(0xFF486456);
-        final outline = isDark ? const Color(0xFF64748b) : const Color(0xFF6f7a73);
-        final outlineVariant = isDark ? const Color(0xFF475569) : const Color(0xFFbec9c1);
-        final secondaryContainer = isDark ? const Color(0xFF1e3a8a) : const Color(0xFFcaead7);
-        final onSecondaryContainer = isDark ? const Color(0xFFbae6fd) : const Color(0xFF4e6b5b);
-        final tertiary = isDark ? const Color(0xFFf87171) : const Color(0xFF682826);
+        final primaryColor = const Color(0xFF016042);
+        final primaryDark = const Color(0xFF67C83B); 
+        final activePrimary = isDark ? primaryDark : primaryColor;
+        final onSurface = isDark ? const Color(0xFFF1F5F3) : const Color(0xFF20262B);
+        final secondary = isDark ? const Color(0xFFAAB8B1) : const Color(0xFF697177);
+        final outline = isDark ? const Color(0xFF2B3A34) : const Color(0xFFE2E7E4);
+        final outlineVariant = isDark ? const Color(0xFF2B3A34) : const Color(0xFFCCDFD9);
+        final secondaryContainer = isDark ? const Color(0xFF203D31) : const Color(0xFFE5F0EB);
+        final onSecondaryContainer = isDark ? const Color(0xFF67C83B) : const Color(0xFF016042);
+        final tertiary = isDark ? const Color(0xFFFF6B6B) : const Color(0xFF682826);
         
         final titleColor = isDark ? primaryDark : primaryColor;
 
@@ -433,7 +434,7 @@ class _CartScreenState extends State<CartScreen> {
                     child: _buildVendorGroup(
                       vIndex, vendors[vIndex], 
                       surfaceColor, surfaceContainerLow, surfaceContainerLowest, surfaceContainer, 
-                      primaryColor, onSurface, secondary, outline, outlineVariant, secondaryContainer, onSecondaryContainer, tertiary, isDark
+                      activePrimary, onSurface, secondary, outline, outlineVariant, secondaryContainer, onSecondaryContainer, tertiary, isDark
                     ),
                   );
                 }),
@@ -451,16 +452,16 @@ class _CartScreenState extends State<CartScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('SUBTOTAL ($totalItemsCount items)', style: TextStyle(color: outline, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
-                          Text('\$${subtotal.toStringAsFixed(2)}', style: TextStyle(color: onSurface, fontSize: 14, fontWeight: FontWeight.w600)),
+                          Text('SUBTOTAL ($totalItemsCount items)', style: TextStyle(color: isDark ? const Color(0xFFBDBDBD) : Colors.black, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
+                          Text('\$${subtotal.toStringAsFixed(2)}', style: TextStyle(color: isDark ? Colors.white : onSurface, fontSize: 14, fontWeight: FontWeight.bold)),
                         ],
                       ),
                       const SizedBox(height: 12),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('TARIFA DE ENTREGA', style: TextStyle(color: outline, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
-                          Text('\$${deliveryFee.toStringAsFixed(2)}', style: TextStyle(color: onSurface, fontSize: 14, fontWeight: FontWeight.w600)),
+                          Text('TARIFA DE ENTREGA', style: TextStyle(color: isDark ? const Color(0xFFBDBDBD) : Colors.black, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
+                          Text('\$${deliveryFee.toStringAsFixed(2)}', style: TextStyle(color: isDark ? Colors.white : onSurface, fontSize: 14, fontWeight: FontWeight.bold)),
                         ],
                       ),
                       if (discountTotal > 0) ...[
@@ -469,7 +470,7 @@ class _CartScreenState extends State<CartScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('DESCUENTOS', style: TextStyle(color: tertiary, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
-                            Text('-\$${discountTotal.toStringAsFixed(2)}', style: TextStyle(color: tertiary, fontSize: 14, fontWeight: FontWeight.w600)),
+                            Text('-\$${discountTotal.toStringAsFixed(2)}', style: TextStyle(color: tertiary, fontSize: 14, fontWeight: FontWeight.bold)),
                           ],
                         ),
                       ],
@@ -479,8 +480,8 @@ class _CartScreenState extends State<CartScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('TOTAL ORDEN', style: TextStyle(color: onSurface, fontSize: 12, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
-                          Text('\$${total.toStringAsFixed(2)}', style: TextStyle(color: titleColor, fontSize: 20, fontWeight: FontWeight.w900)),
+                          Text('TOTAL ORDEN', style: TextStyle(color: isDark ? Colors.white : Colors.black, fontSize: 12, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
+                          Text('\$${total.toStringAsFixed(2)}', style: TextStyle(color: isDark ? Colors.white : titleColor, fontSize: 20, fontWeight: FontWeight.w900)),
                         ],
                       ),
                       
@@ -754,7 +755,7 @@ class _CartScreenState extends State<CartScreen> {
                   Flexible(
                     child: GestureDetector(
                       onTap: () => context.push('/provider', extra: vendor),
-                      child: Text(vendor['name'], style: TextStyle(color: onSurface, fontWeight: FontWeight.w900, fontSize: 16, letterSpacing: -0.5), overflow: TextOverflow.ellipsis),
+                      child: Text(vendor['name'], style: TextStyle(color: isDark ? Colors.white : onSurface, fontWeight: FontWeight.w900, fontSize: 16, letterSpacing: -0.5), overflow: TextOverflow.ellipsis),
                     ),
                   ),
                   if (vendor['isVerified']) ...[
@@ -877,7 +878,15 @@ class _CartScreenState extends State<CartScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                            child: Text(item['name'] as String, style: TextStyle(color: onSurface, fontWeight: FontWeight.bold, fontSize: 15, height: 1.2)),
+                            child: Text(
+                              item['name'] as String, 
+                              style: TextStyle(
+                                color: isDark ? Colors.white : onSurface, 
+                                fontWeight: FontWeight.bold, 
+                                fontSize: 15, 
+                                height: 1.2,
+                              ),
+                            ),
                           ),
                           const SizedBox(width: 8),
                           Column(
@@ -885,12 +894,21 @@ class _CartScreenState extends State<CartScreen> {
                             children: [
                               Text(
                                 '\$${(item['price_per_unit'] * item['quantity']).toStringAsFixed(2)}', 
-                                style: TextStyle(color: primaryColor, fontWeight: FontWeight.w900, fontSize: 18, height: 1.1)
+                                style: TextStyle(
+                                  color: isDark ? Colors.white : primaryColor, 
+                                  fontWeight: FontWeight.w900, 
+                                  fontSize: 18, 
+                                  height: 1.1,
+                                ),
                               ),
                               const SizedBox(height: 2),
                               Text(
                                 '\$${item['price_per_unit'].toStringAsFixed(2)} ${_getPriceSuffix(currentUnit)}', 
-                                style: TextStyle(color: outline, fontSize: 10, fontWeight: FontWeight.bold)
+                                style: TextStyle(
+                                  color: isDark ? const Color(0xFFBDBDBD) : outline, 
+                                  fontSize: 10, 
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ],
                           ),
@@ -909,17 +927,22 @@ class _CartScreenState extends State<CartScreen> {
                           runSpacing: 4,
                           children: (item['tags'] as List).map((tag) {
                             return Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                               decoration: BoxDecoration(
-                                color: primaryColor.withValues(alpha: 0.1),
+                                color: isDark 
+                                    ? Colors.white.withValues(alpha: 0.08) 
+                                    : primaryColor.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(4),
+                                border: isDark 
+                                    ? Border.all(color: Colors.white.withValues(alpha: 0.12), width: 0.5) 
+                                    : null,
                               ),
                               child: Text(
                                 tag.toString(),
                                 style: TextStyle(
-                                  color: primaryColor,
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.bold,
+                                  color: isDark ? const Color(0xFFBDBDBD) : primaryColor,
+                                  fontSize: 8.5,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             );
@@ -960,7 +983,17 @@ class _CartScreenState extends State<CartScreen> {
                                           color: isSelected ? primaryColor : Colors.transparent,
                                           borderRadius: BorderRadius.circular(20),
                                         ),
-                                        child: Text(unit, style: TextStyle(color: isSelected ? Colors.white : outline, fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 0.5)),
+                                        child: Text(
+                                          unit, 
+                                          style: TextStyle(
+                                            color: isSelected 
+                                                ? (isDark ? const Color(0xFF101815) : Colors.white) 
+                                                : (isDark ? const Color(0xFFBDBDBD) : outline), 
+                                            fontSize: 9, 
+                                            fontWeight: FontWeight.w900, 
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
                                       ),
                                     );
                                   }).toList(),
@@ -980,7 +1013,7 @@ class _CartScreenState extends State<CartScreen> {
                                     _getLegend(currentUnit),
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      color: secondary,
+                                      color: isDark ? const Color(0xFFBDBDBD) : secondary,
                                       fontSize: 9,
                                       fontWeight: FontWeight.w800,
                                       letterSpacing: 0.2,
@@ -1005,7 +1038,7 @@ class _CartScreenState extends State<CartScreen> {
                                       behavior: HitTestBehavior.opaque,
                                       child: SizedBox(
                                         width: 32,
-                                        child: Center(child: Icon(Icons.remove, color: onSurface, size: 16))
+                                        child: Center(child: Icon(Icons.remove, color: isDark ? Colors.white : onSurface, size: 16))
                                       )
                                     ),
                                     Container(
@@ -1023,7 +1056,7 @@ class _CartScreenState extends State<CartScreen> {
                                           keyboardType: TextInputType.number,
                                           textAlign: TextAlign.center,
                                           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                          style: TextStyle(color: onSurface, fontWeight: FontWeight.w900, fontSize: 13),
+                                          style: TextStyle(color: isDark ? Colors.white : onSurface, fontWeight: FontWeight.w900, fontSize: 13),
                                           decoration: const InputDecoration(
                                             border: InputBorder.none,
                                             contentPadding: EdgeInsets.zero,
@@ -1055,7 +1088,7 @@ class _CartScreenState extends State<CartScreen> {
                                       behavior: HitTestBehavior.opaque,
                                       child: SizedBox(
                                         width: 32,
-                                        child: Center(child: Icon(Icons.add, color: onSurface, size: 16)),
+                                        child: Center(child: Icon(Icons.add, color: isDark ? Colors.white : onSurface, size: 16)),
                                       )
                                     ),
                                   ],
@@ -1092,13 +1125,13 @@ class _CartScreenState extends State<CartScreen> {
                             Icon(
                               vendor['payment_method'].toString().contains('Efectivo') ? Icons.payments_outlined : 
                               vendor['payment_method'].toString().contains('Tarjeta') ? Icons.credit_card_outlined : Icons.account_balance_outlined, 
-                              color: secondary, size: 20
+                              color: isDark ? const Color(0xFFBDBDBD) : secondary, size: 20
                             ),
                             const SizedBox(width: 8),
-                            Text('Pago: ${vendor['payment_method']}', style: TextStyle(color: onSurface, fontSize: 13, fontWeight: FontWeight.w600)),
+                            Text('Pago: ${vendor['payment_method']}', style: TextStyle(color: isDark ? Colors.white : onSurface, fontSize: 13, fontWeight: FontWeight.w600)),
                           ],
                         ),
-                        Text('CAMBIAR', style: TextStyle(color: primaryColor, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.0)),
+                        Text('CAMBIAR', style: TextStyle(color: isDark ? const Color(0xFF67C83B) : primaryColor, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.0)),
                       ],
                     ),
                   ),
@@ -1108,7 +1141,7 @@ class _CartScreenState extends State<CartScreen> {
                   // Coupon Code
                   Row(
                     children: [
-                      Icon(Icons.local_offer, color: const Color(0xFF33A15C), size: 20),
+                      Icon(Icons.local_offer, color: isDark ? const Color(0xFF67C83B) : const Color(0xFF33A15C), size: 20),
                       const SizedBox(width: 8),
                       Expanded(
                         child: TextField(
@@ -1116,7 +1149,7 @@ class _CartScreenState extends State<CartScreen> {
                           decoration: InputDecoration(
                             hintText: vendor['coupon'] != null ? 'Cupón Activo: ${vendor['coupon']}' : 'Cupón para ${vendor['name']}',
                             hintStyle: TextStyle(
-                              color: vendor['coupon'] != null ? const Color(0xFF10B981) : outline.withValues(alpha: 0.8), 
+                              color: vendor['coupon'] != null ? (isDark ? const Color(0xFF67C83B) : const Color(0xFF365D46)) : (isDark ? const Color(0xFFBDBDBD) : Colors.black), 
                               fontSize: 13, 
                               fontWeight: vendor['coupon'] != null ? FontWeight.bold : FontWeight.w500
                             ),
@@ -1124,7 +1157,7 @@ class _CartScreenState extends State<CartScreen> {
                             contentPadding: EdgeInsets.zero,
                             isDense: true,
                           ),
-                          style: TextStyle(color: onSurface, fontSize: 13, fontWeight: FontWeight.bold),
+                          style: TextStyle(color: isDark ? Colors.white : Colors.black, fontSize: 13, fontWeight: FontWeight.bold),
                         ),
                       ),
                       if (vendor['coupon'] != null) ...[
@@ -1132,7 +1165,7 @@ class _CartScreenState extends State<CartScreen> {
                           onTap: () => setState(() => vendors[vIndex]['coupon'] = null),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Icon(Icons.close, color: outline.withValues(alpha: 0.7), size: 16),
+                            child: Icon(Icons.close, color: isDark ? const Color(0xFFBDBDBD) : outline.withValues(alpha: 0.7), size: 16),
                           ),
                         ),
                       ],
@@ -1164,7 +1197,7 @@ class _CartScreenState extends State<CartScreen> {
                               }
                             },
                             behavior: HitTestBehavior.opaque, 
-                            child: Text(hasText ? 'VALIDAR' : 'ELEGIR', style: TextStyle(color: primaryColor, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.0)),
+                            child: Text(hasText ? 'VALIDAR' : 'ELEGIR', style: TextStyle(color: isDark ? const Color(0xFF67C83B) : primaryColor, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.0)),
                           );
                         },
                       )

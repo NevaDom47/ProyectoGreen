@@ -132,7 +132,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                 child: ListTile(
                   leading: Icon(
                     Icons.calendar_today_rounded,
-                    color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                    color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                     size: 20,
                   ),
                   title: Text(
@@ -214,14 +214,14 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
             fontSize: 14,
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
             color: isSelected
-                ? (isDark ? const Color(0xFF89D6B0) : AppTheme.primary)
+                ? (isDark ? const Color(0xFF67C83B) : AppTheme.primary)
                 : onSurfaceColor,
           ),
         ),
         trailing: isSelected
             ? Icon(
                 Icons.check_circle_rounded,
-                color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                 size: 20,
               )
             : null,
@@ -389,7 +389,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                 ),
                 child: Icon(
                   Icons.handshake_outlined,
-                  color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                  color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                   size: 19,
                 ),
               ),
@@ -710,7 +710,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
               children: [
                 Icon(
                   Icons.search,
-                  color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                  color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                   size: 20,
                 ),
                 const SizedBox(width: 8),
@@ -737,7 +737,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                 if (_searchQuery.isNotEmpty)
                   IconButton(
                     icon: const Icon(Icons.close, size: 18),
-                    color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                    color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
                     onPressed: () {
@@ -776,7 +776,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                 Icon(
                   Icons.tune_rounded,
                   color: isFilterActive
-                      ? (isDark ? const Color(0xFF89D6B0) : AppTheme.primary)
+                      ? (isDark ? const Color(0xFF67C83B) : AppTheme.primary)
                       : (isDark ? AppTheme.slate200 : AppTheme.slate700),
                   size: 20,
                 ),
@@ -886,7 +886,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                                           ? Icons.storefront_outlined
                                           : Icons.person_outline_rounded,
                                       size: 13,
-                                      color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                                      color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                                     ),
                                     const SizedBox(width: 4),
                                     Flexible(
@@ -895,7 +895,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                                         style: GoogleFonts.plusJakartaSans(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w600,
-                                          color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                                          color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                                         ),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
@@ -1109,7 +1109,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                     Icon(
                       Icons.check_circle_rounded,
                       size: 13,
-                      color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                      color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                     ),
                     const SizedBox(width: 4),
                     Text(
@@ -1118,7 +1118,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                         fontSize: 9,
                         fontWeight: FontWeight.w800,
                         letterSpacing: 0.8,
-                        color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                        color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                       ),
                     ),
                   ],
@@ -1156,7 +1156,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 15,
                         fontWeight: FontWeight.w800,
-                        color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                        color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                       ),
                     ),
                   ],
@@ -1201,13 +1201,13 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                   style: GoogleFonts.plusJakartaSans(
                     fontWeight: FontWeight.w700,
                     fontSize: 13,
-                    color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                    color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                   ),
                 ),
                 label: Icon(
                   Icons.arrow_forward_rounded,
                   size: 16,
-                  color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                  color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                 ),
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -1752,7 +1752,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                                   '${negotiation['buyer']} • ${negotiation['role'] ?? 'Comprador'}',
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: 12,
-                                    color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                                    color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),

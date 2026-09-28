@@ -42,7 +42,7 @@ class _ActiveDevicesScreenState extends State<ActiveDevicesScreen> with SingleTi
     final bgColor = isDark ? const Color(0xFF0f231d) : const Color(0xFFf7faf5);
     final surfaceColor = isDark ? const Color(0xFF1c2c26) : Colors.white;
     final onSurfaceColor = isDark ? const Color(0xFFeef2ed) : const Color(0xFF181d1a);
-    final secondaryTextColor = isDark ? const Color(0xFF89d6b0) : const Color(0xFF486456);
+    final secondaryTextColor = isDark ? const Color(0xFF67C83B) : const Color(0xFF486456);
     final outlineColor = isDark ? Colors.white.withValues(alpha: 0.1) : const Color(0xFFbec9c1).withValues(alpha: 0.2);
     final errorColor = const Color(0xFFba1a1a);
 
@@ -53,13 +53,13 @@ class _ActiveDevicesScreenState extends State<ActiveDevicesScreen> with SingleTi
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: isDark ? const Color(0xFF89d6b0) : primaryGreen),
+          icon: Icon(Icons.arrow_back, color: isDark ? const Color(0xFF67C83B) : primaryGreen),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'Sesiones Activas',
           style: GoogleFonts.plusJakartaSans(
-            color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+            color: isDark ? const Color(0xFF67C83B) : primaryGreen,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
@@ -407,14 +407,14 @@ class _ActiveDevicesScreenState extends State<ActiveDevicesScreen> with SingleTi
             children: [
               Row(
                 children: [
-                  const Icon(Icons.security, color: Color(0xFF89d6b0), size: 20),
+                  const Icon(Icons.security, color: Color(0xFF67C83B), size: 20),
                   const SizedBox(width: 12),
                   Text(
                     'CONSEJO DE SEGURIDAD',
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 10,
                       fontWeight: FontWeight.w900,
-                      color: const Color(0xFF89d6b0),
+                      color: const Color(0xFF67C83B),
                       letterSpacing: 1.5,
                     ),
                   ),

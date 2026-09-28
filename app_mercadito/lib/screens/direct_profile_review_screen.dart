@@ -287,7 +287,7 @@ class _DirectProfileReviewScreenState extends State<DirectProfileReviewScreen> {
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: 9,
                                     fontWeight: FontWeight.w800,
-                                    color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                                    color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                                     letterSpacing: 0.5,
                                   ),
                                 ),
@@ -366,7 +366,7 @@ class _DirectProfileReviewScreenState extends State<DirectProfileReviewScreen> {
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                      color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                     ),
                   ),
                 ],
@@ -502,7 +502,7 @@ class _DirectProfileReviewScreenState extends State<DirectProfileReviewScreen> {
                       color: commentLength == 0
                           ? secondaryTextColor
                           : (_isCommentValid
-                              ? (isDark ? const Color(0xFF89D6B0) : AppTheme.primary)
+                              ? (isDark ? const Color(0xFF67C83B) : AppTheme.primary)
                               : Colors.red[600]),
                     ),
                   ),
@@ -565,7 +565,7 @@ class _DirectProfileReviewScreenState extends State<DirectProfileReviewScreen> {
                   '✓ Longitud válida ($commentLength caracteres)',
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 11,
-                    color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                    color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

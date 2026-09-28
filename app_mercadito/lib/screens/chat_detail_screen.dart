@@ -1494,7 +1494,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
                                   fontSize: 9,
                                   fontWeight: FontWeight.w900,
                                   letterSpacing: 1.0,
-                                  color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f),
+                                  color: isDark ? const Color(0xFF67C83B) : const Color(0xFF00462f),
                                 ),
                               ),
                               const SizedBox(height: 2),
@@ -1514,7 +1514,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 16,
                             fontWeight: FontWeight.w800,
-                            color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f),
+                            color: isDark ? const Color(0xFF67C83B) : const Color(0xFF00462f),
                           ),
                         ),
                       ],
@@ -1548,7 +1548,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
                                 shape: BoxShape.circle,
                                 border: Border.all(
                                   color: isSelected 
-                                      ? (isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f))
+                                      ? (isDark ? const Color(0xFF67C83B) : const Color(0xFF00462f))
                                       : (isDark ? Colors.white30 : Colors.black26),
                                   width: isSelected ? 6 : 2,
                                 ),
@@ -1561,7 +1561,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
                                 fontSize: 14,
                                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                                 color: isSelected 
-                                    ? (isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f))
+                                    ? (isDark ? const Color(0xFF67C83B) : const Color(0xFF00462f))
                                     : (isDark ? Colors.grey[300] : Colors.black87),
                               ),
                             ),

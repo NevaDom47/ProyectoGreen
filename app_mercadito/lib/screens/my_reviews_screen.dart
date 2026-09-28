@@ -620,7 +620,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
         children: [
           Icon(
             Icons.search,
-            color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+            color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
             size: 20,
           ),
           const SizedBox(width: 8),
@@ -645,7 +645,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
           if (_searchQuery.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.close, size: 20),
-              color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+              color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
               onPressed: () {
                 setState(() {
                   _searchController.clear();
@@ -946,7 +946,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
-                                color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                                color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -1015,7 +1015,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                     value: item['finalPrice'] ?? '\$1.80/kg',
                     originalValue: item['originalPrice'],
                     isDark: isDark,
-                    textColor: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                    textColor: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                     secondaryTextColor: secondaryTextColor,
                   ),
                 ),
@@ -1305,7 +1305,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                              color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -1361,7 +1361,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                 Icon(
                   Icons.handshake_outlined,
                   size: 13,
-                  color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                  color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                 ),
                 const SizedBox(width: 6),
                 Expanded(
@@ -1370,7 +1370,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
-                      color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                      color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -1407,7 +1407,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                      color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                     ),
                   ),
                 );
@@ -1489,7 +1489,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                       Icon(
                         Icons.reply_rounded,
                         size: 14,
-                        color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                        color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                       ),
                       const SizedBox(width: 6),
                       Text(
@@ -1497,7 +1497,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 10,
                           fontWeight: FontWeight.w800,
-                          color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                          color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                           letterSpacing: 0.5,
                         ),
                       ),
@@ -1670,7 +1670,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                      color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                     ),
                   ),
                 );
@@ -1921,7 +1921,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                       Icon(
                         Icons.reply_rounded,
                         size: 14,
-                        color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                        color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                       ),
                       const SizedBox(width: 6),
                       Text(
@@ -1929,7 +1929,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 10,
                           fontWeight: FontWeight.w800,
-                          color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                          color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                           letterSpacing: 0.5,
                         ),
                       ),
@@ -2279,7 +2279,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                               'Productor: ${item['vendor']}',
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 13,
-                                color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                                color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -2309,7 +2309,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                         ],
                         if (item['savings'] != null) ...[
                           const Divider(height: 16),
-                          _buildAgreementRow('Ahorro por Negociación', item['savings'], isDark ? const Color(0xFF89D6B0) : AppTheme.primary, secondaryText, isBold: true),
+                          _buildAgreementRow('Ahorro por Negociación', item['savings'], isDark ? const Color(0xFF67C83B) : AppTheme.primary, secondaryText, isBold: true),
                         ],
                         const Divider(height: 16),
                         _buildAgreementRow('Monto Total', item['totalAmount'] ?? '\$270.00', onSurface, secondaryText, isBold: true),

@@ -6,6 +6,7 @@ import '../widgets/quality_info_bottom_sheet.dart';
 import '../data/global_state.dart';
 import '../services/user_session.dart';
 import '../services/reviews_service.dart';
+import '../services/privacy_service.dart';
 import '../widgets/report_user_bottom_sheet.dart';
 
 class ProviderProfileScreen extends StatefulWidget {
@@ -166,9 +167,12 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
           duration: const Duration(milliseconds: 500),
           child: _isLoading 
             ? _buildSkeletonLoader(context)
-            : DefaultTabController(
-                length: 3,
-                child: NestedScrollView(
+            : ValueListenableBuilder<ProviderPrivacySettings>(
+                valueListenable: PrivacyService.providerNotifier,
+                builder: (context, privacy, _) {
+                  return DefaultTabController(
+                    length: 3,
+                    child: NestedScrollView(
                   headerSliverBuilder: (context, innerBoxIsScrolled) {
                     return [
                       // Header Section (Banner, Top Nav, and overlapping Avatar)
@@ -283,33 +287,55 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                                     type: EntranceType.scale,
                                     child: Hero(
                                       tag: widget.provider['name'],
-                                      child: Container(
-                                        width: 100,
-                                        height: 100,
-                                        decoration: BoxDecoration(
-                                          color: isDark ? const Color(0xFF0f231d) : Colors.white,
-                                          borderRadius: BorderRadius.circular(16),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black.withValues(alpha: 0.1),
-                                              blurRadius: 8,
-                                              offset: const Offset(0, 4),
+                                      child: Stack(
+                                        clipBehavior: Clip.none,
+                                        children: [
+                                          Container(
+                                            width: 100,
+                                            height: 100,
+                                            decoration: BoxDecoration(
+                                              color: isDark ? const Color(0xFF0f231d) : Colors.white,
+                                              borderRadius: BorderRadius.circular(16),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black.withValues(alpha: 0.1),
+                                                  blurRadius: 8,
+                                                  offset: const Offset(0, 4),
+                                                ),
+                                              ],
+                                              image: (widget.provider['img']?.toString().isNotEmpty == true)
+                                                  ? DecorationImage(
+                                                      image: NetworkImage(widget.provider['img'] ?? ''),
+                                                      fit: BoxFit.cover,
+                                                    )
+                                                  : null,
                                             ),
-                                          ],
-                                          image: (widget.provider['img']?.toString().isNotEmpty == true)
-                                              ? DecorationImage(
-                                                  image: NetworkImage(widget.provider['img'] ?? ''),
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : null,
-                                        ),
-                                        child: (widget.provider['img']?.toString().isNotEmpty != true)
-                                            ? Icon(
-                                                Icons.storefront,
-                                                size: 48,
-                                                color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f),
-                                              )
-                                            : null,
+                                            child: (widget.provider['img']?.toString().isNotEmpty != true)
+                                                ? Icon(
+                                                    Icons.storefront,
+                                                    size: 48,
+                                                    color: isDark ? const Color(0xFF67C83B) : const Color(0xFF00462f),
+                                                  )
+                                                : null,
+                                          ),
+                                          if (privacy.showOnlineStatus)
+                                            Positioned(
+                                              bottom: 4,
+                                              right: 4,
+                                              child: Container(
+                                                width: 16,
+                                                height: 16,
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xFF10B981),
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: isDark ? const Color(0xFF0f231d) : Colors.white,
+                                                    width: 2.5,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -362,34 +388,79 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                                             ),
                                           ),
                                         ),
+                                        if (privacy.showLastSeen) ...[
+                                          const SizedBox(width: 8),
+                                          Container(
+                                            width: 4,
+                                            height: 4,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                            ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Flexible(
+                                            child: Text(
+                                              'En línea hace 10 min',
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontFamily: 'Plus Jakarta Sans',
+                                                fontSize: 12,
+                                                color: isDark ? const Color(0xFF8BD8B2) : theme.colorScheme.primary,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ],
                                     ),
                                   ),
                                   const SizedBox(height: 6),
                                   _EntranceAnimation(
                                     delay: 400,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.location_on,
-                                          size: 16,
-                                          color: isDark ? const Color(0xFF8BD8B2) : theme.colorScheme.primary,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Flexible(
-                                          child: Text(
-                                            '$_providerSector • $_providerAverageDistance',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: isDark ? Colors.grey[300] : Colors.grey[700],
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w500,
-                                            ),
+                                    child: privacy.showLocation
+                                        ? Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.location_on,
+                                                size: 16,
+                                                color: isDark ? const Color(0xFF8BD8B2) : theme.colorScheme.primary,
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Flexible(
+                                                child: Text(
+                                                  '$_providerSector • $_providerAverageDistance',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    color: isDark ? Colors.grey[300] : Colors.grey[700],
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        : Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              const Icon(
+                                                Icons.location_off_outlined,
+                                                size: 16,
+                                                color: Colors.grey,
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                'Ubicación no visible por privacidad',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                                  fontSize: 13,
+                                                  fontStyle: FontStyle.italic,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ),
-                                      ],
-                                    ),
                                   ),
 
                                   const SizedBox(height: 12),
@@ -517,8 +588,9 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                                   const SizedBox(height: 10),
 
                                   // Live Operating Schedule Status Chip
-                                  _EntranceAnimation(
-                                    delay: 550,
+                                  if (privacy.showBusinessHours)
+                                    _EntranceAnimation(
+                                      delay: 550,
                                     child: Wrap(
                                       alignment: WrapAlignment.center,
                                       crossAxisAlignment: WrapCrossAlignment.center,
@@ -579,50 +651,45 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                                       Expanded(
                                         child: _EntranceAnimation(
                                           delay: 700,
-                                          child: ValueListenableBuilder<List<Map<String, dynamic>>>(
-                                            valueListenable: globalFollowedSellers,
-                                            builder: (context, followedList, child) {
-                                              final isFollowing = isFollowingSeller(widget.provider['name'] ?? '');
-                                              return ElevatedButton.icon(
-                                                onPressed: () {
-                                                  toggleFollowSeller(widget.provider);
-                                                  ScaffoldMessenger.of(context).clearSnackBars();
-                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                    SnackBar(
-                                                      content: Text(
-                                                        isFollowing 
-                                                          ? 'Dejaste de seguir a ${widget.provider['name']}' 
-                                                          : 'Ahora sigues a ${widget.provider['name']}',
-                                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                          child: ElevatedButton.icon(
+                                            onPressed: () {
+                                              ScaffoldMessenger.of(context).clearSnackBars();
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  content: const Row(
+                                                    children: [
+                                                      Icon(Icons.construction_rounded, color: Colors.white, size: 20),
+                                                      SizedBox(width: 10),
+                                                      Expanded(
+                                                        child: Text(
+                                                          'La opción de seguir a un proveedor se encuentra en desarrollo.',
+                                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                                        ),
                                                       ),
-                                                      backgroundColor: const Color(0xFF285E44),
-                                                      behavior: SnackBarBehavior.floating,
-                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                                      duration: const Duration(seconds: 2),
-                                                    ),
-                                                  );
-                                                },
-                                                icon: Icon(
-                                                  isFollowing ? Icons.check : Icons.person_add_outlined,
-                                                  size: 18,
-                                                ),
-                                                label: Text(
-                                                  isFollowing ? 'Siguiendo' : 'Seguir',
-                                                  style: const TextStyle(fontWeight: FontWeight.bold),
-                                                ),
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: isFollowing
-                                                      ? const Color(0xFF285E44)
-                                                      : theme.colorScheme.primary.withValues(alpha: 0.1),
-                                                  foregroundColor: isFollowing
-                                                      ? Colors.white
-                                                      : theme.colorScheme.primary,
-                                                  elevation: 0,
-                                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                                    ],
+                                                  ),
+                                                  backgroundColor: const Color(0xFF285E44),
+                                                  behavior: SnackBarBehavior.floating,
                                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                                  duration: const Duration(seconds: 2),
                                                 ),
                                               );
                                             },
+                                            icon: const Icon(
+                                              Icons.person_add_outlined,
+                                              size: 18,
+                                            ),
+                                            label: const Text(
+                                              'Seguir',
+                                              style: TextStyle(fontWeight: FontWeight.bold),
+                                            ),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.08),
+                                              foregroundColor: theme.colorScheme.primary,
+                                              elevation: 0,
+                                              padding: const EdgeInsets.symmetric(vertical: 12),
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -678,11 +745,13 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                     children: [
                       _buildProductsTab(context),
                       _buildReviewsTab(context),
-                      _buildInfoTab(context),
+                      _buildInfoTab(context, privacy),
                     ],
                   ),
                 ),
-              ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -1622,7 +1691,8 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
     );
   }
 
-  Widget _buildInfoTab(BuildContext context) {
+  Widget _buildInfoTab(BuildContext context, [ProviderPrivacySettings? privacy]) {
+    privacy ??= PrivacyService.providerSettings;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final surfaceColor = isDark ? const Color(0xFF1a2f26) : Colors.white;
@@ -1664,187 +1734,247 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
         ),
 
         // Contacto
-        _EntranceAnimation(
-          delay: 200,
-          child: Container(
-             padding: const EdgeInsets.all(16),
-            margin: const EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-              color: surfaceColor,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: borderColor),
+        if (privacy.showContactInfo)
+          _EntranceAnimation(
+            delay: 200,
+            child: Container(
+               padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                color: surfaceColor,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: borderColor),
+              ),
+              child: Column(
+                 crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                   Row(
+                    children: [
+                      Icon(Icons.call_outlined, color: theme.colorScheme.primary, size: 20),
+                      const SizedBox(width: 8),
+                       Text('CONTACTO', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: theme.colorScheme.primary, letterSpacing: 1.0)),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                       Expanded(
+                         child: Column(
+                           crossAxisAlignment: CrossAxisAlignment.start,
+                           children: [
+                             const Text('TELÉFONO DIRECTO', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Colors.grey, letterSpacing: 1.0)),
+                             const SizedBox(height: 4),
+                             const Text('+52 464 123 4567', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
+                           ],
+                         ),
+                       ),
+                       const SizedBox(width: 8),
+                       ElevatedButton.icon(
+                         onPressed: () {},
+                         icon: const Icon(Icons.chat, size: 16),
+                         label: const Text('WHATSAPP', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.0)),
+                         style: ElevatedButton.styleFrom(
+                           backgroundColor: const Color(0xFF25D366),
+                           foregroundColor: Colors.white,
+                           elevation: 2,
+                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                           minimumSize: Size.zero, 
+                         ),
+                       )
+                    ],
+                  )
+                ],
+              )
             ),
-            child: Column(
-               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                 Row(
-                  children: [
-                    Icon(Icons.call_outlined, color: theme.colorScheme.primary, size: 20),
-                    const SizedBox(width: 8),
-                     Text('CONTACTO', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: theme.colorScheme.primary, letterSpacing: 1.0)),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                     Expanded(
-                       child: Column(
-                         crossAxisAlignment: CrossAxisAlignment.start,
-                         children: [
-                           const Text('TELÉFONO DIRECTO', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Colors.grey, letterSpacing: 1.0)),
-                           const SizedBox(height: 4),
-                           const Text('+52 464 123 4567', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
-                         ],
-                       ),
-                     ),
-                     const SizedBox(width: 8),
-                     ElevatedButton.icon(
-                       onPressed: () {},
-                       icon: const Icon(Icons.chat, size: 16),
-                       label: const Text('WHATSAPP', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.0)),
-                       style: ElevatedButton.styleFrom(
-                         backgroundColor: const Color(0xFF25D366),
-                         foregroundColor: Colors.white,
-                         elevation: 2,
-                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                         minimumSize: Size.zero, 
-                       ),
-                     )
-                  ],
-                )
-              ],
-            )
+          )
+        else
+          _EntranceAnimation(
+            delay: 200,
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                color: surfaceColor,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: borderColor),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.lock_outline, color: theme.colorScheme.primary, size: 20),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'Información de contacto directo privada. Comunícate directamente mediante el chat oficial.',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
 
         // Horarios
-        _EntranceAnimation(
-          delay: 300,
-          child: Container(
-             padding: const EdgeInsets.all(16),
-            margin: const EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-              color: surfaceColor,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: borderColor),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                 Row(
-                  children: [
-                    Icon(Icons.schedule, color: theme.colorScheme.primary, size: 20),
-                    const SizedBox(width: 8),
-                     Text('HORARIOS DE ATENCIÓN', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: theme.colorScheme.primary, letterSpacing: 1.0)),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Expanded(
-                      child: Text('Lunes a Sábado', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
-                    ),
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF285E44),
-                        borderRadius: BorderRadius.circular(20),
+        if (privacy.showBusinessHours)
+          _EntranceAnimation(
+            delay: 300,
+            child: Container(
+               padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                color: surfaceColor,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: borderColor),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                   Row(
+                    children: [
+                      Icon(Icons.schedule, color: theme.colorScheme.primary, size: 20),
+                      const SizedBox(width: 8),
+                       Text('HORARIOS DE ATENCIÓN', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: theme.colorScheme.primary, letterSpacing: 1.0)),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Expanded(
+                        child: Text('Lunes a Sábado', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
                       ),
-                      child: const Text(
-                        '8:00 AM - 6:00 PM',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFFFFFFF),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF285E44),
+                          borderRadius: BorderRadius.circular(20),
                         ),
+                        child: const Text(
+                          '8:00 AM - 6:00 PM',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFFFFFFF),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  const Divider(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Expanded(
+                        child: Text('Domingo', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
                       ),
-                    )
-                  ],
-                ),
-                const Divider(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Expanded(
-                      child: Text('Domingo', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
-                    ),
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: isDark ? Colors.grey[800] : Colors.grey[200],
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Text('Cerrado', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey)),
-                    )
-                  ],
-                ),
-              ]
-            )
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: isDark ? Colors.grey[800] : Colors.grey[200],
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: const Text('Cerrado', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey)),
+                      )
+                    ],
+                  ),
+                ]
+              )
+            ),
           ),
-        ),
 
         // Ubicación
-        _EntranceAnimation(
-          delay: 400,
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            margin: const EdgeInsets.only(bottom: 24),
-            decoration: BoxDecoration(
-              color: surfaceColor,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: borderColor),
-            ),
-            child: Column(
-               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                 Row(
-                  children: [
-                    Icon(Icons.location_on_outlined, color: theme.colorScheme.primary, size: 20),
-                    const SizedBox(width: 8),
-                     Text('UBICACIÓN', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: theme.colorScheme.primary, letterSpacing: 1.0)),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                const Text('Valle de Santiago, Guanajuato, México', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 16),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: SizedBox(
-                     height: 180,
-                     width: double.infinity,
-                     child: Stack(
-                       fit: StackFit.expand,
-                       children: [
-                          Image.network(
-                            'https://lh3.googleusercontent.com/aida-public/AB6AXuBH7ADNB7QWvMbN33Gx_W3uAMM3kyaKNjbiBTi1fY3Sn5QlGIUG7Lfu93jpSklUVHqVn9uWyJrx-O7Kv6qwOzpFHvmeyi3gawpEQwgNo2qSJbINr_vDd-vX_eE51dy0VfjPJUd1hgMeFx3PKMmbJR4ZnDfevwnVv7g35h1NEG9lbvS3pvrQEruRanSbBeuKqi2unhwDtla0oV5ax8sxFHalcNqmYnSU_DgmqPp4VKU-sV1aO6TCrCo8PLcifbWHmKz8OaKVV_IyH7o',
-                            fit: BoxFit.cover,
-                          ),
-                          Container(color: Colors.black.withValues(alpha: 0.1)),
-                          const Center(child: Icon(Icons.location_on, color: Colors.red, size: 40)),
-                          Positioned(
-                            bottom: 12,
-                            right: 12,
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                 color: isDark ? Colors.grey[900]!.withValues(alpha: 0.8) : Colors.white.withValues(alpha: 0.8),
-                                 borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Icon(Icons.open_in_new, size: 20, color: isDark ? Colors.white : Colors.black54),
-                            )
-                          )
-                       ],
-                     )
+        if (privacy.showLocation)
+          _EntranceAnimation(
+            delay: 400,
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.only(bottom: 24),
+              decoration: BoxDecoration(
+                color: surfaceColor,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: borderColor),
+              ),
+              child: Column(
+                 crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                   Row(
+                    children: [
+                      Icon(Icons.location_on_outlined, color: theme.colorScheme.primary, size: 20),
+                      const SizedBox(width: 8),
+                       Text('UBICACIÓN', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: theme.colorScheme.primary, letterSpacing: 1.0)),
+                    ],
                   ),
-                )
-              ]
-            )
+                  const SizedBox(height: 12),
+                  const Text('Valle de Santiago, Guanajuato, México', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 16),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: SizedBox(
+                       height: 180,
+                       width: double.infinity,
+                       child: Stack(
+                         fit: StackFit.expand,
+                         children: [
+                            Image.network(
+                              'https://lh3.googleusercontent.com/aida-public/AB6AXuBH7ADNB7QWvMbN33Gx_W3uAMM3kyaKNjbiBTi1fY3Sn5QlGIUG7Lfu93jpSklUVHqVn9uWyJrx-O7Kv6qwOzpFHvmeyi3gawpEQwgNo2qSJbINr_vDd-vX_eE51dy0VfjPJUd1hgMeFx3PKMmbJR4ZnDfevwnVv7g35h1NEG9lbvS3pvrQEruRanSbBeuKqi2unhwDtla0oV5ax8sxFHalcNqmYnSU_DgmqPp4VKU-sV1aO6TCrCo8PLcifbWHmKz8OaKVV_IyH7o',
+                              fit: BoxFit.cover,
+                            ),
+                            Container(color: Colors.black.withValues(alpha: 0.1)),
+                            const Center(child: Icon(Icons.location_on, color: Colors.red, size: 40)),
+                            Positioned(
+                              bottom: 12,
+                              right: 12,
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                   color: isDark ? Colors.grey[900]!.withValues(alpha: 0.8) : Colors.white.withValues(alpha: 0.8),
+                                   borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Icon(Icons.open_in_new, size: 20, color: isDark ? Colors.white : Colors.black54),
+                              )
+                            )
+                         ],
+                       )
+                    ),
+                  )
+                ]
+              )
+            ),
+          )
+        else
+          _EntranceAnimation(
+            delay: 400,
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.only(bottom: 24),
+              decoration: BoxDecoration(
+                color: surfaceColor,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: borderColor),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.location_off_outlined, color: Colors.grey, size: 20),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'Ubicación geográfica exacta no disponible públicamente.',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
 
         // Políticas del Vendedor
         _EntranceAnimation(
@@ -2530,14 +2660,14 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> with Tick
                       fontFamily: 'Plus Jakarta Sans',
                       fontSize: 11.5,
                       fontWeight: FontWeight.bold,
-                      color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF016042),
+                      color: isDark ? const Color(0xFF67C83B) : const Color(0xFF016042),
                     ),
                   ),
                   const SizedBox(width: 4),
                   Icon(
                     isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
                     size: 16,
-                    color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF016042),
+                    color: isDark ? const Color(0xFF67C83B) : const Color(0xFF016042),
                   ),
                 ],
               ),

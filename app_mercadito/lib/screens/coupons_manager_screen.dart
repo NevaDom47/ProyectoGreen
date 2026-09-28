@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/coupon_model.dart';
 import '../services/coupons_service.dart';
 import '../widgets/coupon_stats_sheet.dart';
@@ -30,12 +31,12 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final bgColor = isDark ? const Color(0xFF0d1a15) : const Color(0xFFf8fdfb);
+    final bgColor = isDark ? const Color(0xFF162B23) : const Color(0xFFF9FAF5);
     const primaryColor = Color(0xFF016142);
-    final surfaceColor = isDark ? const Color(0xFF162520) : Colors.white;
-    final textColor = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0f172a);
-    final subtextColor = isDark ? const Color(0xFF94a3b8) : const Color(0xFF64748b);
-    final borderColor = isDark ? const Color(0xFF22382e) : primaryColor.withValues(alpha: 0.12);
+    final surfaceColor = isDark ? const Color(0xFF1E382E) : Colors.white;
+    final textColor = isDark ? Colors.white : const Color(0xFF141A15);
+    final subtextColor = isDark ? const Color(0xFF94a3b8) : const Color(0xFF435245);
+    final borderColor = isDark ? const Color(0xFF2E4E41) : const Color(0xFFD0D9CD);
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -43,43 +44,79 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
         backgroundColor: bgColor,
         elevation: 0,
         scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: primaryColor),
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              context.go('/home');
-            }
-          },
+        leading: Center(
+          child: Container(
+            width: 38,
+            height: 38,
+            margin: const EdgeInsets.only(left: 8),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1E382E) : const Color(0xFFE5F1EB),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isDark ? const Color(0xFF2E4E41) : const Color(0xFFA7E8C3),
+              ),
+            ),
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              icon: Icon(
+                Icons.arrow_back,
+                color: isDark ? const Color(0xFF67C83B) : primaryColor,
+                size: 20,
+              ),
+              onPressed: () {
+                if (context.canPop()) {
+                  context.pop();
+                } else {
+                  context.go('/home');
+                }
+              },
+            ),
+          ),
         ),
-        title: const Text(
+        title: Text(
           'Gestión de Cupones',
-          style: TextStyle(
-            fontFamily: 'Plus Jakarta Sans',
+          style: GoogleFonts.plusJakartaSans(
             fontSize: 18,
             fontWeight: FontWeight.w800,
-            color: primaryColor,
+            color: isDark ? const Color(0xFF67C83B) : primaryColor,
             letterSpacing: -0.5,
           ),
         ),
         centerTitle: false,
         actions: [
-          IconButton(
-            tooltip: 'Ayuda',
-            icon: const Icon(Icons.help_outline, color: primaryColor),
-            onPressed: () => _showHelpDialog(context),
+          Container(
+            width: 38,
+            height: 38,
+            margin: const EdgeInsets.only(right: 12),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1E382E) : const Color(0xFFE5F1EB),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isDark ? const Color(0xFF2E4E41) : const Color(0xFFA7E8C3),
+              ),
+            ),
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              tooltip: 'Ayuda',
+              icon: Icon(
+                Icons.help_outline_rounded,
+                color: isDark ? const Color(0xFF67C83B) : primaryColor,
+                size: 20,
+              ),
+              onPressed: () => _showHelpDialog(context),
+            ),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         icon: const Icon(Icons.add, size: 20),
-        label: const Text(
+        label: Text(
           'Crear cupón',
-          style: TextStyle(
-            fontFamily: 'Plus Jakarta Sans',
+          style: GoogleFonts.plusJakartaSans(
             fontWeight: FontWeight.w800,
             fontSize: 13,
           ),
@@ -120,7 +157,7 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
                   children: [
                     _buildSearchBar(isDark, surfaceColor, borderColor, textColor, subtextColor, primaryColor),
                     const SizedBox(height: 10),
-                    _buildFilterChips(isDark, primaryColor, surfaceColor, borderColor, subtextColor),
+                    _buildFilterChips(isDark, primaryColor, surfaceColor, borderColor, subtextColor, allCoupons),
                   ],
                 ),
               ),
@@ -168,14 +205,12 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
   ) {
     final activeCount = metrics['activeCount'] ?? 0;
     final usedCount = metrics['usedCount'] ?? 0;
-    final redemptionsMonth = metrics['redemptionsThisMonth'] ?? 0;
     final totalDiscount = (metrics['totalDiscount'] as num?)?.toDouble() ?? 0.0;
     final totalSales = (metrics['totalSales'] as num?)?.toDouble() ?? 0.0;
 
     final kpis = [
       {'label': 'Cupones activos', 'value': '$activeCount', 'icon': Icons.local_activity_outlined, 'color': primaryColor},
       {'label': 'Cupones utilizados', 'value': '$usedCount', 'icon': Icons.check_circle_outline, 'color': const Color(0xFF0284C7)},
-      {'label': 'Redenciones mes', 'value': '$redemptionsMonth', 'icon': Icons.calendar_month_outlined, 'color': const Color(0xFFD97706)},
       {'label': 'Descuento otorgado', 'value': 'RD\$ ${totalDiscount.toStringAsFixed(0)}', 'icon': Icons.price_change_outlined, 'color': const Color(0xFFBA1A1A)},
       {'label': 'Ventas generadas', 'value': 'RD\$ ${totalSales.toStringAsFixed(0)}', 'icon': Icons.trending_up_rounded, 'color': primaryColor},
     ];
@@ -192,16 +227,16 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
               if (i > 0) const SizedBox(width: 8),
               Container(
                 width: 146,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
                   color: surfaceColor,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: borderColor),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
-                      blurRadius: 4,
-                      offset: const Offset(0, 1),
+                      color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.025),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
@@ -215,8 +250,7 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
                         Expanded(
                           child: Text(
                             (kpis[i]['label'] as String).toUpperCase(),
-                            style: TextStyle(
-                              fontFamily: 'Plus Jakarta Sans',
+                            style: GoogleFonts.plusJakartaSans(
                               fontSize: 8.5,
                               fontWeight: FontWeight.w800,
                               color: subtextColor,
@@ -233,8 +267,7 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
                     const SizedBox(height: 3),
                     Text(
                       kpis[i]['value'] as String,
-                      style: TextStyle(
-                        fontFamily: 'Plus Jakarta Sans',
+                      style: GoogleFonts.plusJakartaSans(
                         fontSize: 15,
                         fontWeight: FontWeight.w900,
                         color: textColor,
@@ -263,25 +296,35 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
     Color primaryColor,
   ) {
     return Container(
-      height: 46,
+      height: 48,
       decoration: BoxDecoration(
         color: surfaceColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: borderColor),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: borderColor, width: 1.2),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.025),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Row(
         children: [
-          Icon(Icons.search, color: primaryColor.withValues(alpha: 0.8), size: 20),
+          Icon(Icons.search_rounded, color: primaryColor, size: 20),
           const SizedBox(width: 10),
           Expanded(
             child: TextField(
               controller: _searchController,
               onChanged: (val) => setState(() => _searchQuery = val),
-              style: TextStyle(fontFamily: 'Plus Jakarta Sans', fontSize: 13, color: textColor),
+              style: GoogleFonts.plusJakartaSans(fontSize: 13, color: textColor),
               decoration: InputDecoration(
                 hintText: 'Buscar por código, nombre o categoría...',
-                hintStyle: TextStyle(fontFamily: 'Plus Jakarta Sans', fontSize: 13, color: subtextColor),
+                hintStyle: GoogleFonts.plusJakartaSans(
+                  fontSize: 13,
+                  color: subtextColor.withValues(alpha: 0.7),
+                ),
                 border: InputBorder.none,
                 isDense: true,
               ),
@@ -293,53 +336,100 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
                 _searchController.clear();
                 _searchQuery = '';
               }),
-              child: Icon(Icons.cancel, size: 18, color: subtextColor),
+              child: Icon(Icons.cancel_rounded, size: 18, color: subtextColor),
             ),
         ],
       ),
     );
   }
 
-  // --- Filtros ---
+  // --- Filtros estilo AllTasksScreen ---
   Widget _buildFilterChips(
     bool isDark,
     Color primaryColor,
     Color surfaceColor,
     Color borderColor,
     Color subtextColor,
+    List<Coupon> allCoupons,
   ) {
-    final filters = ['Todos', 'Activos', 'Pausados', 'Finalizados'];
+    final filters = [
+      {'label': 'Todos', 'count': allCoupons.length},
+      {
+        'label': 'Activos',
+        'count': allCoupons.where((c) => c.status == CouponStatus.active).length,
+      },
+      {
+        'label': 'Pausados',
+        'count': allCoupons.where((c) => c.status == CouponStatus.paused).length,
+      },
+      {
+        'label': 'Finalizados',
+        'count': allCoupons.where((c) => c.status == CouponStatus.expired || c.status == CouponStatus.depleted).length,
+      },
+    ];
 
     return SizedBox(
-      height: 34,
+      height: 36,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
         child: Row(
           children: [
             for (int i = 0; i < filters.length; i++) ...[
               if (i > 0) const SizedBox(width: 8),
               GestureDetector(
-                onTap: () => setState(() => _selectedFilter = filters[i]),
+                onTap: () {
+                  setState(() => _selectedFilter = filters[i]['label'] as String);
+                  HapticFeedback.selectionClick();
+                },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: _selectedFilter == filters[i] ? primaryColor : surfaceColor,
+                    color: _selectedFilter == filters[i]['label']
+                        ? primaryColor
+                        : (isDark ? const Color(0xFF1E382E) : const Color(0xFFF3F6EC)),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: _selectedFilter == filters[i] ? Colors.transparent : borderColor,
+                      color: _selectedFilter == filters[i]['label']
+                          ? primaryColor
+                          : (isDark ? const Color(0xFF2E4E41) : const Color(0xFFD0D9CD)),
                     ),
                   ),
-                  child: Center(
-                    child: Text(
-                      filters[i],
-                      style: TextStyle(
-                        fontFamily: 'Plus Jakarta Sans',
-                        fontSize: 11,
-                        fontWeight: FontWeight.w800,
-                        color: _selectedFilter == filters[i] ? Colors.white : subtextColor,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        filters[i]['label'] as String,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 11.5,
+                          fontWeight: _selectedFilter == filters[i]['label'] ? FontWeight.w800 : FontWeight.w600,
+                          color: _selectedFilter == filters[i]['label']
+                              ? Colors.white
+                              : (isDark ? const Color(0xFF94a3b8) : const Color(0xFF334155)),
+                        ),
                       ),
-                    ),
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                        decoration: BoxDecoration(
+                          color: _selectedFilter == filters[i]['label']
+                              ? Colors.white.withValues(alpha: 0.25)
+                              : (isDark ? const Color(0xFF162B23) : Colors.white),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          '${filters[i]['count']}',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                            color: _selectedFilter == filters[i]['label']
+                                ? Colors.white
+                                : (isDark ? const Color(0xFF67C83B) : primaryColor),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -412,7 +502,7 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
                   Container(
                     width: 90,
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF1B2E26) : const Color(0xFFEDF3F0),
+                      color: isDark ? const Color(0xFF162B23) : const Color(0xFFF3F6EC),
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(15),
                       ),

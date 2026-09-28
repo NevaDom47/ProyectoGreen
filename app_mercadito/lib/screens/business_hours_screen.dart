@@ -107,7 +107,7 @@ class _BusinessHoursScreenState extends State<BusinessHoursScreen> {
 
     final bgColor = isDark ? const Color(0xFF0F231D) : const Color(0xFFF7FAF5);
     final cardBg = isDark ? const Color(0xFF13281E) : Colors.white;
-    final primary = isDark ? const Color(0xFF89D6B0) : const Color(0xFF016042);
+    final primary = isDark ? const Color(0xFF67C83B) : const Color(0xFF016042);
     final onSurface = isDark ? Colors.white : const Color(0xFF181D1A);
     final textVariant = isDark ? const Color(0xFFBEC9C1) : const Color(0xFF5F6368);
     final outlineVariant = isDark ? const Color(0xFF2C3E35) : const Color(0xFFD6DDD8);

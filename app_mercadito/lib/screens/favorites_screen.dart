@@ -732,7 +732,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> with TickerProviderSt
                   child: Container(
                     padding: const EdgeInsets.all(3.5),
                     decoration: BoxDecoration(
-                      color: primaryColor,
+                      color: const Color(0xFF016042),
                       borderRadius: BorderRadius.circular(6),
                       boxShadow: const [
                         BoxShadow(color: Colors.black26, blurRadius: 3),

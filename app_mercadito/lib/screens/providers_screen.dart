@@ -925,7 +925,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                               height: 180,
                               width: double.infinity,
                               color: isDark ? const Color(0xFF1a2f26) : const Color(0xFFebefea),
-                              child: Icon(Icons.storefront, size: 50, color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF285E44)),
+                              child: Icon(Icons.storefront, size: 50, color: isDark ? const Color(0xFF67C83B) : const Color(0xFF285E44)),
                             );
                           },
                         )
@@ -940,7 +940,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                                   height: 180,
                                   width: double.infinity,
                                   color: isDark ? const Color(0xFF1a2f26) : const Color(0xFFebefea),
-                                  child: Icon(Icons.storefront, size: 50, color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF285E44)),
+                                  child: Icon(Icons.storefront, size: 50, color: isDark ? const Color(0xFF67C83B) : const Color(0xFF285E44)),
                                 );
                               },
                             )
@@ -948,13 +948,13 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                               height: 180,
                               width: double.infinity,
                               color: isDark ? const Color(0xFF1a2f26) : const Color(0xFFebefea),
-                              child: Icon(Icons.storefront, size: 50, color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF285E44)),
+                              child: Icon(Icons.storefront, size: 50, color: isDark ? const Color(0xFF67C83B) : const Color(0xFF285E44)),
                             )))
                   : Container(
                       height: 180,
                       width: double.infinity,
                       color: isDark ? const Color(0xFF1a2f26) : const Color(0xFFebefea),
-                      child: Icon(Icons.storefront, size: 50, color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF285E44)),
+                      child: Icon(Icons.storefront, size: 50, color: isDark ? const Color(0xFF67C83B) : const Color(0xFF285E44)),
                     ),
               ),
               if (provider['verified'])

@@ -36,12 +36,12 @@ class _LanguageScreenState extends State<LanguageScreen> {
         final platformBrightness = MediaQuery.platformBrightnessOf(context);
         final isDark = currentMode == ThemeMode.dark || (currentMode == ThemeMode.system && platformBrightness == Brightness.dark);
         
-        final bgColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFf7faf5);
-        final primaryColor = const Color(0xFF00462f);
-        final textColor = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0f172a);
-        final subtextColor = isDark ? const Color(0xFF64748b) : const Color(0xFF64748b);
-        final borderColor = isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.05);
-        final vividGreen = const Color(0xFF10B981);
+        final bgColor = isDark ? const Color(0xFF101815) : const Color(0xFFF7F9F8);
+        final primaryColor = isDark ? const Color(0xFF67C83B) : const Color(0xFF016042);
+        final textColor = isDark ? const Color(0xFFF1F5F3) : const Color(0xFF20262B);
+        final subtextColor = isDark ? const Color(0xFFAAB8B1) : const Color(0xFF697177);
+        final borderColor = isDark ? const Color(0xFF2B3A34) : const Color(0xFFE2E7E4);
+        final vividGreen = isDark ? const Color(0xFF67C83B) : const Color(0xFF10B981);
 
         final filteredLanguages = _languages.where((lang) {
           return lang.toLowerCase().contains(_searchQuery.toLowerCase());

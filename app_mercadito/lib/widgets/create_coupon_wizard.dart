@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/coupon_model.dart';
 import '../services/coupons_service.dart';
 
@@ -124,10 +125,12 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     const primary = Color(0xFF016142);
-    final bg = isDark ? const Color(0xFF0d1a15) : Colors.white;
-    final text = isDark ? Colors.white : const Color(0xFF0f172a);
-    final subtext = isDark ? const Color(0xFF94a3b8) : const Color(0xFF64748b);
-    final border = isDark ? const Color(0xFF22382e) : const Color(0xFFE2E8F0);
+    final bg = isDark ? const Color(0xFF162B23) : const Color(0xFFF9FAF5);
+    final text = isDark ? Colors.white : const Color(0xFF141A15);
+    final subtext = isDark ? const Color(0xFF94A3B8) : const Color(0xFF435245);
+    final border = isDark ? const Color(0xFF2E4E41) : const Color(0xFFD0D9CD);
+    final mintContainer = isDark ? const Color(0xFF1E382E) : const Color(0xFFE5F1EB);
+    final mintBorder = isDark ? const Color(0xFF2E6348) : const Color(0xFFA7E8C3);
 
     return DraggableScrollableSheet(
       initialChildSize: 0.9,
@@ -148,31 +151,61 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                   height: 4,
                   margin: const EdgeInsets.only(top: 12, bottom: 8),
                   decoration: BoxDecoration(
-                    color: subtext.withValues(alpha: 0.4),
+                    color: subtext.withValues(alpha: 0.35),
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
               ),
 
-              // Top Title
+              // Top Title Bar
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      widget.initialCoupon != null ? 'Editar Cupón' : 'Crear Nuevo Cupón',
-                      style: TextStyle(
-                        fontFamily: 'Plus Jakarta Sans',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        color: text,
-                      ),
+                    Row(
+                      children: [
+                        Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: mintContainer,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            icon: const Icon(Icons.close_rounded, size: 20, color: primary),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          widget.initialCoupon != null ? 'Editar Cupón' : 'Crear Nuevo Cupón',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.5,
+                            color: text,
+                          ),
+                        ),
+                      ],
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                      color: subtext,
+                    // Live Step pill badge
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: mintContainer,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: mintBorder),
+                      ),
+                      child: Text(
+                        'Paso $_currentStep de 4',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          color: primary,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -181,7 +214,10 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
               // Stepper Indicator (1 a 4)
               _buildStepIndicator(primary, isDark),
 
-              const Divider(height: 1),
+              Divider(
+                height: 1,
+                color: isDark ? const Color(0xFF2E4E41) : const Color(0xFFD0D9CD).withValues(alpha: 0.5),
+              ),
 
               // Content of current step
               Expanded(
@@ -198,7 +234,7 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
               ),
 
               // Bottom Navigation Bar (Atrás / Siguiente / Guardar)
-              _buildBottomControls(primary, subtext),
+              _buildBottomControls(primary, subtext, border, isDark),
             ],
           ),
         );
@@ -212,11 +248,11 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
       child: Row(
         children: [
           _stepNode(1, 'Básico', primary, isDark),
-          _stepLine(1, primary),
+          _stepLine(1, primary, isDark),
           _stepNode(2, 'Beneficio', primary, isDark),
-          _stepLine(2, primary),
+          _stepLine(2, primary, isDark),
           _stepNode(3, 'Reglas', primary, isDark),
-          _stepLine(3, primary),
+          _stepLine(3, primary, isDark),
           _stepNode(4, 'Segmento', primary, isDark),
         ],
       ),
@@ -228,53 +264,67 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
     final isCurrent = _currentStep == step;
 
     Color circleColor;
-    Color iconColor;
+    Color textColor;
+    Border? border;
 
-    if (isDone || isCurrent) {
+    if (isCurrent) {
       circleColor = primary;
-      iconColor = Colors.white;
+      textColor = Colors.white;
+    } else if (isDone) {
+      circleColor = isDark ? const Color(0xFF1E382E) : const Color(0xFFD1FAE5);
+      textColor = primary;
     } else {
-      circleColor = isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0);
-      iconColor = isDark ? Colors.grey[400]! : const Color(0xFF64748B);
+      circleColor = isDark ? const Color(0xFF1E382E) : const Color(0xFFF3F6EC);
+      textColor = isDark ? Colors.grey[400]! : const Color(0xFF435245);
+      border = Border.all(color: isDark ? const Color(0xFF2E4E41) : const Color(0xFFD0D9CD));
     }
 
     return Expanded(
       child: InkWell(
         onTap: () => setState(() => _currentStep = step),
+        borderRadius: BorderRadius.circular(12),
         child: Column(
           children: [
             Container(
-              width: 28,
-              height: 28,
+              width: 30,
+              height: 30,
               decoration: BoxDecoration(
                 color: circleColor,
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(10),
+                border: border,
+                boxShadow: isCurrent
+                    ? [
+                        BoxShadow(
+                          color: primary.withValues(alpha: 0.28),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ]
+                    : null,
               ),
               child: Center(
                 child: isDone
-                    ? const Icon(Icons.check, size: 16, color: Colors.white)
+                    ? Icon(Icons.check_rounded, size: 16, color: primary)
                     : Text(
                         '$step',
-                        style: TextStyle(
-                          fontFamily: 'Plus Jakarta Sans',
+                        style: GoogleFonts.plusJakartaSans(
                           fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: iconColor,
+                          fontWeight: FontWeight.w800,
+                          color: textColor,
                         ),
                       ),
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 5),
             Text(
               label,
-              style: TextStyle(
-                fontFamily: 'Plus Jakarta Sans',
-                fontSize: 10,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 11,
                 fontWeight: isCurrent ? FontWeight.w800 : FontWeight.w600,
-                color: isCurrent ? primary : Colors.grey,
+                color: isCurrent
+                    ? primary
+                    : (isDark ? Colors.grey[400] : const Color(0xFF435245)),
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
@@ -282,13 +332,19 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
     );
   }
 
-  Widget _stepLine(int afterStep, Color primary) {
+  Widget _stepLine(int afterStep, Color primary, bool isDark) {
     final isDone = _currentStep > afterStep;
-    return Container(
-      width: 24,
-      height: 2,
-      margin: const EdgeInsets.only(bottom: 14),
-      color: isDone ? primary : const Color(0xFFCBD5E1),
+    return Expanded(
+      child: Container(
+        height: 2.5,
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+          color: isDone
+              ? primary
+              : (isDark ? const Color(0xFF2E4E41) : const Color(0xFFD0D9CD)),
+          borderRadius: BorderRadius.circular(2),
+        ),
+      ),
     );
   }
 
@@ -299,8 +355,7 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
       children: [
         Text(
           'Paso 1 — Información básica',
-          style: TextStyle(
-            fontFamily: 'Plus Jakarta Sans',
+          style: GoogleFonts.plusJakartaSans(
             fontSize: 16,
             fontWeight: FontWeight.w800,
             color: text,
@@ -308,28 +363,52 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
         ),
         const SizedBox(height: 4),
         Text(
-          'Define el nombre comercial y el código que usarán tus clientes.',
-          style: TextStyle(fontSize: 13, color: subtext),
+          'Define el título descriptivo, código de canje y categoría comercial.',
+          style: GoogleFonts.plusJakartaSans(fontSize: 13, color: subtext),
         ),
         const SizedBox(height: 20),
 
-        // Nombre
-        Text('Nombre de la promoción',
-            style: TextStyle(fontFamily: 'Plus Jakarta Sans', fontSize: 12, fontWeight: FontWeight.bold, color: text)),
+        // Título del cupón
+        Text(
+          'Título de la promoción / cupón *',
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            color: text,
+          ),
+        ),
         const SizedBox(height: 6),
         TextField(
           controller: _titleController,
+          style: GoogleFonts.plusJakartaSans(fontSize: 13, color: text),
           decoration: InputDecoration(
-            hintText: 'Ej. Feria de Septiembre, Cosecha Fresca',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            hintText: 'Ej. 10% Descuento de Temporada',
+            hintStyle: GoogleFonts.plusJakartaSans(fontSize: 13, color: subtext.withValues(alpha: 0.6)),
+            filled: true,
+            fillColor: isDark ? const Color(0xFF1E382E) : Colors.white,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide(color: border, width: 1.2),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide(color: primary, width: 1.8),
+            ),
           ),
         ),
 
         const SizedBox(height: 18),
 
         // Código del cupón
-        Text('Código del cupón',
-            style: TextStyle(fontFamily: 'Plus Jakarta Sans', fontSize: 12, fontWeight: FontWeight.bold, color: text)),
+        Text(
+          'Código del cupón',
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            color: text,
+          ),
+        ),
         const SizedBox(height: 6),
         Row(
           children: [
@@ -337,28 +416,49 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
               child: TextField(
                 controller: _codeController,
                 textCapitalization: TextCapitalization.characters,
-                style: const TextStyle(
-                  fontFamily: 'Plus Jakarta Sans',
+                style: GoogleFonts.plusJakartaSans(
                   fontWeight: FontWeight.w800,
-                  letterSpacing: 1.0,
+                  letterSpacing: 1.2,
+                  fontSize: 14,
+                  color: text,
                 ),
                 decoration: InputDecoration(
                   hintText: 'Ej. SEPTIEMBRE10',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  hintStyle: GoogleFonts.plusJakartaSans(fontSize: 13, color: subtext.withValues(alpha: 0.6)),
+                  filled: true,
+                  fillColor: isDark ? const Color(0xFF1E382E) : Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide(color: border, width: 1.2),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide(color: primary, width: 1.8),
+                  ),
                 ),
               ),
             ),
             const SizedBox(width: 10),
             ElevatedButton.icon(
               icon: const Icon(Icons.refresh_rounded, size: 16),
-              label: const Text('Generar'),
+              label: Text(
+                'Generar',
+                style: GoogleFonts.plusJakartaSans(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 12,
+                ),
+              ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: primary.withValues(alpha: 0.12),
-                foregroundColor: primary,
+                backgroundColor: isDark ? const Color(0xFF1E382E) : const Color(0xFFE5F1EB),
+                foregroundColor: isDark ? const Color(0xFF67C83B) : primary,
+                side: BorderSide(
+                  color: isDark ? const Color(0xFF2E6348) : const Color(0xFFA7E8C3),
+                ),
                 minimumSize: const Size(0, 48),
                 elevation: 0,
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
               onPressed: _generateRandomCode,
             ),
@@ -368,21 +468,39 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
         const SizedBox(height: 18),
 
         // Categoría
-        Text('Categoría de productos',
-            style: TextStyle(fontFamily: 'Plus Jakarta Sans', fontSize: 12, fontWeight: FontWeight.bold, color: text)),
+        Text(
+          'Categoría de productos',
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            color: text,
+          ),
+        ),
         const SizedBox(height: 6),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: border),
+            color: isDark ? const Color(0xFF1E382E) : Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: border, width: 1.2),
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               value: _selectedCategory,
               isExpanded: true,
+              dropdownColor: isDark ? const Color(0xFF1E382E) : Colors.white,
               items: _categories.map((cat) {
-                return DropdownMenuItem(value: cat, child: Text(cat, style: const TextStyle(fontSize: 13)));
+                return DropdownMenuItem(
+                  value: cat,
+                  child: Text(
+                    cat,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: text,
+                    ),
+                  ),
+                );
               }).toList(),
               onChanged: (val) {
                 if (val != null) setState(() => _selectedCategory = val);
@@ -401,55 +519,156 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
       children: [
         Text(
           'Paso 2 — ¿Qué beneficio obtiene el comprador?',
-          style: TextStyle(
-            fontFamily: 'Plus Jakarta Sans',
+          style: GoogleFonts.plusJakartaSans(
             fontSize: 16,
             fontWeight: FontWeight.w800,
+            letterSpacing: -0.3,
             color: text,
           ),
         ),
         const SizedBox(height: 4),
         Text(
           'Selecciona la modalidad de beneficio o descuento que aplicará el cupón.',
-          style: TextStyle(fontSize: 13, color: subtext),
+          style: GoogleFonts.plusJakartaSans(fontSize: 12.5, color: subtext, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 20),
 
-        // Selector de modalidades
+        // Selector de modalidades estilo tarjetas de misiones
         Column(
           children: CouponBenefitType.values.map((type) {
             final isSelected = _selectedBenefitType == type;
-            return InkWell(
-              borderRadius: BorderRadius.circular(12),
-              onTap: () => setState(() => _selectedBenefitType = type),
-              child: Container(
-                margin: const EdgeInsets.only(bottom: 8),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: isSelected ? primary : border, width: isSelected ? 1.8 : 1.0),
-                  color: isSelected ? primary.withValues(alpha: 0.06) : Colors.transparent,
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
-                      color: isSelected ? primary : border,
-                      size: 20,
+
+            IconData iconData;
+            Color iconBg;
+            Color iconColor;
+            String typeDesc;
+
+            switch (type) {
+              case CouponBenefitType.percentage:
+                iconData = Icons.percent_rounded;
+                iconBg = isDark ? const Color(0xFF1E382E) : const Color(0xFFE5F1EB);
+                iconColor = isDark ? const Color(0xFF67C83B) : primary;
+                typeDesc = 'Descuento porcentual sobre el valor de la compra';
+                break;
+              case CouponBenefitType.fixedAmount:
+                iconData = Icons.monetization_on_rounded;
+                iconBg = isDark ? const Color(0xFF332617) : const Color(0xFFFEF3C7);
+                iconColor = isDark ? const Color(0xFFFBBF24) : const Color(0xFFD97706);
+                typeDesc = 'Monto fijo exacto a rebajar del total en RD\$';
+                break;
+              case CouponBenefitType.freeShipping:
+                iconData = Icons.local_shipping_rounded;
+                iconBg = isDark ? const Color(0xFF162520) : const Color(0xFFE0F2FE);
+                iconColor = isDark ? const Color(0xFF38BDF8) : const Color(0xFF0284C7);
+                typeDesc = 'Envío o transporte bonificado al 100%';
+                break;
+              case CouponBenefitType.twoForOne:
+                iconData = Icons.repeat_rounded;
+                iconBg = isDark ? const Color(0xFF1E293B) : const Color(0xFFDBEAFE);
+                iconColor = isDark ? const Color(0xFF60A5FA) : const Color(0xFF1D4ED8);
+                typeDesc = 'Lleva 2 y paga 1 en productos seleccionados';
+                break;
+              case CouponBenefitType.giftProduct:
+                iconData = Icons.card_giftcard_rounded;
+                iconBg = isDark ? const Color(0xFF2E1A38) : const Color(0xFFF3E8FF);
+                iconColor = isDark ? const Color(0xFFC084FC) : const Color(0xFF9333EA);
+                typeDesc = 'Obsequio o producto de cortesía adicional';
+                break;
+              case CouponBenefitType.specialPrice:
+                iconData = Icons.sell_rounded;
+                iconBg = isDark ? const Color(0xFF132E2B) : const Color(0xFFCCFBF1);
+                iconColor = isDark ? const Color(0xFF5EEAD4) : const Color(0xFF0F766E);
+                typeDesc = 'Tarifa especial o precio promocional por unidad';
+                break;
+            }
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(18),
+                onTap: () => setState(() => _selectedBenefitType = type),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? (isDark ? const Color(0xFF1E382E) : const Color(0xFFF0FDF4))
+                        : (isDark ? const Color(0xFF1E382E) : Colors.white),
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(
+                      color: isSelected
+                          ? primary
+                          : border.withValues(alpha: 0.7),
+                      width: isSelected ? 1.8 : 1.0,
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        type.label,
-                        style: TextStyle(
-                          fontFamily: 'Plus Jakarta Sans',
-                          fontSize: 14,
-                          fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
-                          color: text,
+                    boxShadow: [
+                      BoxShadow(
+                        color: isSelected
+                            ? primary.withValues(alpha: 0.12)
+                            : Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      // Badge ícono 44x44
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: iconBg,
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Icon(iconData, size: 22, color: iconColor),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              type.label,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 13.5,
+                                color: text,
+                              ),
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              typeDesc,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 11.5,
+                                color: subtext,
+                                height: 1.25,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 10),
+                      // Radio indicador estilo tareas
+                      Container(
+                        width: 22,
+                        height: 22,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isSelected ? primary : Colors.transparent,
+                          border: Border.all(
+                            color: isSelected ? primary : border,
+                            width: 1.8,
+                          ),
+                        ),
+                        child: isSelected
+                            ? const Center(
+                                child: Icon(Icons.circle, size: 8, color: Colors.white),
+                              )
+                            : null,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
@@ -458,48 +677,90 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
 
         const SizedBox(height: 16),
 
-        // Campo numérico si es porcentaje o monto
+        // Inputs dinámicos según el tipo de beneficio seleccionado
         if (_selectedBenefitType == CouponBenefitType.percentage ||
             _selectedBenefitType == CouponBenefitType.fixedAmount) ...[
           Text(
             _selectedBenefitType == CouponBenefitType.percentage
-                ? 'Porcentaje de descuento (%)'
-                : 'Monto fijo a descontar (RD\$)',
-            style: TextStyle(fontFamily: 'Plus Jakarta Sans', fontSize: 12, fontWeight: FontWeight.bold, color: text),
+                ? 'Valor del porcentaje de descuento (%) *'
+                : 'Monto de descuento directo (RD\$) *',
+            style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w700, color: text),
           ),
           const SizedBox(height: 6),
           TextField(
             controller: _benefitValueController,
             keyboardType: TextInputType.number,
+            style: GoogleFonts.plusJakartaSans(fontSize: 13, color: text),
             decoration: InputDecoration(
               suffixText: _selectedBenefitType == CouponBenefitType.percentage ? '%' : 'RD\$',
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              suffixStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold, color: primary),
+              hintText: _selectedBenefitType == CouponBenefitType.percentage ? '10' : '200',
+              hintStyle: GoogleFonts.plusJakartaSans(fontSize: 13, color: subtext.withValues(alpha: 0.6)),
+              filled: true,
+              fillColor: isDark ? const Color(0xFF1E382E) : Colors.white,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(color: border, width: 1.2),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(color: primary, width: 1.8),
+              ),
             ),
           ),
         ],
 
         if (_selectedBenefitType == CouponBenefitType.giftProduct) ...[
-          Text('Nombre del producto de regalo',
-              style: TextStyle(fontFamily: 'Plus Jakarta Sans', fontSize: 12, fontWeight: FontWeight.bold, color: text)),
+          Text(
+            'Nombre del producto de regalo',
+            style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w700, color: text),
+          ),
           const SizedBox(height: 6),
           TextField(
             controller: _giftNameController,
+            style: GoogleFonts.plusJakartaSans(fontSize: 13, color: text),
             decoration: InputDecoration(
               hintText: 'Ej. 1 Canasta de fresas de cortesía',
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              hintStyle: GoogleFonts.plusJakartaSans(fontSize: 13, color: subtext.withValues(alpha: 0.6)),
+              filled: true,
+              fillColor: isDark ? const Color(0xFF1E382E) : Colors.white,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(color: border, width: 1.2),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(color: primary, width: 1.8),
+              ),
             ),
           ),
         ],
 
         if (_selectedBenefitType == CouponBenefitType.specialPrice) ...[
-          Text('Etiqueta o precio especial',
-              style: TextStyle(fontFamily: 'Plus Jakarta Sans', fontSize: 12, fontWeight: FontWeight.bold, color: text)),
+          Text(
+            'Etiqueta o precio especial',
+            style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w700, color: text),
+          ),
           const SizedBox(height: 6),
           TextField(
             controller: _specialPriceLabelController,
+            style: GoogleFonts.plusJakartaSans(fontSize: 13, color: text),
             decoration: InputDecoration(
               hintText: 'Ej. RD\$ 35 / KG en Tomate',
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              hintStyle: GoogleFonts.plusJakartaSans(fontSize: 13, color: subtext.withValues(alpha: 0.6)),
+              filled: true,
+              fillColor: isDark ? const Color(0xFF1E382E) : Colors.white,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(color: border, width: 1.2),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(color: primary, width: 1.8),
+              ),
             ),
           ),
         ],
@@ -524,24 +785,24 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
       children: [
         Text(
           'Paso 3 — Reglas del cupón',
-          style: TextStyle(
-            fontFamily: 'Plus Jakarta Sans',
+          style: GoogleFonts.plusJakartaSans(
             fontSize: 16,
             fontWeight: FontWeight.w800,
+            letterSpacing: -0.3,
             color: text,
           ),
         ),
         const SizedBox(height: 4),
         Text(
           'Establece límites de uso, compra mínima, productos aplicables y vigencia.',
-          style: TextStyle(fontSize: 13, color: subtext),
+          style: GoogleFonts.plusJakartaSans(fontSize: 12.5, color: subtext, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 20),
 
         // Ámbito de aplicación (Todos o Específicos)
         Text(
           '¿Dónde aplica el cupón?',
-          style: TextStyle(fontFamily: 'Plus Jakarta Sans', fontSize: 12, fontWeight: FontWeight.bold, color: text),
+          style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w700, color: text),
         ),
         const SizedBox(height: 8),
         Row(
@@ -549,31 +810,52 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
             Expanded(
               child: GestureDetector(
                 onTap: () => setState(() => _selectedScope = CouponScope.allProducts),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: _selectedScope == CouponScope.allProducts ? primary : border,
                       width: _selectedScope == CouponScope.allProducts ? 1.8 : 1.0,
                     ),
-                    color: _selectedScope == CouponScope.allProducts ? primary.withValues(alpha: 0.1) : Colors.transparent,
+                    color: _selectedScope == CouponScope.allProducts
+                        ? (isDark ? const Color(0xFF1E382E) : const Color(0xFFF0FDF4))
+                        : (isDark ? const Color(0xFF1E382E) : Colors.white),
+                    boxShadow: [
+                      BoxShadow(
+                        color: _selectedScope == CouponScope.allProducts
+                            ? primary.withValues(alpha: 0.08)
+                            : Colors.black.withValues(alpha: 0.025),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Column(
                     children: [
-                      Icon(
-                        Icons.select_all,
-                        size: 20,
-                        color: _selectedScope == CouponScope.allProducts ? primary : subtext,
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: _selectedScope == CouponScope.allProducts
+                              ? (isDark ? const Color(0xFF1E382E) : const Color(0xFFE5F1EB))
+                              : (isDark ? const Color(0xFF162B23) : const Color(0xFFF3F6EC)),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(
+                          Icons.select_all_rounded,
+                          size: 22,
+                          color: _selectedScope == CouponScope.allProducts ? primary : subtext,
+                        ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 8),
                       Text(
                         'Todos los productos',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Plus Jakarta Sans',
-                          fontSize: 12,
-                          fontWeight: _selectedScope == CouponScope.allProducts ? FontWeight.w800 : FontWeight.w500,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 12.5,
+                          fontWeight: _selectedScope == CouponScope.allProducts ? FontWeight.w800 : FontWeight.w700,
                           color: _selectedScope == CouponScope.allProducts ? primary : text,
                         ),
                       ),
@@ -581,42 +863,63 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                       Text(
                         'Sin distinción de producto',
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 10, color: subtext),
+                        style: GoogleFonts.plusJakartaSans(fontSize: 10.5, color: subtext, fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 10),
             Expanded(
               child: GestureDetector(
                 onTap: () => setState(() => _selectedScope = CouponScope.specificProducts),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: _selectedScope == CouponScope.specificProducts ? primary : border,
                       width: _selectedScope == CouponScope.specificProducts ? 1.8 : 1.0,
                     ),
-                    color: _selectedScope == CouponScope.specificProducts ? primary.withValues(alpha: 0.1) : Colors.transparent,
+                    color: _selectedScope == CouponScope.specificProducts
+                        ? (isDark ? const Color(0xFF1E382E) : const Color(0xFFF0FDF4))
+                        : (isDark ? const Color(0xFF1E382E) : Colors.white),
+                    boxShadow: [
+                      BoxShadow(
+                        color: _selectedScope == CouponScope.specificProducts
+                            ? primary.withValues(alpha: 0.08)
+                            : Colors.black.withValues(alpha: 0.025),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Column(
                     children: [
-                      Icon(
-                        Icons.checklist_outlined,
-                        size: 20,
-                        color: _selectedScope == CouponScope.specificProducts ? primary : subtext,
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: _selectedScope == CouponScope.specificProducts
+                              ? (isDark ? const Color(0xFF1E382E) : const Color(0xFFE5F1EB))
+                              : (isDark ? const Color(0xFF162B23) : const Color(0xFFF3F6EC)),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(
+                          Icons.checklist_rounded,
+                          size: 22,
+                          color: _selectedScope == CouponScope.specificProducts ? primary : subtext,
+                        ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 8),
                       Text(
                         'Productos específicos',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Plus Jakarta Sans',
-                          fontSize: 12,
-                          fontWeight: _selectedScope == CouponScope.specificProducts ? FontWeight.w800 : FontWeight.w500,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 12.5,
+                          fontWeight: _selectedScope == CouponScope.specificProducts ? FontWeight.w800 : FontWeight.w700,
                           color: _selectedScope == CouponScope.specificProducts ? primary : text,
                         ),
                       ),
@@ -624,7 +927,7 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                       Text(
                         'Detalle o al por mayor',
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 10, color: subtext),
+                        style: GoogleFonts.plusJakartaSans(fontSize: 10.5, color: subtext, fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
@@ -638,10 +941,10 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
         if (_selectedScope == CouponScope.specificProducts) ...[
           const SizedBox(height: 14),
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF162520) : const Color(0xFFF6FAF7),
-              borderRadius: BorderRadius.circular(14),
+              color: isDark ? const Color(0xFF1E382E) : const Color(0xFFF3F6EC),
+              borderRadius: BorderRadius.circular(18),
               border: Border.all(color: border),
             ),
             child: Column(
@@ -652,40 +955,41 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                   children: [
                     Text(
                       'Catálogo de Productos',
-                      style: TextStyle(
-                        fontFamily: 'Plus Jakarta Sans',
+                      style: GoogleFonts.plusJakartaSans(
                         fontSize: 13,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w800,
                         color: text,
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3.5),
                       decoration: BoxDecoration(
-                        color: primary.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(8),
+                        color: isDark ? const Color(0xFF162B23) : const Color(0xFFE5F1EB),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: isDark ? const Color(0xFF2E6348) : const Color(0xFFA7E8C3),
+                        ),
                       ),
                       child: Text(
                         '${_selectedProductIds.length} selec.',
-                        style: TextStyle(
-                          fontFamily: 'Plus Jakarta Sans',
+                        style: GoogleFonts.plusJakartaSans(
                           fontSize: 11,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w800,
                           color: primary,
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 TextField(
                   controller: _productSearchController,
                   onChanged: (_) => setState(() {}),
-                  style: TextStyle(fontSize: 13, color: text),
+                  style: GoogleFonts.plusJakartaSans(fontSize: 13, color: text),
                   decoration: InputDecoration(
                     hintText: 'Buscar por nombre o SKU...',
-                    hintStyle: TextStyle(fontSize: 12, color: subtext),
-                    prefixIcon: const Icon(Icons.search, size: 18),
+                    hintStyle: GoogleFonts.plusJakartaSans(fontSize: 12, color: subtext.withValues(alpha: 0.6)),
+                    prefixIcon: const Icon(Icons.search_rounded, size: 18),
                     suffixIcon: _productSearchController.text.isNotEmpty
                         ? IconButton(
                             icon: const Icon(Icons.clear, size: 16),
@@ -694,11 +998,15 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                         : null,
                     isDense: true,
                     filled: true,
-                    fillColor: isDark ? const Color(0xFF0F172A) : Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                    fillColor: isDark ? const Color(0xFF162B23) : Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: primary, width: 1.8),
                     ),
                   ),
                 ),
@@ -718,7 +1026,7 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                       },
                       child: Text(
                         _selectedProductIds.length == filteredProducts.length ? 'Desmarcar todos' : 'Marcar todos',
-                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: primary),
+                        style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.w800, color: primary),
                       ),
                     ),
                   ],
@@ -732,14 +1040,14 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                           child: Center(
                             child: Text(
                               'No se encontraron productos coincidentes',
-                              style: TextStyle(fontSize: 12, color: subtext),
+                              style: GoogleFonts.plusJakartaSans(fontSize: 12, color: subtext),
                             ),
                           ),
                         )
                       : ListView.separated(
                           shrinkWrap: true,
                           itemCount: filteredProducts.length,
-                          separatorBuilder: (context, index) => const Divider(height: 1),
+                          separatorBuilder: (context, index) => Divider(height: 1, color: border.withValues(alpha: 0.4)),
                           itemBuilder: (context, idx) {
                             final prod = filteredProducts[idx];
                             final id = prod['id'] as String;
@@ -784,10 +1092,9 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                                         children: [
                                           Text(
                                             prod['name'] as String,
-                                            style: TextStyle(
-                                              fontFamily: 'Plus Jakarta Sans',
+                                            style: GoogleFonts.plusJakartaSans(
                                               fontSize: 12,
-                                              fontWeight: FontWeight.bold,
+                                              fontWeight: FontWeight.w700,
                                               color: text,
                                             ),
                                           ),
@@ -802,8 +1109,7 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                                                 ),
                                                 child: Text(
                                                   '#${prod['sku']}',
-                                                  style: TextStyle(
-                                                    fontFamily: 'monospace',
+                                                  style: GoogleFonts.plusJakartaSans(
                                                     fontSize: 10,
                                                     fontWeight: FontWeight.w600,
                                                     color: isDark ? Colors.grey[300] : const Color(0xFF475569),
@@ -826,9 +1132,9 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                                                 ),
                                                 child: Text(
                                                   prod['modality'] as String,
-                                                  style: TextStyle(
+                                                  style: GoogleFonts.plusJakartaSans(
                                                     fontSize: 10,
-                                                    fontWeight: FontWeight.bold,
+                                                    fontWeight: FontWeight.w800,
                                                     color: isWholesale ? const Color(0xFF0369A1) : const Color(0xFF059669),
                                                   ),
                                                 ),
@@ -840,9 +1146,9 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                                     ),
                                     Text(
                                       prod['priceFormatted'] as String,
-                                      style: TextStyle(
+                                      style: GoogleFonts.plusJakartaSans(
                                         fontSize: 11,
-                                        fontWeight: FontWeight.bold,
+                                        fontWeight: FontWeight.w800,
                                         color: primary,
                                       ),
                                     ),
@@ -861,16 +1167,30 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
         const SizedBox(height: 18),
 
         // Compra Mínima
-        Text('Compra mínima requerida (RD\$)',
-            style: TextStyle(fontFamily: 'Plus Jakarta Sans', fontSize: 12, fontWeight: FontWeight.bold, color: text)),
+        Text(
+          'Compra mínima requerida (RD\$)',
+          style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w700, color: text),
+        ),
         const SizedBox(height: 6),
         TextField(
           controller: _minPurchaseController,
           keyboardType: TextInputType.number,
+          style: GoogleFonts.plusJakartaSans(fontSize: 13, color: text),
           decoration: InputDecoration(
             prefixText: 'RD\$ ',
+            prefixStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700, color: primary),
             hintText: '1500',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            filled: true,
+            fillColor: isDark ? const Color(0xFF1E382E) : Colors.white,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide(color: border, width: 1.2),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide(color: primary, width: 1.8),
+            ),
           ),
         ),
 
@@ -883,16 +1203,28 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Usos máximos totales',
-                      style: TextStyle(
-                          fontFamily: 'Plus Jakarta Sans', fontSize: 12, fontWeight: FontWeight.bold, color: text)),
+                  Text(
+                    'Usos máximos totales',
+                    style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w700, color: text),
+                  ),
                   const SizedBox(height: 6),
                   TextField(
                     controller: _totalUsageLimitController,
                     keyboardType: TextInputType.number,
+                    style: GoogleFonts.plusJakartaSans(fontSize: 13, color: text),
                     decoration: InputDecoration(
                       hintText: '100',
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      filled: true,
+                      fillColor: isDark ? const Color(0xFF1E382E) : Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: BorderSide(color: border, width: 1.2),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: BorderSide(color: primary, width: 1.8),
+                      ),
                     ),
                   ),
                 ],
@@ -903,16 +1235,28 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Usos por comprador',
-                      style: TextStyle(
-                          fontFamily: 'Plus Jakarta Sans', fontSize: 12, fontWeight: FontWeight.bold, color: text)),
+                  Text(
+                    'Usos por comprador',
+                    style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w700, color: text),
+                  ),
                   const SizedBox(height: 6),
                   TextField(
                     controller: _usagePerBuyerController,
                     keyboardType: TextInputType.number,
+                    style: GoogleFonts.plusJakartaSans(fontSize: 13, color: text),
                     decoration: InputDecoration(
                       hintText: '1',
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      filled: true,
+                      fillColor: isDark ? const Color(0xFF1E382E) : Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: BorderSide(color: border, width: 1.2),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: BorderSide(color: primary, width: 1.8),
+                      ),
                     ),
                   ),
                 ],
@@ -924,22 +1268,26 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
         const SizedBox(height: 18),
 
         // Vigencia
-        Text('Vigencia del cupón',
-            style: TextStyle(fontFamily: 'Plus Jakarta Sans', fontSize: 12, fontWeight: FontWeight.bold, color: text)),
+        Text(
+          'Vigencia del cupón',
+          style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w700, color: text),
+        ),
         const SizedBox(height: 8),
         Row(
           children: [
             Expanded(
               child: OutlinedButton.icon(
-                icon: const Icon(Icons.calendar_month, size: 16),
+                icon: const Icon(Icons.calendar_month_rounded, size: 16),
                 label: Text(
                   '${_startDate.day}/${_startDate.month}/${_startDate.year}',
-                  style: const TextStyle(fontSize: 12),
+                  style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w700),
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: text,
-                  side: BorderSide(color: border),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  backgroundColor: isDark ? const Color(0xFF1E382E) : Colors.white,
+                  side: BorderSide(color: border, width: 1.2),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                 ),
                 onPressed: () async {
                   final picked = await showDatePicker(
@@ -952,21 +1300,26 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                 },
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text('hasta'),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                'hasta',
+                style: GoogleFonts.plusJakartaSans(fontSize: 11.5, color: subtext, fontWeight: FontWeight.w600),
+              ),
             ),
             Expanded(
               child: OutlinedButton.icon(
-                icon: const Icon(Icons.calendar_month, size: 16),
+                icon: const Icon(Icons.calendar_month_rounded, size: 16),
                 label: Text(
                   '${_endDate.day}/${_endDate.month}/${_endDate.year}',
-                  style: const TextStyle(fontSize: 12),
+                  style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w700),
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: text,
-                  side: BorderSide(color: border),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  backgroundColor: isDark ? const Color(0xFF1E382E) : Colors.white,
+                  side: BorderSide(color: border, width: 1.2),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                 ),
                 onPressed: () async {
                   final picked = await showDatePicker(
@@ -984,50 +1337,75 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
 
         const SizedBox(height: 16),
 
-        // Días de la semana con nombres completos
-        Text('Días válidos de la semana (opcional)',
-            style: TextStyle(fontFamily: 'Plus Jakarta Sans', fontSize: 12, fontWeight: FontWeight.bold, color: text)),
+        // Días de la semana con nombres completos (estilo Chips de Tareas)
+        Text(
+          'Días válidos de la semana (opcional)',
+          style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w700, color: text),
+        ),
         const SizedBox(height: 4),
-        Text('Si no seleccionas ninguno, el cupón será válido todos los días.',
-            style: TextStyle(fontSize: 11, color: subtext)),
+        Text(
+          'Si no seleccionas ninguno, el cupón será válido todos los días.',
+          style: GoogleFonts.plusJakartaSans(fontSize: 11, color: subtext, fontWeight: FontWeight.w500),
+        ),
         const SizedBox(height: 8),
         Wrap(
-          spacing: 6,
-          runSpacing: 6,
+          spacing: 8,
+          runSpacing: 8,
           children: [
             for (int d = 1; d <= 7; d++)
-              FilterChip(
-                label: Text([
-                  'Lunes',
-                  'Martes',
-                  'Miércoles',
-                  'Jueves',
-                  'Viernes',
-                  'Sábado',
-                  'Domingo'
-                ][d - 1]),
-                selected: _selectedDays.contains(d),
-                selectedColor: primary.withValues(alpha: 0.15),
-                checkmarkColor: primary,
-                backgroundColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
-                labelStyle: TextStyle(
-                  color: _selectedDays.contains(d) ? primary : text,
-                  fontWeight: _selectedDays.contains(d) ? FontWeight.bold : FontWeight.w500,
-                  fontSize: 12,
-                ),
-                side: BorderSide(
-                  color: _selectedDays.contains(d) ? primary : border,
-                ),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                onSelected: (selected) {
+              InkWell(
+                onTap: () {
                   setState(() {
-                    if (selected) {
-                      _selectedDays.add(d);
-                    } else {
+                    if (_selectedDays.contains(d)) {
                       _selectedDays.remove(d);
+                    } else {
+                      _selectedDays.add(d);
                     }
                   });
                 },
+                borderRadius: BorderRadius.circular(20),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: _selectedDays.contains(d)
+                        ? primary
+                        : (isDark ? const Color(0xFF1E382E) : const Color(0xFFF3F6EC)),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: _selectedDays.contains(d)
+                          ? primary
+                          : (isDark ? const Color(0xFF2E4E41) : const Color(0xFFD0D9CD)),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (_selectedDays.contains(d)) ...[
+                        const Icon(Icons.check_rounded, size: 14, color: Colors.white),
+                        const SizedBox(width: 5),
+                      ],
+                      Text(
+                        [
+                          'Lunes',
+                          'Martes',
+                          'Miércoles',
+                          'Jueves',
+                          'Viernes',
+                          'Sábado',
+                          'Domingo'
+                        ][d - 1],
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 11.5,
+                          fontWeight: _selectedDays.contains(d) ? FontWeight.w800 : FontWeight.w600,
+                          color: _selectedDays.contains(d)
+                              ? Colors.white
+                              : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF334155)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
           ],
         ),
@@ -1057,8 +1435,7 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
       children: [
         Text(
           'Paso 4 — ¿Quién puede utilizar este cupón?',
-          style: TextStyle(
-            fontFamily: 'Plus Jakarta Sans',
+          style: GoogleFonts.plusJakartaSans(
             fontSize: 16,
             fontWeight: FontWeight.w800,
             color: text,
@@ -1067,31 +1444,45 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
         const SizedBox(height: 4),
         Text(
           'Segmenta la audiencia para transformar tus cupones en una herramienta de fidelización.',
-          style: TextStyle(fontSize: 13, color: subtext),
+          style: GoogleFonts.plusJakartaSans(fontSize: 13, color: subtext),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 14),
 
-        // Explicación de negociación
+        // Explicación de negociación estilo AllTasksScreen
         Container(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: primary.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: primary.withValues(alpha: 0.2)),
+            color: isDark ? const Color(0xFF1E382E) : const Color(0xFFE5F1EB),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isDark ? const Color(0xFF2E4E41) : const Color(0xFFA7E8C3),
+              width: 1.2,
+            ),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.handshake_outlined, size: 18, color: primary),
-              const SizedBox(width: 8),
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF162B23) : Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(Icons.handshake_rounded, size: 20, color: primary),
+              ),
+              const SizedBox(width: 12),
               Expanded(
                 child: RichText(
                   text: TextSpan(
-                    style: TextStyle(fontSize: 11, color: text, height: 1.3),
+                    style: GoogleFonts.plusJakartaSans(fontSize: 12, color: text, height: 1.35),
                     children: [
                       TextSpan(
                         text: '¿Qué es una negociación? ',
-                        style: TextStyle(fontWeight: FontWeight.bold, color: primary),
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w800,
+                          color: primary,
+                        ),
                       ),
                       const TextSpan(
                         text: 'Consiste en haber cerrado y completado un trato o pedido comercial con su negocio.',
@@ -1112,88 +1503,132 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
             String audienceTitle;
             String audienceDescription;
             IconData iconData;
+            Color iconBg;
+            Color iconColor;
 
             switch (aud) {
               case CouponAudience.allBuyers:
                 audienceTitle = 'Todos los compradores';
                 audienceDescription = 'Cualquier usuario puede usarlo ingresando o copiando el código manualmente.';
-                iconData = Icons.public;
+                iconData = Icons.public_rounded;
+                iconBg = isDark ? const Color(0xFF1E382E) : const Color(0xFFE5F1EB);
+                iconColor = isDark ? const Color(0xFF67C83B) : primary;
                 break;
               case CouponAudience.newBuyers:
                 audienceTitle = 'Nuevos compradores';
                 audienceDescription = 'Se envía automáticamente a clientes que apenas cerraron 1 negociación con usted.';
-                iconData = Icons.person_add_outlined;
+                iconData = Icons.person_add_alt_1_rounded;
+                iconBg = isDark ? const Color(0xFF1E293B) : const Color(0xFFDBEAFE);
+                iconColor = isDark ? const Color(0xFF60A5FA) : const Color(0xFF1D4ED8);
                 break;
               case CouponAudience.frequentBuyers:
                 audienceTitle = 'Compradores frecuentes';
                 audienceDescription = 'Se envía automáticamente a clientes con más de 2 negociaciones cerradas.';
-                iconData = Icons.loyalty_outlined;
+                iconData = Icons.loyalty_rounded;
+                iconBg = isDark ? const Color(0xFF332617) : const Color(0xFFFEF3C7);
+                iconColor = isDark ? const Color(0xFFFBBF24) : const Color(0xFFD97706);
                 break;
               case CouponAudience.inactiveBuyers:
                 audienceTitle = 'Recuperación de clientes inactivos';
                 audienceDescription = 'Se envía automáticamente a clientes que cerraron negociaciones en el pasado pero llevan días inactivos.';
-                iconData = Icons.history_toggle_off;
+                iconData = Icons.history_toggle_off_rounded;
+                iconBg = isDark ? const Color(0xFF2E1A38) : const Color(0xFFF3E8FF);
+                iconColor = isDark ? const Color(0xFFC084FC) : const Color(0xFF9333EA);
                 break;
               case CouponAudience.selectedBuyers:
                 audienceTitle = 'Compradores seleccionados';
                 audienceDescription = 'Selecciona manualmente a qué compradores específicos con negociaciones cerradas asignar este cupón.';
-                iconData = Icons.how_to_reg_outlined;
+                iconData = Icons.how_to_reg_rounded;
+                iconBg = isDark ? const Color(0xFF132E2B) : const Color(0xFFCCFBF1);
+                iconColor = isDark ? const Color(0xFF5EEAD4) : const Color(0xFF0F766E);
                 break;
             }
 
-            return InkWell(
-              borderRadius: BorderRadius.circular(12),
-              onTap: () => setState(() => _selectedAudience = aud),
-              child: Container(
-                margin: const EdgeInsets.only(bottom: 10),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: isSelected ? primary : border, width: isSelected ? 1.8 : 1.0),
-                  color: isSelected ? primary.withValues(alpha: 0.06) : Colors.transparent,
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: Icon(
-                        isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
-                        color: isSelected ? primary : border,
-                        size: 20,
-                      ),
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(18),
+                onTap: () => setState(() => _selectedAudience = aud),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? (isDark ? const Color(0xFF1E382E) : const Color(0xFFF0FDF4))
+                        : (isDark ? const Color(0xFF1E382E) : Colors.white),
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(
+                      color: isSelected ? primary : border.withValues(alpha: 0.7),
+                      width: isSelected ? 1.8 : 1.0,
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(iconData, size: 16, color: isSelected ? primary : subtext),
-                              const SizedBox(width: 6),
-                              Expanded(
-                                child: Text(
-                                  audienceTitle,
-                                  style: TextStyle(
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontSize: 13,
-                                    fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                                    color: text,
-                                  ),
-                                ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: isSelected
+                            ? primary.withValues(alpha: 0.12)
+                            : Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      // Badge ícono 44x44
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: iconBg,
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Icon(iconData, size: 22, color: iconColor),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              audienceTitle,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 13.5,
+                                color: text,
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            audienceDescription,
-                            style: TextStyle(fontSize: 11.5, color: subtext, height: 1.25),
-                          ),
-                        ],
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              audienceDescription,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 11.5,
+                                color: subtext,
+                                height: 1.25,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 10),
+                      // Radio indicador estilo tareas
+                      Container(
+                        width: 22,
+                        height: 22,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isSelected ? primary : Colors.transparent,
+                          border: Border.all(
+                            color: isSelected ? primary : border,
+                            width: 1.8,
+                          ),
+                        ),
+                        child: isSelected
+                            ? const Center(
+                                child: Icon(Icons.circle, size: 8, color: Colors.white),
+                              )
+                            : null,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
@@ -1204,36 +1639,44 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
         if (_selectedAudience == CouponAudience.inactiveBuyers) ...[
           const SizedBox(height: 8),
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF162520) : const Color(0xFFF6FAF7),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: border),
+              color: isDark ? const Color(0xFF1E382E) : const Color(0xFFF3F6EC),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: isDark ? const Color(0xFF2E4E41) : const Color(0xFFD0D9CD)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Días de inactividad requeridos (umbral)',
-                  style: TextStyle(fontFamily: 'Plus Jakarta Sans', fontSize: 12, fontWeight: FontWeight.bold, color: text),
+                  style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w800, color: text),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'Clientes con negociaciones cerradas previas pero sin pedidos en este período:',
-                  style: TextStyle(fontSize: 11, color: subtext),
+                  style: GoogleFonts.plusJakartaSans(fontSize: 11.5, color: subtext),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 TextField(
                   controller: _inactiveDaysController,
                   keyboardType: TextInputType.number,
-                  style: TextStyle(fontSize: 13, color: text),
+                  style: GoogleFonts.plusJakartaSans(fontSize: 13, color: text),
                   decoration: InputDecoration(
                     suffixText: 'días de inactividad',
+                    suffixStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700, color: primary),
                     hintText: '15',
-                    isDense: true,
                     filled: true,
-                    fillColor: isDark ? const Color(0xFF0F172A) : Colors.white,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                    fillColor: isDark ? const Color(0xFF162B23) : Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide(color: border, width: 1.2),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide(color: primary, width: 1.8),
+                    ),
                   ),
                 ),
               ],
@@ -1245,11 +1688,11 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
         if (_selectedAudience == CouponAudience.selectedBuyers) ...[
           const SizedBox(height: 8),
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF162520) : const Color(0xFFF6FAF7),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: border),
+              color: isDark ? const Color(0xFF1E382E) : const Color(0xFFF3F6EC),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: isDark ? const Color(0xFF2E4E41) : const Color(0xFFD0D9CD)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1260,55 +1703,60 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                     Expanded(
                       child: Text(
                         'Compradores con Negociaciones',
-                        style: TextStyle(
-                          fontFamily: 'Plus Jakarta Sans',
+                        style: GoogleFonts.plusJakartaSans(
                           fontSize: 13,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w800,
                           color: text,
                         ),
                       ),
                     ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: primary.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(8),
+                        color: isDark ? const Color(0xFF162B23) : const Color(0xFFE5F1EB),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: isDark ? const Color(0xFF2E4E41) : const Color(0xFFA7E8C3),
+                        ),
                       ),
                       child: Text(
                         '${_selectedBuyerIds.length} selec.',
-                        style: TextStyle(
-                          fontFamily: 'Plus Jakarta Sans',
+                        style: GoogleFonts.plusJakartaSans(
                           fontSize: 11,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w800,
                           color: primary,
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 TextField(
                   controller: _buyerSearchController,
                   onChanged: (_) => setState(() {}),
-                  style: TextStyle(fontSize: 13, color: text),
+                  style: GoogleFonts.plusJakartaSans(fontSize: 13, color: text),
                   decoration: InputDecoration(
                     hintText: 'Buscar comprador o negocio...',
-                    hintStyle: TextStyle(fontSize: 12, color: subtext),
-                    prefixIcon: const Icon(Icons.search, size: 18),
+                    hintStyle: GoogleFonts.plusJakartaSans(fontSize: 12, color: subtext.withValues(alpha: 0.6)),
+                    prefixIcon: const Icon(Icons.search_rounded, size: 18),
                     suffixIcon: _buyerSearchController.text.isNotEmpty
                         ? IconButton(
-                            icon: const Icon(Icons.clear, size: 16),
+                            icon: const Icon(Icons.clear_rounded, size: 16),
                             onPressed: () => setState(() => _buyerSearchController.clear()),
                           )
                         : null,
                     isDense: true,
                     filled: true,
-                    fillColor: isDark ? const Color(0xFF0F172A) : Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                    fillColor: isDark ? const Color(0xFF162B23) : Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: primary, width: 1.8),
                     ),
                   ),
                 ),
@@ -1328,28 +1776,31 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                       },
                       child: Text(
                         _selectedBuyerIds.length == filteredBuyers.length ? 'Desmarcar todos' : 'Marcar todos',
-                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: primary),
+                        style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.w800, color: primary),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 6),
                 Container(
-                  constraints: const BoxConstraints(maxHeight: 220),
+                  constraints: const BoxConstraints(maxHeight: 230),
                   child: filteredBuyers.isEmpty
                       ? Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          padding: const EdgeInsets.symmetric(vertical: 24),
                           child: Center(
                             child: Text(
                               'No se encontraron compradores',
-                              style: TextStyle(fontSize: 12, color: subtext),
+                              style: GoogleFonts.plusJakartaSans(fontSize: 12, color: subtext),
                             ),
                           ),
                         )
                       : ListView.separated(
                           shrinkWrap: true,
                           itemCount: filteredBuyers.length,
-                          separatorBuilder: (context, index) => const Divider(height: 1),
+                          separatorBuilder: (context, index) => Divider(
+                            height: 1,
+                            color: isDark ? const Color(0xFF2E4E41) : const Color(0xFFD0D9CD).withValues(alpha: 0.5),
+                          ),
                           itemBuilder: (context, idx) {
                             final buyer = filteredBuyers[idx];
                             final id = (buyer['id'] ?? '').toString();
@@ -1359,6 +1810,7 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                             final isSelected = _selectedBuyerIds.contains(id);
 
                             return InkWell(
+                              borderRadius: BorderRadius.circular(10),
                               onTap: () {
                                 setState(() {
                                   if (isSelected) {
@@ -1369,7 +1821,7 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                                 });
                               },
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                                 child: Row(
                                   children: [
                                     SizedBox(
@@ -1378,6 +1830,7 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                                       child: Checkbox(
                                         value: isSelected,
                                         activeColor: primary,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                                         onChanged: (val) {
                                           setState(() {
                                             if (val == true) {
@@ -1389,39 +1842,44 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                                         },
                                       ),
                                     ),
-                                    const SizedBox(width: 8),
-                                    CircleAvatar(
-                                      radius: 14,
-                                      backgroundColor: primary.withValues(alpha: 0.15),
-                                      child: Text(
-                                        buyerName.isNotEmpty ? buyerName[0].toUpperCase() : 'C',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                          color: primary,
+                                    const SizedBox(width: 10),
+                                    Container(
+                                      width: 32,
+                                      height: 32,
+                                      decoration: BoxDecoration(
+                                        color: isDark ? const Color(0xFF162B23) : const Color(0xFFE5F1EB),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          buyerName.isNotEmpty ? buyerName[0].toUpperCase() : 'C',
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontWeight: FontWeight.w800,
+                                            fontSize: 12,
+                                            color: primary,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(width: 8),
+                                    const SizedBox(width: 10),
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             buyerName,
-                                            style: TextStyle(
-                                              fontFamily: 'Plus Jakarta Sans',
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontSize: 12.5,
+                                              fontWeight: FontWeight.w800,
                                               color: text,
                                             ),
                                           ),
+                                          const SizedBox(height: 1),
                                           Text(
                                             id,
-                                            style: TextStyle(
-                                              fontFamily: 'Plus Jakarta Sans',
+                                            style: GoogleFonts.plusJakartaSans(
                                               fontSize: 10.5,
-                                              fontWeight: FontWeight.w600,
+                                              fontWeight: FontWeight.w700,
                                               color: subtext,
                                             ),
                                           ),
@@ -1432,24 +1890,27 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                                       crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
                                         Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
+                                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
                                           decoration: BoxDecoration(
-                                            color: const Color(0xFF016142).withValues(alpha: 0.1),
-                                            borderRadius: BorderRadius.circular(4),
+                                            color: isDark ? const Color(0xFF162B23) : const Color(0xFFE5F1EB),
+                                            borderRadius: BorderRadius.circular(8),
+                                            border: Border.all(
+                                              color: isDark ? const Color(0xFF2E4E41) : const Color(0xFFA7E8C3),
+                                            ),
                                           ),
                                           child: Text(
                                             '${buyer['closedNegotiations']} tratos',
-                                            style: const TextStyle(
+                                            style: GoogleFonts.plusJakartaSans(
                                               fontSize: 9.5,
-                                              fontWeight: FontWeight.bold,
-                                              color: Color(0xFF016142),
+                                              fontWeight: FontWeight.w800,
+                                              color: primary,
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(height: 2),
+                                        const SizedBox(height: 3),
                                         Text(
                                           'Hace ${buyer['lastNegotiationDaysAgo']}d',
-                                          style: TextStyle(fontSize: 9.5, color: subtext),
+                                          style: GoogleFonts.plusJakartaSans(fontSize: 10, color: subtext),
                                         ),
                                       ],
                                     ),
@@ -1469,20 +1930,16 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
   }
 
   // --- BOTONES INFERIORES ---
-  Widget _buildBottomControls(Color primary, Color subtext) {
+  Widget _buildBottomControls(Color primary, Color subtext, Color border, bool isDark) {
     final isLastStep = _currentStep == 4;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? const Color(0xFF162520)
-            : const Color(0xFFF6FAF7),
+        color: isDark ? const Color(0xFF162B23) : const Color(0xFFF9FAF5),
         border: Border(
           top: BorderSide(
-            color: Theme.of(context).brightness == Brightness.dark
-                ? const Color(0xFF22382e)
-                : const Color(0xFFE2E8F0),
+            color: isDark ? const Color(0xFF2E4E41) : const Color(0xFFD0D9CD).withValues(alpha: 0.8),
           ),
         ),
       ),
@@ -1490,34 +1947,49 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
         children: [
           if (_currentStep > 1) ...[
             OutlinedButton.icon(
-              icon: const Icon(Icons.arrow_back, size: 16),
-              label: const Text('Atrás'),
+              icon: const Icon(Icons.arrow_back_rounded, size: 16),
+              label: Text(
+                'Atrás',
+                style: GoogleFonts.plusJakartaSans(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 13,
+                ),
+              ),
               style: OutlinedButton.styleFrom(
                 foregroundColor: primary,
-                side: BorderSide(color: primary),
+                backgroundColor: isDark ? const Color(0xFF1E382E) : const Color(0xFFE5F1EB),
+                side: BorderSide(color: isDark ? const Color(0xFF2E4E41) : const Color(0xFFA7E8C3), width: 1.2),
                 minimumSize: const Size(0, 48),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
               onPressed: () => setState(() => _currentStep--),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 12),
           ],
           Expanded(
             child: ElevatedButton.icon(
-              icon: Icon(isLastStep ? Icons.check_circle : Icons.arrow_forward, size: 16),
+              icon: Icon(isLastStep ? Icons.check_circle_rounded : Icons.arrow_forward_rounded, size: 16),
               label: FittedBox(
                 fit: BoxFit.scaleDown,
-                child: Text(isLastStep
-                    ? (widget.initialCoupon != null ? 'Guardar Cambios' : 'Guardar Cupón (Pausado)')
-                    : 'Siguiente'),
+                child: Text(
+                  isLastStep
+                      ? (widget.initialCoupon != null ? 'Guardar Cambios' : 'Guardar Cupón (Pausado)')
+                      : 'Siguiente',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 13.5,
+                  ),
+                ),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: primary,
                 foregroundColor: Colors.white,
+                elevation: 0,
+                shadowColor: primary.withValues(alpha: 0.4),
                 minimumSize: const Size(0, 48),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
               onPressed: () {
                 if (isLastStep) {

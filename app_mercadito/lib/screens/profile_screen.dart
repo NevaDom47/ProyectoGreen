@@ -436,20 +436,70 @@ class ProfileScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _buildSettingsTile('Vendedores seguidos', Icons.group, theme, isDark, true, onTap: () => context.push('/followed-sellers')),
-          _buildSettingsTile('Mis Reseñas', Icons.reviews, theme, isDark, true, onTap: () => context.push('/my-reviews')),
-          _buildSettingsTile('Privacidad del perfil', Icons.lock, theme, isDark, true, onTap: () => context.push('/privacy')),
-          _buildSettingsTile('Configuración de cuenta', Icons.settings, theme, isDark, false, onTap: () => context.push('/account-config')),
+          _buildSettingsTile(
+            context,
+            'Proveedores seguidos',
+            Icons.group,
+            theme,
+            isDark,
+            true,
+            enabled: false,
+            badgeText: 'Inhabilitado',
+          ),
+          _buildSettingsTile(context, 'Mis Reseñas', Icons.reviews, theme, isDark, true, onTap: () => context.push('/my-reviews')),
+          _buildSettingsTile(context, 'Privacidad del perfil', Icons.lock, theme, isDark, true, onTap: () => context.push('/privacy')),
+          _buildSettingsTile(context, 'Configuración de cuenta', Icons.settings, theme, isDark, false, onTap: () => context.push('/account-config')),
         ],
       ),
     );
   }
 
-  Widget _buildSettingsTile(String title, IconData icon, ThemeData theme, bool isDark, bool hasBorder, {VoidCallback? onTap}) {
+  Widget _buildSettingsTile(
+    BuildContext context,
+    String title,
+    IconData icon,
+    ThemeData theme,
+    bool isDark,
+    bool hasBorder, {
+    VoidCallback? onTap,
+    bool enabled = true,
+    String? badgeText,
+  }) {
+    final textColor = enabled
+        ? (isDark ? Colors.white : Colors.black87)
+        : (isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8));
+    final iconColor = enabled
+        ? theme.colorScheme.primary
+        : (isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8));
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onTap ?? () {},
+        onTap: enabled
+            ? (onTap ?? () {})
+            : () {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Row(
+                      children: [
+                        Icon(Icons.info_outline, color: Colors.white, size: 20),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            'La opción de proveedores seguidos está inhabilitada por el momento.',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                    backgroundColor: const Color(0xFF285E44),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           decoration: BoxDecoration(
@@ -457,12 +507,48 @@ class ProfileScreen extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(icon, color: theme.colorScheme.primary, size: 24),
+              Icon(icon, color: iconColor, size: 24),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: isDark ? Colors.white : Colors.black87)),
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        title,
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: textColor),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    if (badgeText != null) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: isDark ? const Color(0xFF23352B) : const Color(0xFFF1F5F9),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: isDark ? const Color(0xFF334E40) : const Color(0xFFCBD5E1),
+                            width: 0.8,
+                          ),
+                        ),
+                        child: Text(
+                          badgeText,
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ),
-              Icon(Icons.chevron_right, color: Colors.grey[400]),
+              Icon(
+                enabled ? Icons.chevron_right : Icons.lock_outline_rounded,
+                color: enabled ? Colors.grey[400] : (isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8)),
+                size: enabled ? 24 : 18,
+              ),
             ],
           ),
         ),

@@ -426,7 +426,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> with TickerProviderStat
 
             if (isCompleted) {
               badgeBg = isDark ? const Color(0xFF1E382E) : const Color(0xFFD1FAE5);
-              badgeText = isDark ? const Color(0xFF89D6B0) : AppTheme.primary;
+              badgeText = isDark ? const Color(0xFF67C83B) : AppTheme.primary;
               statusText = 'COMPLETADO';
             } else if (isReclamable) {
               badgeBg = isDark ? const Color(0xFF332617) : const Color(0xFFFEF3C7);
@@ -831,7 +831,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> with TickerProviderStat
                   },
                   icon: Icon(
                     Icons.arrow_back,
-                    color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                    color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                     size: 20,
                   ),
                   style: IconButton.styleFrom(
@@ -854,7 +854,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> with TickerProviderStat
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
                           letterSpacing: -0.5,
-                          color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                          color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -874,20 +874,13 @@ class _AllTasksScreenState extends State<AllTasksScreen> with TickerProviderStat
             ),
           ),
           const SizedBox(width: 8),
-          // Live points badge
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF1E382E) : const Color(0xFFEBF7F0),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: isDark ? const Color(0xFF2E6348) : const Color(0xFFA7E8C3),
-              ),
-            ),
+          // Live points (solo icono y texto, sin background)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.stars_rounded, color: Color(0xFFD97706), size: 16),
+                const Icon(Icons.stars_rounded, color: Color(0xFFD97706), size: 18),
                 const SizedBox(width: 5),
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 300),
@@ -896,9 +889,9 @@ class _AllTasksScreenState extends State<AllTasksScreen> with TickerProviderStat
                     '$_totalPoints Pts',
                     key: ValueKey<int>(_totalPoints),
                     style: GoogleFonts.plusJakartaSans(
-                      fontSize: 12,
+                      fontSize: 14,
                       fontWeight: FontWeight.w800,
-                      color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                      color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                     ),
                   ),
                 ),
@@ -955,7 +948,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> with TickerProviderStat
             style: GoogleFonts.plusJakartaSans(
               fontSize: 11,
               fontWeight: FontWeight.w800,
-              color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+              color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
             ),
           ),
         ),
@@ -1032,7 +1025,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> with TickerProviderStat
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 18,
                     fontWeight: FontWeight.w900,
-                    color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                    color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                   ),
                 ),
               ),
@@ -1217,7 +1210,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> with TickerProviderStat
                           fontWeight: FontWeight.w800,
                           color: isSelected
                               ? Colors.white
-                              : (isDark ? const Color(0xFF89D6B0) : AppTheme.primary),
+                              : (isDark ? const Color(0xFF67C83B) : AppTheme.primary),
                         ),
                       ),
                     ),
@@ -1293,7 +1286,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> with TickerProviderStat
 
     if (isCompleted) {
       badgeBg = isDark ? const Color(0xFF1E382E) : const Color(0xFFD1FAE5);
-      badgeText = isDark ? const Color(0xFF89D6B0) : AppTheme.primary;
+      badgeText = isDark ? const Color(0xFF67C83B) : AppTheme.primary;
       statusText = 'COMPLETADO';
     } else if (isReclamable) {
       badgeBg = isDark ? const Color(0xFF332617) : const Color(0xFFFEF3C7);

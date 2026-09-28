@@ -553,7 +553,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
     // Premium Emerald Harvest colors
     final bgColor = isDark ? const Color(0xFF0f231d) : const Color(0xFFf7faf5);
     final cardBgColor = isDark ? const Color(0xFF0f172a) : Colors.white;
-    final primaryColor = isDark ? const Color(0xFF89d6b0) : const Color(0xFF285E44);
+    final primaryColor = isDark ? const Color(0xFF67C83B) : const Color(0xFF285E44);
     final onSurfaceColor = isDark ? Colors.white : const Color(0xFF181d1a);
     final onSurfaceVariantColor = isDark ? const Color(0xFFbec9c1) : const Color(0xFF3f4943);
 
@@ -1536,7 +1536,7 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
                         fontSize: 11,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 0.8,
-                        color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF285E44),
+                        color: isDark ? const Color(0xFF67C83B) : const Color(0xFF285E44),
                       ),
                     ),
                     Text(
@@ -2492,6 +2492,15 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
             isDark,
             true,
             onTap: () => _showEditProfileModal(context, isDark),
+          ),
+          _buildSettingsTile(
+            'Privacidad del Perfil',
+            Icons.lock_outline,
+            primaryColor,
+            onSurfaceColor,
+            isDark,
+            true,
+            onTap: () => context.push('/privacy'),
           ),
           _buildSettingsTile(
             'Ajustes de Cuenta General',

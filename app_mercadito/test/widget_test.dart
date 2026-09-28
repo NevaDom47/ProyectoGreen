@@ -34,4 +34,27 @@ void main() {
     expect(find.text('Proveedores'), findsOneWidget);
     expect(find.text('Chats'), findsOneWidget);
   });
+
+  testWidgets('CustomBottomNavBar executes animation showing pending chats and new users on Home', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          bottomNavigationBar: CustomBottomNavBar(
+            currentIndex: 0,
+            pendingChatsCount: 3,
+            newUsersCount: 2,
+          ),
+        ),
+      ),
+    );
+
+    // Initial frame
+    await tester.pump();
+    // Advance time for the Future.delayed entrance trigger (400ms + animation 500ms)
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pump(const Duration(milliseconds: 500));
+
+    expect(find.text('3 en curso'), findsOneWidget);
+    expect(find.text('2 nuevos'), findsOneWidget);
+  });
 }

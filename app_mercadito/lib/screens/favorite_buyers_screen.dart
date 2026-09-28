@@ -77,13 +77,13 @@ class _FavoriteBuyersScreenState extends State<FavoriteBuyersScreen> with Single
         elevation: 0,
         scrolledUnderElevation: 1,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: isDark ? const Color(0xFF89d6b0) : primaryGreen),
+          icon: Icon(Icons.arrow_back, color: isDark ? const Color(0xFF67C83B) : primaryGreen),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'Compradores',
           style: GoogleFonts.plusJakartaSans(
-            color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+            color: isDark ? const Color(0xFF67C83B) : primaryGreen,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
@@ -217,7 +217,7 @@ class _FavoriteBuyersScreenState extends State<FavoriteBuyersScreen> with Single
           ),
           prefixIcon: Icon(
             Icons.search_rounded,
-            color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+            color: isDark ? const Color(0xFF67C83B) : primaryGreen,
             size: 22,
           ),
           suffixIcon: _searchQuery.isNotEmpty
@@ -461,7 +461,7 @@ class _FavoriteBuyersScreenState extends State<FavoriteBuyersScreen> with Single
                                 fontFamily: 'Courier',
                                 fontSize: 9.5,
                                 fontWeight: FontWeight.bold,
-                                color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+                                color: isDark ? const Color(0xFF67C83B) : primaryGreen,
                               ),
                             ),
                           ),
@@ -512,7 +512,7 @@ class _FavoriteBuyersScreenState extends State<FavoriteBuyersScreen> with Single
                 const SizedBox(width: 6),
                 _buildMiniMetric(
                   icon: Icons.handshake_outlined,
-                  iconColor: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+                  iconColor: isDark ? const Color(0xFF67C83B) : primaryGreen,
                   text: '$negotiations negociaciones',
                   isDark: isDark,
                 ),

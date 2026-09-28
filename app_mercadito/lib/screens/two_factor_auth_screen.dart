@@ -22,7 +22,7 @@ class _TwoFactorAuthScreenState extends State<TwoFactorAuthScreen> {
     final bgColor = isDark ? const Color(0xFF0f231d) : const Color(0xFFf7faf5);
     final surfaceColor = isDark ? const Color(0xFF1c2c26) : Colors.white;
     final onSurfaceColor = isDark ? const Color(0xFFeef2ed) : const Color(0xFF181d1a);
-    final secondaryTextColor = isDark ? const Color(0xFF89d6b0) : const Color(0xFF486456);
+    final secondaryTextColor = isDark ? const Color(0xFF67C83B) : const Color(0xFF486456);
     final outlineColor = isDark ? Colors.white.withValues(alpha: 0.1) : const Color(0xFFbec9c1).withValues(alpha: 0.2);
 
     return Scaffold(
@@ -32,13 +32,13 @@ class _TwoFactorAuthScreenState extends State<TwoFactorAuthScreen> {
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: isDark ? const Color(0xFF89d6b0) : primaryGreen),
+          icon: Icon(Icons.arrow_back, color: isDark ? const Color(0xFF67C83B) : primaryGreen),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'Autenticación en 2 pasos',
           style: GoogleFonts.plusJakartaSans(
-            color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+            color: isDark ? const Color(0xFF67C83B) : primaryGreen,
             fontWeight: FontWeight.w800,
             fontSize: 20,
             letterSpacing: -0.5,
@@ -62,7 +62,7 @@ class _TwoFactorAuthScreenState extends State<TwoFactorAuthScreen> {
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 28,
                           fontWeight: FontWeight.w800,
-                          color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+                          color: isDark ? const Color(0xFF67C83B) : primaryGreen,
                           letterSpacing: -0.8,
                         ),
                       ),
@@ -201,7 +201,7 @@ class _TwoFactorAuthScreenState extends State<TwoFactorAuthScreen> {
                         subtitle,
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 12,
-                          color: isDark ? const Color(0xFF89d6b0).withValues(alpha: 0.7) : Colors.grey[600],
+                          color: isDark ? const Color(0xFF67C83B).withValues(alpha: 0.7) : Colors.grey[600],
                         ),
                       ),
                     ],

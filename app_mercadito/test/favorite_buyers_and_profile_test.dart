@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:app_mercadito/data/global_state.dart';
 import 'package:app_mercadito/screens/buyer_profile_screen.dart';
 import 'package:app_mercadito/screens/favorite_buyers_screen.dart';
-import 'package:app_mercadito/screens/home_feed_screen.dart';
 import 'package:app_mercadito/screens/direct_profile_review_screen.dart';
 import 'package:app_mercadito/theme/app_theme.dart';
 import 'package:app_mercadito/services/user_session.dart';

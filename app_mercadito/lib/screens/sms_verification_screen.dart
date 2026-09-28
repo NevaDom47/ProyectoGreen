@@ -34,7 +34,7 @@ class _SmsVerificationScreenState extends State<SmsVerificationScreen> {
     final primaryGreen = const Color(0xFF00462f);
     final primaryContainer = const Color(0xFF036042);
     final onSurfaceVariant = isDark ? const Color(0xFFa0afa6) : const Color(0xFF3f4943);
-    final secondary = isDark ? const Color(0xFF89d6b0) : const Color(0xFF486456);
+    final secondary = isDark ? const Color(0xFF67C83B) : const Color(0xFF486456);
     final surfaceContainerLow = isDark ? const Color(0xFF18241e) : const Color(0xFFf1f4f0);
     final outlineVariant = isDark ? Colors.white.withValues(alpha: 0.1) : const Color(0xFFbec9c1).withValues(alpha: 0.2);
 
@@ -45,13 +45,13 @@ class _SmsVerificationScreenState extends State<SmsVerificationScreen> {
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: isDark ? const Color(0xFF89d6b0) : primaryGreen),
+          icon: Icon(Icons.arrow_back, color: isDark ? const Color(0xFF67C83B) : primaryGreen),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'Mensaje de texto',
           style: GoogleFonts.plusJakartaSans(
-            color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+            color: isDark ? const Color(0xFF67C83B) : primaryGreen,
             fontWeight: FontWeight.w800,
             fontSize: 20,
             letterSpacing: -0.5,
@@ -80,7 +80,7 @@ class _SmsVerificationScreenState extends State<SmsVerificationScreen> {
                           width: 80,
                           height: 80,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF89d6b0).withValues(alpha: 0.2),
+                            color: const Color(0xFF67C83B).withValues(alpha: 0.2),
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -113,7 +113,7 @@ class _SmsVerificationScreenState extends State<SmsVerificationScreen> {
                           ],
                         ),
                         child: Center(
-                          child: Icon(Icons.chat_outlined, size: 48, color: isDark ? const Color(0xFF89d6b0) : primaryGreen),
+                          child: Icon(Icons.chat_outlined, size: 48, color: isDark ? const Color(0xFF67C83B) : primaryGreen),
                         ),
                       ),
                     ],
@@ -126,7 +126,7 @@ class _SmsVerificationScreenState extends State<SmsVerificationScreen> {
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 24,
                     fontWeight: FontWeight.w800,
-                    color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+                    color: isDark ? const Color(0xFF67C83B) : primaryGreen,
                     letterSpacing: -0.5,
                   ),
                 ),
@@ -184,7 +184,7 @@ class _SmsVerificationScreenState extends State<SmsVerificationScreen> {
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+                                color: isDark ? const Color(0xFF67C83B) : primaryGreen,
                                 height: 1.0,
                               ),
                               decoration: const InputDecoration(
@@ -246,7 +246,7 @@ class _SmsVerificationScreenState extends State<SmsVerificationScreen> {
                                 const TextSpan(text: 'Resend code in '),
                                 TextSpan(
                                   text: '00:54',
-                                  style: TextStyle(fontWeight: FontWeight.bold, color: isDark ? const Color(0xFF89d6b0) : primaryGreen),
+                                  style: TextStyle(fontWeight: FontWeight.bold, color: isDark ? const Color(0xFF67C83B) : primaryGreen),
                                 ),
                               ],
                             ),

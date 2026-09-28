@@ -88,7 +88,7 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
     const primaryGreen = Color(0xFF00462f);
     final bgColor = isDark ? const Color(0xFF0f231d) : const Color(0xFFf7faf5);
     final surfaceColor = isDark ? const Color(0xFF1c2c26) : Colors.white;
-    final secondaryTextColor = isDark ? const Color(0xFF89d6b0) : const Color(0xFF486456);
+    final secondaryTextColor = isDark ? const Color(0xFF67C83B) : const Color(0xFF486456);
     final outlineVariant = isDark ? Colors.white.withValues(alpha: 0.1) : const Color(0xFFbec9c1).withValues(alpha: 0.2);
 
     return Scaffold(
@@ -98,13 +98,13 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: isDark ? const Color(0xFF89d6b0) : primaryGreen),
+          icon: Icon(Icons.arrow_back, color: isDark ? const Color(0xFF67C83B) : primaryGreen),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'Siguiendo',
           style: GoogleFonts.plusJakartaSans(
-            color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+            color: isDark ? const Color(0xFF67C83B) : primaryGreen,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
@@ -135,6 +135,39 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Banner de estado inhabilitado
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF282414) : const Color(0xFFFEF3C7),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isDark ? const Color(0xFFFBBF24).withValues(alpha: 0.4) : const Color(0xFFF59E0B).withValues(alpha: 0.4),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          color: isDark ? const Color(0xFFFBBF24) : const Color(0xFFB45309),
+                          size: 20,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            'Esta opción se encuentra inhabilitada temporalmente mientras se completa el desarrollo.',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: isDark ? const Color(0xFFFBBF24) : const Color(0xFF92400E),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
                   // Search Bar
                   _buildAnimatedItem(_buildSearchBar(isDark, surfaceColor, outlineVariant), 0),
                   const SizedBox(height: 24),
@@ -155,7 +188,7 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: (isDark ? const Color(0xFF89d6b0) : primaryGreen).withValues(alpha: 0.1),
+                            color: (isDark ? const Color(0xFF67C83B) : primaryGreen).withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -163,7 +196,7 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 9,
                               fontWeight: FontWeight.w900,
-                              color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+                              color: isDark ? const Color(0xFF67C83B) : primaryGreen,
                             ),
                           ),
                         ),
@@ -247,7 +280,7 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+                              color: isDark ? const Color(0xFF67C83B) : primaryGreen,
                             ),
                           ),
                         ),
@@ -401,7 +434,7 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
                     ? Icon(
                         Icons.storefront,
                         size: 32,
-                        color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f),
+                        color: isDark ? const Color(0xFF67C83B) : const Color(0xFF00462f),
                       )
                     : null,
               ),
@@ -615,7 +648,7 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
   }) {
     final cardColor = isDark ? const Color(0xFF1c2c26) : Colors.white;
     final secondaryBg = isDark ? const Color(0xFF0f231d) : const Color(0xFFf1f4f0);
-    final primaryGreen = isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f);
+    final primaryGreen = isDark ? const Color(0xFF67C83B) : const Color(0xFF00462f);
     final borderColor = isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey.withValues(alpha: 0.1);
     final textColor = isDark ? Colors.white : const Color(0xFF181d1a);
     final subtitleColor = isDark ? Colors.grey[400] : Colors.grey[600];
@@ -668,7 +701,7 @@ class _FollowedSellersScreenState extends State<FollowedSellersScreen> with Sing
                           ? Icon(
                               Icons.storefront,
                               size: 32,
-                              color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f),
+                              color: isDark ? const Color(0xFF67C83B) : const Color(0xFF00462f),
                             )
                           : null,
                     ),

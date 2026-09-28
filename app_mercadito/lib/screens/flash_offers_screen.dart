@@ -733,7 +733,7 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                   child: Container(
                     padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF047857),
+                      color: const Color(0xFF016042),
                       borderRadius: BorderRadius.circular(7),
                       boxShadow: const [
                         BoxShadow(color: Colors.black26, blurRadius: 4),

@@ -46,6 +46,8 @@ void main() {
 
     // Tap "Ver todos" - this previously threw:
     // Assertion failed: !keyReservation.contains(key)
+    await tester.ensureVisible(verTodosButton);
+    await tester.pumpAndSettle();
     await tester.tap(verTodosButton);
     await tester.pumpAndSettle();
 

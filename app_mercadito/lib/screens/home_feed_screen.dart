@@ -16,6 +16,7 @@ import '../widgets/skeleton_loading.dart';
 import '../widgets/verified_badge.dart';
 import '../services/user_session.dart';
 import '../services/reports_service.dart';
+import '../services/notification_service.dart';
 
 class HomeFeedScreen extends StatefulWidget {
   const HomeFeedScreen({super.key});
@@ -268,34 +269,81 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
               ),
               Row(
                 children: [
-                  Stack(
-                    alignment: Alignment.topRight,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: searchBgColor,
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.notifications_none,
-                            color: theme.colorScheme.primary,
+                  ValueListenableBuilder<NotificationPreferences>(
+                    valueListenable: NotificationService().preferences,
+                    builder: (context, prefs, _) {
+                      if (!prefs.notificationsEnabled) {
+                        return const SizedBox.shrink();
+                      }
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: searchBgColor,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.notifications_none,
+                                    color: theme.colorScheme.primary,
+                                  ),
+                                  onPressed: () => context.push('/notifications'),
+                                ),
+                              ),
+                              ValueListenableBuilder<int>(
+                                valueListenable: NotificationService().unreadCount,
+                                builder: (context, count, _) {
+                                  if (count <= 0) return const SizedBox.shrink();
+                                  return Positioned(
+                                    top: 2,
+                                    right: 2,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1.5),
+                                      constraints: const BoxConstraints(
+                                        minWidth: 18,
+                                        minHeight: 18,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFBD4437),
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: const Color(0xFFBD4437),
+                                          width: 1.5,
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: const Color(0xFFBD4437).withValues(alpha: 0.35),
+                                            blurRadius: 3,
+                                            offset: const Offset(0, 1),
+                                          ),
+                                        ],
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        count > 99 ? '99+' : '$count',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Plus Jakarta Sans',
+                                          height: 1,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
                           ),
-                          onPressed: () => context.push('/notifications'),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 10, right: 10),
-                        width: 8,
-                        height: 8,
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    ],
+                          const SizedBox(width: 8),
+                        ],
+                      );
+                    },
                   ),
-                  const SizedBox(width: 8),
                   Container(
                     decoration: BoxDecoration(
                       color: searchBgColor,
@@ -373,7 +421,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                 borderRadius: BorderRadius.circular(12),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.primary,
+                    color: isDark ? const Color(0xFF347659) : theme.colorScheme.primary,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
@@ -438,13 +486,16 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
   }
 
   Widget _buildAnalysisBanner(ThemeData theme) {
+    final isDark = theme.brightness == Brightness.dark;
+    final bannerColor = isDark ? const Color(0xFF347659) : theme.colorScheme.primary;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: theme.colorScheme.primary,
+          color: bannerColor,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Stack(
@@ -477,7 +528,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                   onPressed: () => context.push('/market-analysis'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
-                    foregroundColor: theme.colorScheme.primary,
+                    foregroundColor: bannerColor,
                     minimumSize: const Size(120, 36),
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                   ),
@@ -1285,7 +1336,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                       : Container(
                           padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.primary,
+                            color: const Color(0xFF016042),
                             borderRadius: BorderRadius.circular(8),
                             boxShadow: const [
                               BoxShadow(color: Colors.black26, blurRadius: 4),
@@ -2982,26 +3033,6 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                         ),
                       ),
                     ],
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFa5f3cb),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Text(
-                      'MIEMBRO PREMIUM',
-                      style: TextStyle(
-                        color: Color(0xFF002114),
-                        fontSize: 10,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1,
-                      ),
-                    ),
                   ),
                 ],
               ),

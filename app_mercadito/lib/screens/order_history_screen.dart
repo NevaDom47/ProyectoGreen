@@ -730,7 +730,7 @@ class InteractiveOrderCard extends StatelessWidget {
                                   Icon(
                                     Icons.storefront_outlined,
                                     size: 14,
-                                    color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF016042),
+                                    color: isDark ? const Color(0xFF67C83B) : const Color(0xFF016042),
                                   ),
                                   const SizedBox(width: 6),
                                   Flexible(
@@ -740,9 +740,9 @@ class InteractiveOrderCard extends StatelessWidget {
                                         fontFamily: 'Plus Jakarta Sans',
                                         fontSize: 12,
                                         fontWeight: FontWeight.w600,
-                                        color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF016042),
+                                        color: isDark ? const Color(0xFF67C83B) : const Color(0xFF016042),
                                         decoration: TextDecoration.underline,
-                                        decorationColor: (isDark ? const Color(0xFF89d6b0) : const Color(0xFF016042)).withValues(alpha: 0.3),
+                                        decorationColor: (isDark ? const Color(0xFF67C83B) : const Color(0xFF016042)).withValues(alpha: 0.3),
                                       ),
                                       overflow: TextOverflow.ellipsis,
                                     ),

@@ -46,13 +46,13 @@ class _AuthenticatorVerificationScreenState extends State<AuthenticatorVerificat
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: isDark ? const Color(0xFF89d6b0) : primaryGreen),
+          icon: Icon(Icons.arrow_back, color: isDark ? const Color(0xFF67C83B) : primaryGreen),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'Autenticator',
           style: GoogleFonts.plusJakartaSans(
-            color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+            color: isDark ? const Color(0xFF67C83B) : primaryGreen,
             fontWeight: FontWeight.w800,
             fontSize: 20,
             letterSpacing: -0.5,
@@ -68,7 +68,7 @@ class _AuthenticatorVerificationScreenState extends State<AuthenticatorVerificat
                 color: surfaceContainerHigh,
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.security, color: isDark ? const Color(0xFF89d6b0) : primaryGreen),
+              child: Icon(Icons.security, color: isDark ? const Color(0xFF67C83B) : primaryGreen),
             ),
           )
         ],
@@ -132,7 +132,7 @@ class _AuthenticatorVerificationScreenState extends State<AuthenticatorVerificat
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 24,
                               fontWeight: FontWeight.w800,
-                              color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+                              color: isDark ? const Color(0xFF67C83B) : primaryGreen,
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -193,13 +193,13 @@ class _AuthenticatorVerificationScreenState extends State<AuthenticatorVerificat
                           const SizedBox(height: 16),
                           TextButton.icon(
                             onPressed: () {},
-                            icon: Icon(Icons.sync, size: 16, color: isDark ? const Color(0xFF89d6b0) : primaryGreen),
+                            icon: Icon(Icons.sync, size: 16, color: isDark ? const Color(0xFF67C83B) : primaryGreen),
                             label: Text(
                               'Resend code or use backup',
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
-                                color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+                                color: isDark ? const Color(0xFF67C83B) : primaryGreen,
                               ),
                             ),
                           )
@@ -235,7 +235,7 @@ class _AuthenticatorVerificationScreenState extends State<AuthenticatorVerificat
         style: GoogleFonts.plusJakartaSans(
           fontSize: 24,
           fontWeight: FontWeight.bold,
-          color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+          color: isDark ? const Color(0xFF67C83B) : primaryGreen,
           height: 1.0,
         ),
         decoration: InputDecoration(

@@ -118,15 +118,13 @@ class _CouponsScreenState extends State<CouponsScreen> {
         final isDark = currentMode == ThemeMode.dark ||
             (currentMode == ThemeMode.system && platformBrightness == Brightness.dark);
 
-        final bgColor = isDark ? const Color(0xFF0d1a15) : const Color(0xFFf8fdfb);
-        const primaryColor = Color(0xFF016142);
-        final surfaceColor = isDark ? const Color(0xFF162520) : Colors.white;
-        final textColor = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0f172a);
-        final subtextColor = isDark ? const Color(0xFF94a3b8) : const Color(0xFF64748b);
-        final borderColor = isDark
-            ? const Color(0xFF22382e)
-            : primaryColor.withValues(alpha: 0.12);
-        final stubColor = isDark ? const Color(0xFF1B2E26) : const Color(0xFFEDF3F0);
+        final bgColor = isDark ? const Color(0xFF101815) : const Color(0xFFF7F9F8);
+        final primaryColor = isDark ? const Color(0xFF67C83B) : const Color(0xFF016042);
+        final surfaceColor = isDark ? const Color(0xFF1C2924) : Colors.white;
+        final textColor = isDark ? const Color(0xFFF1F5F3) : const Color(0xFF20262B);
+        final subtextColor = isDark ? const Color(0xFFAAB8B1) : const Color(0xFF697177);
+        final borderColor = isDark ? const Color(0xFF2B3A34) : const Color(0xFFE2E7E4);
+        final stubColor = isDark ? const Color(0xFF17221E) : const Color(0xFFEEF5F1);
 
         return Scaffold(
           backgroundColor: bgColor,
@@ -135,10 +133,10 @@ class _CouponsScreenState extends State<CouponsScreen> {
             elevation: 0,
             scrolledUnderElevation: 0,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: primaryColor),
+              icon: Icon(Icons.arrow_back, color: primaryColor),
               onPressed: () => context.pop(),
             ),
-            title: const Text(
+            title: Text(
               'Mis Cupones',
               style: TextStyle(
                 color: primaryColor,
@@ -151,7 +149,7 @@ class _CouponsScreenState extends State<CouponsScreen> {
             centerTitle: false,
             actions: [
               IconButton(
-                icon: const Icon(Icons.help_outline, color: primaryColor),
+                icon: Icon(Icons.help_outline, color: primaryColor),
                 onPressed: () => _showHelpDialog(context, primaryColor, surfaceColor, textColor, subtextColor),
               ),
             ],
@@ -216,9 +214,9 @@ class _CouponsScreenState extends State<CouponsScreen> {
                           child: Container(
                             height: 48,
                             padding: const EdgeInsets.symmetric(horizontal: 18),
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               color: primaryColor,
-                              borderRadius: BorderRadius.only(
+                              borderRadius: const BorderRadius.only(
                                 topRight: Radius.circular(11),
                                 bottomRight: Radius.circular(11),
                               ),

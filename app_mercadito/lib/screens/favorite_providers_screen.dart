@@ -75,13 +75,13 @@ class _FavoriteProvidersScreenState extends State<FavoriteProvidersScreen> with 
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: isDark ? const Color(0xFF89d6b0) : primaryGreen),
+          icon: Icon(Icons.arrow_back, color: isDark ? const Color(0xFF67C83B) : primaryGreen),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'Proveedores Favoritos',
           style: GoogleFonts.plusJakartaSans(
-            color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+            color: isDark ? const Color(0xFF67C83B) : primaryGreen,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
@@ -202,7 +202,7 @@ class _FavoriteProvidersScreenState extends State<FavoriteProvidersScreen> with 
         height: 180,
         width: double.infinity,
         color: isDark ? const Color(0xFF1a2f26) : const Color(0xFFebefea),
-        child: Icon(Icons.storefront, size: 50, color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF285E44)),
+        child: Icon(Icons.storefront, size: 50, color: isDark ? const Color(0xFF67C83B) : const Color(0xFF285E44)),
       );
     }
     final cleanImg = img.trim();
@@ -216,7 +216,7 @@ class _FavoriteProvidersScreenState extends State<FavoriteProvidersScreen> with 
           height: 180,
           width: double.infinity,
           color: isDark ? const Color(0xFF1a2f26) : const Color(0xFFebefea),
-          child: Icon(Icons.storefront, size: 50, color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF285E44)),
+          child: Icon(Icons.storefront, size: 50, color: isDark ? const Color(0xFF67C83B) : const Color(0xFF285E44)),
         ),
       );
     }
@@ -229,7 +229,7 @@ class _FavoriteProvidersScreenState extends State<FavoriteProvidersScreen> with 
         height: 180,
         width: double.infinity,
         color: isDark ? const Color(0xFF1a2f26) : const Color(0xFFebefea),
-        child: Icon(Icons.storefront, size: 50, color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF285E44)),
+        child: Icon(Icons.storefront, size: 50, color: isDark ? const Color(0xFF67C83B) : const Color(0xFF285E44)),
       ),
     );
   }

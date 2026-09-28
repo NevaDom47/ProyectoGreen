@@ -13,13 +13,12 @@ class LegalPoliciesScreen extends StatelessWidget {
         final platformBrightness = MediaQuery.platformBrightnessOf(context);
         final isDark = currentMode == ThemeMode.dark || (currentMode == ThemeMode.system && platformBrightness == Brightness.dark);
         
-        // Colors from the provided Tailwind config
-        final bgColor = isDark ? const Color(0xFF0f231d) : const Color(0xFFf5f8f7);
-        final primaryColor = const Color(0xFF016042);
-        final surfaceColor = isDark ? const Color(0xFF1e293b).withValues(alpha: 0.5) : Colors.white;
-        final textColor = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0f172a);
-        final subtextColor = isDark ? const Color(0xFF94a3b8) : const Color(0xFF64748b);
-        final borderColor = primaryColor.withValues(alpha: 0.1);
+        final bgColor = isDark ? const Color(0xFF101815) : const Color(0xFFF7F9F8);
+        final primaryColor = isDark ? const Color(0xFF67C83B) : const Color(0xFF016042);
+        final surfaceColor = isDark ? const Color(0xFF1C2924) : Colors.white;
+        final textColor = isDark ? const Color(0xFFF1F5F3) : const Color(0xFF20262B);
+        final subtextColor = isDark ? const Color(0xFFAAB8B1) : const Color(0xFF697177);
+        final borderColor = isDark ? const Color(0xFF2B3A34) : const Color(0xFFE2E7E4);
 
         return Scaffold(
           backgroundColor: bgColor,

@@ -98,7 +98,7 @@ class _SellerPoliciesScreenState extends State<SellerPoliciesScreen> {
 
     final bgColor = isDark ? const Color(0xFF0f231d) : const Color(0xFFf7faf5);
     final cardBgColor = isDark ? const Color(0xFF13281E) : Colors.white;
-    final primaryColor = isDark ? const Color(0xFF89d6b0) : const Color(0xFF016042);
+    final primaryColor = isDark ? const Color(0xFF67C83B) : const Color(0xFF016042);
     final onSurfaceColor = isDark ? Colors.white : const Color(0xFF181d1a);
     final onSurfaceVariant = isDark ? const Color(0xFFbec9c1) : const Color(0xFF5f6368);
     final isLimitReached = _policies.length >= maxPolicies;

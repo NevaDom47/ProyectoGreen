@@ -24,9 +24,9 @@ class NegotiationDetailScreen extends StatelessWidget {
     final surfaceContainerLowColor = isDark ? const Color(0xFF1E382E) : const Color(0xFFF3F6EC);
     final surfaceContainerHighColor = isDark ? const Color(0xFF264639) : const Color(0xFFEBF0E3);
     
-    final primaryColor = isDark ? const Color(0xFF89D6B0) : AppTheme.primary;
+    final primaryColor = isDark ? const Color(0xFF67C83B) : AppTheme.primary;
     final primaryContainerColor = isDark ? const Color(0xFF005137) : const Color(0xFF036042);
-    final primaryFixedColor = isDark ? const Color(0xFF89D6B0) : const Color(0xFFA5F3CB);
+    final primaryFixedColor = isDark ? const Color(0xFF67C83B) : const Color(0xFFA5F3CB);
     final onPrimaryContainerColor = isDark ? const Color(0xFF8BD8B2) : const Color(0xFF8BD8B2);
     
     final secondaryColor = isDark ? const Color(0xFFB0CCC0) : const Color(0xFF486456);
@@ -463,7 +463,7 @@ class NegotiationDetailScreen extends StatelessWidget {
                 Icon(
                   Icons.eco_rounded,
                   size: 16,
-                  color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                  color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -472,7 +472,7 @@ class NegotiationDetailScreen extends StatelessWidget {
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? const Color(0xFF89D6B0) : AppTheme.primary,
+                      color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                     ),
                   ),
                 ),

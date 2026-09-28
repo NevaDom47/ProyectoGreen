@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -5,11 +6,15 @@ import 'package:go_router/go_router.dart';
 class CustomBottomNavBar extends StatefulWidget {
   final int currentIndex;
   final int chatBadgeCount;
+  final int pendingChatsCount;
+  final int newUsersCount;
 
   const CustomBottomNavBar({
     super.key,
     required this.currentIndex,
     this.chatBadgeCount = 5,
+    this.pendingChatsCount = 3,
+    this.newUsersCount = 2,
   });
 
   @override
@@ -17,11 +22,16 @@ class CustomBottomNavBar extends StatefulWidget {
 }
 
 class _CustomBottomNavBarState extends State<CustomBottomNavBar>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   double _currentPosition = 0.0;
   int _targetIndex = 0;
+
+  late AnimationController _chatAlertController;
+  late Animation<double> _chatAlertAnimation;
+  late Animation<double> _chatPulseAnimation;
+  Timer? _chatAlertTimer;
 
   final List<_NavItemData> _items = const [
     _NavItemData(
@@ -74,6 +84,56 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
       parent: _controller,
       curve: Curves.easeOutCubic,
     ));
+
+    _chatAlertController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+      reverseDuration: const Duration(milliseconds: 350),
+    );
+
+    _chatAlertAnimation = CurvedAnimation(
+      parent: _chatAlertController,
+      curve: Curves.easeOutBack,
+      reverseCurve: Curves.easeIn,
+    );
+
+    _chatPulseAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.0, end: 1.25)
+            .chain(CurveTween(curve: Curves.easeOut)),
+        weight: 50,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.25, end: 1.0)
+            .chain(CurveTween(curve: Curves.easeIn)),
+        weight: 50,
+      ),
+    ]).animate(CurvedAnimation(
+      parent: _chatAlertController,
+      curve: const Interval(0.2, 0.7),
+    ));
+
+    if (widget.currentIndex == 0) {
+      _playChatAlertAnimation();
+    }
+  }
+
+  void _playChatAlertAnimation() {
+    _chatAlertTimer?.cancel();
+    if (widget.currentIndex != 0) {
+      _chatAlertController.reset();
+      return;
+    }
+    // Breve pausa para dar fluidez cuando el usuario aterriza en Inicio
+    Future.delayed(const Duration(milliseconds: 400), () {
+      if (!mounted || widget.currentIndex != 0) return;
+      _chatAlertController.forward(from: 0.0);
+      _chatAlertTimer = Timer(const Duration(seconds: 4), () {
+        if (mounted && widget.currentIndex == 0) {
+          _chatAlertController.reverse();
+        }
+      });
+    });
   }
 
   @override
@@ -86,6 +146,13 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
 
       if (newIndex != _targetIndex) {
         _animateTo(newIndex);
+      }
+
+      if (widget.currentIndex == 0 && oldWidget.currentIndex != 0) {
+        _playChatAlertAnimation();
+      } else if (widget.currentIndex != 0) {
+        _chatAlertTimer?.cancel();
+        _chatAlertController.reset();
       }
     }
   }
@@ -107,6 +174,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
 
   @override
   void dispose() {
+    _chatAlertTimer?.cancel();
+    _chatAlertController.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -213,7 +282,15 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                                               Positioned(
                                                 right: -8,
                                                 top: -4,
-                                                child: _buildBadge(badge, isDark),
+                                                child: (index == 4 && widget.currentIndex == 0)
+                                                    ? AnimatedBuilder(
+                                                        animation: _chatPulseAnimation,
+                                                        builder: (context, child) => Transform.scale(
+                                                          scale: _chatPulseAnimation.value,
+                                                          child: _buildBadge(badge, isDark),
+                                                        ),
+                                                      )
+                                                    : _buildBadge(badge, isDark),
                                               ),
                                           ],
                                         ),
@@ -300,6 +377,9 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                             ),
                           ),
                         ),
+
+                      // 4. Tooltip flotante animado de chats (diferenciando en curso vs nuevos)
+                      _buildChatBreakdownTooltip(isDark),
                     ],
                   ),
                 );
@@ -310,14 +390,132 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
       );
   }
 
+  Widget _buildChatBreakdownTooltip(bool isDark) {
+    return AnimatedBuilder(
+      animation: _chatAlertAnimation,
+      builder: (context, child) {
+        if (_chatAlertAnimation.value <= 0.001) {
+          return const SizedBox.shrink();
+        }
+        return Positioned(
+          right: 6,
+          top: -42,
+          child: Transform.scale(
+            scale: _chatAlertAnimation.value,
+            alignment: const Alignment(0.85, 1.0),
+            child: Opacity(
+              opacity: _chatAlertAnimation.value.clamp(0.0, 1.0),
+              child: GestureDetector(
+                onTap: () {
+                  HapticFeedback.mediumImpact();
+                  _chatAlertTimer?.cancel();
+                  _chatAlertController.reverse();
+                  try {
+                    context.go('/chats');
+                  } catch (_) {}
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFBD4437),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.25),
+                          width: 1,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFFBD4437).withValues(alpha: 0.45),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.2),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Chats en curso
+                          const Icon(
+                            Icons.chat_bubble_rounded,
+                            size: 11,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${widget.pendingChatsCount} en curso',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Manrope',
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 6),
+                            width: 3,
+                            height: 3,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.6),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          // Nuevos usuarios
+                          const Icon(
+                            Icons.person_add_alt_1_rounded,
+                            size: 12,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${widget.newUsersCount} nuevos',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Manrope',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 28),
+                      child: ClipPath(
+                        clipper: _TriangleClipper(),
+                        child: Container(
+                          width: 10,
+                          height: 5,
+                          color: const Color(0xFFBD4437),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildBadge(int count, bool isDark) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       decoration: BoxDecoration(
-        color: const Color(0xFFEF4444),
+        color: const Color(0xFFBD4437),
         borderRadius: BorderRadius.circular(9),
         border: Border.all(
-          color: isDark ? const Color(0xFF1E293B) : Colors.white,
+          color: const Color(0xFFBD4437),
           width: 1.5,
         ),
         boxShadow: const [
@@ -340,6 +538,20 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
       ),
     );
   }
+}
+
+class _TriangleClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.lineTo(size.width / 2, size.height);
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
 
 class _NavItemData {

@@ -113,11 +113,11 @@ class SupplierQuickViewBottomSheet extends StatelessWidget {
                                 fit: BoxFit.cover,
                                 placeholder: (context, url) => Container(
                                   color: isDark ? const Color(0xFF1a2f26) : const Color(0xFFebefea),
-                                  child: Icon(Icons.storefront, size: 48, color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f)),
+                                  child: Icon(Icons.storefront, size: 48, color: isDark ? const Color(0xFF67C83B) : const Color(0xFF00462f)),
                                 ),
                                 errorWidget: (context, url, error) => Container(
                                   color: isDark ? const Color(0xFF1a2f26) : const Color(0xFFebefea),
-                                  child: Icon(Icons.storefront, size: 48, color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f)),
+                                  child: Icon(Icons.storefront, size: 48, color: isDark ? const Color(0xFF67C83B) : const Color(0xFF00462f)),
                                 ),
                               )
                             : (supplierData['image'] != null && supplierData['image'].toString().isNotEmpty && supplierData['image'].toString().startsWith('http'))
@@ -126,16 +126,16 @@ class SupplierQuickViewBottomSheet extends StatelessWidget {
                                     fit: BoxFit.cover,
                                     placeholder: (context, url) => Container(
                                       color: isDark ? const Color(0xFF1a2f26) : const Color(0xFFebefea),
-                                      child: Icon(Icons.storefront, size: 48, color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f)),
+                                      child: Icon(Icons.storefront, size: 48, color: isDark ? const Color(0xFF67C83B) : const Color(0xFF00462f)),
                                     ),
                                     errorWidget: (context, url, error) => Container(
                                       color: isDark ? const Color(0xFF1a2f26) : const Color(0xFFebefea),
-                                      child: Icon(Icons.storefront, size: 48, color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f)),
+                                      child: Icon(Icons.storefront, size: 48, color: isDark ? const Color(0xFF67C83B) : const Color(0xFF00462f)),
                                     ),
                                   )
                                 : Container(
                                     color: isDark ? const Color(0xFF1a2f26) : const Color(0xFFebefea),
-                                    child: Icon(Icons.storefront, size: 48, color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF00462f)),
+                                    child: Icon(Icons.storefront, size: 48, color: isDark ? const Color(0xFF67C83B) : const Color(0xFF00462f)),
                                   ),
                       ),
                     ),

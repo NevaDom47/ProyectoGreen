@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../data/global_state.dart';
-import '../theme/app_theme.dart';
 import '../widgets/quality_info_bottom_sheet.dart';
 
 class QualityProductsScreen extends StatefulWidget {

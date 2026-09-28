@@ -5,6 +5,7 @@ import '../data/global_state.dart';
 import '../services/reviews_service.dart';
 import '../services/buyer_behavior_service.dart';
 import '../services/user_session.dart';
+import '../services/privacy_service.dart';
 import '../widgets/animated_favorite_button.dart';
 import '../widgets/report_user_bottom_sheet.dart';
 import 'direct_profile_review_screen.dart';
@@ -77,7 +78,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
         elevation: 0,
         scrolledUnderElevation: 1,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: isDark ? const Color(0xFF89d6b0) : primaryGreen),
+          icon: Icon(Icons.arrow_back, color: isDark ? const Color(0xFF67C83B) : primaryGreen),
           onPressed: () => context.pop(),
         ),
         title: Text(
@@ -135,124 +136,234 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 1. Tarjeta Principal de Identidad
-            _buildHeroIdentityCard(
+      body: ValueListenableBuilder<BuyerPrivacySettings>(
+        valueListenable: PrivacyService.buyerNotifier,
+        builder: (context, privacy, _) {
+          final currentRole = UserSession.selectedRole ?? 'comprador';
+          final currentUserId = UserSession.currentUserId;
+          final isSelf = currentUserId.toLowerCase() == buyerId.toLowerCase() ||
+              (currentRole == 'comprador' &&
+                  (UserSession.fullName != null &&
+                      UserSession.fullName!.trim().toLowerCase() == buyerName.trim().toLowerCase()));
+
+          // 4. Mostrar perfil público: Si está inactivo y no es el propio usuario, mostrar barrera confidencial
+          if (!privacy.showPublicProfile && !isSelf) {
+            return _buildPrivateProfileNotice(
               context: context,
-              buyer: buyer,
-              buyerId: buyerId,
-              buyerName: buyerName,
-              buyerAvatar: buyerAvatar,
-              location: location,
-              distance: distance,
-              businessType: businessType,
-              memberSince: memberSince,
               cardColor: cardColor,
               borderColor: borderColor,
               isDark: isDark,
               primaryGreen: primaryGreen,
-            ),
-            const SizedBox(height: 14),
+              buyerName: privacy.showName ? buyerName : 'Comprador #${buyerId.replaceAll("#", "")}',
+            );
+          }
 
-            // 2. Métricas Clave (Reseñas, Calificación y Negociaciones)
-            _buildMetricsRow(
-              negotiationsCount: negotiationsCount,
-              rating: rating,
-              reviewsCount: reviewsCount,
-              cardColor: cardColor,
-              borderColor: borderColor,
-              isDark: isDark,
-              primaryGreen: primaryGreen,
-            ),
-            const SizedBox(height: 16),
+          // 1. Mostrar foto de perfil: Si está inactivo, ocultar imagen real
+          final effectiveAvatar = privacy.showProfilePicture ? buyerAvatar : null;
+          // 2. Mostrar nombre: Si está inactivo, ocultar nombre real
+          final effectiveName = privacy.showName ? buyerName : 'Comprador #${buyerId.replaceAll("#", "")}';
+          // 3. Mostrar ubicación: Si está inactivo, ocultar ubicación
+          final effectiveLocation = privacy.showLocation ? location : 'Ubicación privada';
+          final effectiveSector = privacy.showLocation ? sector : 'Ubicación privada';
 
-            // 3. Sección: ¿Cómo lo califican los proveedores? (Reputación)
-            _buildBuyerReputationCard(
-              context: context,
-              buyerId: buyerId,
-              buyerName: buyerName,
-              scores: scores,
-              rating: rating,
-              cardColor: cardColor,
-              borderColor: borderColor,
-              isDark: isDark,
-              primaryGreen: primaryGreen,
-            ),
-            const SizedBox(height: 16),
+          return SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 1. Tarjeta Principal de Identidad
+                _buildHeroIdentityCard(
+                  context: context,
+                  buyer: buyer,
+                  buyerId: buyerId,
+                  buyerName: effectiveName,
+                  buyerAvatar: effectiveAvatar,
+                  location: effectiveLocation,
+                  distance: distance,
+                  businessType: businessType,
+                  memberSince: memberSince,
+                  cardColor: cardColor,
+                  borderColor: borderColor,
+                  isDark: isDark,
+                  primaryGreen: primaryGreen,
+                  showLocation: privacy.showLocation,
+                  showLoyaltyLevel: privacy.showLoyaltyLevel,
+                  allowOffers: privacy.allowProviderOffers,
+                ),
+                const SizedBox(height: 14),
 
-            // 4. Comentarios de Proveedores
-            _buildProviderCommentsSection(
-              buyerId: buyerId,
-              cardColor: cardColor,
-              borderColor: borderColor,
-              isDark: isDark,
-              primaryGreen: primaryGreen,
-            ),
-            const SizedBox(height: 16),
+                // 2. Métricas Clave (Reseñas, Calificación y Negociaciones)
+                _buildMetricsRow(
+                  negotiationsCount: negotiationsCount,
+                  rating: rating,
+                  reviewsCount: reviewsCount,
+                  cardColor: cardColor,
+                  borderColor: borderColor,
+                  isDark: isDark,
+                  primaryGreen: primaryGreen,
+                  showNegotiationHistory: privacy.showNegotiationHistory,
+                ),
+                const SizedBox(height: 16),
 
-            // 5. Preferencias de Compra y Productos Frecuentes
-            _buildPurchasePreferencesCard(
-              context: context,
-              profile: behaviorProfile,
-              cardColor: cardColor,
-              borderColor: borderColor,
-              isDark: isDark,
-              primaryGreen: primaryGreen,
-            ),
-            const SizedBox(height: 16),
+                // 3. Sección: ¿Cómo lo califican los proveedores? (Reputación)
+                _buildBuyerReputationCard(
+                  context: context,
+                  buyerId: buyerId,
+                  buyerName: effectiveName,
+                  scores: scores,
+                  rating: rating,
+                  cardColor: cardColor,
+                  borderColor: borderColor,
+                  isDark: isDark,
+                  primaryGreen: primaryGreen,
+                ),
+                const SizedBox(height: 16),
 
-            // 6. Historial de Negociaciones
-            _buildOrderHistorySection(
-              context: context,
-              buyer: widget.buyer,
-              cardColor: cardColor,
-              borderColor: borderColor,
-              isDark: isDark,
-              primaryGreen: primaryGreen,
-            ),
-            // Conditionally show report button only when viewing other buyers
-            Builder(
-              builder: (ctx) {
-                final currentRole = UserSession.selectedRole ?? 'comprador';
-                final currentUserId = UserSession.currentUserId;
-                final isSelf = currentUserId.toLowerCase() == buyerId.toLowerCase() ||
-                    (currentRole == 'comprador' && (UserSession.fullName != null && UserSession.fullName!.trim().toLowerCase() == buyerName.trim().toLowerCase()));
+                // 4. Comentarios de Proveedores
+                _buildProviderCommentsSection(
+                  buyerId: buyerId,
+                  cardColor: cardColor,
+                  borderColor: borderColor,
+                  isDark: isDark,
+                  primaryGreen: primaryGreen,
+                ),
+                const SizedBox(height: 16),
 
-                if (isSelf) return const SizedBox.shrink();
+                // 5. Preferencias de Compra y Productos Frecuentes
+                if (privacy.showShoppingPreferences) ...[
+                  _buildPurchasePreferencesCard(
+                    context: context,
+                    profile: behaviorProfile,
+                    cardColor: cardColor,
+                    borderColor: borderColor,
+                    isDark: isDark,
+                    primaryGreen: primaryGreen,
+                  ),
+                  const SizedBox(height: 16),
+                ],
 
-                return Center(
-                  child: TextButton.icon(
-                    onPressed: () {
-                      ReportUserBottomSheet.show(
-                        context: context,
-                        reportedId: buyerId,
-                        reportedName: buyerName,
-                        reportedRole: 'comprador',
-                        reportedAvatar: buyerAvatar ?? '',
-                        reportedLocation: sector,
-                      );
-                    },
-                    icon: const Icon(Icons.report_outlined, size: 16, color: Colors.grey),
-                    label: const Text(
-                      'REPORTAR COMPRADOR',
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.grey,
-                        letterSpacing: 1.5,
+                // 6. Historial de Negociaciones
+                if (privacy.showNegotiationHistory) ...[
+                  _buildOrderHistorySection(
+                    context: context,
+                    buyer: widget.buyer,
+                    cardColor: cardColor,
+                    borderColor: borderColor,
+                    isDark: isDark,
+                    primaryGreen: primaryGreen,
+                  ),
+                  const SizedBox(height: 16),
+                ],
+
+                // Conditionally show report button only when viewing other buyers
+                if (!isSelf)
+                  Center(
+                    child: TextButton.icon(
+                      onPressed: () {
+                        ReportUserBottomSheet.show(
+                          context: context,
+                          reportedId: buyerId,
+                          reportedName: effectiveName,
+                          reportedRole: 'comprador',
+                          reportedAvatar: effectiveAvatar ?? '',
+                          reportedLocation: effectiveSector,
+                        );
+                      },
+                      icon: const Icon(Icons.report_outlined, size: 16, color: Colors.grey),
+                      label: const Text(
+                        'REPORTAR COMPRADOR',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.grey,
+                          letterSpacing: 1.5,
+                        ),
                       ),
                     ),
                   ),
-                );
-              },
+                const SizedBox(height: 32),
+              ],
             ),
-            const SizedBox(height: 32),
-          ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildPrivateProfileNotice({
+    required BuildContext context,
+    required Color cardColor,
+    required Color borderColor,
+    required bool isDark,
+    required Color primaryGreen,
+    required String buyerName,
+  }) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 48.0),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: cardColor,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: borderColor),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.04),
+                blurRadius: 14,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: primaryGreen.withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.lock_person_rounded, size: 52, color: primaryGreen),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Perfil Privado',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: isDark ? Colors.white : Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                '$buyerName ha configurado su perfil como privado. La información detallada, historial y estadísticas no están visibles públicamente.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 13.5,
+                  height: 1.5,
+                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                ),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () => context.pop(),
+                  icon: const Icon(Icons.arrow_back, size: 18),
+                  label: const Text('Volver Atrás'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryGreen,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    elevation: 0,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -272,6 +383,9 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
     required Color borderColor,
     required bool isDark,
     required Color primaryGreen,
+    bool showLocation = true,
+    bool showLoyaltyLevel = true,
+    bool allowOffers = true,
   }) {
     final rawLevel = buyer['level'] ?? buyer['prestigeLevel'];
     String buyerLevel;
@@ -394,7 +508,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                               fontFamily: 'Courier',
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
-                              color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+                              color: isDark ? const Color(0xFF67C83B) : primaryGreen,
                             ),
                           ),
                         ),
@@ -403,18 +517,25 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                     const SizedBox(height: 6),
                     Row(
                       children: [
-                        Icon(Icons.location_on_outlined, size: 14, color: isDark ? const Color(0xFF89d6b0) : primaryGreen),
+                        Icon(
+                          showLocation ? Icons.location_on_outlined : Icons.location_off_outlined,
+                          size: 14,
+                          color: showLocation ? (isDark ? const Color(0xFF67C83B) : primaryGreen) : Colors.grey,
+                        ),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
-                            (buyer['sector'] ?? '').toString().trim().isNotEmpty
-                                ? buyer['sector'].toString().trim()
-                                : (location.contains('•') ? location.split('•').last.trim() : location),
+                            showLocation
+                                ? ((buyer['sector'] ?? '').toString().trim().isNotEmpty
+                                    ? buyer['sector'].toString().trim()
+                                    : (location.contains('•') ? location.split('•').last.trim() : location))
+                                : 'Ubicación privada',
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
-                              color: isDark ? Colors.grey[400] : Colors.grey[700],
+                              color: showLocation ? (isDark ? Colors.grey[400] : Colors.grey[700]) : Colors.grey,
+                              fontStyle: showLocation ? FontStyle.normal : FontStyle.italic,
                             ),
                           ),
                         ),
@@ -439,13 +560,14 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                 textColor: const Color(0xFF065F46),
                 borderColor: const Color(0xFF10B981).withValues(alpha: 0.3),
               ),
-              _buildTrustPill(
-                icon: Icons.military_tech_rounded,
-                text: buyerLevel,
-                bgColor: isDark ? const Color(0xFF262012) : const Color(0xFFFEF3C7),
-                textColor: isDark ? const Color(0xFFFBBF24) : const Color(0xFFB45309),
-                borderColor: isDark ? const Color(0xFF624A1D) : const Color(0xFFFCD34D),
-              ),
+              if (showLoyaltyLevel)
+                _buildTrustPill(
+                  icon: Icons.military_tech_rounded,
+                  text: buyerLevel,
+                  bgColor: isDark ? const Color(0xFF262012) : const Color(0xFFFEF3C7),
+                  textColor: isDark ? const Color(0xFFFBBF24) : const Color(0xFFB45309),
+                  borderColor: isDark ? const Color(0xFF624A1D) : const Color(0xFFFCD34D),
+                ),
               _buildTrustPill(
                 icon: Icons.calendar_month_outlined,
                 text: 'Cliente desde $memberSince',
@@ -486,6 +608,28 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () {
+                    if (!allowOffers) {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Color(0xFF334155),
+                          content: Row(
+                            children: [
+                              Icon(Icons.block, color: Colors.white, size: 18),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Este comprador tiene desactivada la recepción de ofertas directas.',
+                                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12.5),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                      return;
+                    }
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         behavior: SnackBarBehavior.floating,
@@ -494,11 +638,14 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                       ),
                     );
                   },
-                  icon: const Icon(Icons.send_rounded, size: 16),
-                  label: const Text('Enviar Oferta'),
+                  icon: Icon(allowOffers ? Icons.send_rounded : Icons.block, size: 16),
+                  label: Text(allowOffers ? 'Enviar Oferta' : 'Ofertas Ocultas'),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: isDark ? const Color(0xFF89d6b0) : primaryGreen,
-                    side: BorderSide(color: isDark ? const Color(0xFF89d6b0) : primaryGreen, width: 1.5),
+                    foregroundColor: allowOffers ? (isDark ? const Color(0xFF67C83B) : primaryGreen) : Colors.grey,
+                    side: BorderSide(
+                      color: allowOffers ? (isDark ? const Color(0xFF67C83B) : primaryGreen) : Colors.grey.withValues(alpha: 0.5),
+                      width: 1.5,
+                    ),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   ),
@@ -552,6 +699,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
     required Color borderColor,
     required bool isDark,
     required Color primaryGreen,
+    bool showNegotiationHistory = true,
   }) {
     final theme = Theme.of(context);
     return Row(
@@ -582,7 +730,18 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
           isDark,
           cardColor,
           borderColor: borderColor,
-          onTap: () => context.push('/order-history', extra: widget.buyer),
+          onTap: showNegotiationHistory
+              ? () => context.push('/order-history', extra: widget.buyer)
+              : () {
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      behavior: SnackBarBehavior.floating,
+                      backgroundColor: Color(0xFF334155),
+                      content: Text('El historial de negociaciones de este comprador es privado.'),
+                    ),
+                  );
+                },
         ),
       ],
     );
@@ -770,7 +929,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 26,
                           fontWeight: FontWeight.w900,
-                          color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+                          color: isDark ? const Color(0xFF67C83B) : primaryGreen,
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -838,8 +997,8 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
               icon: const Icon(Icons.rate_review_outlined, size: 16),
               label: const Text('Calificar Comprador'),
               style: OutlinedButton.styleFrom(
-                foregroundColor: isDark ? const Color(0xFF89d6b0) : primaryGreen,
-                side: BorderSide(color: isDark ? const Color(0xFF89d6b0) : primaryGreen, width: 1.2),
+                foregroundColor: isDark ? const Color(0xFF67C83B) : primaryGreen,
+                side: BorderSide(color: isDark ? const Color(0xFF67C83B) : primaryGreen, width: 1.2),
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
@@ -1117,14 +1276,14 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                                     fontFamily: 'Plus Jakarta Sans',
                                     fontSize: 11,
                                     fontWeight: FontWeight.w600,
-                                    color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+                                    color: isDark ? const Color(0xFF67C83B) : primaryGreen,
                                   ),
                                 ),
                                 const SizedBox(width: 4),
                                 Icon(
                                   isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
                                   size: 16,
-                                  color: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+                                  color: isDark ? const Color(0xFF67C83B) : primaryGreen,
                                 ),
                               ],
                             ),
@@ -1175,10 +1334,10 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                         style: OutlinedButton.styleFrom(
                           minimumSize: const Size(0, 32),
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                          foregroundColor: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+                          foregroundColor: isDark ? const Color(0xFF67C83B) : primaryGreen,
                           side: BorderSide(
                             color: (clampedPage > 1)
-                                ? (isDark ? const Color(0xFF89d6b0) : primaryGreen)
+                                ? (isDark ? const Color(0xFF67C83B) : primaryGreen)
                                 : Colors.grey.withValues(alpha: 0.3),
                           ),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -1209,10 +1368,10 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                         style: OutlinedButton.styleFrom(
                           minimumSize: const Size(0, 32),
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                          foregroundColor: isDark ? const Color(0xFF89d6b0) : primaryGreen,
+                          foregroundColor: isDark ? const Color(0xFF67C83B) : primaryGreen,
                           side: BorderSide(
                             color: (clampedPage < totalPages)
-                                ? (isDark ? const Color(0xFF89d6b0) : primaryGreen)
+                                ? (isDark ? const Color(0xFF67C83B) : primaryGreen)
                                 : Colors.grey.withValues(alpha: 0.3),
                           ),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -1718,7 +1877,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                       Icon(
                         Icons.storefront_outlined,
                         size: 13,
-                        color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF016042),
+                        color: isDark ? const Color(0xFF67C83B) : const Color(0xFF016042),
                       ),
                       const SizedBox(width: 4),
                       Flexible(
@@ -1728,9 +1887,9 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                             fontFamily: 'Plus Jakarta Sans',
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
-                            color: isDark ? const Color(0xFF89d6b0) : const Color(0xFF016042),
+                            color: isDark ? const Color(0xFF67C83B) : const Color(0xFF016042),
                             decoration: TextDecoration.underline,
-                            decorationColor: (isDark ? const Color(0xFF89d6b0) : const Color(0xFF016042)).withValues(alpha: 0.3),
+                            decorationColor: (isDark ? const Color(0xFF67C83B) : const Color(0xFF016042)).withValues(alpha: 0.3),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,

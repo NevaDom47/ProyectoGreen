@@ -153,7 +153,7 @@ void main() {
       // Verify title & role indicator
       expect(find.text('Privacidad del Perfil'), findsOneWidget);
       expect(find.text('Comprador'), findsWidgets);
-      expect(find.text('Proveedor'), findsWidgets);
+      expect(find.text('Proveedor'), findsNothing);
 
       // Verify all 8 Buyer options
       expect(find.text('Mostrar foto de perfil'), findsOneWidget);
@@ -164,6 +164,11 @@ void main() {
       expect(find.text('Mostrar Nivel de fidelidad'), findsOneWidget);
       expect(find.text('Mostrar Preferencia de compras'), findsOneWidget);
       expect(find.text('Permitir que proveedores me envíen ofertas'), findsOneWidget);
+
+      // Provider options should NOT be visible
+      expect(find.text('Mostrar información de contacto'), findsNothing);
+      expect(find.text('Mostrar horario de atención'), findsNothing);
+      expect(find.text('Mostrar "En línea"'), findsNothing);
 
       // Security section & Save button
       expect(find.text('Usuarios Reportados'), findsOneWidget);
@@ -181,6 +186,11 @@ void main() {
       );
       await tester.pumpAndSettle();
 
+      // Verify title & role indicator
+      expect(find.text('Privacidad del Perfil'), findsOneWidget);
+      expect(find.text('Proveedor'), findsWidgets);
+      expect(find.text('Comprador'), findsNothing);
+
       // Verify all 5 Provider options
       expect(find.text('Mostrar ubicación'), findsOneWidget);
       expect(find.text('Mostrar información de contacto'), findsOneWidget);
@@ -190,32 +200,37 @@ void main() {
 
       // Buyer specific options should not be visible in provider view
       expect(find.text('Permitir que proveedores me envíen ofertas'), findsNothing);
+      expect(find.text('Mostrar foto de perfil'), findsNothing);
+      expect(find.text('Mostrar Historial de negociaciones'), findsNothing);
     });
 
-    testWidgets('Switching role tab toggles between Buyer and Provider settings', (tester) async {
+    testWidgets('Role options are strictly locked to logged in user session without switch tabs', (tester) async {
+      // 1. As comprador
       UserSession.selectedRole = 'comprador';
-
       await tester.pumpWidget(
         const MaterialApp(
           home: PrivacyScreen(),
         ),
       );
       await tester.pumpAndSettle();
-
-      // Starts in Comprador mode
       expect(find.text('Mostrar foto de perfil'), findsOneWidget);
+      expect(find.text('Mostrar horario de atención'), findsNothing);
+      expect(find.text('Proveedor'), findsNothing);
 
-      // Tap Proveedor button in role selector
-      await tester.tap(find.text('Proveedor'));
+      // 2. As proveedor
+      UserSession.selectedRole = 'proveedor';
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: PrivacyScreen(),
+        ),
+      );
       await tester.pumpAndSettle();
-
-      // Now in Proveedor mode
-      expect(find.text('Mostrar información de contacto'), findsOneWidget);
-      expect(find.text('Mostrar "En línea"'), findsOneWidget);
+      expect(find.text('Mostrar horario de atención'), findsOneWidget);
       expect(find.text('Mostrar foto de perfil'), findsNothing);
+      expect(find.text('Comprador'), findsNothing);
     });
 
-    testWidgets('Toggling switches and saving updates PrivacyService', (tester) async {
+    testWidgets('Toggling buyer switches and saving updates PrivacyService', (tester) async {
       UserSession.selectedRole = 'comprador';
 
       await tester.pumpWidget(
@@ -237,6 +252,45 @@ void main() {
 
       // Verify setting was saved
       expect(PrivacyService.buyerSettings.showName, isFalse);
+    });
+
+    testWidgets('Toggling provider switches and saving updates PrivacyService', (tester) async {
+      UserSession.selectedRole = 'proveedor';
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: PrivacyScreen(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final contactSwitchFinder = find.widgetWithText(SwitchListTile, 'Mostrar información de contacto');
+      expect(contactSwitchFinder, findsOneWidget);
+      await tester.tap(contactSwitchFinder);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Guardar Configuración'));
+      await tester.pumpAndSettle();
+
+      expect(PrivacyService.providerSettings.showContactInfo, isFalse);
+    });
+
+    testWidgets('Verifies updated colors #285E44 and #A5C2B7 on PrivacyScreen', (tester) async {
+      UserSession.selectedRole = 'comprador';
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: PrivacyScreen(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final switchTiles = tester.widgetList<SwitchListTile>(find.byType(SwitchListTile));
+      expect(switchTiles.isNotEmpty, isTrue);
+      for (final tile in switchTiles) {
+        expect(tile.activeThumbColor, const Color(0xFF285E44));
+        expect(tile.activeTrackColor, const Color(0xFFA5C2B7));
+      }
     });
   });
 

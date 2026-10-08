@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../screens/splash_screen.dart';
 import '../screens/login_screen.dart';
+import '../screens/forgot_password_screen.dart';
 import '../screens/home_feed_screen.dart';
 import '../screens/register_screen.dart';
 import '../screens/providers_screen.dart';
+import '../screens/providers_map_screen.dart';
 import '../screens/notifications_screen.dart';
 import '../screens/chat_list_screen.dart';
 import '../screens/chat_detail_screen.dart';
@@ -56,46 +59,139 @@ import '../screens/business_verification_screen.dart';
 import '../screens/direct_profile_review_screen.dart';
 import '../screens/favorite_buyers_screen.dart';
 import '../screens/buyer_profile_screen.dart';
+import '../screens/register_email_verification_screen.dart';
+import '../screens/welcome_screen.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 
+CustomTransitionPage<T> buildSmoothTransitionPage<T>({
+  required GoRouterState state,
+  required Widget child,
+}) {
+  return CustomTransitionPage<T>(
+    key: state.pageKey,
+    child: child,
+    transitionDuration: const Duration(milliseconds: 260),
+    reverseTransitionDuration: const Duration(milliseconds: 220),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      final curved = CurvedAnimation(
+        parent: animation,
+        curve: Curves.easeOutCubic,
+        reverseCurve: Curves.easeInCubic,
+      );
+      return FadeTransition(
+        opacity: curved,
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0.04, 0.0),
+            end: Offset.zero,
+          ).animate(curved),
+          child: child,
+        ),
+      );
+    },
+  );
+}
+
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/login',
+  initialLocation: '/splash',
   routes: [
     GoRoute(
+      path: '/splash',
+      builder: (context, state) => const SplashScreen(),
+    ),
+    GoRoute(
       path: '/login',
-      builder: (context, state) => const LoginScreen(),
+      pageBuilder: (context, state) => buildSmoothTransitionPage(
+        state: state,
+        child: const LoginScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/forgot-password',
+      pageBuilder: (context, state) => buildSmoothTransitionPage(
+        state: state,
+        child: const ForgotPasswordScreen(),
+      ),
     ),
     GoRoute(
       path: '/register',
-      builder: (context, state) => const RegisterScreen(),
+      pageBuilder: (context, state) => buildSmoothTransitionPage(
+        state: state,
+        child: const RegisterScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/verify-registration-email',
+      pageBuilder: (context, state) {
+        final email = state.extra as String?;
+        return buildSmoothTransitionPage(
+          state: state,
+          child: RegisterEmailVerificationScreen(email: email),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/welcome',
+      pageBuilder: (context, state) => buildSmoothTransitionPage(
+        state: state,
+        child: const WelcomeScreen(),
+      ),
     ),
     GoRoute(
       path: '/select-role',
-      builder: (context, state) => const SelectRoleScreen(),
+      pageBuilder: (context, state) => buildSmoothTransitionPage(
+        state: state,
+        child: const SelectRoleScreen(),
+      ),
     ),
     GoRoute(
       path: '/buyer-onboarding',
-      builder: (context, state) => const BuyerOnboardingScreen(),
+      pageBuilder: (context, state) => buildSmoothTransitionPage(
+        state: state,
+        child: const BuyerOnboardingScreen(),
+      ),
     ),
     GoRoute(
       path: '/provider-onboarding',
-      builder: (context, state) => const ProviderOnboardingScreen(),
+      pageBuilder: (context, state) => buildSmoothTransitionPage(
+        state: state,
+        child: const ProviderOnboardingScreen(),
+      ),
     ),
     GoRoute(
       path: '/home-feed',
-      builder: (context, state) => const HomeFeedScreen(),
+      pageBuilder: (context, state) => buildSmoothTransitionPage(
+        state: state,
+        child: const HomeFeedScreen(),
+      ),
     ),
     GoRoute(
       path: '/cart-screen',
-      builder: (context, state) => const CartScreen(),
+      pageBuilder: (context, state) => buildSmoothTransitionPage(
+        state: state,
+        child: const CartScreen(),
+      ),
     ),
     GoRoute(
       path: '/providers-screen',
-      builder: (context, state) => const ProvidersScreen(),
+      pageBuilder: (context, state) => buildSmoothTransitionPage(
+        state: state,
+        child: const ProvidersScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/providers-map',
+      pageBuilder: (context, state) => buildSmoothTransitionPage(
+        state: state,
+        child: ProvidersMapScreen(),
+      ),
     ),
     GoRoute(
       path: '/chat-list',
-      builder: (context, state) => const ChatListScreen(),
+      pageBuilder: (context, state) => buildSmoothTransitionPage(
+        state: state,
+        child: const ChatListScreen(),
+      ),
     ),
     ShellRoute(
       builder: (context, state, child) {
@@ -192,6 +288,16 @@ final GoRouter appRouter = GoRouter(
                 position: animation.drive(Tween(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(CurveTween(curve: Curves.easeOutCubic))),
                 child: child,
               );
+            },
+          ),
+        ),
+        GoRoute(
+          path: '/providers-map',
+          pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: ProvidersMapScreen(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(opacity: animation, child: child);
             },
           ),
         ),

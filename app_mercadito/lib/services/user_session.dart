@@ -74,6 +74,13 @@ class UserSession {
   static String? streetAddress;
   static String? profilePictureUrl;
   static bool isBuyerOnboarded = false;
+  static bool isEmailVerified = false;
+  static bool? _isFirstTimeUserOverride;
+  static bool get isFirstTimeUser => _isFirstTimeUserOverride ?? (selectedRole == null);
+  static set isFirstTimeUser(bool value) => _isFirstTimeUserOverride = value;
+
+  // Tutorial / Guía interactiva
+  static bool hasSeenNavTutorial = false;
 
   // Provider Onboarding Details
   static bool isProviderOnboarded = false;
@@ -249,6 +256,8 @@ class UserSession {
     streetAddress = null;
     profilePictureUrl = null;
     isBuyerOnboarded = false;
+    isEmailVerified = false;
+    _isFirstTimeUserOverride = null;
 
     isProviderOnboarded = false;
     specialty = null;

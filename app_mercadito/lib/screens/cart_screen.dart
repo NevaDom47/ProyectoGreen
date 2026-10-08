@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import '../main.dart'; 
 import '../widgets/coupon_card.dart';
+import '../widgets/skeleton_loading.dart';
 import '../data/global_state.dart';
 
 class CartScreen extends StatefulWidget {
@@ -22,10 +23,14 @@ class _CartScreenState extends State<CartScreen> {
   final Map<int, TextEditingController> _couponControllers = {};
   
   final Map<String, GlobalKey<ShakeWidgetState>> _shakeKeys = {};
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    Future.delayed(const Duration(milliseconds: 600), () {
+      if (mounted) setState(() => _isLoading = false);
+    });
     for (int v = 0; v < vendors.length; v++) {
       _couponControllers[v] = TextEditingController();
       for (int i = 0; i < (vendors[v]['items'] as List).length; i++) {
@@ -421,9 +426,12 @@ class _CartScreenState extends State<CartScreen> {
             ),
             centerTitle: false,
           ),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Column(
+          body: SkeletonScreenLoader(
+            isLoading: _isLoading,
+            skeleton: const SkeletonCartView(),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Vendor Groups
@@ -713,7 +721,8 @@ class _CartScreenState extends State<CartScreen> {
               ],
             ),
           ),
-        );
+        ),
+      );
       }
     );
   }

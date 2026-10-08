@@ -8,11 +8,27 @@ import '../services/user_session.dart';
 import '../services/reviews_service.dart';
 import '../widgets/quality_info_bottom_sheet.dart';
 import '../widgets/supplier_quick_view_bottom_sheet.dart';
+import '../widgets/skeleton_loading.dart';
 import 'my_provider_profile_screen.dart';
 import 'order_history_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 550), () {
+      if (mounted) setState(() => _isLoading = false);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,28 +45,32 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: bgColor,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 100),
-          child: Column(
-            children: [
-              _buildHeader(context, theme, isDark, cardColor),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-                child: Column(
-                  children: [
-                    _buildProviderReputationSection(context, theme, isDark, cardColor),
-                    const SizedBox(height: 32),
-                    _buildOrderHistory(context, theme, isDark, cardColor),
-                    const SizedBox(height: 32),
-                    _buildFavoritesCarousel(context, theme, isDark, cardColor),
-                    const SizedBox(height: 32),
-                    _buildSettingsMenu(context, theme, isDark, cardColor),
-                    const SizedBox(height: 32),
-                    _buildContactInfo(theme, isDark),
-                  ],
+        child: SkeletonScreenLoader(
+          isLoading: _isLoading,
+          skeleton: const SkeletonProfileView(),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 100),
+            child: Column(
+              children: [
+                _buildHeader(context, theme, isDark, cardColor),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+                  child: Column(
+                    children: [
+                      _buildProviderReputationSection(context, theme, isDark, cardColor),
+                      const SizedBox(height: 32),
+                      _buildOrderHistory(context, theme, isDark, cardColor),
+                      const SizedBox(height: 32),
+                      _buildFavoritesCarousel(context, theme, isDark, cardColor),
+                      const SizedBox(height: 32),
+                      _buildSettingsMenu(context, theme, isDark, cardColor),
+                      const SizedBox(height: 32),
+                      _buildContactInfo(theme, isDark),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

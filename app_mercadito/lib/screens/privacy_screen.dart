@@ -12,8 +12,6 @@ class PrivacyScreen extends StatefulWidget {
 }
 
 class _PrivacyScreenState extends State<PrivacyScreen> {
-  late String _currentRole;
-
   // Comprador Privacy Options
   late bool _buyerShowProfilePicture;
   late bool _buyerShowName;
@@ -34,7 +32,6 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
   @override
   void initState() {
     super.initState();
-    _currentRole = UserSession.selectedRole == 'proveedor' ? 'proveedor' : 'comprador';
 
     final buyerSettings = PrivacyService.buyerSettings;
     _buyerShowProfilePicture = buyerSettings.showProfilePicture;
@@ -55,28 +52,32 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
   }
 
   void _saveSettings(Color primaryColor) {
-    PrivacyService.saveBuyerSettings(
-      BuyerPrivacySettings(
-        showProfilePicture: _buyerShowProfilePicture,
-        showName: _buyerShowName,
-        showLocation: _buyerShowLocation,
-        showPublicProfile: _buyerShowPublicProfile,
-        showNegotiationHistory: _buyerShowNegotiationHistory,
-        showLoyaltyLevel: _buyerShowLoyaltyLevel,
-        showShoppingPreferences: _buyerShowShoppingPreferences,
-        allowProviderOffers: _buyerAllowProviderOffers,
-      ),
-    );
+    final isProvider = UserSession.selectedRole == 'proveedor';
 
-    PrivacyService.saveProviderSettings(
-      ProviderPrivacySettings(
-        showLocation: _providerShowLocation,
-        showContactInfo: _providerShowContactInfo,
-        showBusinessHours: _providerShowBusinessHours,
-        showOnlineStatus: _providerShowOnlineStatus,
-        showLastSeen: _providerShowLastSeen,
-      ),
-    );
+    if (isProvider) {
+      PrivacyService.saveProviderSettings(
+        ProviderPrivacySettings(
+          showLocation: _providerShowLocation,
+          showContactInfo: _providerShowContactInfo,
+          showBusinessHours: _providerShowBusinessHours,
+          showOnlineStatus: _providerShowOnlineStatus,
+          showLastSeen: _providerShowLastSeen,
+        ),
+      );
+    } else {
+      PrivacyService.saveBuyerSettings(
+        BuyerPrivacySettings(
+          showProfilePicture: _buyerShowProfilePicture,
+          showName: _buyerShowName,
+          showLocation: _buyerShowLocation,
+          showPublicProfile: _buyerShowPublicProfile,
+          showNegotiationHistory: _buyerShowNegotiationHistory,
+          showLoyaltyLevel: _buyerShowLoyaltyLevel,
+          showShoppingPreferences: _buyerShowShoppingPreferences,
+          allowProviderOffers: _buyerAllowProviderOffers,
+        ),
+      );
+    }
 
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop();
@@ -108,15 +109,16 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
             (currentMode == ThemeMode.system && platformBrightness == Brightness.dark);
 
         final bgColor = isDark ? const Color(0xFF101815) : const Color(0xFFF7F9F8);
-        final primaryColor = isDark ? const Color(0xFF67C83B) : const Color(0xFF365D46);
+        final primaryColor = isDark ? const Color(0xFF67C83B) : const Color(0xFF285E44);
+        final switchTrackColor = isDark ? const Color(0xFF67C83B).withValues(alpha: 0.38) : const Color(0xFFA5C2B7);
         final textColor = isDark ? const Color(0xFFF1F5F3) : const Color(0xFF20262B);
         final surfaceColor = isDark ? const Color(0xFF1C2924) : Colors.white;
         final borderColor = isDark ? const Color(0xFF2B3A34) : const Color(0xFFE2E7E4);
-        final vividGreen = isDark ? const Color(0xFF67C83B) : const Color(0xFF365D46);
+        final vividGreen = isDark ? const Color(0xFF67C83B) : const Color(0xFF285E44);
         final dangerColor = const Color(0xFFFF6B6B);
         final subtextColor = isDark ? const Color(0xFFAAB8B1) : const Color(0xFF697177);
 
-        final isProvider = _currentRole == 'proveedor';
+        final isProvider = UserSession.selectedRole == 'proveedor';
 
         return Scaffold(
           backgroundColor: bgColor,
@@ -125,7 +127,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
             elevation: 0,
             scrolledUnderElevation: 0,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: isDark ? textColor : const Color(0xFF365D46)),
+              icon: Icon(Icons.arrow_back, color: isDark ? textColor : const Color(0xFF285E44)),
               onPressed: () {
                 if (Navigator.of(context).canPop()) {
                   Navigator.of(context).pop();
@@ -135,7 +137,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
             title: Text(
               'Privacidad del Perfil',
               style: TextStyle(
-                color: isDark ? textColor : const Color(0xFF365D46),
+                color: isDark ? textColor : const Color(0xFF285E44),
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
                 fontFamily: 'Plus Jakarta Sans',
@@ -150,14 +152,14 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Role Selector Banner
-                      _buildRoleSelector(
+                      // Role Banner (Shows logged-in role only, no switcher)
+                      _buildRoleBanner(
                         surfaceColor: surfaceColor,
                         borderColor: borderColor,
                         primaryColor: primaryColor,
                         textColor: textColor,
                         subtextColor: subtextColor,
-                        isDark: isDark,
+                        isProvider: isProvider,
                       ),
                       const SizedBox(height: 20),
 
@@ -176,6 +178,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                               textColor: textColor,
                               subtextColor: subtextColor,
                               activeColor: vividGreen,
+                              activeTrackColor: switchTrackColor,
                               onChanged: (val) => setState(() => _buyerShowProfilePicture = val),
                             ),
                             _buildDivider(borderColor),
@@ -186,6 +189,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                               textColor: textColor,
                               subtextColor: subtextColor,
                               activeColor: vividGreen,
+                              activeTrackColor: switchTrackColor,
                               onChanged: (val) => setState(() => _buyerShowName = val),
                             ),
                             _buildDivider(borderColor),
@@ -196,6 +200,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                               textColor: textColor,
                               subtextColor: subtextColor,
                               activeColor: vividGreen,
+                              activeTrackColor: switchTrackColor,
                               onChanged: (val) => setState(() => _buyerShowLocation = val),
                             ),
                             _buildDivider(borderColor),
@@ -206,6 +211,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                               textColor: textColor,
                               subtextColor: subtextColor,
                               activeColor: vividGreen,
+                              activeTrackColor: switchTrackColor,
                               onChanged: (val) => setState(() => _buyerShowPublicProfile = val),
                             ),
                           ],
@@ -226,6 +232,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                               textColor: textColor,
                               subtextColor: subtextColor,
                               activeColor: vividGreen,
+                              activeTrackColor: switchTrackColor,
                               onChanged: (val) => setState(() => _buyerShowNegotiationHistory = val),
                             ),
                             _buildDivider(borderColor),
@@ -236,6 +243,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                               textColor: textColor,
                               subtextColor: subtextColor,
                               activeColor: vividGreen,
+                              activeTrackColor: switchTrackColor,
                               onChanged: (val) => setState(() => _buyerShowLoyaltyLevel = val),
                             ),
                             _buildDivider(borderColor),
@@ -246,6 +254,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                               textColor: textColor,
                               subtextColor: subtextColor,
                               activeColor: vividGreen,
+                              activeTrackColor: switchTrackColor,
                               onChanged: (val) => setState(() => _buyerShowShoppingPreferences = val),
                             ),
                             _buildDivider(borderColor),
@@ -256,6 +265,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                               textColor: textColor,
                               subtextColor: subtextColor,
                               activeColor: vividGreen,
+                              activeTrackColor: switchTrackColor,
                               onChanged: (val) => setState(() => _buyerAllowProviderOffers = val),
                             ),
                           ],
@@ -275,6 +285,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                               textColor: textColor,
                               subtextColor: subtextColor,
                               activeColor: vividGreen,
+                              activeTrackColor: switchTrackColor,
                               onChanged: (val) => setState(() => _providerShowLocation = val),
                             ),
                             _buildDivider(borderColor),
@@ -285,6 +296,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                               textColor: textColor,
                               subtextColor: subtextColor,
                               activeColor: vividGreen,
+                              activeTrackColor: switchTrackColor,
                               onChanged: (val) => setState(() => _providerShowContactInfo = val),
                             ),
                             _buildDivider(borderColor),
@@ -295,6 +307,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                               textColor: textColor,
                               subtextColor: subtextColor,
                               activeColor: vividGreen,
+                              activeTrackColor: switchTrackColor,
                               onChanged: (val) => setState(() => _providerShowBusinessHours = val),
                             ),
                           ],
@@ -315,6 +328,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                               textColor: textColor,
                               subtextColor: subtextColor,
                               activeColor: vividGreen,
+                              activeTrackColor: switchTrackColor,
                               onChanged: (val) => setState(() => _providerShowOnlineStatus = val),
                             ),
                             _buildDivider(borderColor),
@@ -325,6 +339,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                               textColor: textColor,
                               subtextColor: subtextColor,
                               activeColor: vividGreen,
+                              activeTrackColor: switchTrackColor,
                               onChanged: (val) => setState(() => _providerShowLastSeen = val),
                             ),
                           ],
@@ -419,143 +434,77 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
     );
   }
 
-  Widget _buildRoleSelector({
+  Widget _buildRoleBanner({
     required Color surfaceColor,
     required Color borderColor,
     required Color primaryColor,
     required Color textColor,
     required Color subtextColor,
-    required bool isDark,
+    required bool isProvider,
   }) {
-    final activeRole = UserSession.selectedRole ?? 'comprador';
-
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         color: surfaceColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: borderColor),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Row(
-            children: [
-              Icon(Icons.manage_accounts_outlined, color: primaryColor, size: 20),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'ROL DE CUENTA',
-                      style: TextStyle(
-                        color: primaryColor,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 11,
-                        letterSpacing: 1.0,
-                      ),
-                    ),
-                    Text(
-                      'Rol activo: ${activeRole == 'proveedor' ? 'Proveedor' : 'Comprador'}',
-                      style: TextStyle(
-                        color: subtextColor,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.all(4),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF101815) : const Color(0xFFEDF2EE),
-              borderRadius: BorderRadius.circular(12),
+              color: primaryColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(10),
             ),
-            child: Row(
+            child: Icon(
+              isProvider ? Icons.storefront_outlined : Icons.person_outline,
+              color: primaryColor,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: _buildRoleButton(
-                    title: 'Comprador',
-                    icon: Icons.shopping_bag_outlined,
-                    isSelected: _currentRole == 'comprador',
-                    primaryColor: primaryColor,
-                    textColor: textColor,
-                    isDark: isDark,
-                    onTap: () => setState(() => _currentRole = 'comprador'),
+                Text(
+                  'ROL DE CUENTA',
+                  style: TextStyle(
+                    color: primaryColor,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 11,
+                    letterSpacing: 1.0,
                   ),
                 ),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: _buildRoleButton(
-                    title: 'Proveedor',
-                    icon: Icons.storefront_outlined,
-                    isSelected: _currentRole == 'proveedor',
-                    primaryColor: primaryColor,
-                    textColor: textColor,
-                    isDark: isDark,
-                    onTap: () => setState(() => _currentRole = 'proveedor'),
+                const SizedBox(height: 2),
+                Text(
+                  'Rol activo: ${isProvider ? 'Proveedor' : 'Comprador'}',
+                  style: TextStyle(
+                    color: subtextColor,
+                    fontSize: 12,
                   ),
                 ),
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRoleButton({
-    required String title,
-    required IconData icon,
-    required bool isSelected,
-    required Color primaryColor,
-    required Color textColor,
-    required bool isDark,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? (isDark ? const Color(0xFF1C2924) : Colors.white)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 16,
-              color: isSelected ? primaryColor : Colors.grey,
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: primaryColor.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: primaryColor.withValues(alpha: 0.25)),
             ),
-            const SizedBox(width: 6),
-            Text(
-              title,
+            child: Text(
+              isProvider ? 'Proveedor' : 'Comprador',
               style: TextStyle(
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                color: isSelected ? textColor : Colors.grey,
-                fontSize: 13,
+                color: primaryColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -603,6 +552,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
     required Color textColor,
     Color? subtextColor,
     required Color activeColor,
+    required Color activeTrackColor,
     required ValueChanged<bool> onChanged,
   }) {
     return SwitchListTile(
@@ -625,7 +575,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
           : null,
       value: value,
       activeThumbColor: activeColor,
-      activeTrackColor: activeColor.withValues(alpha: 0.38),
+      activeTrackColor: activeTrackColor,
       onChanged: onChanged,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
     );

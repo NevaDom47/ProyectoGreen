@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import '../services/tutorial_service.dart';
+import '../services/user_session.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   final int currentIndex;
@@ -16,6 +18,26 @@ class CustomBottomNavBar extends StatefulWidget {
     this.pendingChatsCount = 3,
     this.newUsersCount = 2,
   });
+
+  // GlobalKeys para focalizar los 5 items de la barra en el tutorial interactivo
+  static final GlobalKey navHomeKey = GlobalKey();
+  static final GlobalKey navCartKey = GlobalKey();
+  static final GlobalKey navMarketKey = GlobalKey();
+  static final GlobalKey navProvidersKey = GlobalKey();
+  static final GlobalKey navChatsKey = GlobalKey();
+
+  /// Permite iniciar o reiniciar el tutorial interactivo desde cualquier parte de la app
+  static void startTutorial(BuildContext context, {bool force = true}) {
+    TutorialService().showNavTutorial(
+      context,
+      homeKey: navHomeKey,
+      cartKey: navCartKey,
+      marketKey: navMarketKey,
+      providersKey: navProvidersKey,
+      chatsKey: navChatsKey,
+      force: force,
+    );
+  }
 
   @override
   State<CustomBottomNavBar> createState() => _CustomBottomNavBarState();
@@ -32,6 +54,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
   late Animation<double> _chatAlertAnimation;
   late Animation<double> _chatPulseAnimation;
   Timer? _chatAlertTimer;
+  Timer? _tutorialTimer;
 
   final List<_NavItemData> _items = const [
     _NavItemData(
@@ -115,6 +138,40 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
 
     if (widget.currentIndex == 0) {
       _playChatAlertAnimation();
+      _checkAndShowTutorial();
+    }
+  }
+
+  void _checkAndShowTutorial() {
+    if (UserSession.hasSeenNavTutorial) return;
+    final bindingStr = WidgetsBinding.instance.runtimeType.toString();
+    if (bindingStr.contains('TestWidgetsFlutterBinding') ||
+        bindingStr.contains('AutomatedTestWidgetsFlutterBinding')) {
+      return;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _tutorialTimer?.cancel();
+      _tutorialTimer = Timer(const Duration(milliseconds: 700), () {
+        if (!mounted || widget.currentIndex != 0) return;
+        CustomBottomNavBar.startTutorial(context, force: false);
+      });
+    });
+  }
+
+  GlobalKey _getNavKey(int index) {
+    switch (index) {
+      case 0:
+        return CustomBottomNavBar.navHomeKey;
+      case 1:
+        return CustomBottomNavBar.navCartKey;
+      case 2:
+        return CustomBottomNavBar.navMarketKey;
+      case 3:
+        return CustomBottomNavBar.navProvidersKey;
+      case 4:
+        return CustomBottomNavBar.navChatsKey;
+      default:
+        return CustomBottomNavBar.navHomeKey;
     }
   }
 
@@ -174,6 +231,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
 
   @override
   void dispose() {
+    _tutorialTimer?.cancel();
     _chatAlertTimer?.cancel();
     _chatAlertController.dispose();
     _controller.dispose();
@@ -259,6 +317,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
 
                             return Expanded(
                               child: GestureDetector(
+                                key: _getNavKey(index),
                                 onTap: () => _onItemTapped(index),
                                 behavior: HitTestBehavior.opaque,
                                 child: Stack(

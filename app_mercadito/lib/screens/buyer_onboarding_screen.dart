@@ -7,6 +7,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import '../services/user_session.dart';
 import '../data/countries_states.dart';
+import '../widgets/animated_error_field.dart';
+import '../widgets/bouncing_button.dart';
 
 
 class CountryPhoneCode {
@@ -46,37 +48,48 @@ class _BuyerOnboardingScreenState extends State<BuyerOnboardingScreen> {
   final _countryController = TextEditingController();
   final _stateController = TextEditingController();
 
+  String? _nameError;
+  String? _phoneError;
+
+  void _validateStep1() {
+    final name = _nameController.text.trim();
+    final phone = _phoneController.text.trim();
+    String? newNameError;
+    String? newPhoneError;
+
+    if (name.isEmpty) {
+      newNameError = 'Por favor ingresa tu nombre completo.';
+    } else if (name.length < 3) {
+      newNameError = 'El nombre debe tener al menos 3 caracteres.';
+    }
+
+    if (phone.isEmpty) {
+      newPhoneError = 'Por favor ingresa tu número de teléfono.';
+    } else if (phone.length < 8) {
+      newPhoneError = 'El teléfono debe tener al menos 8 dígitos.';
+    }
+
+    setState(() {
+      _nameError = newNameError;
+      _phoneError = newPhoneError;
+    });
+  }
+
   static const List<CountryPhoneCode> _phoneCodes = [
-    CountryPhoneCode(isoCode: 'mx', code: '+52', name: 'México'),
-    CountryPhoneCode(isoCode: 'co', code: '+57', name: 'Colombia'),
-    CountryPhoneCode(isoCode: 'ar', code: '+54', name: 'Argentina'),
-    CountryPhoneCode(isoCode: 'pe', code: '+51', name: 'Perú'),
-    CountryPhoneCode(isoCode: 'cl', code: '+56', name: 'Chile'),
-    CountryPhoneCode(isoCode: 'ec', code: '+593', name: 'Ecuador'),
-    CountryPhoneCode(isoCode: 've', code: '+58', name: 'Venezuela'),
-    CountryPhoneCode(isoCode: 'gt', code: '+502', name: 'Guatemala'),
-    CountryPhoneCode(isoCode: 'sv', code: '+503', name: 'El Salvador'),
-    CountryPhoneCode(isoCode: 'hn', code: '+504', name: 'Honduras'),
-    CountryPhoneCode(isoCode: 'ni', code: '+505', name: 'Nicaragua'),
-    CountryPhoneCode(isoCode: 'cr', code: '+506', name: 'Costa Rica'),
-    CountryPhoneCode(isoCode: 'pa', code: '+507', name: 'Panamá'),
-    CountryPhoneCode(isoCode: 'bo', code: '+591', name: 'Bolivia'),
-    CountryPhoneCode(isoCode: 'py', code: '+595', name: 'Paraguay'),
-    CountryPhoneCode(isoCode: 'uy', code: '+598', name: 'Uruguay'),
-    CountryPhoneCode(isoCode: 'do', code: '+1', name: 'Rep. Dominicana'),
-    CountryPhoneCode(isoCode: 'pr', code: '+1', name: 'Puerto Rico'),
-    CountryPhoneCode(isoCode: 'cu', code: '+53', name: 'Cuba'),
-    CountryPhoneCode(isoCode: 'us', code: '+1', name: 'EE.UU.'),
-    CountryPhoneCode(isoCode: 'ca', code: '+1', name: 'Canadá'),
-    CountryPhoneCode(isoCode: 'br', code: '+55', name: 'Brasil'),
-    CountryPhoneCode(isoCode: 'es', code: '+34', name: 'España'),
+    CountryPhoneCode(isoCode: 'do', code: '+1', name: 'República Dominicana'),
   ];
 
-  late CountryPhoneCode _selectedPhoneCode = _phoneCodes.first; // Default to México
+  late CountryPhoneCode _selectedPhoneCode = _phoneCodes.first;
 
   // Step 2 variables
-  String? _selectedCountry;
+  String? _selectedCountry = 'República Dominicana';
   String? _selectedState;
+
+  @override
+  void initState() {
+    super.initState();
+    _countryController.text = 'República Dominicana';
+  }
 
   // Step 3 variables
   String _selectedAvatarUrl = 'assets/images/Foto sin perfil.png';
@@ -398,7 +411,8 @@ class _BuyerOnboardingScreenState extends State<BuyerOnboardingScreen> {
 
   void _nextStep() {
     if (_currentStep == 0) {
-      if (!_formKeyStep1.currentState!.validate()) {
+      _validateStep1();
+      if (_nameError != null || _phoneError != null) {
         return;
       }
     } else if (_currentStep == 1) {
@@ -565,34 +579,40 @@ class _BuyerOnboardingScreenState extends State<BuyerOnboardingScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 400),
-                child: ElevatedButton(
-                  onPressed: _nextStep,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: actualPrimary,
-                    foregroundColor: isDarkMode ? const Color(0xFF121814) : Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 20.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        _currentStep == 2 ? 'COMPLETAR PERFIL' : 'CONTINUAR',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 2.0,
+                child: BouncingButton(
+                  onTap: _nextStep,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _nextStep,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: actualPrimary,
+                        foregroundColor: isDarkMode ? const Color(0xFF121814) : Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 20.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
                         ),
+                        elevation: 0,
                       ),
-                      const SizedBox(width: 8),
-                      Icon(
-                        _currentStep == 2 ? Icons.check_circle_outline : Icons.arrow_forward,
-                        size: 18,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            _currentStep == 2 ? 'COMPLETAR PERFIL' : 'CONTINUAR',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 2.0,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Icon(
+                            _currentStep == 2 ? Icons.check_circle_outline : Icons.arrow_forward,
+                            size: 18,
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
@@ -675,20 +695,20 @@ class _BuyerOnboardingScreenState extends State<BuyerOnboardingScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: const InputDecoration(
-                      hintText: 'Ej. Ana García',
+                  AnimatedErrorField(
+                    errorText: _nameError,
+                    borderRadius: 12,
+                    child: TextFormField(
+                      controller: _nameController,
+                      decoration: const InputDecoration(
+                        hintText: 'Ej. Ana García',
+                      ),
+                      onChanged: (val) {
+                        if (_nameError != null) {
+                          setState(() => _nameError = null);
+                        }
+                      },
                     ),
-                    validator: (val) {
-                      if (val == null || val.trim().isEmpty) {
-                        return 'Por favor ingresa tu nombre completo.';
-                      }
-                      if (val.trim().length < 3) {
-                        return 'El nombre debe tener al menos 3 caracteres.';
-                      }
-                      return null;
-                    },
                   ),
                   const SizedBox(height: 20),
 
@@ -702,74 +722,74 @@ class _BuyerOnboardingScreenState extends State<BuyerOnboardingScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  TextFormField(
-                    controller: _phoneController,
-                    decoration: InputDecoration(
-                      hintText: '55 1234 5678',
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.only(left: 12.0, right: 8.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            GestureDetector(
-                              onTap: _showCountryPicker,
-                              behavior: HitTestBehavior.opaque,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(3),
-                                    child: Image.asset(
-                                      'assets/images/${_selectedPhoneCode.isoCode}.png',
-                                      width: 24,
-                                      height: 16,
-                                      fit: BoxFit.cover,
-                                      filterQuality: FilterQuality.high,
-                                      errorBuilder: (context, error, stackTrace) => const Icon(Icons.flag, size: 16),
+                  AnimatedErrorField(
+                    errorText: _phoneError,
+                    borderRadius: 12,
+                    child: TextFormField(
+                      controller: _phoneController,
+                      decoration: InputDecoration(
+                        hintText: '55 1234 5678',
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.only(left: 12.0, right: 8.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              GestureDetector(
+                                onTap: _showCountryPicker,
+                                behavior: HitTestBehavior.opaque,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(3),
+                                      child: Image.asset(
+                                        'assets/images/${_selectedPhoneCode.isoCode}.png',
+                                        width: 24,
+                                        height: 16,
+                                        fit: BoxFit.cover,
+                                        filterQuality: FilterQuality.high,
+                                        errorBuilder: (context, error, stackTrace) => const Icon(Icons.flag, size: 16),
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    _selectedPhoneCode.code,
-                                    style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                      color: isDark ? Colors.white : Colors.black87,
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      _selectedPhoneCode.code,
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        color: isDark ? Colors.white : Colors.black87,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Icon(
-                                    Icons.keyboard_arrow_down_rounded,
-                                    size: 16,
-                                    color: primary,
-                                  ),
-                                ],
+                                    const SizedBox(width: 4),
+                                    Icon(
+                                      Icons.keyboard_arrow_down_rounded,
+                                      size: 16,
+                                      color: primary,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            Container(
-                              height: 20,
-                              width: 1,
-                              color: isDark ? Colors.grey[800] : Colors.grey[300],
-                              margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                            ),
-                          ],
+                              Container(
+                                height: 20,
+                                width: 1,
+                                color: isDark ? Colors.grey[800] : Colors.grey[300],
+                                margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(15),
+                      ],
+                      onChanged: (val) {
+                        if (_phoneError != null) {
+                          setState(() => _phoneError = null);
+                        }
+                      },
                     ),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      LengthLimitingTextInputFormatter(15),
-                    ],
-                    validator: (val) {
-                      if (val == null || val.trim().isEmpty) {
-                        return 'Por favor ingresa tu número de teléfono.';
-                      }
-                      if (val.trim().length < 8) {
-                        return 'El teléfono debe tener al menos 8 dígitos.';
-                      }
-                      return null;
-                    },
                   ),
                 ],
               ),
@@ -848,7 +868,7 @@ class _BuyerOnboardingScreenState extends State<BuyerOnboardingScreen> {
                   onTap: () {
                     _showSearchablePicker(
                       title: 'Selecciona tu país',
-                      options: excelCountriesAndStates.keys.toList(),
+                      options: const ['República Dominicana'],
                       selectedValue: _selectedCountry,
                       onSelected: (val) {
                         setState(() {

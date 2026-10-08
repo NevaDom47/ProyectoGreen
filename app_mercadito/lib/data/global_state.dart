@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import '../services/sound_service.dart';
 
 // ---------------------------------------------------------
 // Global Flash Offers State (Synchronized across screens)
@@ -275,6 +276,7 @@ bool isFavorite(String productName) {
 }
 
 void toggleFavorite(Map<String, dynamic> product) {
+  SoundService.playFavorite();
   final currentFavorites = List<Map<String, dynamic>>.from(globalFavorites.value);
   final index = currentFavorites.indexWhere((item) => item['name'] == product['name']);
   
@@ -344,6 +346,7 @@ bool isFavoriteProvider(String providerName) {
 }
 
 void toggleFavoriteProvider(Map<String, dynamic> provider) {
+  SoundService.playFavorite();
   final currentFavorites = List<Map<String, dynamic>>.from(globalFavoriteProviders.value);
   final index = currentFavorites.indexWhere((item) => item['name'] == provider['name']);
   
@@ -503,6 +506,7 @@ bool isFavoriteBuyer(String identifier) {
 }
 
 void toggleFavoriteBuyer(Map<String, dynamic> buyer) {
+  SoundService.playFavorite();
   final currentFavorites = List<Map<String, dynamic>>.from(globalFavoriteBuyers.value);
   final buyerId = (buyer['id'] ?? buyer['name'] ?? '').toString();
   final index = currentFavorites.indexWhere(

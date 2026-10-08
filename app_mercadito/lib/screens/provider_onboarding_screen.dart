@@ -7,6 +7,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import '../services/user_session.dart';
 import '../data/countries_states.dart';
+import '../widgets/animated_error_field.dart';
+import '../widgets/bouncing_button.dart';
 
 class CountryPhoneCode {
   final String isoCode;
@@ -42,16 +44,12 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
   final _formKeyStep1 = GlobalKey<FormState>();
   final _businessNameController = TextEditingController();
   final _phoneController = TextEditingController();
+  String? _businessNameError;
+  String? _phoneError;
+  String? _streetError;
 
   static const List<CountryPhoneCode> _phoneCodes = [
-    CountryPhoneCode(isoCode: 'mx', code: '+52', name: 'México'),
-    CountryPhoneCode(isoCode: 'co', code: '+57', name: 'Colombia'),
-    CountryPhoneCode(isoCode: 'ar', code: '+54', name: 'Argentina'),
-    CountryPhoneCode(isoCode: 'pe', code: '+51', name: 'Perú'),
-    CountryPhoneCode(isoCode: 'cl', code: '+56', name: 'Chile'),
-    CountryPhoneCode(isoCode: 'ec', code: '+593', name: 'Ecuador'),
-    CountryPhoneCode(isoCode: 've', code: '+58', name: 'Venezuela'),
-    CountryPhoneCode(isoCode: 'gt', code: '+502', name: 'Guatemala'),
+    CountryPhoneCode(isoCode: 'do', code: '+1', name: 'República Dominicana'),
   ];
 
   late CountryPhoneCode _selectedPhoneCode = _phoneCodes.first;
@@ -79,13 +77,19 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
   ];
 
   // Step 3 variables
-  String? _selectedCountry;
+  String? _selectedCountry = 'República Dominicana';
   String? _selectedState;
   final _streetController = TextEditingController();
   final _countryController = TextEditingController();
   final _stateController = TextEditingController();
   bool _gpsConfirmed = false;
   bool _confirmingGps = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _countryController.text = 'República Dominicana';
+  }
 
   // Step 4 variables
   final List<DaySchedule> _weeklySchedule = [
@@ -362,7 +366,25 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
 
   void _nextStep() {
     if (_currentStep == 0) {
-      if (!_formKeyStep1.currentState!.validate()) {
+      final bName = _businessNameController.text.trim();
+      final phone = _phoneController.text.trim();
+      String? bError;
+      String? pError;
+
+      if (bName.isEmpty) {
+        bError = 'Por favor ingresa el nombre de tu negocio.';
+      }
+      if (phone.isEmpty) {
+        pError = 'Por favor ingresa tu número de teléfono.';
+      } else if (phone.length < 8) {
+        pError = 'El teléfono debe tener al menos 8 dígitos.';
+      }
+
+      if (bError != null || pError != null) {
+        setState(() {
+          _businessNameError = bError;
+          _phoneError = pError;
+        });
         return;
       }
     } else if (_currentStep == 1) {
@@ -372,6 +394,11 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
       }
     } else if (_currentStep == 2) {
       if (_selectedCountry == null || _selectedState == null || _streetController.text.trim().isEmpty) {
+        if (_streetController.text.trim().isEmpty) {
+          setState(() {
+            _streetError = 'Por favor ingresa la dirección de tu negocio.';
+          });
+        }
         _showErrorSnackBar('Por favor indica tu dirección de negocio completa.');
         return;
       }
@@ -791,34 +818,41 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 400),
-                child: ElevatedButton(
-                  onPressed: _nextStep,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: actualPrimary,
-                    foregroundColor: isDarkMode ? const Color(0xFF121814) : Colors.white,
+                child: BouncingButton(
+                  onTap: _nextStep,
+                  child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 20.0),
-                    shape: RoundedRectangleBorder(
+                    decoration: BoxDecoration(
+                      color: actualPrimary,
                       borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        _currentStep == 4 ? 'FINALIZAR REGISTRO' : 'CONTINUAR',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 2.0,
+                      boxShadow: [
+                        BoxShadow(
+                          color: actualPrimary.withValues(alpha: 0.3),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      Icon(
-                        _currentStep == 4 ? Icons.check_circle_outline : Icons.arrow_forward,
-                        size: 18,
-                      ),
-                    ],
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          _currentStep == 4 ? 'FINALIZAR REGISTRO' : 'CONTINUAR',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 2.0,
+                            color: isDarkMode ? const Color(0xFF121814) : Colors.white,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Icon(
+                          _currentStep == 4 ? Icons.check_circle_outline : Icons.arrow_forward,
+                          size: 18,
+                          color: isDarkMode ? const Color(0xFF121814) : Colors.white,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -899,19 +933,20 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
                       color: textVariant,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    controller: _businessNameController,
-                    decoration: const InputDecoration(
-                      hintText: 'Ej. Distribuidora Los Altos',
+                  AnimatedErrorField(
+                    errorText: _businessNameError,
+                    borderRadius: 16,
+                    child: TextFormField(
+                      controller: _businessNameController,
+                      decoration: const InputDecoration(
+                        hintText: 'Ej. Distribuidora Los Altos',
+                      ),
+                      onChanged: (v) {
+                        setState(() {
+                          if (_businessNameError != null) _businessNameError = null;
+                        });
+                      },
                     ),
-                    onChanged: (v) => setState(() {}), // Refresh live card preview in Step 5
-                    validator: (val) {
-                      if (val == null || val.trim().isEmpty) {
-                        return 'Ingresa el nombre del negocio.';
-                      }
-                      return null;
-                    },
                   ),
                   const SizedBox(height: 20),
 
@@ -926,73 +961,73 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  TextFormField(
-                    controller: _phoneController,
-                    decoration: InputDecoration(
-                      hintText: '55 1234 5678',
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.only(left: 12.0, right: 8.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            GestureDetector(
-                              onTap: _showCountryCodePicker,
-                              behavior: HitTestBehavior.opaque,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(3),
-                                    child: Image.asset(
-                                      'assets/images/${_selectedPhoneCode.isoCode}.png',
-                                      width: 24,
-                                      height: 16,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) => const Icon(Icons.flag, size: 16),
+                  AnimatedErrorField(
+                    errorText: _phoneError,
+                    borderRadius: 16,
+                    child: TextFormField(
+                      controller: _phoneController,
+                      decoration: InputDecoration(
+                        hintText: '55 1234 5678',
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.only(left: 12.0, right: 8.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              GestureDetector(
+                                onTap: _showCountryCodePicker,
+                                behavior: HitTestBehavior.opaque,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(3),
+                                      child: Image.asset(
+                                        'assets/images/${_selectedPhoneCode.isoCode}.png',
+                                        width: 24,
+                                        height: 16,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) => const Icon(Icons.flag, size: 16),
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    _selectedPhoneCode.code,
-                                    style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                      color: isDark ? Colors.white : Colors.black87,
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      _selectedPhoneCode.code,
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        color: isDark ? Colors.white : Colors.black87,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Icon(
-                                    Icons.keyboard_arrow_down_rounded,
-                                    size: 16,
-                                    color: primary,
-                                  ),
-                                ],
+                                    const SizedBox(width: 4),
+                                    Icon(
+                                      Icons.keyboard_arrow_down_rounded,
+                                      size: 16,
+                                      color: primary,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            Container(
-                              height: 20,
-                              width: 1,
-                              color: isDark ? Colors.grey[800] : Colors.grey[300],
-                              margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                            ),
-                          ],
+                              Container(
+                                height: 20,
+                                width: 1,
+                                color: isDark ? Colors.grey[800] : Colors.grey[300],
+                                margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(15),
+                      ],
+                      onChanged: (v) {
+                        if (_phoneError != null) {
+                          setState(() => _phoneError = null);
+                        }
+                      },
                     ),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      LengthLimitingTextInputFormatter(15),
-                    ],
-                    validator: (val) {
-                      if (val == null || val.trim().isEmpty) {
-                        return 'Ingresa un número de teléfono.';
-                      }
-                      if (val.trim().length < 8) {
-                        return 'El teléfono debe tener al menos 8 dígitos.';
-                      }
-                      return null;
-                    },
                   ),
                 ],
               ),
@@ -1225,7 +1260,7 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
                   onTap: () {
                     _showSearchablePicker(
                       title: 'Selecciona tu país',
-                      options: excelCountriesAndStates.keys.toList(),
+                      options: const ['República Dominicana'],
                       selectedValue: _selectedCountry,
                       onSelected: (val) {
                         setState(() {
@@ -1292,13 +1327,21 @@ class _ProviderOnboardingScreenState extends State<ProviderOnboardingScreen> {
                     color: primary,
                   ),
                 ),
-                const SizedBox(height: 8),
-                TextFormField(
-                  controller: _streetController,
-                  decoration: const InputDecoration(
-                    hintText: 'Ej. Av. de la República #450, Col. Centro',
+                AnimatedErrorField(
+                  errorText: _streetError,
+                  borderRadius: 16,
+                  child: TextFormField(
+                    controller: _streetController,
+                    decoration: const InputDecoration(
+                      hintText: 'Ej. Av. de la República #450, Col. Centro',
+                    ),
+                    style: GoogleFonts.plusJakartaSans(fontSize: 14),
+                    onChanged: (v) {
+                      if (_streetError != null) {
+                        setState(() => _streetError = null);
+                      }
+                    },
                   ),
-                  style: GoogleFonts.plusJakartaSans(fontSize: 14),
                 ),
                 const SizedBox(height: 24),
 

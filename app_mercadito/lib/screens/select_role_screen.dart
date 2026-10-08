@@ -43,6 +43,43 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      icon: Icon(Icons.arrow_back_rounded, color: actualPrimary),
+                      onPressed: () {
+                        if (context.canPop()) {
+                          context.pop();
+                        } else {
+                          context.go('/welcome');
+                        }
+                      },
+                    ),
+                  ),
+                  Center(
+                    child: Container(
+                      width: 60,
+                      height: 60,
+                      margin: const EdgeInsets.only(bottom: 20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(18),
+                        boxShadow: [
+                          BoxShadow(
+                            color: actualPrimary.withValues(alpha: 0.2),
+                            blurRadius: 16,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(18),
+                        child: Image.asset(
+                          'assets/images/logos/logo_app_icon.png',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
                   // Header Title
                   Text(
                     '¿Cómo quieres participar?',

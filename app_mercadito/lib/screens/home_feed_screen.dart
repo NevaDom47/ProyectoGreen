@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'my_reviews_screen.dart';
@@ -208,27 +209,31 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
       backgroundColor: bgColor,
       drawer: _buildDrawer(context, isDark, theme.colorScheme.primary),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(context, searchBgColor, isDark),
-              const SizedBox(height: 12),
-              _buildMarketTicker(surfaceColor, isDark),
-              const SizedBox(height: 24),
-              _buildAnalysisBanner(theme),
-              const SizedBox(height: 32),
-              _buildNearbySuppliers(theme, surfaceColor, isDark),
-              const SizedBox(height: 32),
-              _buildFlashOffers(theme, surfaceColor, isDark),
-              const SizedBox(height: 32),
-              _buildGroceryEssentials(theme, surfaceColor, isDark),
-              const SizedBox(height: 32),
-              _buildMostTraded(theme, surfaceColor, isDark),
-              const SizedBox(height: 32),
-              _buildForYou(theme, surfaceColor, isDark),
-              const SizedBox(height: 100), // padding for custom bottom bar
-            ],
+        child: SkeletonScreenLoader(
+          isLoading: _isLoading,
+          skeleton: const SkeletonHomeFeedView(),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeader(context, searchBgColor, isDark),
+                const SizedBox(height: 12),
+                _buildMarketTicker(surfaceColor, isDark),
+                const SizedBox(height: 24),
+                _buildAnalysisBanner(theme),
+                const SizedBox(height: 32),
+                _buildNearbySuppliers(theme, surfaceColor, isDark),
+                const SizedBox(height: 32),
+                _buildFlashOffers(theme, surfaceColor, isDark),
+                const SizedBox(height: 32),
+                _buildGroceryEssentials(theme, surfaceColor, isDark),
+                const SizedBox(height: 32),
+                _buildMostTraded(theme, surfaceColor, isDark),
+                const SizedBox(height: 32),
+                _buildForYou(theme, surfaceColor, isDark),
+                const SizedBox(height: 100), // padding for custom bottom bar
+              ],
+            ),
           ),
         ),
       ),
@@ -259,11 +264,12 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                     },
                   ),
                   const SizedBox(width: 8),
-                  Text(
-                    'Mercadito',
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  SvgPicture.asset(
+                    isDark
+                        ? 'assets/images/logos/logo_horizontal_blanco.svg'
+                        : 'assets/images/logos/logo_horizontal_color.svg',
+                    height: 28,
+                    semanticsLabel: 'Mercadito',
                   ),
                 ],
               ),
@@ -3167,6 +3173,35 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                     },
                   ),
                   _buildDrawerItem(
+                    'Mapa de Proveedores',
+                    Icons.map_outlined,
+                    itemTextColor,
+                    itemHoverBg,
+                    false,
+                    onTap: () {
+                      context.pop();
+                      context.push('/providers-map');
+                    },
+                    trailing: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF004532),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Text(
+                        'MAPA',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  _buildDrawerItem(
                     'Compradores',
                     Icons.person_search_rounded,
                     itemTextColor,
@@ -3370,26 +3405,46 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
 
             // Footer
             Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: Row(
                 children: [
-                  Text(
-                    'Emerald Harvest',
-                    style: TextStyle(
-                      color: textHeaderColor.withValues(alpha: 0.4),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.asset(
+                      'assets/images/logos/logo_app_icon.png',
+                      width: 32,
+                      height: 32,
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'v2.4.0 • El Mercadito',
-                    style: TextStyle(
-                      color: subtextColor.withValues(alpha: 0.6),
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Emerald Harvest',
+                          style: TextStyle(
+                            color: textHeaderColor.withValues(alpha: 0.4),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'v2.4.0 • El Mercadito',
+                          style: TextStyle(
+                            color: subtextColor.withValues(alpha: 0.6),
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
                   ),
                 ],

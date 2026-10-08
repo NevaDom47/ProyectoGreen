@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
+import '../widgets/skeleton_loading.dart';
 import '../theme/app_theme.dart';
 
 class TasksScreen extends StatefulWidget {
@@ -24,12 +25,16 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
   int _completedTasks = 5;
   final int _totalDailyTasks = 10;
   int _streakDays = 5;
+  bool _isLoading = true;
 
   late List<_TaskModel> _tasks;
 
   @override
   void initState() {
     super.initState();
+    Future.delayed(const Duration(milliseconds: 600), () {
+      if (mounted) setState(() => _isLoading = false);
+    });
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1400),
@@ -387,25 +392,29 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
           children: [
             _buildTopAppBar(isDark),
             Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _animateItem(_buildGamifiedHeroBanner(isDark), 0),
-                    const SizedBox(height: 20),
-                    _animateItem(_buildDailySummaryRow(isDark), 1),
-                    const SizedBox(height: 24),
-                    _animateItem(_buildTaskListHeader(isDark), 2),
-                    const SizedBox(height: 12),
-                    _buildTaskGrid(isDark),
-                    const SizedBox(height: 24),
-                    _animateItem(_buildTrustProfileCard(isDark), 5),
-                    const SizedBox(height: 20),
-                    _animateItem(_buildDailyTipCard(isDark), 6),
-                    const SizedBox(height: 24),
-                  ],
+              child: SkeletonScreenLoader(
+                isLoading: _isLoading,
+                skeleton: const SkeletonTasksView(),
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _animateItem(_buildGamifiedHeroBanner(isDark), 0),
+                      const SizedBox(height: 20),
+                      _animateItem(_buildDailySummaryRow(isDark), 1),
+                      const SizedBox(height: 24),
+                      _animateItem(_buildTaskListHeader(isDark), 2),
+                      const SizedBox(height: 12),
+                      _buildTaskGrid(isDark),
+                      const SizedBox(height: 24),
+                      _animateItem(_buildTrustProfileCard(isDark), 5),
+                      const SizedBox(height: 20),
+                      _animateItem(_buildDailyTipCard(isDark), 6),
+                      const SizedBox(height: 24),
+                    ],
+                  ),
                 ),
               ),
             ),

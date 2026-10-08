@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../models/notification_item.dart';
 import '../services/notification_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/skeleton_loading.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -15,6 +16,15 @@ class NotificationsScreen extends StatefulWidget {
 class _NotificationsScreenState extends State<NotificationsScreen> {
   final NotificationService _service = NotificationService();
   int _selectedTab = 0;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 600), () {
+      if (mounted) setState(() => _isLoading = false);
+    });
+  }
 
   final List<String> _tabs = [
     'Todo',
@@ -50,8 +60,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               borderColor: borderColor,
             ),
             Expanded(
-              child: ValueListenableBuilder<NotificationPreferences>(
-                valueListenable: _service.preferences,
+              child: SkeletonScreenLoader(
+                isLoading: _isLoading,
+                skeleton: const SkeletonNotificationsView(),
+                child: ValueListenableBuilder<NotificationPreferences>(
+                  valueListenable: _service.preferences,
                 builder: (context, prefs, _) {
                   if (!prefs.notificationsEnabled) {
                     return Center(
@@ -137,6 +150,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 },
               ),
             ),
+          ),
           ],
         ),
       ),

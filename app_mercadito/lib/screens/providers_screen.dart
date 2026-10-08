@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../models/provider_map_item.dart';
+import '../widgets/skeleton_loading.dart';
 
 class ProvidersScreen extends StatefulWidget {
   const ProvidersScreen({super.key});
@@ -16,6 +18,15 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
   String _selectedSpecialty = 'Todas';
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 600), () {
+      if (mounted) setState(() => _isLoading = false);
+    });
+  }
 
   @override
   void dispose() {
@@ -287,41 +298,63 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
 
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF0f231d) : const Color(0xFFf5f8f7),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 60),
+        child: FloatingActionButton.extended(
+          heroTag: 'providers_map_fab',
+          onPressed: () => context.push('/providers-map'),
+          backgroundColor: const Color(0xFF285E44),
+          elevation: 4,
+          icon: const Icon(Icons.map_rounded, color: Colors.white, size: 20),
+          label: const Text(
+            'Ver Mapa RD',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+            ),
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
             _buildHeader(theme, isDark),
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 100),
-                children: [
-                  // 1. Distance range slider (if chip 'Distancia' is active)
-                  if (selectedChips.contains(4)) ...[
-                    _buildDistanceSlider(theme, isDark),
-                    const SizedBox(height: 12),
-                  ],
-
-                  // 2. Schedule Card
-                  _buildScheduleCard(theme, isDark),
-                  const SizedBox(height: 12),
-
-                  // 3. Specialty Dropdown Filter Card
-                  _buildSpecialtyCard(theme, isDark),
-                  const SizedBox(height: 16),
-
-                  // 4. Results counter & Active filters indicator
-                  _buildResultsHeader(theme, isDark),
-                  const SizedBox(height: 12),
-
-                  // 5. Providers List or Empty State
-                  if (filteredProviders.isEmpty)
-                    _buildEmptyState(theme, isDark)
-                  else
-                    for (int i = 0; i < filteredProviders.length; i++) ...[
-                      _buildProviderCard(theme, isDark, filteredProviders[i]),
-                      if (i < filteredProviders.length - 1) const SizedBox(height: 16),
+              child: SkeletonScreenLoader(
+                isLoading: _isLoading,
+                skeleton: const SkeletonProvidersView(),
+                child: ListView(
+                  padding: const EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 100),
+                  children: [
+                    // 1. Distance range slider (if chip 'Distancia' is active)
+                    if (selectedChips.contains(4)) ...[
+                      _buildDistanceSlider(theme, isDark),
+                      const SizedBox(height: 12),
                     ],
-                ],
+
+                    // 2. Schedule Card
+                    _buildScheduleCard(theme, isDark),
+                    const SizedBox(height: 12),
+
+                    // 3. Specialty Dropdown Filter Card
+                    _buildSpecialtyCard(theme, isDark),
+                    const SizedBox(height: 16),
+
+                    // 4. Results counter & Active filters indicator
+                    _buildResultsHeader(theme, isDark),
+                    const SizedBox(height: 12),
+
+                    // 5. Providers List or Empty State
+                    if (filteredProviders.isEmpty)
+                      _buildEmptyState(theme, isDark)
+                    else
+                      for (int i = 0; i < filteredProviders.length; i++) ...[
+                        _buildProviderCard(theme, isDark, filteredProviders[i]),
+                        if (i < filteredProviders.length - 1) const SizedBox(height: 16),
+                      ],
+                  ],
+                ),
               ),
             ),
           ],
@@ -358,7 +391,11 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 48), // Balance for back button
+                IconButton(
+                  icon: Icon(Icons.map_outlined, color: theme.colorScheme.primary),
+                  tooltip: 'Ver en Mapa',
+                  onPressed: () => context.push('/providers-map'),
+                ),
               ],
             ),
           ),
@@ -1058,7 +1095,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
-                        '• Cierra ${provider['closeTime']}',
+                        '• Cierra ${ProviderMapItem.formatTo12h(provider['closeTime']?.toString() ?? '')}',
                         style: const TextStyle(color: Colors.grey, fontSize: 11, fontWeight: FontWeight.bold),
                         overflow: TextOverflow.ellipsis,
                       ),

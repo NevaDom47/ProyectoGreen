@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import '../services/user_session.dart';
+import '../services/sound_service.dart';
 import '../widgets/verified_badge.dart';
 
 class BusinessVerificationScreen extends StatefulWidget {
@@ -169,6 +170,7 @@ class _BusinessVerificationScreenState extends State<BusinessVerificationScreen>
     }
 
     if (!_acceptTerms) {
+      SoundService.playError();
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -183,6 +185,7 @@ class _BusinessVerificationScreenState extends State<BusinessVerificationScreen>
 
     if (_formKey.currentState?.validate() ?? false) {
       if (_docFileName == null || _repIdFileName == null || _addressProofFileName == null) {
+        SoundService.playError();
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -226,6 +229,8 @@ class _BusinessVerificationScreenState extends State<BusinessVerificationScreen>
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
       );
+    } else {
+      SoundService.playError();
     }
   }
 

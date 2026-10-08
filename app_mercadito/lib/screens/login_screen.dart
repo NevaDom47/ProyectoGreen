@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../services/user_session.dart';
+import '../widgets/animated_error_field.dart';
+import '../widgets/bouncing_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,6 +15,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  String? _emailError;
+  String? _passwordError;
 
   @override
   void dispose() {
@@ -22,11 +26,37 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _handleLogin() {
-    // Navigate to role selection if first-time login without configured role
+    final email = _emailController.text.trim();
+    final pass = _passwordController.text;
+
+    String? newEmailError;
+    String? newPassError;
+
+    if (email.isEmpty) {
+      newEmailError = 'Por favor ingresa tu correo electrónico o usuario.';
+    }
+
+    if (pass.isEmpty) {
+      newPassError = 'Por favor ingresa tu contraseña.';
+    }
+
+    if (newEmailError != null || newPassError != null) {
+      setState(() {
+        _emailError = newEmailError;
+        _passwordError = newPassError;
+      });
+      return;
+    }
+
+    UserSession.email ??= email;
+
+    // Navigate to welcome if user has no role defined yet
     if (!UserSession.hasRole) {
-      context.go('/select-role');
+      context.go('/welcome');
     } else if (UserSession.selectedRole == 'comprador' && !UserSession.isBuyerOnboarded) {
       context.go('/buyer-onboarding');
+    } else if (UserSession.selectedRole == 'proveedor' && !UserSession.isProviderOnboarded) {
+      context.go('/provider-onboarding');
     } else {
       context.go('/home');
     }
@@ -81,19 +111,42 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
                       child: Column(
                         children: [
-                          // Logo Placeholder
+                          // Logo Oficial de El Mercadito
                           Container(
                             width: 96,
                             height: 96,
                             margin: const EdgeInsets.only(bottom: 24),
                             decoration: BoxDecoration(
-                              color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                              shape: BoxShape.circle,
+                              borderRadius: BorderRadius.circular(24),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: theme.colorScheme.primary.withValues(alpha: isDarkMode ? 0.35 : 0.2),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 6),
+                                ),
+                              ],
                             ),
-                            child: Icon(
-                              Icons.storefront,
-                              size: 48,
-                              color: theme.colorScheme.primary,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(24),
+                              child: Image.asset(
+                                'assets/images/el_mercadito_logo.png',
+                                width: 96,
+                                height: 96,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) => Container(
+                                  width: 96,
+                                  height: 96,
+                                  decoration: BoxDecoration(
+                                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(24),
+                                  ),
+                                  child: Icon(
+                                    Icons.storefront,
+                                    size: 48,
+                                    color: theme.colorScheme.primary,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                           
@@ -121,58 +174,100 @@ class _LoginScreenState extends State<LoginScreen> {
                             children: [
                               Text('Correo electrónico o Usuario', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
                               const SizedBox(height: 8),
-                              TextField(
-                                controller: _emailController,
-                                decoration: const InputDecoration(
-                                  hintText: 'tu@correo.com',
+                              AnimatedErrorField(
+                                errorText: _emailError,
+                                borderRadius: 12,
+                                child: TextField(
+                                  controller: _emailController,
+                                  decoration: const InputDecoration(
+                                    hintText: 'tu@correo.com',
+                                  ),
+                                  keyboardType: TextInputType.emailAddress,
+                                  onChanged: (_) {
+                                    if (_emailError != null) {
+                                      setState(() => _emailError = null);
+                                    }
+                                  },
                                 ),
-                                keyboardType: TextInputType.emailAddress,
                               ),
                               const SizedBox(height: 16),
                               
                               Text('Contraseña', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
                               const SizedBox(height: 8),
-                              TextField(
-                                controller: _passwordController,
-                                obscureText: _obscurePassword,
-                                decoration: InputDecoration(
-                                  hintText: '••••••••',
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      _obscurePassword ? Icons.visibility : Icons.visibility_off,
-                                      color: isDarkMode ? Colors.grey[500] : Colors.grey[400],
+                              AnimatedErrorField(
+                                errorText: _passwordError,
+                                borderRadius: 12,
+                                child: TextField(
+                                  controller: _passwordController,
+                                  obscureText: _obscurePassword,
+                                  decoration: InputDecoration(
+                                    hintText: '••••••••',
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                                        color: isDarkMode ? Colors.grey[500] : Colors.grey[400],
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _obscurePassword = !_obscurePassword;
+                                        });
+                                      },
+                                      hoverColor: Colors.transparent,
                                     ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _obscurePassword = !_obscurePassword;
-                                      });
-                                    },
-                                    hoverColor: Colors.transparent,
                                   ),
+                                  onChanged: (_) {
+                                    if (_passwordError != null) {
+                                      setState(() => _passwordError = null);
+                                    }
+                                  },
                                 ),
                               ),
                               
                               // Forgot Password
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 6),
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: TextButton(
-                                  onPressed: () {},
+                                  onPressed: () => context.push('/forgot-password'),
                                   style: TextButton.styleFrom(
                                     foregroundColor: theme.colorScheme.primary,
                                     padding: EdgeInsets.zero,
                                     minimumSize: Size.zero,
                                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   ),
-                                  child: const Text('¿Olvidé mi contraseña?', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  child: const Text(
+                                    '¿Olvidé mi contraseña?',
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 20),
                               
-                              // Login Button
-                              ElevatedButton(
-                                onPressed: _handleLogin,
-                                child: const Text('Iniciar Sesión'),
+                              // Login Button (Responsive y Central con rebote táctil)
+                              BouncingButton(
+                                onTap: _handleLogin,
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  height: 50,
+                                  child: ElevatedButton(
+                                    onPressed: _handleLogin,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: theme.colorScheme.primary,
+                                      foregroundColor: Colors.white,
+                                      elevation: 2,
+                                      shadowColor: theme.colorScheme.primary.withValues(alpha: 0.3),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      textStyle: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.3,
+                                      ),
+                                    ),
+                                    child: const Text('Iniciar Sesión'),
+                                  ),
+                                ),
                               ),
                             ],
                           ),

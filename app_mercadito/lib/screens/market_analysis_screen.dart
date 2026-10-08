@@ -160,6 +160,14 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _currentState = MarketPricesState.loading;
+    Future.delayed(const Duration(milliseconds: 600), () {
+      if (mounted) {
+        setState(() {
+          _currentState = MarketPricesState.normal;
+        });
+      }
+    });
   }
 
   @override

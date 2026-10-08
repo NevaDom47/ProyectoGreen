@@ -10,6 +10,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/image_verification_service.dart';
 import '../services/reviews_service.dart';
+import '../services/sound_service.dart';
 import '../widgets/typing_indicator.dart';
 
 class ChatDetailScreen extends StatefulWidget {
@@ -310,6 +311,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
             });
             _rebuildMaps();
           });
+          SoundService.playChatMessage();
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (_isUserNearBottom() && _itemScrollController.isAttached) {
@@ -339,6 +341,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
   }
 
   void _acceptProposal(int index) {
+    SoundService.playNegotiation();
     final msgText = 'He aceptado la contraoferta de \$${_messages[index]['proposalDetails']['proposedPrice'].toStringAsFixed(2)} por cada saco.';
     setState(() {
       var details = _messages[index]['proposalDetails'];
@@ -400,6 +403,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
           _rebuildMaps();
           _replyingMessage = null;
         });
+        SoundService.playChatMessage();
         _scrollToBottom();
         _msgFocusNode.requestFocus();
       }
@@ -411,6 +415,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> with SingleTickerPr
   void _sendMessage() {
     final text = _msgController.text.trim();
     if (text.isNotEmpty) {
+      SoundService.playChatMessage();
       setState(() {
         _messages.add({
           'id': _generateId(),

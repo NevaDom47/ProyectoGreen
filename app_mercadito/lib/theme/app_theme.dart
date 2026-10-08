@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../services/sound_service.dart';
 
 class AppTheme {
   // ==========================================
@@ -112,6 +113,7 @@ class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
+      splashFactory: const SoundFeedbackSplashFactory(),
       brightness: Brightness.light,
       colorScheme: const ColorScheme.light(
         primary: lightPrimary,
@@ -210,6 +212,7 @@ class AppTheme {
   static ThemeData get darkTheme {
     return ThemeData(
       useMaterial3: true,
+      splashFactory: const SoundFeedbackSplashFactory(),
       brightness: Brightness.dark,
       colorScheme: const ColorScheme.dark(
         primary: darkPrimary,

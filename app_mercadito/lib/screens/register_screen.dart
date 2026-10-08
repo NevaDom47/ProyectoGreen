@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import '../services/user_session.dart';
+import '../widgets/animated_error_field.dart';
+import '../widgets/bouncing_button.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -19,6 +21,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
+  String? _usernameError;
+  String? _emailError;
+  String? _passwordError;
+  String? _confirmPasswordError;
+
   @override
   void dispose() {
     _usernameController.dispose();
@@ -29,89 +36,57 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _handleRegister() {
-    final username = _usernameController.text;
+    final username = _usernameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
-    if (username.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Por favor, ingresa un nombre de usuario.'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-      return;
-    }
+    String? uError;
+    String? eError;
+    String? pError;
+    String? cpError;
 
-    if (username.length > 20) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('El nombre de usuario no puede exceder los 20 caracteres.'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-      return;
-    }
-
-    if (email.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Por favor, ingresa tu correo electrónico.'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-      return;
+    // Username is optional; validate if provided
+    if (username.isNotEmpty && username.length > 20) {
+      uError = 'El nombre no puede exceder 20 caracteres.';
     }
 
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (!emailRegex.hasMatch(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Por favor, ingresa un correo electrónico válido.'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
+    if (email.isEmpty) {
+      eError = 'Por favor ingresa tu correo electrónico.';
+    } else if (!emailRegex.hasMatch(email)) {
+      eError = 'Por favor ingresa un correo electrónico válido.';
+    }
+
+    if (password.isEmpty) {
+      pError = 'Por favor ingresa una contraseña.';
+    } else if (password.length < 8) {
+      pError = 'La contraseña debe tener al menos 8 caracteres.';
+    }
+
+    if (confirmPassword.isEmpty) {
+      cpError = 'Por favor confirma tu contraseña.';
+    } else if (password != confirmPassword) {
+      cpError = 'Las contraseñas no coinciden.';
+    }
+
+    if (uError != null || eError != null || pError != null || cpError != null) {
+      setState(() {
+        _usernameError = uError;
+        _emailError = eError;
+        _passwordError = pError;
+        _confirmPasswordError = cpError;
+      });
       return;
     }
 
-    if (password.isEmpty || confirmPassword.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Por favor, llena ambos campos de contraseña.'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-      return;
-    }
+    // Save session email and name
+    UserSession.email = email;
+    UserSession.fullName = username.isNotEmpty ? username : email.split('@').first;
+    UserSession.isEmailVerified = false;
 
-    if (password.length < 8 || password.length > 30) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('La contraseña debe tener entre 8 y 30 caracteres.'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-      return;
-    }
-
-    if (password != confirmPassword) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Las contraseñas no coinciden. Por favor, verifica.'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-      return;
-    }
-
-    if (!UserSession.hasRole) {
-      context.go('/select-role');
-    } else if (UserSession.selectedRole == 'comprador' && !UserSession.isBuyerOnboarded) {
-      context.go('/buyer-onboarding');
-    } else {
-      context.go('/home');
-    }
+    // Navigate to email verification screen
+    context.push('/verify-registration-email', extra: email);
   }
 
   @override
@@ -167,14 +142,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Container(
-                            width: 48,
-                            height: 48,
+                            width: 52,
+                            height: 52,
                             margin: const EdgeInsets.only(bottom: 8),
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              shape: BoxShape.circle,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.18),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
                             ),
-                            child: const Icon(Icons.storefront, color: Colors.white, size: 28),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Image.asset(
+                                'assets/images/logos/logo_app_icon.png',
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
                           const Text(
                             'Crear cuenta nueva',
@@ -204,44 +191,57 @@ class _RegisterScreenState extends State<RegisterScreen> {
               // Banner Image
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Container(
-                  height: 160,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    image: const DecorationImage(
-                      image: NetworkImage('https://lh3.googleusercontent.com/aida-public/AB6AXuAYjEvl6GqW5CMVrL5GOdDov67oCvtBLLBP3YjBKSHMn4wqbdZJWu5BkTVHmsrtHHlk3cXiPeDLh6ZrVIwaoAohEig_BIXyHfn8rFByjod8KEw0NjE0Z8Rcb_wY0DVRSYwHZknzv_XjMURYKbFRRlA2p20EsZGWrxaxEJErOby4apO1RCpM8Taa2e7xXWvZam0UkOocPSXRQPBHPUlExyQpRsnFfeB5uQ3UJgzgYfsL6WBrK-01xLDU-Re8zVMtUjWvuRyqJQ67Cts'),
-                      fit: BoxFit.cover,
-                    ),
-                    boxShadow: [
-                      BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: const Offset(0, 2)),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Stack(
+                    children: [
+                      Image.network(
+                        'https://lh3.googleusercontent.com/aida-public/AB6AXuAYjEvl6GqW5CMVrL5GOdDov67oCvtBLLBP3YjBKSHMn4wqbdZJWu5BkTVHmsrtHHlk3cXiPeDLh6ZrVIwaoAohEig_BIXyHfn8rFByjod8KEw0NjE0Z8Rcb_wY0DVRSYwHZknzv_XjMURYKbFRRlA2p20EsZGWrxaxEJErOby4apO1RCpM8Taa2e7xXWvZam0UkOocPSXRQPBHPUlExyQpRsnFfeB5uQ3UJgzgYfsL6WBrK-01xLDU-Re8zVMtUjWvuRyqJQ67Cts',
+                        height: 160,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          height: 160,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [primaryColor, primaryColor.withValues(alpha: 0.8)],
+                            ),
+                          ),
+                          child: const Center(
+                            child: Icon(Icons.agriculture_rounded, size: 56, color: Colors.white70),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              colors: [
+                                primaryColor.withValues(alpha: 0.85),
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
+                          child: const Text(
+                            'Productos frescos desde el productor hasta tu mesa',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
-                  ),
-                  alignment: Alignment.bottomLeft,
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(12),
-                        bottomRight: Radius.circular(12),
-                      ),
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                        colors: [
-                          primaryColor.withValues(alpha: 0.8),
-                          Colors.transparent,
-                        ],
-                      ),
-                    ),
-                    child: const Text(
-                      'Productos frescos desde el productor hasta tu mesa',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                      ),
-                    ),
                   ),
                 ),
               ),
@@ -253,7 +253,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     _buildInputField(
-                      label: 'Nombre de Usuario',
+                      label: 'Nombre de Usuario (Opcional)',
                       hint: 'Ej. juan_perez',
                       icon: Icons.person,
                       controller: _usernameController,
@@ -262,6 +262,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       textColor: textColor,
                       hintColor: hintColor,
                       isDark: isDark,
+                      errorText: _usernameError,
+                      onChanged: (_) {
+                        if (_usernameError != null) {
+                          setState(() => _usernameError = null);
+                        }
+                      },
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(20),
                         FilteringTextInputFormatter.deny(RegExp(r'\s')),
@@ -278,6 +284,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       textColor: textColor,
                       hintColor: hintColor,
                       isDark: isDark,
+                      errorText: _emailError,
+                      onChanged: (_) {
+                        if (_emailError != null) {
+                          setState(() => _emailError = null);
+                        }
+                      },
                       keyboardType: TextInputType.emailAddress,
                     ),
                     const SizedBox(height: 16),
@@ -293,6 +305,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       isDark: isDark,
                       isPassword: true,
                       obscureText: _obscurePassword,
+                      errorText: _passwordError,
+                      onChanged: (_) {
+                        if (_passwordError != null) {
+                          setState(() => _passwordError = null);
+                        }
+                      },
                       onToggleVisibility: () {
                         setState(() {
                           _obscurePassword = !_obscurePassword;
@@ -315,6 +333,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       isDark: isDark,
                       isPassword: true,
                       obscureText: _obscureConfirmPassword,
+                      errorText: _confirmPasswordError,
+                      onChanged: (_) {
+                        if (_confirmPasswordError != null) {
+                          setState(() => _confirmPasswordError = null);
+                        }
+                      },
                       onToggleVisibility: () {
                         setState(() {
                           _obscureConfirmPassword = !_obscureConfirmPassword;
@@ -327,26 +351,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     
                     const SizedBox(height: 32),
                     
-                    // Submit Button
-                    ElevatedButton(
-                      onPressed: _handleRegister,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                        foregroundColor: Colors.white,
+                    // Submit Button with Bouncing micro-animation
+                    BouncingButton(
+                      onTap: _handleRegister,
+                      child: Container(
+                        width: double.infinity,
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
+                        decoration: BoxDecoration(
+                          color: primaryColor,
                           borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: primaryColor.withValues(alpha: 0.4),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                        elevation: 4,
-                        shadowColor: primaryColor.withValues(alpha: 0.4),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Text('Crear cuenta', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                          SizedBox(width: 8),
-                          Icon(Icons.arrow_forward, size: 20),
-                        ],
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Text(
+                              'Crear cuenta',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Icon(Icons.arrow_forward, color: Colors.white, size: 20),
+                          ],
+                        ),
                       ),
                     ),
                     
@@ -424,6 +460,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     required Color textColor,
     required Color hintColor,
     required bool isDark,
+    String? errorText,
+    ValueChanged<String>? onChanged,
     TextInputType keyboardType = TextInputType.text,
     bool isPassword = false,
     bool obscureText = false,
@@ -444,58 +482,67 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
         ),
-        Container(
-          height: 48,
-          decoration: BoxDecoration(
-            color: surfaceColor,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: primaryColor.withValues(alpha: 0.2)),
-            boxShadow: [
-              if (!isDark)
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.02),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 48,
-                alignment: Alignment.center,
-                child: Icon(icon, color: primaryColor.withValues(alpha: 0.6), size: 20),
+        AnimatedErrorField(
+          errorText: errorText,
+          borderRadius: 8,
+          child: Container(
+            height: 48,
+            decoration: BoxDecoration(
+              color: surfaceColor,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: errorText != null
+                    ? Colors.transparent
+                    : primaryColor.withValues(alpha: 0.2),
               ),
-              Expanded(
-                child: TextField(
-                  controller: controller,
-                  keyboardType: keyboardType,
-                  obscureText: obscureText,
-                  inputFormatters: inputFormatters,
-                  style: TextStyle(color: textColor, fontSize: 14),
-                  decoration: InputDecoration(
-                    hintText: hint,
-                    hintStyle: TextStyle(color: hintColor, fontSize: 14),
-                    border: InputBorder.none,
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 14),
+              boxShadow: [
+                if (!isDark)
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.02),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
                   ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  alignment: Alignment.center,
+                  child: Icon(icon, color: primaryColor.withValues(alpha: 0.6), size: 20),
                 ),
-              ),
-              if (isPassword)
-                GestureDetector(
-                  onTap: onToggleVisibility,
-                  child: Container(
-                    width: 48,
-                    alignment: Alignment.center,
-                    child: Icon(
-                      obscureText ? Icons.visibility : Icons.visibility_off,
-                      color: primaryColor.withValues(alpha: 0.4),
-                      size: 20,
+                Expanded(
+                  child: TextField(
+                    controller: controller,
+                    keyboardType: keyboardType,
+                    obscureText: obscureText,
+                    inputFormatters: inputFormatters,
+                    onChanged: onChanged,
+                    style: TextStyle(color: textColor, fontSize: 14),
+                    decoration: InputDecoration(
+                      hintText: hint,
+                      hintStyle: TextStyle(color: hintColor, fontSize: 14),
+                      border: InputBorder.none,
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 14),
                     ),
                   ),
                 ),
-            ],
+                if (isPassword)
+                  GestureDetector(
+                    onTap: onToggleVisibility,
+                    child: Container(
+                      width: 48,
+                      alignment: Alignment.center,
+                      child: Icon(
+                        obscureText ? Icons.visibility : Icons.visibility_off,
+                        color: primaryColor.withValues(alpha: 0.4),
+                        size: 20,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ],

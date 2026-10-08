@@ -1,20 +1,245 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../widgets/help_guide_modal.dart';
 
 class HelpSupportScreen extends StatelessWidget {
   const HelpSupportScreen({super.key});
+
+  void _showSupportOptionsSheet(BuildContext context, Color primaryColor, bool isDark) {
+    final sheetBg = isDark ? const Color(0xFF0F231D) : Colors.white;
+    final cardBg = isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC);
+    final textHeader = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final subtext = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final borderColor = isDark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFE2E8F0);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => SafeArea(
+        child: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
+            decoration: BoxDecoration(
+          color: sheetBg,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.25),
+              blurRadius: 20,
+              offset: const Offset(0, -6),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 44,
+                height: 5,
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.white24 : Colors.black12,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: primaryColor.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Icon(Icons.support_agent_rounded, color: primaryColor, size: 26),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Canales de Atención Directa',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: textHeader,
+                        ),
+                      ),
+                      Text(
+                        'Respuesta rápida de nuestro equipo humano',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 12,
+                          color: subtext,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close_rounded),
+                  color: subtext,
+                  onPressed: () => Navigator.pop(ctx),
+                ),
+              ],
+            ),
+            const SizedBox(height: 18),
+
+            // Opción 1: Chat asistido en la app
+            _buildContactOption(
+              icon: Icons.chat_bubble_outline_rounded,
+              title: 'Chat con Asesor en la App',
+              subtitle: 'Atención técnica y comercial en tiempo real',
+              cardBg: cardBg,
+              borderColor: borderColor,
+              textHeader: textHeader,
+              subtext: subtext,
+              primaryColor: primaryColor,
+              onTap: () {
+                Navigator.pop(ctx);
+                context.push('/chat-detail', extra: {
+                  'name': 'Soporte Técnico Mercadito',
+                  'id': 'SUPPORT_ADMIN',
+                  'role': 'soporte',
+                });
+              },
+            ),
+
+            const SizedBox(height: 10),
+
+            // Opción 2: Línea telefónica y WhatsApp
+            _buildContactOption(
+              icon: Icons.phone_in_talk_outlined,
+              title: 'Línea Directa / WhatsApp',
+              subtitle: '+1 (829) 942-1923 (Toca para copiar)',
+              cardBg: cardBg,
+              borderColor: borderColor,
+              textHeader: textHeader,
+              subtext: subtext,
+              primaryColor: primaryColor,
+              onTap: () {
+                Clipboard.setData(const ClipboardData(text: '+18299421923'));
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Número de Soporte copiado al portapapeles (+1 829-942-1923)',
+                      style: GoogleFonts.plusJakartaSans(),
+                    ),
+                    backgroundColor: primaryColor,
+                    duration: const Duration(seconds: 3),
+                  ),
+                );
+              },
+            ),
+
+            const SizedBox(height: 10),
+
+            // Opción 3: Canal formal de denuncias
+            _buildContactOption(
+              icon: Icons.shield_outlined,
+              title: 'Centro de Denuncias y Reportes',
+              subtitle: 'Informa sobre incumplimientos, fraudes o anomalías',
+              cardBg: cardBg,
+              borderColor: borderColor,
+              textHeader: textHeader,
+              subtext: subtext,
+              primaryColor: const Color(0xFFDC2626),
+              onTap: () {
+                Navigator.pop(ctx);
+                context.push('/reports');
+              },
+            ),
+          ],
+        ),
+      ),
+    ),
+  ),
+);
+  }
+
+  Widget _buildContactOption({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color cardBg,
+    required Color borderColor,
+    required Color textHeader,
+    required Color subtext,
+    required Color primaryColor,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: borderColor),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: primaryColor.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(icon, color: primaryColor, size: 22),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: textHeader,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 11,
+                          color: subtext,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(Icons.arrow_forward_ios_rounded, size: 14, color: subtext),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
-    // Colores basados en el HTML proporcionado
-    final bgColor = isDark ? const Color(0xFF0f231d) : const Color(0xFFf5f8f7);
-    final surfaceColor = isDark ? const Color(0xFF1e293b) : Colors.white; // slate-800 o blanco
-    final primaryColor = const Color(0xFF016042);
-    final textHeaderColor = isDark ? const Color(0xFFf1f5f9) : const Color(0xFF0f172a); // slate-100 o slate-900
-    final subtextColor = isDark ? const Color(0xFF64748b) : const Color(0xFF64748b); // slate-500
+
+    final bgColor = isDark ? const Color(0xFF0F231D) : const Color(0xFFF5F8F7);
+    final surfaceColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    const primaryColor = Color(0xFF016042);
+    final textHeaderColor = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    const subtextColor = Color(0xFF64748B);
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -23,12 +248,12 @@ class HelpSupportScreen extends StatelessWidget {
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: primaryColor),
+          icon: const Icon(Icons.arrow_back, color: primaryColor),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'Ayuda y Soporte',
-          style: TextStyle(
+          style: GoogleFonts.plusJakartaSans(
             color: textHeaderColor,
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -40,7 +265,7 @@ class HelpSupportScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Grid de Categorías (Botones cuadrados)
+              // Grid de Categorías (4 opciones interactivas)
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                 child: Column(
@@ -48,7 +273,7 @@ class HelpSupportScreen extends StatelessWidget {
                   children: [
                     Text(
                       'CATEGORÍAS DE AYUDA',
-                      style: TextStyle(
+                      style: GoogleFonts.plusJakartaSans(
                         color: subtextColor,
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
@@ -62,19 +287,51 @@ class HelpSupportScreen extends StatelessWidget {
                       physics: const NeverScrollableScrollPhysics(),
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
-                      childAspectRatio: 2.5,
+                      childAspectRatio: 2.3,
                       children: [
-                        _buildCategoryCard(context, 'Preguntas Frecuentes', Icons.quiz, primaryColor, surfaceColor, isDark),
-                        _buildCategoryCard(context, 'Guía para Compradores', Icons.shopping_basket, primaryColor, surfaceColor, isDark),
-                        _buildCategoryCard(context, 'Guía para Vendedores', Icons.storefront, primaryColor, surfaceColor, isDark),
-                        _buildCategoryCard(context, 'Seguridad y Denuncias', Icons.gpp_maybe, primaryColor, surfaceColor, isDark),
+                        _buildCategoryCard(
+                          context,
+                          title: 'Preguntas Frecuentes',
+                          icon: Icons.quiz,
+                          primaryColor: primaryColor,
+                          surfaceColor: surfaceColor,
+                          isDark: isDark,
+                          onTap: () => HelpGuideModal.showFaqGuide(context),
+                        ),
+                        _buildCategoryCard(
+                          context,
+                          title: 'Guía para Compradores',
+                          icon: Icons.shopping_basket,
+                          primaryColor: primaryColor,
+                          surfaceColor: surfaceColor,
+                          isDark: isDark,
+                          onTap: () => HelpGuideModal.showBuyerGuide(context),
+                        ),
+                        _buildCategoryCard(
+                          context,
+                          title: 'Guía para Vendedores',
+                          icon: Icons.storefront,
+                          primaryColor: primaryColor,
+                          surfaceColor: surfaceColor,
+                          isDark: isDark,
+                          onTap: () => HelpGuideModal.showSellerGuide(context),
+                        ),
+                        _buildCategoryCard(
+                          context,
+                          title: 'Seguridad y Denuncias',
+                          icon: Icons.gpp_maybe,
+                          primaryColor: primaryColor,
+                          surfaceColor: surfaceColor,
+                          isDark: isDark,
+                          onTap: () => HelpGuideModal.showSecurityGuide(context),
+                        ),
                       ],
                     ),
                   ],
                 ),
               ),
 
-              // Sección FAQ
+              // Sección Consultas Populares (Con demostración y pasos visuales)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Column(
@@ -82,7 +339,7 @@ class HelpSupportScreen extends StatelessWidget {
                   children: [
                     Text(
                       'CONSULTAS POPULARES',
-                      style: TextStyle(
+                      style: GoogleFonts.plusJakartaSans(
                         color: subtextColor,
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
@@ -90,34 +347,121 @@ class HelpSupportScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    _buildFaqTile(
-                      '¿Cómo negociar un precio?',
-                      'Puedes usar la función de "Oferta" directamente en el chat con el vendedor para proponer un precio justo basado en el volumen de compra.',
-                      primaryColor,
-                      surfaceColor,
-                      isDark,
+
+                    // Consulta 1: ¿Cómo negociar un precio?
+                    _buildDetailedFaqTile(
+                      context: context,
+                      question: '¿Cómo negociar un precio?',
+                      answer:
+                          'Puedes usar la función de "Oferta" directamente en el chat con el vendedor para proponer un precio justo basado en el volumen de compra.',
+                      steps: const [
+                        '1. Toca "Negociar / Ofertar" en el producto o chat.',
+                        '2. Propón el volumen (kg/lb) y tu precio unitario.',
+                        '3. Al acordar, se genera el comprobante PDF oficial.',
+                      ],
+                      actionLabel: 'Ir a Mis Negociaciones',
+                      onAction: () => context.push('/negotiations'),
+                      guideLabel: 'Ver Guía Completa de Compra',
+                      onGuide: () => HelpGuideModal.showBuyerGuide(context),
+                      primaryColor: primaryColor,
+                      surfaceColor: surfaceColor,
+                      isDark: isDark,
                     ),
+
                     const SizedBox(height: 12),
-                    _buildFaqTile(
-                      '¿Cómo rastrear mi pedido?',
-                      'En la sección "Mis Compras", selecciona el pedido activo para ver la ubicación en tiempo real del transportista asignado.',
-                      primaryColor,
-                      surfaceColor,
-                      isDark,
+
+                    // Consulta 2: ¿Cómo rastrear mi pedido?
+                    _buildDetailedFaqTile(
+                      context: context,
+                      question: '¿Cómo rastrear mi pedido?',
+                      answer:
+                          'En la sección "Mis Pedidos", selecciona el acuerdo activo para ver la trazabilidad de los 4 hitos en tiempo real.',
+                      steps: const [
+                        '1. Entra a "Historial de Pedidos" desde tu perfil.',
+                        '2. Selecciona el pedido con estado "En preparación" o "En ruta".',
+                        '3. Visualiza la línea de tiempo: Pactado ➔ Cosechado ➔ En camino ➔ Entregado.',
+                      ],
+                      actionLabel: 'Ver Historial de Pedidos',
+                      onAction: () => context.push('/order-history'),
+                      guideLabel: 'Ver Guía de Trazabilidad',
+                      onGuide: () => HelpGuideModal.showBuyerGuide(context),
+                      primaryColor: primaryColor,
+                      surfaceColor: surfaceColor,
+                      isDark: isDark,
                     ),
+
                     const SizedBox(height: 12),
-                    _buildFaqTile(
-                      'Métodos de pago aceptados',
-                      'Aceptamos transferencias bancarias, tarjetas de crédito, débito y pagos en efectivo a través de puntos autorizados.',
-                      primaryColor,
-                      surfaceColor,
-                      isDark,
+
+                    // Consulta 3: Métodos de pago aceptados
+                    _buildDetailedFaqTile(
+                      context: context,
+                      question: 'Métodos de pago aceptados',
+                      answer:
+                          'Aceptamos transferencias bancarias directas, tarjetas de débito/crédito y pagos en efectivo contra entrega acordada.',
+                      steps: const [
+                        '🏦 Transferencia bancaria (adjuntas comprobante de depósito).',
+                        '💳 Tarjeta débito o crédito (procesamiento seguro e inmediato).',
+                        '💵 Efectivo contra entrega (al recibir y verificar la cosecha).',
+                      ],
+                      extraNote:
+                          '🛡️ Toda transacción está respaldada por el Comprobante Oficial en PDF con N° correlativo.',
+                      actionLabel: 'Ver Políticas Comerciales',
+                      onAction: () => context.push('/legal-policies'),
+                      guideLabel: 'Ver Garantías de Seguridad',
+                      onGuide: () => HelpGuideModal.showSecurityGuide(context),
+                      primaryColor: primaryColor,
+                      surfaceColor: surfaceColor,
+                      isDark: isDark,
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    // Consulta 4: ¿Cómo descargar el comprobante oficial?
+                    _buildDetailedFaqTile(
+                      context: context,
+                      question: '¿Cómo descargar el comprobante de un trato?',
+                      answer:
+                          'Al concluir cualquier negociación, se emite un comprobante formal con los datos del proveedor, comprador, precios y totales.',
+                      steps: const [
+                        '1. Ingresa a "Negociaciones" y selecciona el trato cerrado.',
+                        '2. Presiona el botón verde "COMPROBANTE" o el icono de previsualización.',
+                        '3. Guarda o imprime el documento PDF directamente en tu teléfono.',
+                      ],
+                      actionLabel: 'Ver Mis Negociaciones',
+                      onAction: () => context.push('/negotiations'),
+                      guideLabel: 'Ver Guía de Venta y Factura',
+                      onGuide: () => HelpGuideModal.showSellerGuide(context),
+                      primaryColor: primaryColor,
+                      surfaceColor: surfaceColor,
+                      isDark: isDark,
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    // Consulta 5: ¿Cómo verificar mi negocio para vender?
+                    _buildDetailedFaqTile(
+                      context: context,
+                      question: '¿Cómo verificar mi negocio o perfil?',
+                      answer:
+                          'La verificación comercial te otorga un sello de confianza verde visible para todos los compradores en el mercado.',
+                      steps: const [
+                        '1. Ve a tu Perfil y toca "Verificación Comercial".',
+                        '2. Sube foto de tu Cédula o RNC y comprobante de dirección.',
+                        '3. Nuestro equipo valida tus credenciales en menos de 24 horas.',
+                      ],
+                      actionLabel: 'Iniciar Verificación',
+                      onAction: () => context.push('/business-verification'),
+                      guideLabel: 'Ver Requisitos de Seguridad',
+                      onGuide: () => HelpGuideModal.showSecurityGuide(context),
+                      primaryColor: primaryColor,
+                      surfaceColor: surfaceColor,
+                      isDark: isDark,
                     ),
                   ],
                 ),
               ),
 
-              // Tarjeta de Contacto / Soporte
+              // Tarjeta de Contacto / Soporte Humano
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
                 child: Container(
@@ -137,7 +481,7 @@ class HelpSupportScreen extends StatelessWidget {
                   child: Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      // Brillo superior derecho (como en CSS)
+                      // Brillo superior derecho
                       Positioned(
                         right: -50,
                         top: -50,
@@ -153,9 +497,9 @@ class HelpSupportScreen extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             '¿Necesitas hablar con nosotros?',
-                            style: TextStyle(
+                            style: GoogleFonts.plusJakartaSans(
                               color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -164,23 +508,28 @@ class HelpSupportScreen extends StatelessWidget {
                           const SizedBox(height: 8),
                           Text(
                             'Nuestro equipo de soporte técnico está disponible 24/7 para ayudarte con lo que necesites.',
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.8),
-                              fontSize: 14,
+                            style: GoogleFonts.plusJakartaSans(
+                              color: Colors.white.withValues(alpha: 0.85),
+                              fontSize: 13,
+                              height: 1.4,
                             ),
                           ),
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 20),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton.icon(
-                              icon: const Icon(Icons.forum, size: 20),
-                              label: const Text('Chat en vivo', style: TextStyle(fontWeight: FontWeight.bold)),
-                              onPressed: () {},
+                              icon: const Icon(Icons.forum_rounded, size: 20),
+                              label: Text(
+                                'Chat en vivo',
+                                style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold, fontSize: 14),
+                              ),
+                              onPressed: () => _showSupportOptionsSheet(context, primaryColor, isDark),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
                                 foregroundColor: primaryColor,
-                                padding: const EdgeInsets.symmetric(vertical: 16),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                padding: const EdgeInsets.symmetric(vertical: 15),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                elevation: 0,
                               ),
                             ),
                           ),
@@ -193,35 +542,57 @@ class HelpSupportScreen extends StatelessWidget {
 
               // Redes Sociales Bottom
               Padding(
-                padding: const EdgeInsets.only(bottom: 32, top: 16),
+                padding: const EdgeInsets.only(bottom: 32, top: 12),
                 child: Center(
                   child: Column(
                     children: [
                       Text(
                         'Síguenos en nuestras redes',
-                        style: TextStyle(
+                        style: GoogleFonts.plusJakartaSans(
                           color: subtextColor,
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 14),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.facebook, color: subtextColor),
-                            onPressed: () {},
+                            icon: const Icon(Icons.facebook, color: subtextColor),
+                            onPressed: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Mercadito Oficial en Facebook', style: GoogleFonts.plusJakartaSans()),
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                            },
                           ),
                           const SizedBox(width: 8),
                           IconButton(
-                            icon: Icon(Icons.camera_alt_outlined, color: subtextColor), // Proxy instagram
-                            onPressed: () {},
+                            icon: const Icon(Icons.camera_alt_outlined, color: subtextColor),
+                            onPressed: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Mercadito Oficial en Instagram', style: GoogleFonts.plusJakartaSans()),
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                            },
                           ),
                           const SizedBox(width: 8),
                           IconButton(
-                            icon: Icon(Icons.share, color: subtextColor),
-                            onPressed: () {},
+                            icon: const Icon(Icons.share, color: subtextColor),
+                            onPressed: () {
+                              Clipboard.setData(const ClipboardData(text: 'https://diaztecnologies.es'));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Enlace oficial copiado: diaztecnologies.es', style: GoogleFonts.plusJakartaSans()),
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
@@ -236,16 +607,24 @@ class HelpSupportScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryCard(BuildContext context, String title, IconData icon, Color primaryColor, Color surfaceColor, bool isDark) {
+  Widget _buildCategoryCard(
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    required Color primaryColor,
+    required Color surfaceColor,
+    required bool isDark,
+    required VoidCallback onTap,
+  }) {
     return Container(
       decoration: BoxDecoration(
         color: surfaceColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: primaryColor.withValues(alpha: 0.05)),
+        border: Border.all(color: primaryColor.withValues(alpha: 0.08)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 4,
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 6,
             offset: const Offset(0, 2),
           ),
         ],
@@ -254,9 +633,9 @@ class HelpSupportScreen extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
-          onTap: () {},
+          onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Row(
               children: [
                 Container(
@@ -271,10 +650,10 @@ class HelpSupportScreen extends StatelessWidget {
                 Expanded(
                   child: Text(
                     title,
-                    style: const TextStyle(
+                    style: GoogleFonts.plusJakartaSans(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      height: 1.2,
+                      height: 1.25,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -288,16 +667,32 @@ class HelpSupportScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFaqTile(String question, String answer, Color primaryColor, Color surfaceColor, bool isDark) {
+  Widget _buildDetailedFaqTile({
+    required BuildContext context,
+    required String question,
+    required String answer,
+    required List<String> steps,
+    String? extraNote,
+    required String actionLabel,
+    required VoidCallback onAction,
+    String? guideLabel,
+    VoidCallback? onGuide,
+    required Color primaryColor,
+    required Color surfaceColor,
+    required bool isDark,
+  }) {
+    final subtext = isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569);
+    final borderColor = isDark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFE2E8F0);
+
     return Container(
       decoration: BoxDecoration(
         color: surfaceColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: primaryColor.withValues(alpha: 0.05)),
+        border: Border.all(color: primaryColor.withValues(alpha: 0.08)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 4,
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 6,
             offset: const Offset(0, 2),
           ),
         ],
@@ -307,24 +702,142 @@ class HelpSupportScreen extends StatelessWidget {
         child: ExpansionTile(
           iconColor: primaryColor,
           collapsedIconColor: primaryColor,
-          tilePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          tilePadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
           title: Text(
             question,
-            style: const TextStyle(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
           ),
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-              child: Text(
-                answer,
-                style: TextStyle(
-                  color: isDark ? const Color(0xFF94a3b8) : const Color(0xFF475569), // slate-400 / slate-600
-                  fontSize: 14,
-                  height: 1.5,
-                ),
+              padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    answer,
+                    style: GoogleFonts.plusJakartaSans(
+                      color: subtext,
+                      fontSize: 13,
+                      height: 1.5,
+                    ),
+                  ),
+
+                  // Pasos demostrativos numerados
+                  if (steps.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: isDark ? Colors.white.withValues(alpha: 0.04) : const Color(0xFFF1F5F3),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: borderColor),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.bolt_rounded, size: 14, color: primaryColor),
+                              const SizedBox(width: 6),
+                              Text(
+                                'PASOS RÁPIDOS:',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                  color: primaryColor,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          ...steps.map((st) => Padding(
+                                padding: const EdgeInsets.only(bottom: 5),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Icon(Icons.check_circle_outline_rounded, size: 14, color: primaryColor),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        st,
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: isDark ? const Color(0xFFCBD5E1) : const Color(0xFF334155),
+                                          height: 1.35,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )),
+                        ],
+                      ),
+                    ),
+                  ],
+
+                  if (extraNote != null) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      extraNote,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: primaryColor,
+                      ),
+                    ),
+                  ],
+
+                  const SizedBox(height: 14),
+
+                  // Fila de acciones funcionales
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: onAction,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            elevation: 0,
+                          ),
+                          child: Text(
+                            actionLabel,
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (guideLabel != null && onGuide != null) ...[
+                        const SizedBox(width: 8),
+                        TextButton(
+                          onPressed: onGuide,
+                          style: TextButton.styleFrom(
+                            foregroundColor: primaryColor,
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                          ),
+                          child: Text(
+                            'Ver guía',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
               ),
             ),
           ],

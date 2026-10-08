@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/notification_item.dart';
+import 'sound_service.dart';
 
 class NotificationPreferences {
   bool notificationsEnabled;
@@ -156,11 +157,22 @@ class MarketDailySummary {
   });
 }
 
-class NotificationService {
+class NotificationService with WidgetsBindingObserver {
   static final NotificationService _instance = NotificationService._internal();
   factory NotificationService() => _instance;
+  
+  bool isAppInForeground = true;
+
   NotificationService._internal() {
     _initSampleData();
+    try {
+      WidgetsBinding.instance.addObserver(this);
+    } catch (_) {}
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    isAppInForeground = (state == AppLifecycleState.resumed);
   }
 
   final ValueNotifier<List<NotificationItem>> notifications =
@@ -508,5 +520,52 @@ class NotificationService {
     }
     preferences.value = updated;
     _updateUnreadCount();
+  }
+
+  /// Emite una notificación adaptando el sonido según si el usuario está
+  /// dentro de la aplicación navegando (sonido in-app) o fuera en el sistema (sonido barra del teléfono).
+  void pushNotification({
+    required String title,
+    required String description,
+    NotificationCategory category = NotificationCategory.sistema,
+    NotificationPriority priority = NotificationPriority.important,
+    String? priceTag,
+    List<NotificationAction> actions = const [],
+    bool? forceExternal,
+  }) {
+    final isExternal = forceExternal ?? !isAppInForeground;
+    final item = NotificationItem(
+      id: 'notif-${DateTime.now().millisecondsSinceEpoch}',
+      title: title,
+      description: description,
+      category: category,
+      priority: priority,
+      timeAgo: 'Ahora',
+      timestamp: DateTime.now(),
+      dateGroup: 'HOY',
+      icon: Icons.notifications_active_rounded,
+      priceTag: priceTag,
+      actions: actions,
+      isRead: false,
+    );
+
+    notifications.value = [item, ...notifications.value];
+    _updateUnreadCount();
+
+    if (isExternal) {
+      SoundService.playAppNotification();
+    } else {
+      SoundService.playInAppNotification();
+    }
+  }
+
+  /// Dispara sonido para notificación que aparece en la barra del teléfono (fuera de la app)
+  static Future<void> playExternalNotificationSound() async {
+    await SoundService.playAppNotification();
+  }
+
+  /// Dispara sonido para notificación / respuesta recibida mientras navega en la app
+  static Future<void> playInAppNotificationSound() async {
+    await SoundService.playInAppNotification();
   }
 }

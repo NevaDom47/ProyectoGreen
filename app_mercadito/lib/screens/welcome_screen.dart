@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../services/user_session.dart';
 import '../widgets/bouncing_button.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -62,8 +64,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   void _goToSelectRole() {
     HapticFeedback.mediumImpact();
-    // Navigates directly to the role selection screen ("¿Cómo quieres participar?")
-    context.go('/select-role');
+    // Si aún no ha verificado su fecha de nacimiento, procede a verificación de edad
+    if (UserSession.birthDate == null) {
+      context.go('/age-verification');
+    } else {
+      context.go('/select-role');
+    }
   }
 
   @override
@@ -74,9 +80,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     // Organic soft sage palette inspired by the design reference
     final bgColor = isDark ? const Color(0xFF101815) : const Color(0xFFF3F7F4);
     final cardBg = isDark ? const Color(0xFF1A2520) : Colors.white;
-    final primaryForestGreen = isDark ? const Color(0xFF8BD8B2) : const Color(0xFF285E44);
-    final buttonColor = isDark ? const Color(0xFF8BD8B2) : const Color(0xFF4A6856);
-    final buttonTextColor = isDark ? const Color(0xFF003824) : Colors.white;
+    final primaryForestGreen = isDark ? const Color(0xFF80C652) : const Color(0xFF285E44);
+    final buttonColor = isDark ? const Color(0xFF80C652) : const Color(0xFF4A6856);
+    final buttonTextColor = isDark ? const Color(0xFF0F1C18) : Colors.white;
     final textDark = isDark ? Colors.white : const Color(0xFF1B3828);
     final textMuted = isDark ? const Color(0xFF90A397) : const Color(0xFF5A7264);
     final indicatorInactive = isDark ? const Color(0xFF2D3C34) : const Color(0xFFCFDDD5);
@@ -106,14 +112,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   else
                     Padding(
                       padding: const EdgeInsets.only(left: 8),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.asset(
-                          'assets/images/logos/logo_app_icon.png',
-                          width: 32,
-                          height: 32,
-                          fit: BoxFit.cover,
-                        ),
+                      child: SvgPicture.asset(
+                        isDark
+                            ? 'assets/images/logos/logo_m_blanco.svg'
+                            : 'assets/images/logos/logo_m_color.svg',
+                        height: 32,
+                        fit: BoxFit.contain,
+                        semanticsLabel: 'El Mercadito',
                       ),
                     ),
 

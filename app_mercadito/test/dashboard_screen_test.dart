@@ -146,4 +146,36 @@ void main() {
     // Verify action button
     expect(find.text('Gestionar'), findsOneWidget);
   });
+
+  testWidgets('DashboardScreen in dark mode uses #80C652 for header icons', (tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: ThemeData.dark(),
+        home: const DashboardScreen(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final barChartFinder = find.byIcon(Icons.bar_chart_rounded);
+    expect(barChartFinder, findsOneWidget);
+    final barChartIcon = tester.widget<Icon>(barChartFinder);
+    expect(barChartIcon.color, const Color(0xFF80C652));
+
+    final trendingUpFinder = find.byIcon(Icons.trending_up_rounded);
+    expect(trendingUpFinder, findsOneWidget);
+    final trendingUpIcon = tester.widget<Icon>(trendingUpFinder);
+    expect(trendingUpIcon.color, const Color(0xFF80C652));
+
+    final handshakeFinder = find.byIcon(Icons.handshake_outlined);
+    expect(handshakeFinder, findsOneWidget);
+    final handshakeIcon = tester.widget<Icon>(handshakeFinder);
+    expect(handshakeIcon.color, const Color(0xFF80C652));
+  });
 }

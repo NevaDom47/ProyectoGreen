@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/skeleton_loading.dart';
+import '../services/sound_service.dart';
 import '../theme/app_theme.dart';
 
 class TasksScreen extends StatefulWidget {
@@ -24,7 +25,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
   int _totalPoints = 1450;
   int _completedTasks = 5;
   final int _totalDailyTasks = 10;
-  int _streakDays = 5;
+  final int _streakDays = 5;
   bool _isLoading = true;
 
   late List<_TaskModel> _tasks;
@@ -202,6 +203,8 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
   void _claimTaskReward(_TaskModel task) {
     if (task.status == TaskStatus.completado) return;
 
+    SoundService.playTaskCompleted();
+
     setState(() {
       task.status = TaskStatus.completado;
       _totalPoints += task.points;
@@ -211,10 +214,6 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
     });
 
     _showRewardCelebrationDialog(task);
-  }
-
-  void _completeTask(_TaskModel task) {
-    _claimTaskReward(task);
   }
 
   void _showRewardCelebrationDialog(_TaskModel task) {
@@ -436,21 +435,21 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
               children: [
                 IconButton(
                   onPressed: () {
-                    if (Navigator.of(context).canPop()) {
+                    if (context.canPop()) {
+                      context.pop();
+                    } else if (Navigator.of(context).canPop()) {
                       Navigator.of(context).pop();
                     } else {
-                      try {
-                        context.pop();
-                      } catch (_) {}
+                      context.go('/home');
                     }
                   },
                   icon: Icon(
                     Icons.arrow_back,
-                    color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
+                    color: isDark ? const Color(0xFF80C652) : AppTheme.primary,
                     size: 20,
                   ),
                   style: IconButton.styleFrom(
-                    backgroundColor: isDark ? const Color(0xFF1E382E) : const Color(0xFFE5F1EB),
+                    backgroundColor: isDark ? const Color(0xFF2D402A) : const Color(0xFFE5F1EB),
                     padding: EdgeInsets.zero,
                     minimumSize: const Size(40, 40),
                     shape: RoundedRectangleBorder(
@@ -469,7 +468,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
                           letterSpacing: -0.5,
-                          color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
+                          color: isDark ? const Color(0xFF80C652) : AppTheme.primary,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -959,7 +958,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1E382E) : const Color(0xFFE5F1EB),
+                  color: isDark ? const Color(0xFF2D402A) : const Color(0xFFE5F1EB),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
@@ -967,7 +966,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 10,
                     fontWeight: FontWeight.w800,
-                    color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
+                    color: isDark ? const Color(0xFF80C652) : AppTheme.primary,
                   ),
                 ),
               ),
@@ -991,7 +990,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
-                  color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
+                  color: isDark ? const Color(0xFF80C652) : AppTheme.primary,
                   letterSpacing: 0.8,
                 ),
               ),
@@ -999,7 +998,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
               Icon(
                 Icons.chevron_right_rounded,
                 size: 16,
-                color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
+                color: isDark ? const Color(0xFF80C652) : AppTheme.primary,
               ),
             ],
           ),
@@ -1041,8 +1040,8 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
     String statusText;
 
     if (isCompleted) {
-      badgeBg = isDark ? const Color(0xFF1E382E) : const Color(0xFFD1FAE5);
-      badgeText = isDark ? const Color(0xFF67C83B) : AppTheme.primary;
+      badgeBg = isDark ? const Color(0xFF2D402A) : const Color(0xFFD1FAE5);
+      badgeText = isDark ? const Color(0xFF80C652) : AppTheme.primary;
       statusText = 'COMPLETADO';
     } else if (isReclamable) {
       badgeBg = isDark ? const Color(0xFF332617) : const Color(0xFFFEF3C7);
@@ -1106,19 +1105,23 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                           height: 30,
                           decoration: BoxDecoration(
                             color: isCompleted
-                                ? AppTheme.primary.withValues(alpha: 0.15)
+                                ? (isDark ? const Color(0xFF2D402A) : AppTheme.primary.withValues(alpha: 0.15))
                                 : (isReclamable
                                     ? const Color(0xFFFEF3C7)
-                                    : (isProgress ? const Color(0xFFDBEAFE) : surfaceLow)),
+                                    : (isProgress
+                                        ? const Color(0xFFDBEAFE)
+                                        : (isDark ? const Color(0xFF2D402A) : surfaceLow))),
                             borderRadius: BorderRadius.circular(9),
                           ),
                           child: Icon(
                             isCompleted ? Icons.check_circle_rounded : task.icon,
                             color: isCompleted
-                                ? AppTheme.primary
+                                ? (isDark ? const Color(0xFF80C652) : AppTheme.primary)
                                 : (isReclamable
                                     ? const Color(0xFFB45309)
-                                    : (isProgress ? const Color(0xFF1D4ED8) : AppTheme.primary)),
+                                    : (isProgress
+                                        ? const Color(0xFF1D4ED8)
+                                        : (isDark ? const Color(0xFF80C652) : AppTheme.primary))),
                             size: 16,
                           ),
                         ),
@@ -1214,9 +1217,9 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                         decoration: BoxDecoration(
-                          color: isCompleted
-                              ? surfaceLow
-                              : (isDark ? const Color(0xFF1E382E) : const Color(0xFFEBF7F0)),
+                          color: isDark
+                              ? const Color(0xFF2D402A)
+                              : (isCompleted ? surfaceLow : const Color(0xFFEBF7F0)),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
@@ -1224,7 +1227,9 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 10,
                             fontWeight: FontWeight.w800,
-                            color: isCompleted ? onSurfaceVariant : AppTheme.primary,
+                            color: isDark
+                                ? const Color(0xFF80C652)
+                                : (isCompleted ? onSurfaceVariant : AppTheme.primary),
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -1376,8 +1381,8 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
             String statusText;
 
             if (isCompleted) {
-              badgeBg = isDark ? const Color(0xFF1E382E) : const Color(0xFFD1FAE5);
-              badgeText = isDark ? const Color(0xFF67C83B) : AppTheme.primary;
+              badgeBg = isDark ? const Color(0xFF2D402A) : const Color(0xFFD1FAE5);
+              badgeText = isDark ? const Color(0xFF80C652) : AppTheme.primary;
               statusText = 'COMPLETADO';
             } else if (isReclamable) {
               badgeBg = isDark ? const Color(0xFF332617) : const Color(0xFFFEF3C7);
@@ -1436,24 +1441,28 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                             height: 50,
                             decoration: BoxDecoration(
                               color: isCompleted
-                                  ? AppTheme.primary.withValues(alpha: 0.15)
+                                  ? (isDark ? const Color(0xFF2D402A) : AppTheme.primary.withValues(alpha: 0.15))
                                   : (isReclamable
                                       ? const Color(0xFFFEF3C7)
-                                      : (isProgress ? const Color(0xFFDBEAFE) : containerColor)),
+                                      : (isProgress
+                                          ? const Color(0xFFDBEAFE)
+                                          : (isDark ? const Color(0xFF2D402A) : containerColor))),
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
                                 color: isReclamable
                                     ? const Color(0xFFFBBF24)
-                                    : (isCompleted ? AppTheme.primary.withValues(alpha: 0.3) : outlineColor),
+                                    : (isCompleted
+                                        ? (isDark ? const Color(0xFF80C652).withValues(alpha: 0.3) : AppTheme.primary.withValues(alpha: 0.3))
+                                        : outlineColor),
                               ),
                             ),
                             child: Icon(
                               isCompleted ? Icons.check_circle_rounded : task.icon,
                               color: isCompleted
-                                  ? AppTheme.primary
+                                  ? (isDark ? const Color(0xFF80C652) : AppTheme.primary)
                                   : (isReclamable
                                       ? const Color(0xFFB45309)
-                                      : (isProgress ? const Color(0xFF1D4ED8) : AppTheme.primary)),
+                                      : (isProgress ? const Color(0xFF1D4ED8) : (isDark ? const Color(0xFF80C652) : AppTheme.primary))),
                               size: 26,
                             ),
                           ),
@@ -1492,7 +1501,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
                                       decoration: BoxDecoration(
-                                        color: isDark ? const Color(0xFF1E382E) : const Color(0xFFEBF7F0),
+                                        color: isDark ? const Color(0xFF2D402A) : const Color(0xFFEBF7F0),
                                         borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Text(
@@ -1500,7 +1509,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                                         style: GoogleFonts.plusJakartaSans(
                                           fontSize: 9.5,
                                           fontWeight: FontWeight.w800,
-                                          color: AppTheme.primary,
+                                          color: isDark ? const Color(0xFF80C652) : AppTheme.primary,
                                         ),
                                       ),
                                     ),
@@ -1883,7 +1892,7 @@ class _TaskModel {
   final bool hasNotification;
   final List<String> steps;
   final String validationCriteria;
-  bool isValidating;
+  bool isValidating = false;
 
   _TaskModel({
     required this.id,
@@ -1895,6 +1904,5 @@ class _TaskModel {
     this.hasNotification = false,
     this.steps = const [],
     this.validationCriteria = '',
-    this.isValidating = false,
   });
 }

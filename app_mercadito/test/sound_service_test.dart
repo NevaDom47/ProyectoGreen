@@ -13,7 +13,7 @@ void main() {
       final service = SoundService();
       expect(service, isNotNull);
 
-      // Verify all 7 sound playback invocations execute cleanly
+      // Verify all sound playback invocations execute cleanly
       await SoundService.playFavorite();
       await SoundService.playChatMessage();
       await SoundService.playError();
@@ -21,6 +21,7 @@ void main() {
       await SoundService.playAppNotification();
       await SoundService.playInAppNotification();
       await SoundService.playButtonClick();
+      await SoundService.playTaskCompleted();
 
       expect(SoundService().isMuted, false);
       expect(SoundService().volume, 1.0);

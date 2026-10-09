@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/user_session.dart';
@@ -12,6 +13,19 @@ class SelectRoleScreen extends StatefulWidget {
 
 class _SelectRoleScreenState extends State<SelectRoleScreen> {
   String? _selectedRole; // 'comprador' or 'proveedor'
+
+  @override
+  void initState() {
+    super.initState();
+    // Si es la primera vez y no tiene fecha de nacimiento registrada, redirige a verificación de edad
+    if (UserSession.birthDate == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && UserSession.birthDate == null) {
+          context.go('/age-verification');
+        }
+      });
+    }
+  }
 
   // Standard theme colors matching Emerald Harvest guidelines
   static const Color _colorPrimary = Color(0xFF00462f);
@@ -29,60 +43,58 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
     final actualBg = isDarkMode ? const Color(0xFF121814) : _colorBackground;
     final actualCardBg = isDarkMode ? const Color(0xFF1E2621) : _colorSurfaceCard;
     final actualTextVariant = isDarkMode ? const Color(0xFF90A397) : _colorOnSurfaceVariant;
-    final actualPrimary = isDarkMode ? const Color(0xFF8BD8B2) : _colorPrimary;
+    final actualPrimary = isDarkMode ? const Color(0xFF80C652) : _colorPrimary;
 
     return Scaffold(
       backgroundColor: actualBg,
       body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 800),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+        child: Column(
+          children: [
+            // Barra superior con flecha atrás y logo en la esquina superior derecha
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: IconButton(
-                      icon: Icon(Icons.arrow_back_rounded, color: actualPrimary),
-                      onPressed: () {
-                        if (context.canPop()) {
-                          context.pop();
-                        } else {
-                          context.go('/welcome');
-                        }
-                      },
+                  IconButton(
+                    icon: Icon(Icons.arrow_back_rounded, color: actualPrimary),
+                    onPressed: () {
+                      if (context.canPop()) {
+                        context.pop();
+                      } else {
+                        context.go('/age-verification');
+                      }
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 12.0),
+                    child: SvgPicture.asset(
+                      isDarkMode
+                          ? 'assets/images/logos/logo_m_blanco.svg'
+                          : 'assets/images/logos/logo_m_color.svg',
+                      height: 36,
+                      fit: BoxFit.contain,
+                      semanticsLabel: 'El Mercadito',
                     ),
                   ),
-                  Center(
-                    child: Container(
-                      width: 60,
-                      height: 60,
-                      margin: const EdgeInsets.only(bottom: 20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(18),
-                        boxShadow: [
-                          BoxShadow(
-                            color: actualPrimary.withValues(alpha: 0.2),
-                            blurRadius: 16,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(18),
-                        child: Image.asset(
-                          'assets/images/logos/logo_app_icon.png',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Header Title
-                  Text(
-                    '¿Cómo quieres participar?',
+                ],
+              ),
+            ),
+
+            // Contenido principal scrollable
+            Expanded(
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                  child: Container(
+                    constraints: const BoxConstraints(maxWidth: 800),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Header Title
+                        Text(
+                          '¿Cómo quieres participar?',
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 28,
                       fontWeight: FontWeight.w800,
@@ -183,14 +195,17 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
                   const SizedBox(height: 48),
 
                   // Confirm Button
-                  _buildConfirmButton(actualPrimary),
+                  _buildConfirmButton(actualPrimary, isDarkMode),
                 ],
               ),
             ),
           ),
         ),
       ),
-    );
+    ],
+  ),
+),
+);
   }
 
   Widget _buildRoleCard({
@@ -310,10 +325,10 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
                     color: isSelected ? actualPrimary : Colors.transparent,
                   ),
                   child: isSelected
-                      ? const Icon(
+                      ? Icon(
                           Icons.check,
                           size: 16,
-                          color: Colors.white,
+                          color: isDarkMode ? const Color(0xFF0F1C18) : Colors.white,
                         )
                       : null,
                 ),
@@ -325,7 +340,7 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
     );
   }
 
-  Widget _buildConfirmButton(Color actualPrimary) {
+  Widget _buildConfirmButton(Color actualPrimary, bool isDarkMode) {
     final bool isEnabled = _selectedRole != null;
 
     final btnBg = isEnabled
@@ -392,7 +407,7 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
           style: ElevatedButton.styleFrom(
             backgroundColor: btnBg,
             disabledBackgroundColor: const Color(0xFFBEC9C1),
-            foregroundColor: Colors.white,
+            foregroundColor: isDarkMode ? const Color(0xFF0F1C18) : Colors.white,
             disabledForegroundColor: Colors.white.withValues(alpha: 0.6),
             padding: const EdgeInsets.symmetric(vertical: 20.0),
             shape: RoundedRectangleBorder(
@@ -406,6 +421,9 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
               fontSize: 14.5,
               fontWeight: FontWeight.w900,
               letterSpacing: 2.0, // wide tracking-widest
+              color: isEnabled
+                  ? (isDarkMode ? const Color(0xFF0F1C18) : Colors.white)
+                  : Colors.white70,
             ),
           ),
         ),

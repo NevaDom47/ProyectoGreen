@@ -208,7 +208,7 @@ class _RegisterEmailVerificationScreenState
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final primaryColor = isDark ? const Color(0xFF8BD8B2) : const Color(0xFF00462F);
+    final primaryColor = isDark ? const Color(0xFF80C652) : const Color(0xFF00462F);
     final bgColor = isDark ? const Color(0xFF101815) : const Color(0xFFF7FAF5);
     final cardBg = isDark ? const Color(0xFF1E2621) : Colors.white;
     final textMuted = isDark ? const Color(0xFF90A397) : const Color(0xFF3F4943);

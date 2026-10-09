@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:app_mercadito/screens/register_screen.dart';
 import 'package:app_mercadito/screens/register_email_verification_screen.dart';
 import 'package:app_mercadito/screens/welcome_screen.dart';
+import 'package:app_mercadito/screens/age_verification_screen.dart';
 import 'package:app_mercadito/screens/select_role_screen.dart';
 import 'package:app_mercadito/screens/login_screen.dart';
 import 'package:app_mercadito/services/user_session.dart';
@@ -22,6 +23,7 @@ Widget createTestRouterApp(Widget child) {
         ),
       ),
       GoRoute(path: '/welcome', builder: (context, state) => const WelcomeScreen()),
+      GoRoute(path: '/age-verification', builder: (context, state) => const AgeVerificationScreen()),
       GoRoute(path: '/select-role', builder: (context, state) => const SelectRoleScreen()),
       GoRoute(path: '/buyer-onboarding', builder: (context, state) => const Scaffold(body: Text('Buyer Onboarding Screen'))),
       GoRoute(path: '/provider-onboarding', builder: (context, state) => const Scaffold(body: Text('Provider Onboarding Screen'))),
@@ -45,6 +47,7 @@ void main() {
 
       // Verify header and form elements are present
       expect(find.text('Crear cuenta nueva'), findsOneWidget);
+      expect(find.text('Nombre de Usuario (Opcional)'), findsNothing);
       expect(find.text('Correo Electrónico'), findsOneWidget);
       expect(find.text('Contraseña'), findsOneWidget);
       expect(find.text('Confirmar Contraseña'), findsOneWidget);
@@ -59,21 +62,21 @@ void main() {
       expect(find.text('Por favor ingresa tu correo electrónico.'), findsOneWidget);
 
       // Enter invalid email
-      await tester.enterText(find.byType(TextField).at(1), 'correo-invalido');
+      await tester.enterText(find.byType(TextField).at(0), 'correo-invalido');
       await tester.tap(submitBtn);
       await tester.pumpAndSettle();
       expect(find.text('Por favor ingresa un correo electrónico válido.'), findsOneWidget);
 
       // Enter valid email but short password
-      await tester.enterText(find.byType(TextField).at(1), 'juan@ejemplo.com');
-      await tester.enterText(find.byType(TextField).at(2), '1234');
+      await tester.enterText(find.byType(TextField).at(0), 'juan@ejemplo.com');
+      await tester.enterText(find.byType(TextField).at(1), '1234');
       await tester.tap(submitBtn);
       await tester.pumpAndSettle();
       expect(find.text('La contraseña debe tener al menos 8 caracteres.'), findsOneWidget);
 
       // Password mismatch
-      await tester.enterText(find.byType(TextField).at(2), 'password123');
-      await tester.enterText(find.byType(TextField).at(3), 'password456');
+      await tester.enterText(find.byType(TextField).at(1), 'password123');
+      await tester.enterText(find.byType(TextField).at(2), 'password456');
       await tester.tap(submitBtn);
       await tester.pumpAndSettle();
       expect(find.text('Las contraseñas no coinciden.'), findsOneWidget);
@@ -166,12 +169,70 @@ void main() {
       await tester.tap(selectRoleBtn);
       await tester.pumpAndSettle();
 
-      // Should now be on SelectRoleScreen
+      // Should now be on AgeVerificationScreen
+      expect(find.text('¿Cuál es tu fecha de nacimiento?'), findsOneWidget);
+    });
+
+    testWidgets('AgeVerificationScreen allows adult (>= 18) to proceed to SelectRoleScreen',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(createTestRouterApp(const AgeVerificationScreen()));
+      await tester.pumpAndSettle();
+
+      expect(find.text('¿Cuál es tu fecha de nacimiento?'), findsOneWidget);
+      expect(find.text('Toca para seleccionar tu fecha'), findsOneWidget);
+
+      // Simulate adult birthDate
+      UserSession.birthDate = DateTime(1998, 6, 15);
+      await tester.pumpWidget(createTestRouterApp(const AgeVerificationScreen()));
+      await tester.pumpAndSettle();
+
+      final continueBtn = find.text('CONTINUAR');
+      await tester.ensureVisible(continueBtn);
+      await tester.tap(continueBtn);
+      await tester.pumpAndSettle();
+
+      // Now should be on SelectRoleScreen
       expect(find.text('¿Cómo quieres participar?'), findsOneWidget);
+    });
+
+    testWidgets('AgeVerificationScreen blocks underage (< 18) without adult consent, and allows when confirmed',
+        (WidgetTester tester) async {
+      final now = DateTime.now();
+      UserSession.birthDate = DateTime(now.year - 16, now.month, now.day);
+      await tester.pumpWidget(createTestRouterApp(const AgeVerificationScreen()));
+      await tester.pumpAndSettle();
+
+      // Underage warning should be visible
+      expect(find.textContaining('Menor de 18 años'), findsOneWidget);
+      expect(find.textContaining('Confirmo que un adulto responsable'), findsOneWidget);
+
+      // Button should not navigate without checking consent
+      final continueBtn = find.text('CONTINUAR');
+      await tester.ensureVisible(continueBtn);
+      await tester.tap(continueBtn);
+      await tester.pumpAndSettle();
+
+      // Still on AgeVerificationScreen
+      expect(find.text('¿Cómo quieres participar?'), findsNothing);
+
+      // Tap consent checkbox
+      final checkbox = find.byType(Checkbox);
+      expect(checkbox, findsOneWidget);
+      await tester.tap(checkbox);
+      await tester.pumpAndSettle();
+
+      // Now tap CONTINUE
+      await tester.tap(continueBtn);
+      await tester.pumpAndSettle();
+
+      // Proceeds to SelectRoleScreen
+      expect(find.text('¿Cómo quieres participar?'), findsOneWidget);
+      expect(UserSession.hasAdultConsent, isTrue);
     });
 
     testWidgets('SelectRoleScreen sets role and marks first-time user complete',
         (WidgetTester tester) async {
+      UserSession.birthDate = DateTime(1995, 5, 20);
       await tester.pumpWidget(createTestRouterApp(const SelectRoleScreen()));
       await tester.pumpAndSettle();
 

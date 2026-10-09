@@ -79,6 +79,23 @@ class UserSession {
   static bool get isFirstTimeUser => _isFirstTimeUserOverride ?? (selectedRole == null);
   static set isFirstTimeUser(bool value) => _isFirstTimeUserOverride = value;
 
+  // Fecha de nacimiento y verificación de edad
+  static DateTime? birthDate;
+  static bool hasAdultConsent = false;
+
+  static int get userAge {
+    if (birthDate == null) return 0;
+    final now = DateTime.now();
+    int age = now.year - birthDate!.year;
+    if (now.month < birthDate!.month ||
+        (now.month == birthDate!.month && now.day < birthDate!.day)) {
+      age--;
+    }
+    return age;
+  }
+
+  static bool get isAdult => userAge >= 18;
+
   // Tutorial / Guía interactiva
   static bool hasSeenNavTutorial = false;
 
@@ -258,6 +275,8 @@ class UserSession {
     isBuyerOnboarded = false;
     isEmailVerified = false;
     _isFirstTimeUserOverride = null;
+    birthDate = null;
+    hasAdultConsent = false;
 
     isProviderOnboarded = false;
     specialty = null;

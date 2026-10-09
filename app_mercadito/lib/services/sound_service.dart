@@ -21,6 +21,7 @@ class SoundService {
   AudioPlayer? _negPlayer;
   AudioPlayer? _notifAppPlayer;
   AudioPlayer? _notifInAppPlayer;
+  AudioPlayer? _taskCompletedPlayer;
 
   AudioPlayer _getPlayer(int type) {
     switch (type) {
@@ -36,6 +37,8 @@ class SoundService {
         return _notifAppPlayer ??= (AudioPlayer()..audioCache.prefix = 'assets/');
       case 5:
         return _notifInAppPlayer ??= (AudioPlayer()..audioCache.prefix = 'assets/');
+      case 7:
+        return _taskCompletedPlayer ??= (AudioPlayer()..audioCache.prefix = 'assets/');
       default:
         return _btnPlayer ??= (AudioPlayer()..audioCache.prefix = 'assets/');
     }
@@ -136,6 +139,14 @@ class SoundService {
     await _instance._play('sounds/boton_click.mp3', 6);
   }
 
+  // ---------------------------------------------------------------------------
+  // 8. Tarea Completada: Al reclamar una tarea pendiente
+  // ---------------------------------------------------------------------------
+  static Future<void> playTaskCompleted() async {
+    suppressNextButtonClick();
+    await _instance._play('sounds/tarea_completada.mp3', 7);
+  }
+
   /// Limpia los reproductores al cerrar la app
   void dispose() {
     try {
@@ -146,6 +157,7 @@ class SoundService {
       _negPlayer?.dispose();
       _notifAppPlayer?.dispose();
       _notifInAppPlayer?.dispose();
+      _taskCompletedPlayer?.dispose();
     } catch (_) {}
   }
 }

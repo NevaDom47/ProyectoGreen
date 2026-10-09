@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import '../services/user_session.dart';
 import '../widgets/animated_error_field.dart';
@@ -53,9 +54,11 @@ class _LoginScreenState extends State<LoginScreen> {
     // Navigate to welcome if user has no role defined yet
     if (!UserSession.hasRole) {
       context.go('/welcome');
-    } else if (UserSession.selectedRole == 'comprador' && !UserSession.isBuyerOnboarded) {
+    } else if (UserSession.selectedRole == 'comprador' &&
+        !UserSession.isBuyerOnboarded) {
       context.go('/buyer-onboarding');
-    } else if (UserSession.selectedRole == 'proveedor' && !UserSession.isProviderOnboarded) {
+    } else if (UserSession.selectedRole == 'proveedor' &&
+        !UserSession.isProviderOnboarded) {
       context.go('/provider-onboarding');
     } else {
       context.go('/home');
@@ -81,7 +84,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: isDarkMode ? 0.3 : 0.1),
+                      color: Colors.black.withValues(
+                        alpha: isDarkMode ? 0.3 : 0.1,
+                      ),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -106,73 +111,45 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    
+
                     Padding(
                       padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
                       child: Column(
                         children: [
-                          // Logo Oficial de El Mercadito
-                          Container(
-                            width: 96,
-                            height: 96,
-                            margin: const EdgeInsets.only(bottom: 24),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(24),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: theme.colorScheme.primary.withValues(alpha: isDarkMode ? 0.35 : 0.2),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 6),
-                                ),
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(24),
-                              child: Image.asset(
-                                'assets/images/el_mercadito_logo.png',
-                                width: 96,
-                                height: 96,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) => Container(
-                                  width: 96,
-                                  height: 96,
-                                  decoration: BoxDecoration(
-                                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(24),
-                                  ),
-                                  child: Icon(
-                                    Icons.storefront,
-                                    size: 48,
-                                    color: theme.colorScheme.primary,
-                                  ),
-                                ),
-                              ),
+                          // Logo Oficial de El Mercadito (Horizontal SVG)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: SvgPicture.asset(
+                              isDarkMode
+                                  ? 'assets/images/logos/logo_horizontal_blanco.svg'
+                                  : 'assets/images/logos/logo_horizontal_color.svg',
+                              width: 230,
+                              fit: BoxFit.contain,
                             ),
                           ),
-                          
-                          // Welcome Text
-                          Text(
-                            'Bienvenido de nuevo',
-                            style: theme.textTheme.displayLarge?.copyWith(
-                              fontSize: 28,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 8),
+
+                          // Subtitle Text
                           Text(
                             'Accede a la frescura del campo en un clic',
                             style: theme.textTheme.bodyLarge?.copyWith(
-                              color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                              color: isDarkMode
+                                  ? Colors.grey[400]
+                                  : Colors.grey[600],
                             ),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 32),
-                          
+
                           // Form
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Correo electrónico o Usuario', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+                              Text(
+                                'Correo electrónico o Usuario',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                               const SizedBox(height: 8),
                               AnimatedErrorField(
                                 errorText: _emailError,
@@ -191,8 +168,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               const SizedBox(height: 16),
-                              
-                              Text('Contraseña', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+
+                              Text(
+                                'Contraseña',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                               const SizedBox(height: 8),
                               AnimatedErrorField(
                                 errorText: _passwordError,
@@ -204,8 +186,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     hintText: '••••••••',
                                     suffixIcon: IconButton(
                                       icon: Icon(
-                                        _obscurePassword ? Icons.visibility : Icons.visibility_off,
-                                        color: isDarkMode ? Colors.grey[500] : Colors.grey[400],
+                                        _obscurePassword
+                                            ? Icons.visibility
+                                            : Icons.visibility_off,
+                                        color: isDarkMode
+                                            ? Colors.grey[500]
+                                            : Colors.grey[400],
                                       ),
                                       onPressed: () {
                                         setState(() {
@@ -222,27 +208,31 @@ class _LoginScreenState extends State<LoginScreen> {
                                   },
                                 ),
                               ),
-                              
+
                               // Forgot Password
                               const SizedBox(height: 6),
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: TextButton(
-                                  onPressed: () => context.push('/forgot-password'),
+                                  onPressed: () =>
+                                      context.push('/forgot-password'),
                                   style: TextButton.styleFrom(
                                     foregroundColor: theme.colorScheme.primary,
                                     padding: EdgeInsets.zero,
                                     minimumSize: Size.zero,
-                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
                                   ),
                                   child: const Text(
                                     '¿Olvidé mi contraseña?',
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
                               const SizedBox(height: 20),
-                              
+
                               // Login Button (Responsive y Central con rebote táctil)
                               BouncingButton(
                                 onTap: _handleLogin,
@@ -252,10 +242,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                   child: ElevatedButton(
                                     onPressed: _handleLogin,
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: theme.colorScheme.primary,
+                                      backgroundColor:
+                                          theme.colorScheme.primary,
                                       foregroundColor: Colors.white,
                                       elevation: 2,
-                                      shadowColor: theme.colorScheme.primary.withValues(alpha: 0.3),
+                                      shadowColor: theme.colorScheme.primary
+                                          .withValues(alpha: 0.3),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
@@ -271,28 +263,40 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ],
                           ),
-                          
+
                           // Divider
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 32),
                             child: Row(
                               children: [
-                                Expanded(child: Divider(color: theme.colorScheme.outline)),
+                                Expanded(
+                                  child: Divider(
+                                    color: theme.colorScheme.outline,
+                                  ),
+                                ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                  ),
                                   child: Text(
                                     'O',
                                     style: TextStyle(
-                                      color: isDarkMode ? Colors.grey[500] : Colors.grey[400],
+                                      color: isDarkMode
+                                          ? Colors.grey[500]
+                                          : Colors.grey[400],
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
-                                Expanded(child: Divider(color: theme.colorScheme.outline)),
+                                Expanded(
+                                  child: Divider(
+                                    color: theme.colorScheme.outline,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                          
+
                           // Google Button
                           InkWell(
                             onTap: () {},
@@ -301,9 +305,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               width: double.infinity,
                               padding: const EdgeInsets.symmetric(vertical: 12),
                               decoration: BoxDecoration(
-                                color: isDarkMode ? const Color(0xFF1f2937) : Colors.white,
+                                color: isDarkMode
+                                    ? const Color(0xFF1f2937)
+                                    : Colors.white,
                                 borderRadius: BorderRadius.circular(16),
-                                border: Border.all(color: theme.colorScheme.primary, width: 1.5),
+                                border: Border.all(
+                                  color: theme.colorScheme.primary,
+                                  width: 1.5,
+                                ),
                               ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -312,13 +321,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                     'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/120px-Google_%22G%22_logo.svg.png',
                                     height: 24,
                                     width: 24,
-                                    errorBuilder: (c, e, s) => const Icon(Icons.g_mobiledata, color: Colors.blue, size: 32),
+                                    errorBuilder: (c, e, s) => const Icon(
+                                      Icons.g_mobiledata,
+                                      color: Colors.blue,
+                                      size: 32,
+                                    ),
                                   ),
                                   const SizedBox(width: 12),
                                   Text(
                                     'Iniciar con Google',
                                     style: TextStyle(
-                                      color: isDarkMode ? Colors.white : Colors.black87,
+                                      color: isDarkMode
+                                          ? Colors.white
+                                          : Colors.black87,
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -328,7 +343,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           const SizedBox(height: 32),
-                          
+
                           // Register Link
                           Wrap(
                             alignment: WrapAlignment.center,
@@ -336,7 +351,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             children: [
                               Text(
                                 '¿No tienes cuenta? ',
-                                style: TextStyle(color: isDarkMode ? Colors.grey[400] : Colors.grey[600]),
+                                style: TextStyle(
+                                  color: isDarkMode
+                                      ? Colors.grey[400]
+                                      : Colors.grey[600],
+                                ),
                               ),
                               MouseRegion(
                                 cursor: SystemMouseCursors.click,

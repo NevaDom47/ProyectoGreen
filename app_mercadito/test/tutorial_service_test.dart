@@ -83,7 +83,7 @@ void main() {
       await tester.pump(const Duration(seconds: 5));
     });
 
-    testWidgets('SettingsScreen displays Tutorial y Guia Interactiva option', (tester) async {
+    testWidgets('SettingsScreen does not display Tutorial y Guia Interactiva option', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: SettingsScreen(),
@@ -91,8 +91,8 @@ void main() {
       );
 
       await tester.pumpAndSettle();
-      expect(find.text('Tutorial y Guía Interactiva'), findsOneWidget);
-      expect(find.text('Repetir'), findsOneWidget);
+      expect(find.text('Tutorial y Guía Interactiva'), findsNothing);
+      expect(find.text('Repetir'), findsNothing);
     });
   });
 }

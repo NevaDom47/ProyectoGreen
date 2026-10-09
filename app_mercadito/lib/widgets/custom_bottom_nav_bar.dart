@@ -158,7 +158,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
     });
   }
 
-  GlobalKey _getNavKey(int index) {
+  GlobalKey? _getNavKey(int index) {
+    if (widget.currentIndex != 0) return null;
     switch (index) {
       case 0:
         return CustomBottomNavBar.navHomeKey;
@@ -171,7 +172,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
       case 4:
         return CustomBottomNavBar.navChatsKey;
       default:
-        return CustomBottomNavBar.navHomeKey;
+        return null;
     }
   }
 

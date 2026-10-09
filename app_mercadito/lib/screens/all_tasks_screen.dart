@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+import '../services/sound_service.dart';
 import '../theme/app_theme.dart';
 
 enum AllTaskFilter {
@@ -29,7 +30,7 @@ class _AllTaskModel {
   AllTaskStatus status;
   final List<String> steps;
   final String validationCriteria;
-  bool isValidating;
+  bool isValidating = false;
 
   _AllTaskModel({
     required this.id,
@@ -40,7 +41,6 @@ class _AllTaskModel {
     required this.status,
     this.steps = const [],
     this.validationCriteria = '',
-    this.isValidating = false,
   });
 }
 
@@ -253,6 +253,8 @@ class _AllTasksScreenState extends State<AllTasksScreen> with TickerProviderStat
 
   void _claimTaskReward(_AllTaskModel task) {
     if (task.status == AllTaskStatus.completado) return;
+
+    SoundService.playTaskCompleted();
 
     setState(() {
       task.status = AllTaskStatus.completado;
@@ -772,7 +774,6 @@ class _AllTasksScreenState extends State<AllTasksScreen> with TickerProviderStat
       case AllTaskFilter.completadas:
         return _tasks.where((t) => t.status == AllTaskStatus.completado).toList();
       case AllTaskFilter.todas:
-      default:
         return _tasks;
     }
   }
@@ -821,21 +822,21 @@ class _AllTasksScreenState extends State<AllTasksScreen> with TickerProviderStat
               children: [
                 IconButton(
                   onPressed: () {
-                    if (Navigator.of(context).canPop()) {
+                    if (context.canPop()) {
+                      context.pop();
+                    } else if (Navigator.of(context).canPop()) {
                       Navigator.of(context).pop();
                     } else {
-                      try {
-                        context.pop();
-                      } catch (_) {}
+                      context.go('/tasks');
                     }
                   },
                   icon: Icon(
                     Icons.arrow_back,
-                    color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
+                    color: isDark ? const Color(0xFF80C652) : AppTheme.primary,
                     size: 20,
                   ),
                   style: IconButton.styleFrom(
-                    backgroundColor: isDark ? const Color(0xFF1E382E) : const Color(0xFFE5F1EB),
+                    backgroundColor: isDark ? const Color(0xFF2D402A) : const Color(0xFFE5F1EB),
                     padding: EdgeInsets.zero,
                     minimumSize: const Size(40, 40),
                     shape: RoundedRectangleBorder(
@@ -854,7 +855,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> with TickerProviderStat
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
                           letterSpacing: -0.5,
-                          color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
+                          color: isDark ? const Color(0xFF80C652) : AppTheme.primary,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -1343,19 +1344,23 @@ class _AllTasksScreenState extends State<AllTasksScreen> with TickerProviderStat
                   height: 44,
                   decoration: BoxDecoration(
                     color: isCompleted
-                        ? AppTheme.primary.withValues(alpha: 0.15)
+                        ? (isDark ? const Color(0xFF2D402A) : AppTheme.primary.withValues(alpha: 0.15))
                         : (isReclamable
                             ? const Color(0xFFFEF3C7)
-                            : (isProgress ? const Color(0xFFDBEAFE) : surfaceLow)),
+                            : (isProgress
+                                ? const Color(0xFFDBEAFE)
+                                : (isDark ? const Color(0xFF2D402A) : surfaceLow))),
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Icon(
                     isCompleted ? Icons.check_circle_rounded : task.icon,
                     color: isCompleted
-                        ? AppTheme.primary
+                        ? (isDark ? const Color(0xFF80C652) : AppTheme.primary)
                         : (isReclamable
                             ? const Color(0xFFB45309)
-                            : (isProgress ? const Color(0xFF1D4ED8) : AppTheme.primary)),
+                            : (isProgress
+                                ? const Color(0xFF1D4ED8)
+                                : (isDark ? const Color(0xFF80C652) : AppTheme.primary))),
                     size: 22,
                   ),
                 ),
@@ -1383,9 +1388,9 @@ class _AllTasksScreenState extends State<AllTasksScreen> with TickerProviderStat
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
                             decoration: BoxDecoration(
-                              color: isCompleted
-                                  ? surfaceLow
-                                  : (isDark ? const Color(0xFF1E382E) : const Color(0xFFEBF7F0)),
+                              color: isDark
+                                  ? const Color(0xFF2D402A)
+                                  : (isCompleted ? surfaceLow : const Color(0xFFEBF7F0)),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
@@ -1393,7 +1398,9 @@ class _AllTasksScreenState extends State<AllTasksScreen> with TickerProviderStat
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 10.5,
                                 fontWeight: FontWeight.w800,
-                                color: isCompleted ? onSurfaceVariant : AppTheme.primary,
+                                color: isDark
+                                    ? const Color(0xFF80C652)
+                                    : (isCompleted ? onSurfaceVariant : AppTheme.primary),
                               ),
                             ),
                           ),

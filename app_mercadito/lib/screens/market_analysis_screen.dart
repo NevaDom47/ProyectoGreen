@@ -23,7 +23,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
   String _selectedCategory = 'Todos';
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
-  final Set<String> _expandedProducts = {'Arroz'}; // Expanded by default for first item
+  final Set<String> _expandedProducts = {'arroz'}; // Expanded by default for first item
 
   // --- Estado de Noticias ---
   String _selectedNewsCategory = 'Todas';
@@ -232,8 +232,8 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
 
     // Material 3 / Emerald Harvest Color Palette
     final bgColor = isDark ? const Color(0xFF0F1C18) : const Color(0xFFF6F8F7);
-    final primaryColor = isDark ? const Color(0xFF8BD6B6) : const Color(0xFF016042);
-    final primaryContainer = isDark ? const Color(0xFF047857) : const Color(0xFF016042);
+    final primaryColor = isDark ? const Color(0xFF80C652) : const Color(0xFF016042);
+    final primaryContainer = isDark ? const Color(0xFF2D402A) : const Color(0xFF016042);
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -482,17 +482,17 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                           fontSize: 12.5,
                           fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
                           color: isSelected
-                              ? const Color(0xFFFFFFFF)
-                              : (isDark ? const Color(0xFFA3A3A3) : const Color(0xFF737373)),
+                              ? (isDark ? const Color(0xFF80C652) : const Color(0xFFFFFFFF))
+                              : (isDark ? const Color(0xFFAAB7B0) : const Color(0xFF737373)),
                         ),
                       ),
                       selected: isSelected,
-                      selectedColor: isDark ? const Color(0xFF047857) : const Color(0xFF016042),
+                      selectedColor: isDark ? const Color(0xFF2D402A) : const Color(0xFF016042),
                       backgroundColor: isDark ? const Color(0xFF16251F) : const Color(0xFFF1F4F0),
                       showCheckmark: false,
                       side: BorderSide(
                         color: isSelected
-                            ? (isDark ? const Color(0xFF047857) : const Color(0xFF016042))
+                            ? (isDark ? const Color(0xFF80C652).withValues(alpha: 0.5) : const Color(0xFF016042))
                             : (isDark ? const Color(0xFF233E33) : const Color(0xFFCCDFD9)),
                         width: 1,
                       ),
@@ -716,7 +716,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                         width: 48,
                         height: 48,
                         decoration: BoxDecoration(
-                          color: primaryColor.withValues(alpha: 0.1),
+                          color: isDark ? const Color(0xFF2D402A) : primaryColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: ClipRRect(
@@ -725,9 +725,15 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                               ? Image.network(
                                   product['imageUrl'],
                                   fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) => Icon(product['icon'] as IconData, color: primaryColor),
+                                  errorBuilder: (context, error, stackTrace) => Icon(
+                                    product['icon'] as IconData,
+                                    color: isDark ? const Color(0xFF80C652) : primaryColor,
+                                  ),
                                 )
-                              : Icon(product['icon'] as IconData, color: primaryColor),
+                              : Icon(
+                                  product['icon'] as IconData,
+                                  color: isDark ? const Color(0xFF80C652) : primaryColor,
+                                ),
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -925,9 +931,9 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
                                   padding: EdgeInsets.zero,
                                   style: IconButton.styleFrom(
                                     backgroundColor: isDark
-                                        ? const Color(0xFF23322B)
+                                        ? const Color(0xFF2D402A)
                                         : const Color(0xFFDFE9FA),
-                                    foregroundColor: primaryColor,
+                                    foregroundColor: isDark ? const Color(0xFF80C652) : primaryColor,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),

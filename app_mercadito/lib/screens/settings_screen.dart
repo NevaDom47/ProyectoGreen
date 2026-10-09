@@ -4,7 +4,6 @@ import '../main.dart'; // import appThemeMode global variable
 import '../theme/app_theme.dart';
 import '../theme/theme_controller.dart';
 import '../services/notification_service.dart';
-import '../widgets/custom_bottom_nav_bar.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -147,20 +146,6 @@ class SettingsScreen extends StatelessWidget {
                             isDark: isDark,
                             onTap: () => context.push('/language'),
                           ),
-                          _buildSettingsTile(
-                            'Tutorial y Guía Interactiva',
-                            Icons.lightbulb_outline_rounded,
-                            textColor,
-                            true,
-                            'Repetir',
-                            isDark: isDark,
-                            onTap: () {
-                              context.go('/home');
-                              Future.delayed(const Duration(milliseconds: 350), () {
-                                CustomBottomNavBar.startTutorial(context, force: true);
-                              });
-                            },
-                          ),
                         ],
                       );
                     },
@@ -171,16 +156,6 @@ class SettingsScreen extends StatelessWidget {
                   Center(
                     child: Column(
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.asset(
-                            'assets/images/logos/logo_app_icon.png',
-                            width: 44,
-                            height: 44,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
                         Text(
                           'EL MERCADITO V2.4.1 (EMERALD HARVEST)',
                           style: TextStyle(

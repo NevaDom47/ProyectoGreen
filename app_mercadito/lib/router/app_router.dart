@@ -61,6 +61,7 @@ import '../screens/favorite_buyers_screen.dart';
 import '../screens/buyer_profile_screen.dart';
 import '../screens/register_email_verification_screen.dart';
 import '../screens/welcome_screen.dart';
+import '../screens/age_verification_screen.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 
 CustomTransitionPage<T> buildSmoothTransitionPage<T>({
@@ -135,6 +136,13 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) => buildSmoothTransitionPage(
         state: state,
         child: const WelcomeScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/age-verification',
+      pageBuilder: (context, state) => buildSmoothTransitionPage(
+        state: state,
+        child: const AgeVerificationScreen(),
       ),
     ),
     GoRoute(

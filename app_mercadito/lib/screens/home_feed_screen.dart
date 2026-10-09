@@ -3182,24 +3182,6 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                       context.pop();
                       context.push('/providers-map');
                     },
-                    trailing: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF004532),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Text(
-                        'MAPA',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
                   ),
                   _buildDrawerItem(
                     'Compradores',
@@ -3222,24 +3204,6 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                       context.pop();
                       context.push('/coupons-manager');
                     },
-                    trailing: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF004532),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Text(
-                        'GESTIÓN',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
                   ),
                   _buildDrawerItem(
                     'Gestor de Ofertas',
@@ -3251,24 +3215,6 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                       context.pop();
                       context.push('/flash-offers-manager');
                     },
-                    trailing: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF004532),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Text(
-                        'GESTIÓN',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
                   ),
 
                   _buildDrawerItem(
@@ -3281,24 +3227,6 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                       context.pop();
                       context.push('/product-management');
                     },
-                    trailing: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF004532),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Text(
-                        'CATÁLOGO',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
                   ),
                   _buildDrawerItem(
                     'Dashboard',
@@ -3407,45 +3335,38 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.asset(
-                      'assets/images/logos/logo_app_icon.png',
-                      width: 32,
-                      height: 32,
-                      fit: BoxFit.cover,
-                    ),
+                  SvgPicture.asset(
+                    isDark
+                        ? 'assets/images/logos/logo_m_blanco.svg'
+                        : 'assets/images/logos/logo_m_color.svg',
+                    width: 38,
+                    height: 38,
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Emerald Harvest',
-                          style: TextStyle(
-                            color: textHeaderColor.withValues(alpha: 0.4),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w800,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'El Mercadito V.1.0.1',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: textHeaderColor,
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          'v2.4.0 • El Mercadito',
-                          style: TextStyle(
-                            color: subtextColor.withValues(alpha: 0.6),
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'BY: Diaz Tecnologies',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: subtextColor,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),

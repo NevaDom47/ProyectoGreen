@@ -25,7 +25,7 @@ class HelpGuideModal extends StatelessWidget {
   final String title;
   final String subtitle;
   final IconData headerIcon;
-  final String badgeText;
+  final String? badgeText;
   final Color accentColor;
   final List<String> flowBadges;
   final List<HelpGuideStep> steps;
@@ -40,7 +40,7 @@ class HelpGuideModal extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.headerIcon,
-    required this.badgeText,
+    this.badgeText,
     this.accentColor = const Color(0xFF016042),
     this.flowBadges = const [],
     required this.steps,
@@ -57,7 +57,7 @@ class HelpGuideModal extends StatelessWidget {
     required String title,
     required String subtitle,
     required IconData headerIcon,
-    required String badgeText,
+    String? badgeText,
     Color accentColor = const Color(0xFF016042),
     List<String> flowBadges = const [],
     required List<HelpGuideStep> steps,
@@ -97,49 +97,34 @@ class HelpGuideModal extends StatelessWidget {
       title: 'Guía para Compradores',
       subtitle: 'Aprende a encontrar cosechas frescas, negociar precios justos y rastrear tus pedidos.',
       headerIcon: Icons.shopping_basket_rounded,
-      badgeText: 'Proceso de Compra',
       accentColor: const Color(0xFF016042),
-      flowBadges: ['1. Explorar', '2. Ofertar', '3. Cerrar Trato', '4. Rastrear'],
+      flowBadges: ['1. Explorar', '2. Ofertar', '3. Negociar', '4. Cerrar Trato'],
       steps: const [
         HelpGuideStep(
           stepNumber: 1,
           title: 'Explora en el Mapa y Catálogo',
           description: 'Usa el mapa geolocalizado o el catálogo con filtros de calidad (1ra, 2da y 3ra) para encontrar productores locales directos.',
           icon: Icons.map_outlined,
-          chipLabel: 'Mapa & Filtros',
         ),
         HelpGuideStep(
           stepNumber: 2,
           title: 'Propón tu Oferta o Volumen',
           description: 'Ingresa a la ficha del producto o inicia un chat. Define los kg o libras deseadas y el precio unitario sugerido.',
-          icon: Icons.handshake_outlined,
-          chipLabel: 'Negociación Bilateral',
+          icon: Icons.local_offer_outlined,
         ),
         HelpGuideStep(
           stepNumber: 3,
-          title: 'Cierra el Acuerdo y Comprobante',
-          description: 'Al llegar a un acuerdo con el vendedor, se genera automáticamente el comprobante oficial en PDF con número correlativo.',
-          icon: Icons.picture_as_pdf_outlined,
-          chipLabel: 'Comprobante PDF',
+          title: 'Negocia Precio y Condiciones',
+          description: 'Conversa directamente con el vendedor en el chat para ajustar precios por volumen, formas de pago y fecha de entrega.',
+          icon: Icons.forum_outlined,
         ),
         HelpGuideStep(
           stepNumber: 4,
-          title: 'Rastrea los 4 Hitos de Entrega',
-          description: 'Monitorea en tiempo real el avance: Pactado, Cosecha/Preparación, En ruta y Entregado.',
-          icon: Icons.local_shipping_outlined,
-          chipLabel: 'Trazabilidad',
+          title: 'Cierra el Acuerdo y Comprobante',
+          description: 'Al llegar a un acuerdo con el vendedor, se genera automáticamente el comprobante oficial en PDF con número correlativo.',
+          icon: Icons.picture_as_pdf_outlined,
         ),
       ],
-      primaryActionLabel: 'Explorar Mapa de Productores',
-      onPrimaryAction: () {
-        Navigator.pop(context);
-        context.push('/providers-map');
-      },
-      secondaryActionLabel: 'Ver Mis Pedidos',
-      onSecondaryAction: () {
-        Navigator.pop(context);
-        context.push('/order-history');
-      },
     );
   }
 
@@ -150,49 +135,34 @@ class HelpGuideModal extends StatelessWidget {
       title: 'Guía para Vendedores',
       subtitle: 'Publica tus cosechas con inteligencia de precios, gestiona ofertas y formaliza acuerdos.',
       headerIcon: Icons.storefront_rounded,
-      badgeText: 'Proceso de Venta',
-      accentColor: const Color(0xFF0C6648),
-      flowBadges: ['1. Publicar', '2. Contraofertar', '3. Facturar', '4. Fidelizar'],
+      accentColor: const Color(0xFF016042),
+      flowBadges: ['1. Publicar', '2. Contraofertar', '3. Negociar', '4. Facturar'],
       steps: const [
         HelpGuideStep(
           stepNumber: 1,
           title: 'Publica con Catálogo Estandarizado',
           description: 'Elige tu producto del catálogo oficial. La app te sugerirá precios de mercado mayorista y minorista de referencia.',
           icon: Icons.add_business_outlined,
-          chipLabel: 'Precios Inteligentes',
         ),
         HelpGuideStep(
           stepNumber: 2,
           title: 'Gestiona Ofertas y Contraofertas',
           description: 'Revisa las propuestas de los compradores en la pestaña de Negociaciones. Puedes aceptar de inmediato o enviar una contrapropuesta.',
           icon: Icons.swap_horiz_rounded,
-          chipLabel: 'Trato Directo',
         ),
         HelpGuideStep(
           stepNumber: 3,
-          title: 'Genera el Comprobante Oficial',
-          description: 'Cada trato cerrado cuenta con un comprobante formal con tus datos fiscales/comerciales, subtotal, descuentos y total neto.',
-          icon: Icons.receipt_long_outlined,
-          chipLabel: 'Factura Oficial',
+          title: 'Negocia Precios y Condiciones',
+          description: 'Coordina directamente con el comprador en el chat para ajustar cantidades, precios acordados y la logística de entrega.',
+          icon: Icons.forum_outlined,
         ),
         HelpGuideStep(
           stepNumber: 4,
-          title: 'Ofertas Relámpago y Cupones',
-          description: 'Acelera tus salidas de inventario creando ofertas con tiempo limitado y cupones de fidelización desde tu panel.',
-          icon: Icons.bolt_outlined,
-          chipLabel: 'Herramientas Pro',
+          title: 'Factura y Emite el Comprobante',
+          description: 'Cada trato cerrado cuenta con un comprobante formal con tus datos fiscales/comerciales, subtotal, descuentos y total neto.',
+          icon: Icons.receipt_long_outlined,
         ),
       ],
-      primaryActionLabel: 'Publicar un Producto',
-      onPrimaryAction: () {
-        Navigator.pop(context);
-        context.push('/add-product');
-      },
-      secondaryActionLabel: 'Ver Mis Negociaciones',
-      onSecondaryAction: () {
-        Navigator.pop(context);
-        context.push('/negotiations');
-      },
     );
   }
 
@@ -203,49 +173,33 @@ class HelpGuideModal extends StatelessWidget {
       title: 'Seguridad y Denuncias',
       subtitle: 'Garantías de confianza, verificación comercial y protección para todos los miembros.',
       headerIcon: Icons.gpp_maybe_rounded,
-      badgeText: 'Confianza Mercadito',
-      accentColor: const Color(0xFF0F766E),
-      flowBadges: ['1. Verificación', '2. Folio Oficial', '3. Protección 2FA', '4. Denuncias'],
+      accentColor: const Color(0xFF016042),
       steps: const [
         HelpGuideStep(
           stepNumber: 1,
           title: 'Verificación de Identidad y Negocio',
           description: 'Sube tu documento de identidad o RNC en Verificación Comercial para recibir la insignia de verificación que avala tu credibilidad.',
           icon: Icons.verified_user_outlined,
-          chipLabel: 'Sello Verificado',
         ),
         HelpGuideStep(
           stepNumber: 2,
           title: 'Comprobante Oficial Vinculante',
           description: 'Todas las transacciones quedan selladas en un documento PDF con folio único que sirve de respaldo formal entre ambas partes.',
           icon: Icons.policy_outlined,
-          chipLabel: 'Transparencia',
         ),
         HelpGuideStep(
           stepNumber: 3,
           title: 'Seguridad de Cuenta con 2FA',
           description: 'Refuerza tu acceso activando la autenticación de dos factores por SMS, correo electrónico o Google Authenticator.',
           icon: Icons.lock_outline_rounded,
-          chipLabel: 'Acceso Seguro',
         ),
         HelpGuideStep(
           stepNumber: 4,
           title: 'Canal de Denuncias Directo',
           description: 'Si observas fraude, producto en mal estado o incumplimiento de entrega, puedes abrir un reporte formal con pruebas adjuntas.',
           icon: Icons.report_problem_outlined,
-          chipLabel: 'Soporte 24/7',
         ),
       ],
-      primaryActionLabel: 'Verificar mi Negocio',
-      onPrimaryAction: () {
-        Navigator.pop(context);
-        context.push('/business-verification');
-      },
-      secondaryActionLabel: 'Reportar una Incidencia',
-      onSecondaryAction: () {
-        Navigator.pop(context);
-        context.push('/reports');
-      },
     );
   }
 
@@ -256,44 +210,33 @@ class HelpGuideModal extends StatelessWidget {
       title: 'Preguntas Frecuentes',
       subtitle: 'Respuestas directas a las dudas más comunes sobre compras, ventas y seguridad.',
       headerIcon: Icons.quiz_rounded,
-      badgeText: 'Centro de Respuestas',
       accentColor: const Color(0xFF016042),
-      flowBadges: ['Compras', 'Ventas', 'Pagos', 'Garantía'],
       steps: const [
         HelpGuideStep(
           stepNumber: 1,
           title: '¿Tiene algún costo publicar productos?',
           description: 'No, publicar tus cosechas y productos en Mercadito es totalmente libre. Solo acuerdas precios y volúmenes con compradores.',
           icon: Icons.money_off_csred_outlined,
-          chipLabel: 'Sin comisiones ocultas',
         ),
         HelpGuideStep(
           stepNumber: 2,
           title: '¿Qué significa la calidad 1ra, 2da y 3ra?',
           description: '1ra es calidad premium estética; 2da tiene pequeñas imperfecciones visuales con el mismo sabor; 3ra es para procesamiento o jugos.',
           icon: Icons.eco_outlined,
-          chipLabel: 'Estándar Dominicano',
         ),
         HelpGuideStep(
           stepNumber: 3,
           title: '¿Cómo se garantiza la entrega del producto?',
           description: 'Cada trato cerrado incluye un comprobante PDF con datos del productor y comprador, además de un seguimiento de 4 hitos.',
           icon: Icons.verified_outlined,
-          chipLabel: 'Respaldo Legal',
         ),
         HelpGuideStep(
           stepNumber: 4,
           title: '¿Puedo solicitar una muestra antes de compras grandes?',
           description: 'Sí, a través del chat puedes acordar con el productor el envío de un lote de muestra previo a cerrar compras por volumen.',
           icon: Icons.chat_bubble_outline_rounded,
-          chipLabel: 'Chat Bilateral',
         ),
       ],
-      primaryActionLabel: 'Explorar Mercado',
-      onPrimaryAction: () {
-        Navigator.pop(context);
-        context.push('/search');
-      },
     );
   }
 
@@ -364,27 +307,29 @@ class HelpGuideModal extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                    decoration: BoxDecoration(
-                                      color: accentColor.withValues(alpha: 0.15),
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: Text(
-                                      badgeText.toUpperCase(),
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w800,
-                                        color: accentColor,
-                                        letterSpacing: 0.8,
+                              if (badgeText != null && badgeText!.trim().isNotEmpty) ...[
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: accentColor.withValues(alpha: 0.15),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Text(
+                                        badgeText!.toUpperCase(),
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w800,
+                                          color: accentColor,
+                                          letterSpacing: 0.8,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 4),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                              ],
                               Text(
                                 title,
                                 style: GoogleFonts.plusJakartaSans(

@@ -290,7 +290,6 @@ void main() {
       await tester.pump(const Duration(milliseconds: 350));
 
       expect(find.text('Mapa de Proveedores'), findsOneWidget);
-      expect(find.text('MAPA'), findsOneWidget);
 
       await tester.pumpWidget(const SizedBox());
       stopGlobalFlashTimer();

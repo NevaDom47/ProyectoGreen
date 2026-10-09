@@ -136,7 +136,7 @@ class _BuyerOnboardingScreenState extends State<BuyerOnboardingScreen> {
           builder: (context, setModalState) {
             final isDark = Theme.of(context).brightness == Brightness.dark;
             final cardBg = isDark ? const Color(0xFF1E2220) : Colors.white;
-            final primary = isDark ? const Color(0xFF8BD8B2) : _colorPrimary;
+            final primary = isDark ? const Color(0xFF80C652) : _colorPrimary;
             final actualTextVariant = isDark ? const Color(0xFF90A397) : _colorOnSurfaceVariant;
             
             String query = '';
@@ -503,7 +503,7 @@ class _BuyerOnboardingScreenState extends State<BuyerOnboardingScreen> {
     final actualBg = isDarkMode ? const Color(0xFF121814) : _colorBackground;
     final actualCardBg = isDarkMode ? const Color(0xFF1E2621) : _colorSurfaceCard;
     final actualTextVariant = isDarkMode ? const Color(0xFF90A397) : _colorOnSurfaceVariant;
-    final actualPrimary = isDarkMode ? const Color(0xFF8BD8B2) : _colorPrimary;
+    final actualPrimary = isDarkMode ? const Color(0xFF80C652) : _colorPrimary;
 
     return Scaffold(
       backgroundColor: actualBg,

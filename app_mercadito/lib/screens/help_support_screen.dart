@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../widgets/help_guide_modal.dart';
 
 class HelpSupportScreen extends StatelessWidget {
@@ -90,69 +91,85 @@ class HelpSupportScreen extends StatelessWidget {
             ),
             const SizedBox(height: 18),
 
-            // Opción 1: Chat asistido en la app
+            // Opción 1: Línea directa WhatsApp
             _buildContactOption(
-              icon: Icons.chat_bubble_outline_rounded,
-              title: 'Chat con Asesor en la App',
-              subtitle: 'Atención técnica y comercial en tiempo real',
+              icon: Icons.chat_rounded,
+              title: 'Línea Directa WhatsApp',
+              subtitle: '+1 (829) 942-1923 • Chatear ahora',
               cardBg: cardBg,
               borderColor: borderColor,
               textHeader: textHeader,
               subtext: subtext,
-              primaryColor: primaryColor,
-              onTap: () {
+              primaryColor: const Color(0xFF25D366),
+              onTap: () async {
                 Navigator.pop(ctx);
-                context.push('/chat-detail', extra: {
-                  'name': 'Soporte Técnico Mercadito',
-                  'id': 'SUPPORT_ADMIN',
-                  'role': 'soporte',
-                });
-              },
-            ),
-
-            const SizedBox(height: 10),
-
-            // Opción 2: Línea telefónica y WhatsApp
-            _buildContactOption(
-              icon: Icons.phone_in_talk_outlined,
-              title: 'Línea Directa / WhatsApp',
-              subtitle: '+1 (829) 942-1923 (Toca para copiar)',
-              cardBg: cardBg,
-              borderColor: borderColor,
-              textHeader: textHeader,
-              subtext: subtext,
-              primaryColor: primaryColor,
-              onTap: () {
-                Clipboard.setData(const ClipboardData(text: '+18299421923'));
-                Navigator.pop(ctx);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Número de Soporte copiado al portapapeles (+1 829-942-1923)',
-                      style: GoogleFonts.plusJakartaSans(),
-                    ),
-                    backgroundColor: primaryColor,
-                    duration: const Duration(seconds: 3),
-                  ),
+                final uri = Uri.parse(
+                  'https://wa.me/18299421923?text=${Uri.encodeComponent('Hola, necesito asistencia con App Mercadito.')}',
                 );
+                try {
+                  if (await canLaunchUrl(uri)) {
+                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  } else {
+                    await launchUrl(uri);
+                  }
+                } catch (_) {
+                  Clipboard.setData(const ClipboardData(text: '+18299421923'));
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Número de WhatsApp copiado (+1 829-942-1923)',
+                          style: GoogleFonts.plusJakartaSans(),
+                        ),
+                        backgroundColor: primaryColor,
+                        duration: const Duration(seconds: 3),
+                      ),
+                    );
+                  }
+                }
               },
             ),
 
             const SizedBox(height: 10),
 
-            // Opción 3: Canal formal de denuncias
+            // Opción 2: Correo electrónico
             _buildContactOption(
-              icon: Icons.shield_outlined,
-              title: 'Centro de Denuncias y Reportes',
-              subtitle: 'Informa sobre incumplimientos, fraudes o anomalías',
+              icon: Icons.mail_outline_rounded,
+              title: 'Correo Electrónico',
+              subtitle: 'contacto@diaztecnologies.com • Redactar correo',
               cardBg: cardBg,
               borderColor: borderColor,
               textHeader: textHeader,
               subtext: subtext,
-              primaryColor: const Color(0xFFDC2626),
-              onTap: () {
+              primaryColor: primaryColor,
+              onTap: () async {
                 Navigator.pop(ctx);
-                context.push('/reports');
+                final uri = Uri(
+                  scheme: 'mailto',
+                  path: 'contacto@diaztecnologies.com',
+                  query: 'subject=${Uri.encodeComponent('Soporte App Mercadito')}',
+                );
+                try {
+                  if (await canLaunchUrl(uri)) {
+                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  } else {
+                    await launchUrl(uri);
+                  }
+                } catch (_) {
+                  Clipboard.setData(const ClipboardData(text: 'contacto@diaztecnologies.com'));
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Correo copiado al portapapeles (contacto@diaztecnologies.com)',
+                          style: GoogleFonts.plusJakartaSans(),
+                        ),
+                        backgroundColor: primaryColor,
+                        duration: const Duration(seconds: 3),
+                      ),
+                    );
+                  }
+                }
               },
             ),
           ],
@@ -247,9 +264,30 @@ class HelpSupportScreen extends StatelessWidget {
         backgroundColor: bgColor.withValues(alpha: 0.8),
         elevation: 0,
         scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: primaryColor),
-          onPressed: () => context.pop(),
+        leading: Center(
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF2D402A) : primaryColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              icon: Icon(
+                Icons.arrow_back,
+                color: isDark ? const Color(0xFF80C652) : primaryColor,
+                size: 20,
+              ),
+              onPressed: () {
+                if (context.canPop()) {
+                  context.pop();
+                } else {
+                  context.go('/settings');
+                }
+              },
+            ),
+          ),
         ),
         title: Text(
           'Ayuda y Soporte',
@@ -355,14 +393,10 @@ class HelpSupportScreen extends StatelessWidget {
                       answer:
                           'Puedes usar la función de "Oferta" directamente en el chat con el vendedor para proponer un precio justo basado en el volumen de compra.',
                       steps: const [
-                        '1. Toca "Negociar / Ofertar" en el producto o chat.',
-                        '2. Propón el volumen (kg/lb) y tu precio unitario.',
-                        '3. Al acordar, se genera el comprobante PDF oficial.',
+                        '1. Agregar al carrito el producto.',
+                        '2. Presionar Negociar.',
+                        '3. Chat con el proveedor para acordar un precio.',
                       ],
-                      actionLabel: 'Ir a Mis Negociaciones',
-                      onAction: () => context.push('/negotiations'),
-                      guideLabel: 'Ver Guía Completa de Compra',
-                      onGuide: () => HelpGuideModal.showBuyerGuide(context),
                       primaryColor: primaryColor,
                       surfaceColor: surfaceColor,
                       isDark: isDark,
@@ -370,34 +404,12 @@ class HelpSupportScreen extends StatelessWidget {
 
                     const SizedBox(height: 12),
 
-                    // Consulta 2: ¿Cómo rastrear mi pedido?
-                    _buildDetailedFaqTile(
-                      context: context,
-                      question: '¿Cómo rastrear mi pedido?',
-                      answer:
-                          'En la sección "Mis Pedidos", selecciona el acuerdo activo para ver la trazabilidad de los 4 hitos en tiempo real.',
-                      steps: const [
-                        '1. Entra a "Historial de Pedidos" desde tu perfil.',
-                        '2. Selecciona el pedido con estado "En preparación" o "En ruta".',
-                        '3. Visualiza la línea de tiempo: Pactado ➔ Cosechado ➔ En camino ➔ Entregado.',
-                      ],
-                      actionLabel: 'Ver Historial de Pedidos',
-                      onAction: () => context.push('/order-history'),
-                      guideLabel: 'Ver Guía de Trazabilidad',
-                      onGuide: () => HelpGuideModal.showBuyerGuide(context),
-                      primaryColor: primaryColor,
-                      surfaceColor: surfaceColor,
-                      isDark: isDark,
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    // Consulta 3: Métodos de pago aceptados
+                    // Consulta: Métodos de pago aceptados
                     _buildDetailedFaqTile(
                       context: context,
                       question: 'Métodos de pago aceptados',
                       answer:
-                          'Aceptamos transferencias bancarias directas, tarjetas de débito/crédito y pagos en efectivo contra entrega acordada.',
+                          'El método de pago será definido por el proveedor para dicho producto.',
                       steps: const [
                         '🏦 Transferencia bancaria (adjuntas comprobante de depósito).',
                         '💳 Tarjeta débito o crédito (procesamiento seguro e inmediato).',
@@ -405,10 +417,6 @@ class HelpSupportScreen extends StatelessWidget {
                       ],
                       extraNote:
                           '🛡️ Toda transacción está respaldada por el Comprobante Oficial en PDF con N° correlativo.',
-                      actionLabel: 'Ver Políticas Comerciales',
-                      onAction: () => context.push('/legal-policies'),
-                      guideLabel: 'Ver Garantías de Seguridad',
-                      onGuide: () => HelpGuideModal.showSecurityGuide(context),
                       primaryColor: primaryColor,
                       surfaceColor: surfaceColor,
                       isDark: isDark,
@@ -416,21 +424,17 @@ class HelpSupportScreen extends StatelessWidget {
 
                     const SizedBox(height: 12),
 
-                    // Consulta 4: ¿Cómo descargar el comprobante oficial?
+                    // Consulta: ¿Cómo descargar el comprobante oficial?
                     _buildDetailedFaqTile(
                       context: context,
-                      question: '¿Cómo descargar el comprobante de un trato?',
+                      question: '¿Cómo descargar el comprobante de una negociación?',
                       answer:
                           'Al concluir cualquier negociación, se emite un comprobante formal con los datos del proveedor, comprador, precios y totales.',
                       steps: const [
-                        '1. Ingresa a "Negociaciones" y selecciona el trato cerrado.',
+                        '1. Ingresa a "Negociaciones" y selecciona la negociación cerrada.',
                         '2. Presiona el botón verde "COMPROBANTE" o el icono de previsualización.',
                         '3. Guarda o imprime el documento PDF directamente en tu teléfono.',
                       ],
-                      actionLabel: 'Ver Mis Negociaciones',
-                      onAction: () => context.push('/negotiations'),
-                      guideLabel: 'Ver Guía de Venta y Factura',
-                      onGuide: () => HelpGuideModal.showSellerGuide(context),
                       primaryColor: primaryColor,
                       surfaceColor: surfaceColor,
                       isDark: isDark,
@@ -641,10 +645,14 @@ class HelpSupportScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: primaryColor.withValues(alpha: 0.1),
+                    color: isDark ? const Color(0xFF2D402A) : primaryColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Icon(icon, color: primaryColor, size: 20),
+                  child: Icon(
+                    icon,
+                    color: isDark ? const Color(0xFF80C652) : primaryColor,
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -654,6 +662,7 @@ class HelpSupportScreen extends StatelessWidget {
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                       height: 1.25,
+                      color: isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A),
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -673,22 +682,24 @@ class HelpSupportScreen extends StatelessWidget {
     required String answer,
     required List<String> steps,
     String? extraNote,
-    required String actionLabel,
-    required VoidCallback onAction,
+    String? actionLabel,
+    VoidCallback? onAction,
     String? guideLabel,
     VoidCallback? onGuide,
     required Color primaryColor,
     required Color surfaceColor,
     required bool isDark,
   }) {
-    final subtext = isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569);
-    final borderColor = isDark ? Colors.white.withValues(alpha: 0.08) : const Color(0xFFE2E8F0);
+    final cardBg = isDark ? const Color(0xFF1F2924) : surfaceColor;
+    final questionTextColor = isDark ? const Color(0xFFAAB7B0) : const Color(0xFF0F172A);
+    final subtext = isDark ? const Color(0xFFAAB7B0) : const Color(0xFF475569);
+    final borderColor = isDark ? const Color(0xFF2D402A).withValues(alpha: 0.5) : const Color(0xFFE2E8F0);
 
     return Container(
       decoration: BoxDecoration(
-        color: surfaceColor,
+        color: cardBg,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: primaryColor.withValues(alpha: 0.08)),
+        border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),
@@ -700,14 +711,17 @@ class HelpSupportScreen extends StatelessWidget {
       child: Theme(
         data: ThemeData(dividerColor: Colors.transparent),
         child: ExpansionTile(
-          iconColor: primaryColor,
-          collapsedIconColor: primaryColor,
+          iconColor: isDark ? const Color(0xFF80C652) : primaryColor,
+          collapsedIconColor: isDark ? const Color(0xFF80C652) : primaryColor,
+          textColor: questionTextColor,
+          collapsedTextColor: questionTextColor,
           tilePadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
           title: Text(
             question,
             style: GoogleFonts.plusJakartaSans(
               fontSize: 14,
               fontWeight: FontWeight.w600,
+              color: questionTextColor,
             ),
           ),
           children: [
@@ -731,7 +745,7 @@ class HelpSupportScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: isDark ? Colors.white.withValues(alpha: 0.04) : const Color(0xFFF1F5F3),
+                        color: isDark ? const Color(0xFF16211C) : const Color(0xFFF1F5F3),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: borderColor),
                       ),
@@ -740,14 +754,14 @@ class HelpSupportScreen extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.bolt_rounded, size: 14, color: primaryColor),
+                              Icon(Icons.bolt_rounded, size: 14, color: isDark ? const Color(0xFF80C652) : primaryColor),
                               const SizedBox(width: 6),
                               Text(
                                 'PASOS RÁPIDOS:',
                                 style: GoogleFonts.plusJakartaSans(
                                   fontSize: 10,
                                   fontWeight: FontWeight.w800,
-                                  color: primaryColor,
+                                  color: isDark ? const Color(0xFF80C652) : primaryColor,
                                   letterSpacing: 0.5,
                                 ),
                               ),
@@ -759,7 +773,7 @@ class HelpSupportScreen extends StatelessWidget {
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Icon(Icons.check_circle_outline_rounded, size: 14, color: primaryColor),
+                                    Icon(Icons.check_circle_outline_rounded, size: 14, color: isDark ? const Color(0xFF80C652) : primaryColor),
                                     const SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
@@ -767,7 +781,7 @@ class HelpSupportScreen extends StatelessWidget {
                                         style: GoogleFonts.plusJakartaSans(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w500,
-                                          color: isDark ? const Color(0xFFCBD5E1) : const Color(0xFF334155),
+                                          color: isDark ? const Color(0xFFAAB7B0) : const Color(0xFF334155),
                                           height: 1.35,
                                         ),
                                       ),
@@ -787,56 +801,58 @@ class HelpSupportScreen extends StatelessWidget {
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
-                        color: primaryColor,
+                        color: isDark ? const Color(0xFF80C652) : primaryColor,
                       ),
                     ),
                   ],
 
-                  const SizedBox(height: 14),
-
                   // Fila de acciones funcionales
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: onAction,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColor,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            elevation: 0,
-                          ),
-                          child: Text(
-                            actionLabel,
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                      if (guideLabel != null && onGuide != null) ...[
-                        const SizedBox(width: 8),
-                        TextButton(
-                          onPressed: onGuide,
-                          style: TextButton.styleFrom(
-                            foregroundColor: primaryColor,
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                          ),
-                          child: Text(
-                            'Ver guía',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
+                  if ((actionLabel != null && onAction != null) || (guideLabel != null && onGuide != null)) ...[
+                    const SizedBox(height: 14),
+                    Row(
+                      children: [
+                        if (actionLabel != null && onAction != null)
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: onAction,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: primaryColor,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                elevation: 0,
+                              ),
+                              child: Text(
+                                actionLabel,
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                        if (guideLabel != null && onGuide != null) ...[
+                          if (actionLabel != null && onAction != null) const SizedBox(width: 8),
+                          TextButton(
+                            onPressed: onGuide,
+                            style: TextButton.styleFrom(
+                              foregroundColor: primaryColor,
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                            ),
+                            child: Text(
+                              'Ver guía',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ],
                       ],
-                    ],
-                  ),
+                    ),
+                  ],
                 ],
               ),
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import '../theme/app_theme.dart';
 
@@ -13,10 +14,12 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late final AnimationController _controller;
+  late final AnimationController _pulseController;
   late final Animation<double> _fadeAnimation;
   late final Animation<double> _scaleAnimation;
+  late final Animation<double> _pulseAnimation;
   late final Animation<double> _textFadeAnimation;
   late final Animation<Offset> _textSlideAnimation;
   late final Animation<double> _progressAnimation;
@@ -29,18 +32,31 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2600),
+      duration: const Duration(milliseconds: 2800),
     );
+
+    // Animación continua de latidos / respiración (+zoom y -zoom lento)
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+    )..repeat(reverse: true);
 
     _fadeAnimation = CurvedAnimation(
       parent: _controller,
       curve: const Interval(0.0, 0.45, curve: Curves.easeOut),
     );
 
-    _scaleAnimation = Tween<double>(begin: 0.78, end: 1.0).animate(
+    _scaleAnimation = Tween<double>(begin: 0.85, end: 1.0).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.0, 0.55, curve: Curves.easeOutBack),
+        curve: const Interval(0.0, 0.50, curve: Curves.easeOutBack),
+      ),
+    );
+
+    _pulseAnimation = Tween<double>(begin: 0.96, end: 1.06).animate(
+      CurvedAnimation(
+        parent: _pulseController,
+        curve: Curves.easeInOut,
       ),
     );
 
@@ -84,6 +100,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void dispose() {
     _controller.dispose();
+    _pulseController.dispose();
     super.dispose();
   }
 
@@ -91,7 +108,6 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     final isDark = AppTheme.isDark(context);
     final primaryColor = AppTheme.getPrimaryColor(context);
-    final textColor = AppTheme.getTextColor(context);
     final secondaryTextColor = AppTheme.getSecondaryTextColor(context);
 
     // Fondo con gradiente sutil y armónico según el modo activo
@@ -151,62 +167,56 @@ class _SplashScreenState extends State<SplashScreen>
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Animación de entrada del Logo con resplandor suave
+                          // Animación del Logo con entrada y latido continuo (+zoom / -zoom lento)
                           AnimatedBuilder(
-                            animation: _controller,
+                            animation: Listenable.merge([_controller, _pulseController]),
                             builder: (context, child) {
                               return FadeTransition(
                                 opacity: _fadeAnimation,
                                 child: ScaleTransition(
                                   scale: _scaleAnimation,
-                                  child: child,
+                                  child: ScaleTransition(
+                                    scale: _pulseAnimation,
+                                    child: child,
+                                  ),
                                 ),
                               );
                             },
-                            child: Container(
-                              width: 140,
-                              height: 140,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(36),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: primaryColor.withValues(alpha: isDark ? 0.35 : 0.22),
-                                    blurRadius: 32,
-                                    spreadRadius: 4,
-                                    offset: const Offset(0, 10),
-                                  ),
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.08),
-                                    blurRadius: 16,
-                                    offset: const Offset(0, 6),
-                                  ),
-                                ],
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(36),
-                                child: Image.asset(
-                                  'assets/images/el_mercadito_logo.png',
-                                  width: 140,
-                                  height: 140,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) => Container(
-                                    width: 140,
-                                    height: 140,
-                                    color: primaryColor.withValues(alpha: 0.12),
-                                    child: Icon(
-                                      Icons.storefront_rounded,
-                                      size: 64,
-                                      color: primaryColor,
-                                    ),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                // Resplandor verde suave de fondo que acompaña el latido
+                                Container(
+                                  width: 220,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: primaryColor.withValues(
+                                          alpha: isDark ? 0.35 : 0.20,
+                                        ),
+                                        blurRadius: 40,
+                                        spreadRadius: 6,
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ),
+                                SvgPicture.asset(
+                                  isDark
+                                      ? 'assets/images/logos/logo_horizontal_blanco.svg'
+                                      : 'assets/images/logos/logo_horizontal_color.svg',
+                                  width: 270,
+                                  fit: BoxFit.contain,
+                                  semanticsLabel: 'El Mercadito',
+                                ),
+                              ],
                             ),
                           ),
 
-                          const SizedBox(height: 32),
+                          const SizedBox(height: 24),
 
-                          // Título y lema con Fade y Slide suave
+                          // Lema y valor diferencial con Fade y Slide suave
                           AnimatedBuilder(
                             animation: _controller,
                             builder: (context, child) {
@@ -220,16 +230,6 @@ class _SplashScreenState extends State<SplashScreen>
                             },
                             child: Column(
                               children: [
-                                Text(
-                                  'El Mercadito',
-                                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.5,
-                                        color: textColor,
-                                      ),
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 10),
                                 Text(
                                   'Accede a la frescura del campo en un clic',
                                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(

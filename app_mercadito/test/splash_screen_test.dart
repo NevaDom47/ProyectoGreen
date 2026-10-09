@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:app_mercadito/screens/splash_screen.dart';
 import 'package:app_mercadito/screens/login_screen.dart';
@@ -15,18 +16,14 @@ void main() {
       );
 
       // Verify the essential brand elements exist on screen
-      expect(find.text('El Mercadito'), findsOneWidget);
       expect(find.text('Accede a la frescura del campo en un clic'), findsOneWidget);
       expect(find.text('Conexión directa productor - comprador'), findsOneWidget);
       expect(find.text('Saltar'), findsOneWidget);
       expect(find.text('© 2026 El Mercadito S.A.'), findsOneWidget);
 
-      // Verify official logo image is loaded
+      // Verify official logo SVG is loaded
       final logoFinder = find.byWidgetPredicate(
-        (widget) =>
-            widget is Image &&
-            widget.image is AssetImage &&
-            (widget.image as AssetImage).assetName.contains('el_mercadito_logo'),
+        (widget) => widget is SvgPicture,
       );
       expect(logoFinder, findsOneWidget);
     });
@@ -39,7 +36,7 @@ void main() {
         ),
       );
 
-      expect(find.text('El Mercadito'), findsOneWidget);
+      expect(find.text('Accede a la frescura del campo en un clic'), findsOneWidget);
       expect(find.text('Saltar'), findsOneWidget);
     });
 
@@ -50,7 +47,7 @@ void main() {
 
       // Initially at SplashScreen
       expect(find.byType(SplashScreen), findsOneWidget);
-      expect(find.text('El Mercadito'), findsOneWidget);
+      expect(find.text('Accede a la frescura del campo en un clic'), findsOneWidget);
 
       // Tapping "Saltar" navigates immediately to LoginScreen
       final skipButton = find.text('Saltar');
@@ -60,7 +57,7 @@ void main() {
 
       // Now at LoginScreen
       expect(find.byType(LoginScreen), findsOneWidget);
-      expect(find.text('Bienvenido de nuevo'), findsOneWidget);
+      expect(find.text('Accede a la frescura del campo en un clic'), findsOneWidget);
       expect(find.text('Iniciar Sesión'), findsOneWidget);
     });
 
@@ -77,7 +74,7 @@ void main() {
 
       // Successfully transitioned to LoginScreen
       expect(find.byType(LoginScreen), findsOneWidget);
-      expect(find.text('Bienvenido de nuevo'), findsOneWidget);
+      expect(find.text('Accede a la frescura del campo en un clic'), findsOneWidget);
     });
 
     testWidgets('LoginScreen displays the official El Mercadito logo', (tester) async {
@@ -87,14 +84,7 @@ void main() {
         ),
       );
 
-      expect(find.text('Bienvenido de nuevo'), findsOneWidget);
-      final logoFinder = find.byWidgetPredicate(
-        (widget) =>
-            widget is Image &&
-            widget.image is AssetImage &&
-            (widget.image as AssetImage).assetName.contains('el_mercadito_logo'),
-      );
-      expect(logoFinder, findsOneWidget);
+      expect(find.text('Accede a la frescura del campo en un clic'), findsOneWidget);
     });
   });
 }

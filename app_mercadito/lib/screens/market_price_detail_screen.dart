@@ -18,12 +18,14 @@ class _ChartPainter extends CustomPainter {
   final double progress;
   final double? touchXNorm;
   final Color lineColor;
+  final bool isDark;
 
   const _ChartPainter({
     required this.values,
     required this.progress,
     this.touchXNorm,
     required this.lineColor,
+    this.isDark = false,
   });
 
   @override
@@ -63,7 +65,7 @@ class _ChartPainter extends CustomPainter {
 
     // --- Grid lines ---
     final gridPaint = Paint()
-      ..color = const Color(0xFFE5EEFF)
+      ..color = isDark ? const Color(0xFF2A3D34) : const Color(0xFFE5EEFF)
       ..strokeWidth = 1;
     for (int i = 1; i <= 4; i++) {
       final y = size.height * i / 5;
@@ -119,7 +121,7 @@ class _ChartPainter extends CustomPainter {
     for (int i = 0; i < n; i++) {
       final o = pt(i);
       if (o.dx > size.width * progress + 2) break;
-      canvas.drawCircle(o, 3.5, Paint()..color = Colors.white);
+      canvas.drawCircle(o, 3.5, Paint()..color = isDark ? const Color(0xFF1F2924) : Colors.white);
       canvas.drawCircle(
         o,
         3.5,
@@ -155,7 +157,7 @@ class _ChartPainter extends CustomPainter {
         8,
         Paint()..color = lineColor.withValues(alpha: 0.15),
       );
-      canvas.drawCircle(touchedPt, 6, Paint()..color = Colors.white);
+      canvas.drawCircle(touchedPt, 6, Paint()..color = isDark ? const Color(0xFF1F2924) : Colors.white);
       canvas.drawCircle(
         touchedPt,
         6,
@@ -173,7 +175,8 @@ class _ChartPainter extends CustomPainter {
       old.progress != progress ||
       old.touchXNorm != touchXNorm ||
       old.values != values ||
-      old.lineColor != lineColor;
+      old.lineColor != lineColor ||
+      old.isDark != isDark;
 }
 
 // ============================================================
@@ -198,20 +201,22 @@ class MarketPriceDetailScreen extends StatefulWidget {
 
 class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
     with TickerProviderStateMixin {
-  // --- Palette ---
-  static const _primary = Color(0xFF004532);
-  static const _primaryContainer = Color(0xFF065F46);
-  static const _primaryFixed = Color(0xFFA6F2D1);
-  static const _surfaceContainerLowest = Color(0xFFFFFFFF);
-  static const _surfaceContainerHigh = Color(0xFFDFE9FA);
-  static const _outlineVariant = Color(0xFFBEC9C2);
-  static const _onSurface = Color(0xFF121C28);
-  static const _onSurfaceVariant = Color(0xFF3F4944);
-  static const _error = Color(0xFFBA1A1A);
-  static const _errorContainer = Color(0xFFFFDAD6);
-  static const _onErrorContainer = Color(0xFF93000A);
-  static const _background = Color(0xFFF8F9FF);
-  static const _surfaceVariant = Color(0xFFD9E3F4);
+  // --- Palette (supports dark and light mode dynamically) ---
+  bool get _isDark => Theme.of(context).brightness == Brightness.dark;
+
+  Color get _primary => _isDark ? const Color(0xFF80C652) : const Color(0xFF004532);
+  Color get _primaryContainer => _isDark ? const Color(0xFF2D402A) : const Color(0xFF065F46);
+  Color get _primaryFixed => _isDark ? const Color(0xFF2D402A) : const Color(0xFFA6F2D1);
+  Color get _surfaceContainerLowest => _isDark ? const Color(0xFF1F2924) : const Color(0xFFFFFFFF);
+  Color get _surfaceContainerHigh => _isDark ? const Color(0xFF24352C) : const Color(0xFFDFE9FA);
+  Color get _outlineVariant => _isDark ? const Color(0xFF2A3D34) : const Color(0xFFBEC9C2);
+  Color get _onSurface => _isDark ? Colors.white : const Color(0xFF121C28);
+  Color get _onSurfaceVariant => _isDark ? const Color(0xFFAAB7B0) : const Color(0xFF3F4944);
+  Color get _error => _isDark ? const Color(0xFFF87171) : const Color(0xFFBA1A1A);
+  Color get _errorContainer => _isDark ? const Color(0xFF451A1A) : const Color(0xFFFFDAD6);
+  Color get _onErrorContainer => _isDark ? const Color(0xFFFCA5A5) : const Color(0xFF93000A);
+  Color get _background => _isDark ? const Color(0xFF0F1C18) : const Color(0xFFF8F9FF);
+  Color get _surfaceVariant => _isDark ? const Color(0xFF192B23) : const Color(0xFFD9E3F4);
 
   static const _marketFullNames = [
     'Merca Santo Domingo',
@@ -350,7 +355,19 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
   List<double> get _currentValues =>
       _allData[_marketFullNames[_selectedMarketIndex]]![_selectedRange]!;
 
-  Color get _selectedMarketColor => _marketColors[_selectedMarketIndex];
+  Color get _selectedMarketColor {
+    if (_isDark) {
+      const darkColors = [
+        Color(0xFF80C652), // green
+        Color(0xFF38BDF8), // teal
+        Color(0xFFFBBF24), // amber
+        Color(0xFFF87171), // red
+        Color(0xFFA78BFA), // indigo/purple
+      ];
+      return darkColors[_selectedMarketIndex.clamp(0, darkColors.length - 1)];
+    }
+    return _marketColors[_selectedMarketIndex.clamp(0, _marketColors.length - 1)];
+  }
 
   double _getMarketDisplayPrice(int i) {
     final vals = _allData[_marketFullNames[i]]![_selectedRange]!;
@@ -492,13 +509,21 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
       firstDate: DateTime.now().subtract(const Duration(days: 365)),
       lastDate: DateTime.now(),
       builder: (ctx, child) {
+        final isDarkPicker = Theme.of(ctx).brightness == Brightness.dark;
         return Theme(
           data: Theme.of(ctx).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: _primaryContainer,
-              onPrimary: Colors.white,
-              surface: _surfaceContainerLowest,
-            ),
+            colorScheme: isDarkPicker
+                ? const ColorScheme.dark(
+                    primary: Color(0xFF80C652),
+                    onPrimary: Color(0xFF0F172A),
+                    surface: Color(0xFF1F2924),
+                    onSurface: Colors.white,
+                  )
+                : const ColorScheme.light(
+                    primary: Color(0xFF065F46),
+                    onPrimary: Colors.white,
+                    surface: Colors.white,
+                  ),
           ),
           child: child!,
         );
@@ -540,7 +565,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: _primary),
+          icon: Icon(Icons.arrow_back_rounded, color: _primary),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -614,9 +639,9 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
       backgroundColor: Colors.transparent,
       builder: (ctx) {
         return Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: _surfaceContainerLowest,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
           padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
           child: Column(
@@ -646,7 +671,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                       color: _primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.help_outline_rounded,
                       color: _primary,
                       size: 24,
@@ -721,7 +746,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                   onPressed: () => Navigator.of(ctx).pop(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _primary,
-                    foregroundColor: Colors.white,
+                    foregroundColor: _isDark ? const Color(0xFF0F172A) : Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -800,7 +825,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
         child: Opacity(opacity: _headerAnimation.value, child: child),
       ),
       child: Material(
-        color: Colors.white,
+        color: _surfaceContainerLowest,
         surfaceTintColor: Colors.transparent,
         borderRadius: BorderRadius.circular(18),
         clipBehavior: Clip.antiAlias,
@@ -810,7 +835,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: _surfaceContainerLowest,
               borderRadius: BorderRadius.circular(18),
               border: Border.all(color: _outlineVariant.withValues(alpha: 0.4)),
             ),
@@ -832,13 +857,13 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                       ? Image.network(
                           imageUrl,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) => const Icon(
+                          errorBuilder: (_, _, _) => Icon(
                             Icons.grain,
                             size: 36,
                             color: _primaryContainer,
                           ),
                         )
-                      : const Icon(
+                      : Icon(
                           Icons.grain,
                           size: 36,
                           color: _primaryContainer,
@@ -905,17 +930,17 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                             ),
                             decoration: BoxDecoration(
                               color: widget.isWholesale
-                                  ? const Color(0xFFE0F2FE)
-                                  : const Color(0xFFDCFCE7),
+                                  ? (_isDark ? const Color(0xFF0C2B3A) : const Color(0xFFE0F2FE))
+                                  : (_isDark ? const Color(0xFF2D402A) : const Color(0xFFDCFCE7)),
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
                                 color: widget.isWholesale
-                                    ? const Color(
-                                        0xFF0284C7,
-                                      ).withValues(alpha: 0.3)
-                                    : const Color(
-                                        0xFF16A34A,
-                                      ).withValues(alpha: 0.3),
+                                    ? (_isDark
+                                        ? const Color(0xFF0284C7).withValues(alpha: 0.4)
+                                        : const Color(0xFF0284C7).withValues(alpha: 0.3))
+                                    : (_isDark
+                                        ? const Color(0xFF80C652).withValues(alpha: 0.4)
+                                        : const Color(0xFF16A34A).withValues(alpha: 0.3)),
                               ),
                             ),
                             child: Row(
@@ -927,8 +952,8 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                                       : Icons.shopping_bag_outlined,
                                   size: 12,
                                   color: widget.isWholesale
-                                      ? const Color(0xFF0369A1)
-                                      : const Color(0xFF15803D),
+                                      ? (_isDark ? const Color(0xFF7DD3FC) : const Color(0xFF0369A1))
+                                      : (_isDark ? const Color(0xFF80C652) : const Color(0xFF15803D)),
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
@@ -939,8 +964,8 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
                                     color: widget.isWholesale
-                                        ? const Color(0xFF0369A1)
-                                        : const Color(0xFF15803D),
+                                        ? (_isDark ? const Color(0xFF7DD3FC) : const Color(0xFF0369A1))
+                                        : (_isDark ? const Color(0xFF80C652) : const Color(0xFF15803D)),
                                   ),
                                 ),
                               ],
@@ -1085,6 +1110,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                                       progress: _chartAnimation.value,
                                       touchXNorm: _touchXNorm,
                                       lineColor: color,
+                                      isDark: _isDark,
                                     ),
                                     size: Size.infinite,
                                   ),
@@ -1226,9 +1252,9 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
       isScrollControlled: true,
       builder: (ctx) {
         return Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: _surfaceContainerLowest,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
           padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
           child: Column(
@@ -1355,6 +1381,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _primary,
+                    foregroundColor: _isDark ? const Color(0xFF0F172A) : Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -1478,7 +1505,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE2E9F9),
+                  color: _isDark ? const Color(0xFF24352D) : const Color(0xFFE2E9F9),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -1486,7 +1513,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                   style: GoogleFonts.jetBrainsMono(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFF3B4858),
+                    color: _isDark ? const Color(0xFFAAB7B0) : const Color(0xFF3B4858),
                   ),
                 ),
               ),
@@ -1590,7 +1617,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
           title: 'MÍNIMO',
           value: '\$${minPrice.toStringAsFixed(2)}',
           subtitle: 'Mínimo del Mes',
-          color: const Color(0xFF065F46),
+          color: _isDark ? const Color(0xFF80C652) : const Color(0xFF065F46),
           icon: Icons.arrow_downward_rounded,
           onTap: () => _showConceptDetailBottomSheet(
             title: 'Precio Mínimo del Mes',
@@ -1599,7 +1626,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
             description:
                 'Es el valor más bajo registrado en el mes actual para $selectedMarket. Te permite visualizar la oferta más económica en este mercado.',
             market: selectedMarket,
-            color: const Color(0xFF065F46),
+            color: _isDark ? const Color(0xFF80C652) : const Color(0xFF065F46),
             icon: Icons.arrow_downward_rounded,
           ),
         ),
@@ -1651,16 +1678,16 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF0F4FA),
+        color: _isDark ? const Color(0xFF16251F) : const Color(0xFFF0F4FA),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: _outlineVariant.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
-          const Icon(
+          Icon(
             Icons.info_outline_rounded,
             size: 18,
-            color: _onSurfaceVariant,
+            color: _isDark ? const Color(0xFF80C652) : _onSurfaceVariant,
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -1770,13 +1797,13 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: isSelected
-              ? _primaryContainer.withValues(alpha: 0.12)
-              : _surfaceVariant.withValues(alpha: 0.5),
+              ? (_isDark ? const Color(0xFF2D402A) : _primaryContainer.withValues(alpha: 0.12))
+              : (_isDark ? const Color(0xFF16251F) : _surfaceVariant.withValues(alpha: 0.5)),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected
-                ? _primaryContainer.withValues(alpha: 0.6)
-                : _outlineVariant.withValues(alpha: 0.4),
+                ? (_isDark ? const Color(0xFF80C652) : _primaryContainer.withValues(alpha: 0.6))
+                : (_isDark ? const Color(0xFF2A3D34) : _outlineVariant.withValues(alpha: 0.4)),
             width: isSelected ? 1.5 : 1,
           ),
         ),
@@ -1786,7 +1813,9 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
             Icon(
               icon,
               size: 14,
-              color: isSelected ? _primaryContainer : _onSurfaceVariant,
+              color: isSelected
+                  ? (_isDark ? const Color(0xFF80C652) : _primaryContainer)
+                  : _onSurfaceVariant,
             ),
             const SizedBox(width: 5),
             Text(
@@ -1794,7 +1823,9 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
               style: GoogleFonts.inter(
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected ? _primaryContainer : _onSurfaceVariant,
+                color: isSelected
+                    ? (_isDark ? const Color(0xFF80C652) : _primaryContainer)
+                    : _onSurfaceVariant,
               ),
             ),
           ],
@@ -1811,9 +1842,15 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: _primaryContainer.withValues(alpha: 0.08),
+          color: _isDark
+              ? const Color(0xFF2D402A)
+              : _primaryContainer.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: _primaryContainer.withValues(alpha: 0.35)),
+          border: Border.all(
+            color: _isDark
+                ? const Color(0xFF80C652).withValues(alpha: 0.5)
+                : _primaryContainer.withValues(alpha: 0.35),
+          ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -1823,14 +1860,14 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
               style: GoogleFonts.jetBrainsMono(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
-                color: _primaryContainer,
+                color: _isDark ? const Color(0xFF80C652) : _primaryContainer,
               ),
             ),
             const SizedBox(width: 4),
-            const Icon(
+            Icon(
               Icons.edit_calendar_rounded,
               size: 13,
-              color: _primaryContainer,
+              color: _isDark ? const Color(0xFF80C652) : _primaryContainer,
             ),
           ],
         ),
@@ -1845,7 +1882,15 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
       child: Row(
         children: List.generate(_marketShortNames.length, (i) {
           final isSelected = _selectedMarketIndex == i;
-          final color = _marketColors[i];
+          final color = _isDark
+              ? const [
+                  Color(0xFF80C652),
+                  Color(0xFF38BDF8),
+                  Color(0xFFFBBF24),
+                  Color(0xFFF87171),
+                  Color(0xFFA78BFA),
+                ][i]
+              : _marketColors[i];
           return Padding(
             padding: EdgeInsets.only(
               right: i < _marketShortNames.length - 1 ? 8 : 0,
@@ -1861,13 +1906,13 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                 ),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? color.withValues(alpha: 0.14)
-                      : _surfaceVariant.withValues(alpha: 0.4),
+                      ? color.withValues(alpha: _isDark ? 0.25 : 0.14)
+                      : (_isDark ? const Color(0xFF16251F) : _surfaceVariant.withValues(alpha: 0.4)),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isSelected
-                        ? color.withValues(alpha: 0.7)
-                        : _outlineVariant.withValues(alpha: 0.35),
+                        ? color.withValues(alpha: _isDark ? 0.85 : 0.7)
+                        : (_isDark ? const Color(0xFF2A3D34) : _outlineVariant.withValues(alpha: 0.35)),
                     width: isSelected ? 1.5 : 1,
                   ),
                 ),
@@ -1962,12 +2007,12 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? const Color(0xFF4F46E5).withValues(alpha: 0.05)
+                    ? const Color(0xFF4F46E5).withValues(alpha: _isDark ? 0.15 : 0.05)
                     : _surfaceContainerLowest,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: isSelected
-                      ? const Color(0xFF4F46E5).withValues(alpha: 0.7)
+                      ? (_isDark ? const Color(0xFFA78BFA) : const Color(0xFF4F46E5)).withValues(alpha: 0.7)
                       : _outlineVariant.withValues(alpha: 0.5),
                   width: isSelected ? 1.5 : 1,
                 ),
@@ -1975,7 +2020,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                   BoxShadow(
                     color: isSelected
                         ? const Color(0xFF4F46E5).withValues(alpha: 0.08)
-                        : Colors.black.withValues(alpha: 0.03),
+                        : Colors.black.withValues(alpha: _isDark ? 0.15 : 0.03),
                     blurRadius: isSelected ? 10 : 6,
                     offset: const Offset(0, 2),
                   ),
@@ -1988,13 +2033,13 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                     width: 38,
                     height: 38,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF4F46E5).withValues(alpha: 0.12),
+                      color: (_isDark ? const Color(0xFFA78BFA) : const Color(0xFF4F46E5)).withValues(alpha: 0.15),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.shopping_cart_rounded,
                       size: 18,
-                      color: Color(0xFF4F46E5),
+                      color: _isDark ? const Color(0xFFA78BFA) : const Color(0xFF4F46E5),
                     ),
                   ),
                   const SizedBox(width: 14),
@@ -2067,7 +2112,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
                         style: GoogleFonts.jetBrainsMono(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: const Color(0xFF4F46E5),
+                          color: _isDark ? const Color(0xFFA78BFA) : const Color(0xFF4F46E5),
                         ),
                       ),
                     ],
@@ -2097,9 +2142,9 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
 
     switch (type) {
       case _EntryType.lowest:
-        priceColor = _primaryContainer;
-        badgeBg = _primaryFixed;
-        badgeIconColor = _primaryContainer;
+        priceColor = _isDark ? const Color(0xFF80C652) : _primaryContainer;
+        badgeBg = _isDark ? const Color(0xFF2D402A) : _primaryFixed;
+        badgeIconColor = _isDark ? const Color(0xFF80C652) : _primaryContainer;
         icon = Icons.arrow_downward_rounded;
         break;
       case _EntryType.stable:
@@ -2109,9 +2154,9 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
         icon = Icons.remove_rounded;
         break;
       case _EntryType.high:
-        priceColor = const Color(0xFF904D00);
-        badgeBg = const Color(0xFFFFEDD5);
-        badgeIconColor = const Color(0xFF904D00);
+        priceColor = _isDark ? const Color(0xFFFBBF24) : const Color(0xFF904D00);
+        badgeBg = _isDark ? const Color(0xFF402E0A) : const Color(0xFFFFEDD5);
+        badgeIconColor = _isDark ? const Color(0xFFFBBF24) : const Color(0xFF904D00);
         icon = Icons.arrow_upward_rounded;
         break;
       case _EntryType.highest:
@@ -2129,7 +2174,7 @@ class _MarketPriceDetailScreenState extends State<MarketPriceDetailScreen>
         curve: Curves.easeOutCubic,
         decoration: BoxDecoration(
           color: isSelected
-              ? priceColor.withValues(alpha: 0.05)
+              ? priceColor.withValues(alpha: _isDark ? 0.15 : 0.05)
               : _surfaceContainerLowest,
           borderRadius: BorderRadius.circular(16),
           border: isHighest

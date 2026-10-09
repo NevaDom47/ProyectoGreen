@@ -13,7 +13,6 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -21,14 +20,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
-  String? _usernameError;
   String? _emailError;
   String? _passwordError;
   String? _confirmPasswordError;
 
   @override
   void dispose() {
-    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -36,20 +33,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _handleRegister() {
-    final username = _usernameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
-    String? uError;
     String? eError;
     String? pError;
     String? cpError;
-
-    // Username is optional; validate if provided
-    if (username.isNotEmpty && username.length > 20) {
-      uError = 'El nombre no puede exceder 20 caracteres.';
-    }
 
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (email.isEmpty) {
@@ -70,9 +60,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       cpError = 'Las contraseñas no coinciden.';
     }
 
-    if (uError != null || eError != null || pError != null || cpError != null) {
+    if (eError != null || pError != null || cpError != null) {
       setState(() {
-        _usernameError = uError;
         _emailError = eError;
         _passwordError = pError;
         _confirmPasswordError = cpError;
@@ -82,7 +71,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     // Save session email and name
     UserSession.email = email;
-    UserSession.fullName = username.isNotEmpty ? username : email.split('@').first;
+    UserSession.fullName = email.split('@').first;
     UserSession.isEmailVerified = false;
 
     // Navigate to email verification screen
@@ -95,10 +84,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final isDark = theme.brightness == Brightness.dark;
     
     final primaryColor = const Color(0xFF016042);
-    final bgColor = isDark ? const Color(0xFF0f231d) : const Color(0xFFf5f8f7);
-    final surfaceColor = isDark ? const Color(0xFF1e293b).withValues(alpha: 0.5) : Colors.white;
-    final textColor = isDark ? Colors.white : const Color(0xFF0f172a); 
-    final hintColor = isDark ? Colors.grey.shade500 : Colors.grey.shade400;
+    final accentGreen = isDark ? const Color(0xFF80C652) : primaryColor;
+    final bgColor = isDark ? const Color(0xFF0F1C18) : const Color(0xFFF5F8F7);
+    final surfaceColor = isDark ? const Color(0xFF1F2924) : Colors.white;
+    final textColor = isDark ? Colors.white : const Color(0xFF0F172A); 
+    final hintColor = isDark ? const Color(0xFF6B7280) : Colors.grey.shade400;
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -109,26 +99,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
             children: [
               // Top Navigation
               Container(
-                padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 22),
                 decoration: BoxDecoration(
                   color: primaryColor,
                   borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(16),
-                    bottomRight: Radius.circular(16),
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.1),
-                      blurRadius: 10,
+                      color: Colors.black.withValues(alpha: 0.12),
+                      blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
                   ],
                 ),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
                       onPressed: () {
                         if (context.canPop()) {
                           context.pop();
@@ -140,44 +130,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     Expanded(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 52,
-                            height: 52,
-                            margin: const EdgeInsets.only(bottom: 8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.18),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: Image.asset(
-                                'assets/images/logos/logo_app_icon.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          const Text(
+                        children: const [
+                          Text(
                             'Crear cuenta nueva',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 20,
+                              fontSize: 22,
                               fontWeight: FontWeight.bold,
                               height: 1.2,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: 4),
                           Text(
                             'Únete a El Mercadito',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 12,
+                              fontSize: 14,
                             ),
                           ),
                         ],
@@ -188,259 +156,195 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               
-              // Banner Image
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Stack(
-                    children: [
-                      Image.network(
-                        'https://lh3.googleusercontent.com/aida-public/AB6AXuAYjEvl6GqW5CMVrL5GOdDov67oCvtBLLBP3YjBKSHMn4wqbdZJWu5BkTVHmsrtHHlk3cXiPeDLh6ZrVIwaoAohEig_BIXyHfn8rFByjod8KEw0NjE0Z8Rcb_wY0DVRSYwHZknzv_XjMURYKbFRRlA2p20EsZGWrxaxEJErOby4apO1RCpM8Taa2e7xXWvZam0UkOocPSXRQPBHPUlExyQpRsnFfeB5uQ3UJgzgYfsL6WBrK-01xLDU-Re8zVMtUjWvuRyqJQ67Cts',
-                        height: 160,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          height: 160,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [primaryColor, primaryColor.withValues(alpha: 0.8)],
-                            ),
-                          ),
-                          child: const Center(
-                            child: Icon(Icons.agriculture_rounded, size: 56, color: Colors.white70),
-                          ),
+              // Form Content
+              Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 520),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _buildInputField(
+                          label: 'Correo Electrónico',
+                          hint: 'correo@ejemplo.com',
+                          icon: Icons.mail,
+                          controller: _emailController,
+                          surfaceColor: surfaceColor,
+                          primaryColor: primaryColor,
+                          accentColor: accentGreen,
+                          textColor: textColor,
+                          hintColor: hintColor,
+                          isDark: isDark,
+                          errorText: _emailError,
+                          onChanged: (_) {
+                            if (_emailError != null) {
+                              setState(() => _emailError = null);
+                            }
+                          },
+                          keyboardType: TextInputType.emailAddress,
                         ),
-                      ),
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.topCenter,
-                              colors: [
-                                primaryColor.withValues(alpha: 0.85),
-                                Colors.transparent,
+                        const SizedBox(height: 24),
+                        _buildInputField(
+                          label: 'Contraseña',
+                          hint: 'Crea una contraseña',
+                          icon: Icons.lock,
+                          controller: _passwordController,
+                          surfaceColor: surfaceColor,
+                          primaryColor: primaryColor,
+                          accentColor: accentGreen,
+                          textColor: textColor,
+                          hintColor: hintColor,
+                          isDark: isDark,
+                          isPassword: true,
+                          obscureText: _obscurePassword,
+                          errorText: _passwordError,
+                          onChanged: (_) {
+                            if (_passwordError != null) {
+                              setState(() => _passwordError = null);
+                            }
+                          },
+                          onToggleVisibility: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(30),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        _buildInputField(
+                          label: 'Confirmar Contraseña',
+                          hint: 'Repite tu contraseña',
+                          icon: Icons.lock_reset,
+                          controller: _confirmPasswordController,
+                          surfaceColor: surfaceColor,
+                          primaryColor: primaryColor,
+                          accentColor: accentGreen,
+                          textColor: textColor,
+                          hintColor: hintColor,
+                          isDark: isDark,
+                          isPassword: true,
+                          obscureText: _obscureConfirmPassword,
+                          errorText: _confirmPasswordError,
+                          onChanged: (_) {
+                            if (_confirmPasswordError != null) {
+                              setState(() => _confirmPasswordError = null);
+                            }
+                          },
+                          onToggleVisibility: () {
+                            setState(() {
+                              _obscureConfirmPassword = !_obscureConfirmPassword;
+                            });
+                          },
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(30),
+                          ],
+                        ),
+                        
+                        const SizedBox(height: 40),
+                        
+                        // Submit Button with Bouncing micro-animation
+                        BouncingButton(
+                          onTap: _handleRegister,
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(vertical: 18),
+                            decoration: BoxDecoration(
+                              color: accentGreen,
+                              borderRadius: BorderRadius.circular(14),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: accentGreen.withValues(alpha: isDark ? 0.35 : 0.4),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Crear cuenta',
+                                  style: TextStyle(
+                                    color: isDark ? const Color(0xFF0F1C18) : Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Icon(
+                                  Icons.arrow_forward,
+                                  color: isDark ? const Color(0xFF0F1C18) : Colors.white,
+                                  size: 22,
+                                ),
                               ],
                             ),
                           ),
-                          child: const Text(
-                            'Productos frescos desde el productor hasta tu mesa',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
-                            ),
-                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              
-              // Form Content
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildInputField(
-                      label: 'Nombre de Usuario (Opcional)',
-                      hint: 'Ej. juan_perez',
-                      icon: Icons.person,
-                      controller: _usernameController,
-                      surfaceColor: surfaceColor,
-                      primaryColor: primaryColor,
-                      textColor: textColor,
-                      hintColor: hintColor,
-                      isDark: isDark,
-                      errorText: _usernameError,
-                      onChanged: (_) {
-                        if (_usernameError != null) {
-                          setState(() => _usernameError = null);
-                        }
-                      },
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(20),
-                        FilteringTextInputFormatter.deny(RegExp(r'\s')),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    _buildInputField(
-                      label: 'Correo Electrónico',
-                      hint: 'correo@ejemplo.com',
-                      icon: Icons.mail,
-                      controller: _emailController,
-                      surfaceColor: surfaceColor,
-                      primaryColor: primaryColor,
-                      textColor: textColor,
-                      hintColor: hintColor,
-                      isDark: isDark,
-                      errorText: _emailError,
-                      onChanged: (_) {
-                        if (_emailError != null) {
-                          setState(() => _emailError = null);
-                        }
-                      },
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    const SizedBox(height: 16),
-                    _buildInputField(
-                      label: 'Contraseña',
-                      hint: 'Crea una contraseña',
-                      icon: Icons.lock,
-                      controller: _passwordController,
-                      surfaceColor: surfaceColor,
-                      primaryColor: primaryColor,
-                      textColor: textColor,
-                      hintColor: hintColor,
-                      isDark: isDark,
-                      isPassword: true,
-                      obscureText: _obscurePassword,
-                      errorText: _passwordError,
-                      onChanged: (_) {
-                        if (_passwordError != null) {
-                          setState(() => _passwordError = null);
-                        }
-                      },
-                      onToggleVisibility: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(30),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    _buildInputField(
-                      label: 'Confirmar Contraseña',
-                      hint: 'Repite tu contraseña',
-                      icon: Icons.lock_reset,
-                      controller: _confirmPasswordController,
-                      surfaceColor: surfaceColor,
-                      primaryColor: primaryColor,
-                      textColor: textColor,
-                      hintColor: hintColor,
-                      isDark: isDark,
-                      isPassword: true,
-                      obscureText: _obscureConfirmPassword,
-                      errorText: _confirmPasswordError,
-                      onChanged: (_) {
-                        if (_confirmPasswordError != null) {
-                          setState(() => _confirmPasswordError = null);
-                        }
-                      },
-                      onToggleVisibility: () {
-                        setState(() {
-                          _obscureConfirmPassword = !_obscureConfirmPassword;
-                        });
-                      },
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(30),
-                      ],
-                    ),
-                    
-                    const SizedBox(height: 32),
-                    
-                    // Submit Button with Bouncing micro-animation
-                    BouncingButton(
-                      onTap: _handleRegister,
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        decoration: BoxDecoration(
-                          color: primaryColor,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: primaryColor.withValues(alpha: 0.4),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                        
+                        const SizedBox(height: 24),
+                        
+                        // Already have an account text
+                        Wrap(
+                          alignment: WrapAlignment.center,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
                             Text(
-                              'Crear cuenta',
+                              '¿Ya tienes una cuenta? ',
                               style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                fontSize: 15,
                               ),
                             ),
-                            SizedBox(width: 8),
-                            Icon(Icons.arrow_forward, color: Colors.white, size: 20),
+                            GestureDetector(
+                              onTap: () {
+                                if (context.canPop()) {
+                                  context.pop();
+                                } else {
+                                  context.go('/login');
+                                }
+                              },
+                              child: Text(
+                                'Inicia sesión aquí',
+                                style: TextStyle(
+                                  color: accentGreen,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 16),
-                    
-                    // Already have an account text
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          '¿Ya tienes una cuenta? ',
-                          style: TextStyle(color: isDark ? Colors.grey.shade400 : Colors.grey.shade500, fontSize: 14),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            if (context.canPop()) {
-                              context.pop();
-                            } else {
-                              context.go('/login');
-                            }
-                          },
-                          child: Text(
-                            'Inicia sesión aquí',
-                            style: TextStyle(
-                              color: primaryColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
+                        
+                        const SizedBox(height: 40),
+                        
+                        // Terms
+                        Center(
+                          child: RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: TextStyle(
+                                fontSize: 11,
+                                letterSpacing: 1.1,
+                                color: isDark ? Colors.grey.shade500 : Colors.grey.shade500,
+                                height: 1.6,
+                              ),
+                              children: [
+                                const TextSpan(text: 'AL REGISTRARTE, ACEPTAS NUESTROS\n'),
+                                const TextSpan(text: 'TÉRMINOS DE SERVICIO', style: TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                                const TextSpan(text: ' Y '),
+                                const TextSpan(text: 'POLÍTICA DE PRIVACIDAD', style: TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                              ],
                             ),
                           ),
                         ),
+                        
+                        const SizedBox(height: 40),
                       ],
                     ),
-                    
-                    const SizedBox(height: 32),
-                    
-                    // Terms
-                    Center(
-                      child: RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          style: TextStyle(
-                            fontSize: 10,
-                            letterSpacing: 1.2,
-                            color: Colors.grey.shade400,
-                            height: 1.5,
-                          ),
-                          children: [
-                            const TextSpan(text: 'AL REGISTRARTE, ACEPTAS NUESTROS\n'),
-                            const TextSpan(text: 'TÉRMINOS DE SERVICIO', style: TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
-                            const TextSpan(text: ' Y '),
-                            const TextSpan(text: 'POLÍTICA DE PRIVACIDAD', style: TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
-                          ],
-                        ),
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 40),
-                  ],
+                  ),
                 ),
               ),
             ],
@@ -457,6 +361,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     required TextEditingController controller,
     required Color surfaceColor,
     required Color primaryColor,
+    required Color accentColor,
     required Color textColor,
     required Color hintColor,
     required bool isDark,
@@ -472,34 +377,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 6),
+          padding: const EdgeInsets.only(left: 4, bottom: 8),
           child: Text(
             label,
             style: TextStyle(
-              color: isDark ? primaryColor.withValues(alpha: 0.9) : primaryColor,
-              fontSize: 14,
+              color: isDark ? accentColor : primaryColor,
+              fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
           ),
         ),
         AnimatedErrorField(
           errorText: errorText,
-          borderRadius: 8,
+          borderRadius: 12,
           child: Container(
-            height: 48,
+            height: 58,
             decoration: BoxDecoration(
               color: surfaceColor,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: errorText != null
                     ? Colors.transparent
-                    : primaryColor.withValues(alpha: 0.2),
+                    : (isDark ? const Color(0xFF2A3D34) : primaryColor.withValues(alpha: 0.2)),
               ),
               boxShadow: [
                 if (!isDark)
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.02),
-                    blurRadius: 4,
+                    color: Colors.black.withValues(alpha: 0.03),
+                    blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
               ],
@@ -507,9 +412,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Row(
               children: [
                 Container(
-                  width: 48,
+                  width: 54,
                   alignment: Alignment.center,
-                  child: Icon(icon, color: primaryColor.withValues(alpha: 0.6), size: 20),
+                  child: Icon(
+                    icon,
+                    color: isDark ? accentColor : primaryColor.withValues(alpha: 0.6),
+                    size: 24,
+                  ),
                 ),
                 Expanded(
                   child: TextField(
@@ -518,13 +427,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     obscureText: obscureText,
                     inputFormatters: inputFormatters,
                     onChanged: onChanged,
-                    style: TextStyle(color: textColor, fontSize: 14),
+                    style: TextStyle(color: textColor, fontSize: 16),
                     decoration: InputDecoration(
                       hintText: hint,
-                      hintStyle: TextStyle(color: hintColor, fontSize: 14),
+                      hintStyle: TextStyle(color: hintColor, fontSize: 16),
                       border: InputBorder.none,
                       isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 18),
                     ),
                   ),
                 ),
@@ -532,12 +441,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   GestureDetector(
                     onTap: onToggleVisibility,
                     child: Container(
-                      width: 48,
+                      width: 54,
                       alignment: Alignment.center,
                       child: Icon(
                         obscureText ? Icons.visibility : Icons.visibility_off,
-                        color: primaryColor.withValues(alpha: 0.4),
-                        size: 20,
+                        color: isDark ? accentColor : primaryColor.withValues(alpha: 0.4),
+                        size: 24,
                       ),
                     ),
                   ),

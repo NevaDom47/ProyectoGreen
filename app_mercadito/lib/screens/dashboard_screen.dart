@@ -170,14 +170,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
         lastDate: DateTime(2030),
         initialDateRange: _selectedDateRange,
         builder: (context, child) {
+          final isDarkPicker = Theme.of(context).brightness == Brightness.dark;
           return Theme(
             data: Theme.of(context).copyWith(
-              colorScheme: const ColorScheme.light(
-                primary: Color(0xFF00462f),
-                onPrimary: Colors.white,
-                surface: Colors.white,
-                onSurface: Color(0xFF0F172A),
-              ),
+              colorScheme: isDarkPicker
+                  ? const ColorScheme.dark(
+                      primary: Color(0xFF80C652),
+                      onPrimary: Color(0xFF0F172A),
+                      surface: Color(0xFF162720),
+                      onSurface: Colors.white,
+                    )
+                  : const ColorScheme.light(
+                      primary: Color(0xFF00462f),
+                      onPrimary: Colors.white,
+                      surface: Colors.white,
+                      onSurface: Color(0xFF0F172A),
+                    ),
             ),
             child: child!,
           );
@@ -475,12 +483,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     width: isVeryNarrow ? 26 : 30,
                     height: isVeryNarrow ? 26 : 30,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF00462f).withValues(alpha: 0.12),
+                      color: isDark
+                          ? const Color(0xFF2D402A)
+                          : const Color(0xFF00462f).withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
                       Icons.bar_chart_rounded,
-                      color: const Color(0xFF00462f),
+                      color: isDark
+                          ? const Color(0xFF80C652)
+                          : const Color(0xFF00462f),
                       size: isVeryNarrow ? 16 : 18,
                     ),
                   ),
@@ -557,8 +569,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: _buildKPITile(
                   isDark: isDark,
                   icon: Icons.attach_money_rounded,
-                  iconColor: const Color(0xFF059669),
-                  iconBg: const Color(0xFFDCFCE7),
+                  iconColor: isDark
+                      ? const Color(0xFF80C652)
+                      : const Color(0xFF059669),
+                  iconBg: isDark
+                      ? const Color(0xFF2D402A)
+                      : const Color(0xFFDCFCE7),
                   title: 'Total Negociaciones',
                   value: _formatCurrency(totalSales),
                   trendText: '↑ 18% vs. semana anterior',
@@ -569,8 +585,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: _buildKPITile(
                   isDark: isDark,
                   icon: Icons.shopping_bag_outlined,
-                  iconColor: const Color(0xFF7C3AED),
-                  iconBg: const Color(0xFFF3E8FF),
+                  iconColor: isDark
+                      ? const Color(0xFFA78BFA)
+                      : const Color(0xFF7C3AED),
+                  iconBg: isDark
+                      ? const Color(0xFF382952)
+                      : const Color(0xFFF3E8FF),
                   title: 'Negociaciones',
                   value: orders.toString(),
                   trendText: '↑ 12% vs. semana anterior',
@@ -585,8 +605,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: _buildKPITile(
                   isDark: isDark,
                   icon: Icons.people_alt_outlined,
-                  iconColor: const Color(0xFF059669),
-                  iconBg: const Color(0xFFDCFCE7),
+                  iconColor: isDark
+                      ? const Color(0xFF80C652)
+                      : const Color(0xFF059669),
+                  iconBg: isDark
+                      ? const Color(0xFF2D402A)
+                      : const Color(0xFFDCFCE7),
                   title: 'Clientes',
                   value: clients.toString(),
                   trendText: '↑ 9% vs. semana anterior',
@@ -597,8 +621,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: _buildKPITile(
                   isDark: isDark,
                   icon: Icons.star_rounded,
-                  iconColor: const Color(0xFF7C3AED),
-                  iconBg: const Color(0xFFF3E8FF),
+                  iconColor: isDark
+                      ? const Color(0xFFA78BFA)
+                      : const Color(0xFF7C3AED),
+                  iconBg: isDark
+                      ? const Color(0xFF382952)
+                      : const Color(0xFFF3E8FF),
                   title: 'Calificación',
                   value: rating.toStringAsFixed(1),
                   trendText: '↑ 0.2 vs. semana anterior',
@@ -639,7 +667,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: isDark ? iconColor.withValues(alpha: 0.2) : iconBg,
+                  color: iconBg,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: iconColor, size: 18),
@@ -723,12 +751,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     width: isVeryNarrow ? 26 : 30,
                     height: isVeryNarrow ? 26 : 30,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF00462f).withValues(alpha: 0.12),
+                      color: isDark
+                          ? const Color(0xFF2D402A)
+                          : const Color(0xFF00462f).withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
                       Icons.trending_up_rounded,
-                      color: const Color(0xFF00462f),
+                      color: isDark
+                          ? const Color(0xFF80C652)
+                          : const Color(0xFF00462f),
                       size: isVeryNarrow ? 16 : 18,
                     ),
                   ),
@@ -880,8 +912,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildPeriodPill(String periodKey, String label, bool isDark, [bool isCompact = false]) {
     final isSelected = _selectedChartPeriod == periodKey;
-    const activeBg = Color(0xFF00462f);
-    const activeText = Colors.white;
+    final activeBg = isDark ? const Color(0xFF2D402A) : const Color(0xFF00462f);
+    final activeText = isDark ? const Color(0xFF80C652) : Colors.white;
     final inactiveText = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
 
     return GestureDetector(
@@ -974,12 +1006,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF00462f).withValues(alpha: 0.12),
+                  color: isDark
+                      ? const Color(0xFF2D402A)
+                      : const Color(0xFF00462f).withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.handshake_outlined,
-                  color: Color(0xFF00462f),
+                  color: isDark
+                      ? const Color(0xFF80C652)
+                      : const Color(0xFF00462f),
                   size: 19,
                 ),
               ),
@@ -1010,14 +1046,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
-                          color: const Color(0xFF00462f),
+                          color: isDark
+                              ? const Color(0xFF80C652)
+                              : const Color(0xFF00462f),
                         ),
                       ),
                       const SizedBox(width: 2),
-                      const Icon(
+                      Icon(
                         Icons.chevron_right_rounded,
                         size: 16,
-                        color: Color(0xFF00462f),
+                        color: isDark
+                            ? const Color(0xFF80C652)
+                            : const Color(0xFF00462f),
                       ),
                     ],
                   ),
@@ -1076,15 +1116,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ? Image.asset(
                         item.imageUrl!,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, _, _) => const Icon(
+                        errorBuilder: (_, _, _) => Icon(
                           Icons.eco_rounded,
-                          color: Color(0xFF00462f),
+                          color: isDark
+                              ? const Color(0xFF80C652)
+                              : const Color(0xFF00462f),
                           size: 24,
                         ),
                       )
-                    : const Icon(
+                    : Icon(
                         Icons.eco_rounded,
-                        color: Color(0xFF00462f),
+                        color: isDark
+                            ? const Color(0xFF80C652)
+                            : const Color(0xFF00462f),
                         size: 24,
                       ),
               ),
@@ -1175,12 +1219,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF00462f).withValues(alpha: 0.12),
+                  color: isDark
+                      ? const Color(0xFF2D402A)
+                      : const Color(0xFF00462f).withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.pie_chart_outline_rounded,
-                  color: Color(0xFF00462f),
+                  color: isDark
+                      ? const Color(0xFF80C652)
+                      : const Color(0xFF00462f),
                   size: 20,
                 ),
               ),
@@ -1361,13 +1409,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 height: 48,
                 decoration: BoxDecoration(
                   color: isDark
-                      ? const Color(0xFF00462f).withValues(alpha: 0.3)
+                      ? const Color(0xFF2D402A)
                       : const Color(0xFFDCFCE7),
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.confirmation_number_outlined,
-                  color: Color(0xFF00462f),
+                  color: isDark
+                      ? const Color(0xFF80C652)
+                      : const Color(0xFF00462f),
                   size: 26,
                 ),
               ),
@@ -1407,8 +1457,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
               // Botón "Gestionar >"
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF00462f),
-                  foregroundColor: Colors.white,
+                  backgroundColor: isDark
+                      ? const Color(0xFF2D402A)
+                      : const Color(0xFF00462f),
+                  foregroundColor:
+                      isDark ? const Color(0xFF80C652) : Colors.white,
                   elevation: 0,
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -1530,7 +1583,7 @@ class _DailySalesDualChartPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     final selectedBarPaint = Paint()
-      ..color = const Color(0xFF00462f)
+      ..color = isDark ? const Color(0xFF34D399) : const Color(0xFF00462f)
       ..style = PaintingStyle.fill;
 
     final List<Offset> orderPoints = [];
@@ -1706,9 +1759,9 @@ class _DonutGaugePainter extends CustomPainter {
 
     canvas.drawCircle(center, radius, trackPaint);
 
-    // Progreso (Verde #00462f)
+    // Progreso (Verde #00462f en claro, #80C652 en oscuro)
     final progressPaint = Paint()
-      ..color = const Color(0xFF00462f)
+      ..color = isDark ? const Color(0xFF80C652) : const Color(0xFF00462f)
       ..strokeWidth = strokeWidth
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;

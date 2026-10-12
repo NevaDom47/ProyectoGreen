@@ -8,6 +8,7 @@ import 'package:app_mercadito/screens/coupons_manager_screen.dart';
 import 'package:app_mercadito/screens/home_feed_screen.dart';
 import 'package:app_mercadito/theme/app_theme.dart';
 import 'package:app_mercadito/services/user_session.dart';
+import 'package:app_mercadito/widgets/create_coupon_wizard.dart';
 
 class _TestHttpOverrides extends HttpOverrides {
   @override
@@ -247,6 +248,30 @@ void main() {
       // Step 1
       expect(find.text('Crear Nuevo Cupón'), findsOneWidget);
       expect(find.text('Paso 1 — Información básica'), findsOneWidget);
+
+      // Verify cannot advance without title
+      await tester.tap(find.text('Siguiente'));
+      await tester.pumpAndSettle();
+      expect(find.text('Paso 1 — Información básica'), findsOneWidget);
+      expect(find.text('El título de la promoción es obligatorio.'), findsAtLeastNWidgets(1));
+
+      // Find the coupon title field specifically inside the wizard
+      final titleField = find.descendant(
+        of: find.byType(CreateCouponWizard),
+        matching: find.byType(TextField),
+      ).first;
+
+      // Verify cannot advance with less than 4 chars
+      await tester.enterText(titleField, 'Ab');
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Siguiente'));
+      await tester.pumpAndSettle();
+      expect(find.text('Paso 1 — Información básica'), findsOneWidget);
+      expect(find.text('Debe contener al menos 4 caracteres (ingresaste 2).'), findsAtLeastNWidgets(1));
+
+      // Enter valid title (>= 4 chars)
+      await tester.enterText(titleField, 'Descuento Cosecha');
+      await tester.pumpAndSettle();
 
       // Navigate to Step 2
       await tester.tap(find.text('Siguiente'));

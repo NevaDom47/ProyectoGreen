@@ -385,13 +385,60 @@ class _LoginScreenState extends State<LoginScreen> {
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(bottom: 16.0),
-          child: Text(
-            '© 2024 El Mercadito S.A. Todos los derechos reservados.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 12,
-              color: isDarkMode ? Colors.grey[500] : Colors.grey[400],
-            ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Wrap(
+                alignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () => context.push('/legal-policies', extra: 0),
+                      child: Text(
+                        'Términos y Condiciones',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    ' • ',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
+                    ),
+                  ),
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () => context.push('/legal-policies', extra: 1),
+                      child: Text(
+                        'Política de Privacidad',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Text(
+                '© 2024 El Mercadito • Diaz Tecnologies',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 11.5,
+                  color: isDarkMode ? Colors.grey[500] : Colors.grey[500],
+                ),
+              ),
+            ],
           ),
         ),
       ),

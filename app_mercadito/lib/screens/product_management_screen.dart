@@ -266,10 +266,13 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
   }
 
   void _showFilterBottomSheet() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sheetPrimary = isDark ? const Color(0xFF80C652) : primaryColor;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: surfaceColor,
+      backgroundColor: isDark ? const Color(0xFF1A2420) : surfaceColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -288,17 +291,17 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Row(
+                          Row(
                             children: [
-                              Icon(Icons.tune, color: primaryColor, size: 22),
-                              SizedBox(width: 8),
+                              Icon(Icons.tune, color: sheetPrimary, size: 22),
+                              const SizedBox(width: 8),
                               Text(
                                 'Filtros Avanzados',
                                 style: TextStyle(
                                   fontFamily: 'Plus Jakarta Sans',
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: primaryColor,
+                                  color: sheetPrimary,
                                 ),
                               ),
                             ],
@@ -328,13 +331,13 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                       const SizedBox(height: 10),
 
                       // Section 1: Modalidad de Venta (Al por mayor / Al detalle / Todos)
-                      const Text(
+                      Text(
                         'Tipo de Venta',
                         style: TextStyle(
                           fontFamily: 'Plus Jakarta Sans',
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
-                          color: primaryColor,
+                          color: sheetPrimary,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -394,13 +397,13 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                       const SizedBox(height: 16),
 
                       // Section 2: Disponibilidad
-                      const Text(
+                      Text(
                         'Disponibilidad',
                         style: TextStyle(
                           fontFamily: 'Plus Jakarta Sans',
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
-                          color: primaryColor,
+                          color: sheetPrimary,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -463,13 +466,13 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                       const SizedBox(height: 16),
 
                       // Section 3: Calidad
-                      const Text(
+                      Text(
                         'Calidad',
                         style: TextStyle(
                           fontFamily: 'Plus Jakarta Sans',
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
-                          color: primaryColor,
+                          color: sheetPrimary,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -482,7 +485,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                           Color unselColor = chipUnselectedText;
                           if (quality.toLowerCase().contains('primera')) {
                             qualIcon = Icons.workspace_premium;
-                            unselColor = const Color(0xFF016042);
+                            unselColor = isDark ? const Color(0xFF80C652) : const Color(0xFF016042);
                           } else if (quality.toLowerCase().contains('segunda')) {
                             qualIcon = Icons.workspace_premium_outlined;
                             unselColor = const Color(0xFFFF9A04);
@@ -540,8 +543,8 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                         height: 46,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColor,
-                            foregroundColor: Colors.white,
+                            backgroundColor: sheetPrimary,
+                            foregroundColor: isDark ? const Color(0xFF101915) : Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(24),
                             ),
@@ -592,7 +595,9 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                 ),
               ],
             ),
-            backgroundColor: primaryColor,
+            backgroundColor: Theme.of(context).brightness == Brightness.dark
+                ? const Color(0xFF1E2D27)
+                : primaryColor,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
@@ -627,7 +632,9 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                 ),
               ],
             ),
-            backgroundColor: primaryColor,
+            backgroundColor: Theme.of(context).brightness == Brightness.dark
+                ? const Color(0xFF1E2D27)
+                : primaryColor,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
@@ -753,6 +760,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
       builder: (ctx) => StatefulBuilder(
         builder: (modalCtx, setDialogState) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
+          final dialogPrimary = isDark ? const Color(0xFF80C652) : primaryColor;
           final dialogBg = isDark ? const Color(0xFF16211C) : surfaceColor;
           final cardBg = isDark ? const Color(0xFF1E2D27) : surfaceLow;
           final int currentStock = product['stock'] ?? 0;
@@ -771,7 +779,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
             statusLabel = 'Bajo Stock';
           } else {
             statusBg = const Color(0xFFDCE9E5);
-            statusText = const Color(0xFF016042);
+            statusText = isDark ? const Color(0xFF80C652) : const Color(0xFF016042);
             statusLabel = 'Disponible';
           }
 
@@ -797,13 +805,13 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                               Container(
                                 padding: const EdgeInsets.all(7),
                                 decoration: BoxDecoration(
-                                  color: primaryColor.withValues(alpha: 0.12),
+                                  color: dialogPrimary.withValues(alpha: 0.12),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                child: const Icon(Icons.tune_rounded, color: primaryColor, size: 20),
+                                child: Icon(Icons.tune_rounded, color: dialogPrimary, size: 20),
                               ),
                               const SizedBox(width: 10),
-                              const Column(
+                              Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
@@ -812,7 +820,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                                       fontFamily: 'Plus Jakarta Sans',
                                       fontSize: 18,
                                       fontWeight: FontWeight.w800,
-                                      color: primaryColor,
+                                      color: dialogPrimary,
                                     ),
                                   ),
                                   Text(
@@ -852,7 +860,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                               child: SizedBox(
                                 width: 50,
                                 height: 50,
-                                child: _buildImage(product['img'] ?? ''),
+                                child: _buildImage(product['img'] ?? '', isDark),
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -920,17 +928,17 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                       // ==========================================
                       // 1. SECCIÓN DE PRECIOS Y FORMAS DE VENTA
                       // ==========================================
-                      const Row(
+                      Row(
                         children: [
-                          Icon(Icons.sell_outlined, size: 14, color: primaryColor),
-                          SizedBox(width: 6),
+                          Icon(Icons.sell_outlined, size: 14, color: dialogPrimary),
+                          const SizedBox(width: 6),
                           Text(
                             'PRECIOS Y FORMAS DE VENTA',
                             style: TextStyle(
                               fontFamily: 'Plus Jakarta Sans',
                               fontSize: 10.5,
                               fontWeight: FontWeight.w800,
-                              color: primaryColor,
+                              color: dialogPrimary,
                               letterSpacing: 0.6,
                             ),
                           ),
@@ -1605,8 +1613,8 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                               height: 46,
                               child: ElevatedButton.icon(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: primaryColor,
-                                  foregroundColor: Colors.white,
+                                  backgroundColor: dialogPrimary,
+                                  foregroundColor: isDark ? const Color(0xFF101915) : Colors.white,
                                   elevation: 2,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                 ),
@@ -1682,21 +1690,22 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                                           ),
                                         ],
                                       ),
-                                      backgroundColor: primaryColor,
+                                      backgroundColor: isDark ? const Color(0xFF1E2D27) : primaryColor,
                                       behavior: SnackBarBehavior.floating,
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                       duration: const Duration(seconds: 3),
                                     ),
                                   );
                                 },
-                                icon: const Icon(Icons.check_rounded, size: 18),
-                                label: const Text(
+                                icon: Icon(Icons.check_rounded, size: 18, color: isDark ? const Color(0xFF101915) : Colors.white),
+                                label: Text(
                                   'GUARDAR CAMBIOS',
                                   style: TextStyle(
                                     fontFamily: 'Plus Jakarta Sans',
                                     fontWeight: FontWeight.w800,
                                     fontSize: 12,
                                     letterSpacing: 0.4,
+                                    color: isDark ? const Color(0xFF101915) : Colors.white,
                                   ),
                                 ),
                               ),
@@ -1716,6 +1725,8 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
   }
 
   Widget _buildDeltaChip(String label, VoidCallback onTap, {bool isNegative = false}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primary = isDark ? const Color(0xFF80C652) : primaryColor;
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -1724,7 +1735,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
           decoration: BoxDecoration(
-            color: isNegative ? const Color(0xFFFFEBEE) : surfaceColor,
+            color: isNegative ? const Color(0xFFFFEBEE) : (isDark ? const Color(0xFF26302B) : surfaceColor),
             borderRadius: BorderRadius.circular(6),
             border: Border.all(
               color: isNegative ? const Color(0xFFEF5350).withValues(alpha: 0.5) : outlineColor,
@@ -1736,7 +1747,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
               fontFamily: 'Plus Jakarta Sans',
               fontSize: 10.5,
               fontWeight: FontWeight.bold,
-              color: isNegative ? const Color(0xFFC62828) : primaryColor,
+              color: isNegative ? const Color(0xFFC62828) : primary,
             ),
           ),
         ),
@@ -1745,6 +1756,8 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
   }
 
   Widget _buildStockPresetChip(String label, VoidCallback onTap, {bool isDestructive = false}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primary = isDark ? const Color(0xFF80C652) : primaryColor;
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -1753,7 +1766,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3.5),
           decoration: BoxDecoration(
-            color: isDestructive ? const Color(0xFFFFEBEE) : surfaceColor,
+            color: isDestructive ? const Color(0xFFFFEBEE) : (isDark ? const Color(0xFF26302B) : surfaceColor),
             borderRadius: BorderRadius.circular(6),
             border: Border.all(
               color: isDestructive ? const Color(0xFFEF5350) : outlineColor,
@@ -1765,7 +1778,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
               fontFamily: 'Plus Jakarta Sans',
               fontSize: 10,
               fontWeight: FontWeight.bold,
-              color: isDestructive ? const Color(0xFFC62828) : primaryColor,
+              color: isDestructive ? const Color(0xFFC62828) : primary,
             ),
           ),
         ),
@@ -1776,6 +1789,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectivePrimary = isDark ? const Color(0xFF80C652) : primaryColor;
     final bg = isDark ? const Color(0xFF101915) : backgroundColor;
     final cardColor = isDark ? const Color(0xFF1A2420) : surfaceColor;
 
@@ -1850,7 +1864,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
         backgroundColor: cardColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: primaryColor),
+          icon: Icon(Icons.arrow_back, color: effectivePrimary),
           onPressed: () {
             if (context.canPop()) {
               context.pop();
@@ -1859,13 +1873,13 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
             }
           },
         ),
-        title: const Text(
+        title: Text(
           'Gestión de Productos',
           style: TextStyle(
             fontFamily: 'Plus Jakarta Sans',
             fontWeight: FontWeight.bold,
             fontSize: 18,
-            color: primaryColor,
+            color: effectivePrimary,
           ),
         ),
       ),
@@ -1887,13 +1901,13 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             'Productos',
                             style: TextStyle(
                               fontFamily: 'Plus Jakarta Sans',
                               fontWeight: FontWeight.w800,
                               fontSize: 24,
-                              color: primaryColor,
+                              color: effectivePrimary,
                             ),
                           ),
                           const SizedBox(height: 2),
@@ -1913,8 +1927,8 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                   // "+ AGREGAR PRODUCTO" Pill Button
                   ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      foregroundColor: Colors.white,
+                      backgroundColor: isDark ? const Color(0xFF80C652) : primaryColor,
+                      foregroundColor: isDark ? const Color(0xFF101915) : Colors.white,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
                         vertical: 12,
@@ -1925,14 +1939,15 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                       elevation: 1,
                     ),
                     onPressed: _showAddProductDialog,
-                    icon: const Icon(Icons.add, size: 18),
-                    label: const Text(
+                    icon: Icon(Icons.add, size: 18, color: isDark ? const Color(0xFF101915) : Colors.white),
+                    label: Text(
                       'AGREGAR PRODUCTO',
                       style: TextStyle(
                         fontFamily: 'Plus Jakarta Sans',
                         fontWeight: FontWeight.w800,
                         fontSize: 11,
                         letterSpacing: 0.8,
+                        color: isDark ? const Color(0xFF101915) : Colors.white,
                       ),
                     ),
                   ),
@@ -1946,9 +1961,9 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                           label: 'Registrados',
                           count: totalCount,
                           icon: Icons.inventory_2_outlined,
-                          color: primaryColor,
-                          bgColor: isDark ? const Color(0xFF1E2822) : const Color(0xFFF1F6F3),
-                          borderColor: isDark ? const Color(0xFF2C3C34) : const Color(0xFFD3E2DA),
+                          color: isDark ? const Color(0xFF80C652) : primaryColor,
+                          bgColor: isDark ? const Color(0xFF16251C) : const Color(0xFFF1F6F3),
+                          borderColor: isDark ? const Color(0xFF2E4E3A) : const Color(0xFFD3E2DA),
                           isSelected: _selectedAvailability == 'Todos',
                           onTap: () {
                             setState(() => _selectedAvailability = 'Todos');
@@ -1961,9 +1976,9 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                           label: 'Disponibles',
                           count: availableCount,
                           icon: Icons.check_circle_outline,
-                          color: const Color(0xFF059669),
-                          bgColor: isDark ? const Color(0xFF152A20) : const Color(0xFFEDFAF3),
-                          borderColor: isDark ? const Color(0xFF1F4835) : const Color(0xFFA7F3D0),
+                          color: isDark ? const Color(0xFF80C652) : const Color(0xFF059669),
+                          bgColor: isDark ? const Color(0xFF16251C) : const Color(0xFFEDFAF3),
+                          borderColor: isDark ? const Color(0xFF2E4E3A) : const Color(0xFFA7F3D0),
                           isSelected: _selectedAvailability == 'Disponibles',
                           onTap: () {
                             setState(() {
@@ -2051,11 +2066,11 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                           width: 40,
                           decoration: BoxDecoration(
                             color: hasActiveFilter
-                                ? primaryColor
+                                ? (isDark ? const Color(0xFF285E44) : primaryColor)
                                 : (isDark ? const Color(0xFF26302B) : surfaceLow),
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
-                              color: hasActiveFilter ? primaryColor : outlineColor,
+                              color: hasActiveFilter ? effectivePrimary : outlineColor,
                             ),
                           ),
                           child: Stack(
@@ -2066,7 +2081,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                                 size: 20,
                                 color: hasActiveFilter
                                     ? Colors.white
-                                    : onSurfaceVariant,
+                                    : (isDark ? Colors.white60 : onSurfaceVariant),
                               ),
                               if (hasActiveFilter)
                                 Positioned(
@@ -2222,7 +2237,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
         : (isDark ? Colors.white : onSurface);
     final priceColor = isAgotado
         ? (isDark ? Colors.white38 : const Color(0xFF75857C))
-        : primaryColor;
+        : (isDark ? const Color(0xFF80C652) : primaryColor);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -2274,7 +2289,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                                       Colors.transparent,
                                       BlendMode.dst,
                                     ),
-                              child: _buildImage(imgUrl),
+                              child: _buildImage(imgUrl, isDark),
                             ),
                           ),
                           if (isAgotado)
@@ -2365,23 +2380,23 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                                 }
                               },
                               itemBuilder: (ctx) => [
-                                const PopupMenuItem(
+                                PopupMenuItem(
                                   value: 'edit_full',
                                   child: Row(
                                     children: [
-                                      Icon(Icons.edit_note_outlined, size: 18, color: primaryColor),
-                                      SizedBox(width: 8),
-                                      Text('Editar Información Completa'),
+                                      Icon(Icons.edit_note_outlined, size: 18, color: isDark ? const Color(0xFF80C652) : primaryColor),
+                                      const SizedBox(width: 8),
+                                      const Text('Editar Información Completa'),
                                     ],
                                   ),
                                 ),
-                                const PopupMenuItem(
+                                PopupMenuItem(
                                   value: 'edit_quick',
                                   child: Row(
                                     children: [
-                                      Icon(Icons.tune_outlined, size: 18, color: primaryColor),
-                                      SizedBox(width: 8),
-                                      Text('Edición Rápida (Precio / Stock)'),
+                                      Icon(Icons.tune_outlined, size: 18, color: isDark ? const Color(0xFF80C652) : primaryColor),
+                                      const SizedBox(width: 8),
+                                      const Text('Edición Rápida (Precio / Stock)'),
                                     ],
                                   ),
                                 ),
@@ -2746,7 +2761,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                   fontFamily: 'Plus Jakarta Sans',
                   fontSize: 11,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                  color: isSelected ? color : onSurfaceVariant,
+                  color: isSelected ? color : (Theme.of(context).brightness == Brightness.dark ? Colors.white70 : onSurfaceVariant),
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -2758,23 +2773,24 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
     );
   }
 
-  Widget _buildImage(String url) {
+  Widget _buildImage(String url, bool isDark) {
+    final leafColor = isDark ? const Color(0xFF80C652) : primaryColor;
     if (url.isEmpty) {
-      return const Icon(Icons.eco, color: primaryColor, size: 36);
+      return Icon(Icons.eco, color: leafColor, size: 36);
     }
     if (url.startsWith('http')) {
       return Image.network(
         url,
         fit: BoxFit.cover,
         errorBuilder: (ctx, err, stack) =>
-            const Icon(Icons.eco, color: primaryColor, size: 36),
+            Icon(Icons.eco, color: leafColor, size: 36),
       );
     }
     return Image.asset(
       url,
       fit: BoxFit.cover,
       errorBuilder: (ctx, err, stack) =>
-          const Icon(Icons.eco, color: primaryColor, size: 36),
+          Icon(Icons.eco, color: leafColor, size: 36),
     );
   }
 }

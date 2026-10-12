@@ -12,7 +12,7 @@ void main() {
     });
 
     final mockNegotiation = {
-      'invoice_id': '#FAC-88290',
+      'invoice_id': '#NEG-88290',
       'product': 'Tomates Cherry Orgánicos',
       'buyer': 'Juan Pérez',
       'role': 'Comprador',
@@ -36,7 +36,7 @@ void main() {
     expect(find.text('Detalle del acuerdo'), findsOneWidget);
     expect(find.text('¡TRATO HECHO CON ÉXITO!'), findsOneWidget);
     expect(find.text('\$6,750.00'), findsOneWidget);
-    expect(find.text('#FAC-88290'), findsOneWidget);
+    expect(find.text('#NEG-88290'), findsOneWidget);
 
     // Verify product & deal conditions
     expect(find.text('Tomates Cherry Orgánicos'), findsOneWidget);
@@ -68,5 +68,25 @@ void main() {
 
     // Verify no RenderFlex overflow
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('NegotiationDetailScreen converts legacy #FAC- prefix to #NEG-', (WidgetTester tester) async {
+    final legacyNegotiation = {
+      'invoice_id': '#FAC-88290',
+      'product': 'Tomates Cherry Orgánicos',
+      'buyer': 'Juan Pérez',
+      'total': '\$6,750.00',
+    };
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: NegotiationDetailScreen(negotiation: legacyNegotiation),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Verify #FAC- is converted to #NEG-
+    expect(find.text('#NEG-88290'), findsOneWidget);
+    expect(find.text('#FAC-88290'), findsNothing);
   });
 }

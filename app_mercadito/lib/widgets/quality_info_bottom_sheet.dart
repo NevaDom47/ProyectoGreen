@@ -52,9 +52,14 @@ class QualityInfoBottomSheet extends StatelessWidget {
         : (quality.toUpperCase().contains('SEGUNDA') ? 'SEGUNDA' : 'TERCERA');
     
     final data = _qualityData[key];
-    final Color mainColor = data['color'];
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+
+    final Color mainColor = isDark
+        ? (key == 'SEGUNDA'
+            ? const Color(0xFFF19D37)
+            : (key == 'PRIMERA' ? const Color(0xFF80C652) : data['color']))
+        : data['color'];
     
     final Color bgColor = isDark ? const Color(0xFF1c2c26) : Colors.white;
     final Color surfaceColor = isDark ? Colors.white.withValues(alpha: 0.05) : const Color(0xFFf1f4f0);

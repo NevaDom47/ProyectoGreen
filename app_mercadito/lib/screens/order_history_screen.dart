@@ -593,9 +593,11 @@ class InteractiveOrderCard extends StatelessWidget {
 
     final isCompleted = status == 'Entregado' || status == 'Completado';
     final badgeBg = isCompleted 
-        ? const Color(0xFF016042).withValues(alpha: 0.1) 
-        : const Color(0xFFBA1A1A).withValues(alpha: 0.1);
-    final badgeText = isCompleted ? const Color(0xFF016042) : const Color(0xFFBA1A1A);
+        ? (isDark ? const Color(0xFF80C652).withValues(alpha: 0.15) : const Color(0xFF016042).withValues(alpha: 0.1))
+        : (isDark ? const Color(0xFFFF6B6B).withValues(alpha: 0.15) : const Color(0xFFBA1A1A).withValues(alpha: 0.1));
+    final badgeText = isCompleted
+        ? (isDark ? const Color(0xFF80C652) : const Color(0xFF016042))
+        : (isDark ? const Color(0xFFFF6B6B) : const Color(0xFFBA1A1A));
     final badgeIcon = isCompleted ? Icons.check_circle_rounded : Icons.cancel_rounded;
     final badgeLabel = isCompleted ? 'COMPLETADO' : 'CANCELADO';
 
@@ -880,19 +882,19 @@ class InteractiveOrderCard extends StatelessWidget {
                                   Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      const Icon(
+                                      Icon(
                                         Icons.handshake_outlined,
                                         size: 16,
-                                        color: Color(0xFF016042),
+                                        color: isDark ? const Color(0xFF80C652) : const Color(0xFF016042),
                                       ),
                                       const SizedBox(width: 6),
                                       Text(
                                         finalPrice,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontFamily: 'Plus Jakarta Sans',
                                           fontSize: 15,
                                           fontWeight: FontWeight.w900,
-                                          color: Color(0xFF016042),
+                                          color: isDark ? const Color(0xFF80C652) : const Color(0xFF016042),
                                         ),
                                       ),
                                     ],

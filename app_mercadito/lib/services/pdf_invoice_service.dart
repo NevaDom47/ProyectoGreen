@@ -32,7 +32,9 @@ class PdfInvoiceService {
     final String invoiceIdRaw = negotiation['invoice_id'] ?? negotiation['invoiceNumber'] ?? '0001-00001234';
     final String invoiceNumber = invoiceIdRaw.startsWith('#FAC-')
         ? '0001-${invoiceIdRaw.replaceAll('#FAC-', '')}'
-        : (invoiceIdRaw.startsWith('#') ? invoiceIdRaw.substring(1) : invoiceIdRaw);
+        : (invoiceIdRaw.startsWith('#NEG-')
+            ? '0001-${invoiceIdRaw.replaceAll('#NEG-', '')}'
+            : (invoiceIdRaw.startsWith('#') ? invoiceIdRaw.substring(1) : invoiceIdRaw));
 
     final String dateStr = negotiation['date'] ?? '06/10/2026';
     final String timeStr = negotiation['time'] ?? '10:33 AM';

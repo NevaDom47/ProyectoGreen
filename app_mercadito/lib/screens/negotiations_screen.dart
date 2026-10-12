@@ -163,13 +163,76 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                       initialDate: _selectedDate ?? DateTime.now(),
                       firstDate: DateTime(2020),
                       lastDate: DateTime(2030),
+                      helpText: 'SELECCIONAR FECHA',
+                      cancelText: 'CANCELAR',
+                      confirmText: 'ACEPTAR',
                       builder: (context, child) {
                         return Theme(
                           data: Theme.of(context).copyWith(
-                            colorScheme: ColorScheme.light(
-                              primary: AppTheme.primary,
-                              onPrimary: Colors.white,
-                              onSurface: onSurfaceColor,
+                            colorScheme: isDark
+                                ? const ColorScheme.dark(
+                                    primary: AppTheme.darkPrimary,
+                                    onPrimary: Color(0xFF0F1C18),
+                                    surface: AppTheme.darkCard,
+                                    onSurface: AppTheme.darkTextPrimary,
+                                    surfaceContainerHighest: AppTheme.darkCardElevated,
+                                    onSurfaceVariant: AppTheme.darkTextSecondary,
+                                  )
+                                : const ColorScheme.light(
+                                    primary: AppTheme.lightPrimary,
+                                    onPrimary: Colors.white,
+                                    surface: Colors.white,
+                                    onSurface: AppTheme.lightTextPrimary,
+                                    onSurfaceVariant: AppTheme.lightTextSecondary,
+                                  ),
+                            dialogTheme: DialogThemeData(
+                              backgroundColor: isDark ? AppTheme.darkCard : Colors.white,
+                            ),
+                            datePickerTheme: DatePickerThemeData(
+                              backgroundColor: isDark ? AppTheme.darkCard : Colors.white,
+                              headerBackgroundColor: isDark ? AppTheme.darkSecondaryBackground : AppTheme.lightPrimary,
+                              headerForegroundColor: isDark ? AppTheme.darkPrimary : Colors.white,
+                              surfaceTintColor: Colors.transparent,
+                              dividerColor: isDark ? AppTheme.darkBorder : AppTheme.lightBorder,
+                              dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+                                if (states.contains(WidgetState.selected)) {
+                                  return isDark ? AppTheme.darkPrimary : AppTheme.lightPrimary;
+                                }
+                                return null;
+                              }),
+                              dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+                                if (states.contains(WidgetState.selected)) {
+                                  return isDark ? const Color(0xFF0F1C18) : Colors.white;
+                                }
+                                if (states.contains(WidgetState.disabled)) {
+                                  return isDark ? AppTheme.darkTextTertiary : AppTheme.lightTextTertiary;
+                                }
+                                return isDark ? AppTheme.darkTextPrimary : AppTheme.lightTextPrimary;
+                              }),
+                              todayForegroundColor: WidgetStateProperty.resolveWith((states) {
+                                if (states.contains(WidgetState.selected)) {
+                                  return isDark ? const Color(0xFF0F1C18) : Colors.white;
+                                }
+                                return isDark ? AppTheme.darkPrimary : AppTheme.lightPrimary;
+                              }),
+                              todayBorder: BorderSide(
+                                color: isDark ? AppTheme.darkPrimary : AppTheme.lightPrimary,
+                                width: 1.5,
+                              ),
+                              yearForegroundColor: WidgetStateProperty.resolveWith((states) {
+                                if (states.contains(WidgetState.selected)) {
+                                  return isDark ? const Color(0xFF0F1C18) : Colors.white;
+                                }
+                                return isDark ? AppTheme.darkTextPrimary : AppTheme.lightTextPrimary;
+                              }),
+                              cancelButtonStyle: TextButton.styleFrom(
+                                foregroundColor: isDark ? AppTheme.darkPrimary : AppTheme.lightPrimary,
+                                textStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
+                              ),
+                              confirmButtonStyle: TextButton.styleFrom(
+                                foregroundColor: isDark ? AppTheme.darkPrimary : AppTheme.lightPrimary,
+                                textStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
                           child: child!,
@@ -265,7 +328,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
 
   final List<Map<String, dynamic>> mockCompletedNegotiations = [
     {
-      'invoice_id': '#FAC-88290',
+      'invoice_id': '#NEG-88290',
       'product': 'Tomates Cherry Orgánicos',
       'buyer': 'Juan Pérez',
       'role': 'Comprador',
@@ -275,7 +338,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
       'image': 'https://lh3.googleusercontent.com/aida-public/AB6AXuB32zMtkIjodpTPfadClO6p0RBB_YGRBvqx5chQPmObhnrSPb8EnB0DOWn_4QJSrQWP665O6SUtHuucrWl9EaSJShWWYFW-WZ-Cy08SXOGW8rUfR_384bGdjGSAT9Ri12ICkNcX8y_nHzV2eedCwbqFqNwg11waXHrdS49xkxD02in2kJjXG-RfJTkFhN5CL5m9_n36-QZX8hnnOneKxuOCLIez6dwSb6W_VuVytqYxpa7MQlPVMlXVGMvz96ZI1JKij6hNHOWeuig',
     },
     {
-      'invoice_id': '#FAC-88289',
+      'invoice_id': '#NEG-88289',
       'product': 'Aguacate Hass Premium',
       'buyer': 'María Gómez',
       'role': 'Proveedor',
@@ -288,7 +351,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
 
   final List<Map<String, dynamic>> mockCancelledNegotiations = [
     {
-      'invoice_id': '#FAC-88288',
+      'invoice_id': '#NEG-88288',
       'product': 'Tomate Saladette',
       'buyer': 'Juan Pérez',
       'role': 'Comprador',
@@ -302,7 +365,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
       'image': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCp_n5G7_2I867ct5e-4CxrG4gpPtX8pmpapt4aGcC8xz68OZLjnNg-5DYRK132D7F3eX_k8BoG4fTReYFGRj3rY-Jjrh6CCKlFuVKrc2vK2Cck9xI0Bh53PEelQvXLDtOpF9uAcnzZm1oAuz3YQynfjH5mou2BHFGWgrCQ9iqS339N33AeUYKYqr0_eKPEZgei3hQHpOvVIxks814hCGYU1qVMPi8ITHHW9aOm4w38UTDu28jMg78JNyZO5acs0qcN-r2cIcfwCnw',
     },
     {
-      'invoice_id': '#FAC-88287',
+      'invoice_id': '#NEG-88287',
       'product': 'Limón Persa',
       'buyer': 'Carlos Ruiz',
       'role': 'Comprador',
@@ -482,7 +545,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                           setState(() {
                             mockNegotiations.remove(item);
                             mockCompletedNegotiations.insert(0, {
-                              'invoice_id': nextId,
+                              'invoice_id': nextId.replaceAll('#FAC-', '#NEG-'),
                               'product': item['product'],
                               'buyer': item['buyer'],
                               'role': item['role'],

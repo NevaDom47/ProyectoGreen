@@ -60,7 +60,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
     final reviewsCount = (buyer['reviewsCount'] ?? buyer['totalReviews'] ?? 198).toString();
 
     // Colores del sistema de diseño Esmeralda
-    const primaryGreen = _primaryGreen;
+    final primaryGreen = isDark ? const Color(0xFF80C652) : _primaryGreen;
     final bgColor = isDark ? const Color(0xFF0F1713) : const Color(0xFFF7FAF7);
     final cardColor = isDark ? const Color(0xFF16231D) : Colors.white;
     final borderColor = isDark ? const Color(0xFF22382E) : const Color(0xFFE2E8F0);
@@ -78,7 +78,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
         elevation: 0,
         scrolledUnderElevation: 1,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: isDark ? const Color(0xFF67C83B) : primaryGreen),
+          icon: Icon(Icons.arrow_back, color: isDark ? const Color(0xFF80C652) : primaryGreen),
           onPressed: () => context.pop(),
         ),
         title: Text(
@@ -443,16 +443,16 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                           ? Image.network(
                               buyerAvatar,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => const Icon(
+                              errorBuilder: (context, error, stackTrace) => Icon(
                                 Icons.person,
                                 size: 40,
-                                color: _primaryGreen,
+                                color: primaryGreen,
                               ),
                             )
-                          : const Icon(
+                          : Icon(
                               Icons.person,
                               size: 40,
-                              color: _primaryGreen,
+                              color: primaryGreen,
                             ),
                     ),
                   ),
@@ -879,7 +879,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                         color: primaryGreen.withValues(alpha: 0.12),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.handshake_rounded, color: _primaryGreen, size: 18),
+                      child: Icon(Icons.handshake_rounded, color: primaryGreen, size: 18),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
@@ -957,12 +957,12 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                const Text(
+                Text(
                   '98% satisfacción',
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF016042),
+                    color: isDark ? const Color(0xFF80C652) : const Color(0xFF016042),
                   ),
                 ),
               ],
@@ -1167,11 +1167,11 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                               child: (rev.authorAvatar == null || rev.authorAvatar!.isEmpty)
                                   ? Text(
                                       rev.authorName.isNotEmpty ? rev.authorName[0] : 'P',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontFamily: 'Plus Jakarta Sans',
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
-                                        color: _primaryGreen,
+                                        color: primaryGreen,
                                       ),
                                     )
                                   : null,
@@ -1197,7 +1197,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                                       ),
                                       if (rev.authorIsVerified) ...[
                                         const SizedBox(width: 4),
-                                        const Icon(Icons.verified, size: 14, color: _primaryGreen),
+                                        Icon(Icons.verified, size: 14, color: primaryGreen),
                                       ],
                                     ],
                                   ),
@@ -1507,9 +1507,11 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                   (prod) => Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF0F231D) : const Color(0xFFF1F5F9),
+                      color: isDark ? const Color(0xFF80C652).withValues(alpha: 0.12) : const Color(0xFFF1F5F9),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: borderColor),
+                      border: Border.all(
+                        color: isDark ? const Color(0xFF80C652).withValues(alpha: 0.4) : borderColor,
+                      ),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -1518,7 +1520,11 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                         const SizedBox(width: 4),
                         Text(
                           prod,
-                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: isDark ? const Color(0xFF80C652) : Colors.black87,
+                          ),
                         ),
                       ],
                     ),
@@ -1564,16 +1570,18 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
                       decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF0F231D) : const Color(0xFFECFDF5),
+                        color: isDark ? const Color(0xFF80C652).withValues(alpha: 0.15) : const Color(0xFFECFDF5),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: const Color(0xFF10B981).withValues(alpha: 0.25)),
+                        border: Border.all(
+                          color: isDark ? const Color(0xFF80C652).withValues(alpha: 0.4) : const Color(0xFF10B981).withValues(alpha: 0.25),
+                        ),
                       ),
                       child: Text(
                         confidenceLabel ?? '$confidencePercent% confianza',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 9.5,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF065F46),
+                          color: isDark ? const Color(0xFF80C652) : const Color(0xFF065F46),
                         ),
                       ),
                     ),
@@ -1708,13 +1716,13 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
             const SizedBox(width: 8),
             GestureDetector(
               onTap: () => context.push('/order-history', extra: buyer),
-              child: const Text(
+              child: Text(
                 'Ver todo',
                 style: TextStyle(
                   fontFamily: 'Plus Jakarta Sans',
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF016042),
+                  color: isDark ? const Color(0xFF80C652) : const Color(0xFF016042),
                 ),
               ),
             ),
@@ -1782,10 +1790,12 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
     final totalPrice = (order['total_price'] ?? order['subtotal'] ?? order['price'] ?? '').toString();
 
     final isCompleted = status == 'Entregado' || status == 'Completado';
-    final statusColor = isCompleted ? const Color(0xFF016042) : const Color(0xFFBA1A1A);
+    final statusColor = isCompleted
+        ? (isDark ? const Color(0xFF80C652) : const Color(0xFF016042))
+        : (isDark ? const Color(0xFFFF6B6B) : const Color(0xFFBA1A1A));
     final statusBgColor = isCompleted
-        ? const Color(0xFF016042).withValues(alpha: 0.1)
-        : const Color(0xFFBA1A1A).withValues(alpha: 0.1);
+        ? (isDark ? const Color(0xFF80C652).withValues(alpha: 0.15) : const Color(0xFF016042).withValues(alpha: 0.1))
+        : (isDark ? const Color(0xFFFF6B6B).withValues(alpha: 0.15) : const Color(0xFFBA1A1A).withValues(alpha: 0.1));
     final statusLabel = isCompleted ? 'COMPLETADO' : 'CANCELADO';
     final borderColor = isDark ? const Color(0xFF22382E) : const Color(0xFFE2E8F0);
 
@@ -1877,7 +1887,7 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                       Icon(
                         Icons.storefront_outlined,
                         size: 13,
-                        color: isDark ? const Color(0xFF67C83B) : const Color(0xFF016042),
+                        color: isDark ? const Color(0xFF80C652) : const Color(0xFF016042),
                       ),
                       const SizedBox(width: 4),
                       Flexible(
@@ -1887,9 +1897,9 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                             fontFamily: 'Plus Jakarta Sans',
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
-                            color: isDark ? const Color(0xFF67C83B) : const Color(0xFF016042),
+                            color: isDark ? const Color(0xFF80C652) : const Color(0xFF016042),
                             decoration: TextDecoration.underline,
-                            decorationColor: (isDark ? const Color(0xFF67C83B) : const Color(0xFF016042)).withValues(alpha: 0.3),
+                            decorationColor: (isDark ? const Color(0xFF80C652) : const Color(0xFF016042)).withValues(alpha: 0.3),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -1965,11 +1975,11 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
                           ),
                           TextSpan(
                             text: totalPrice,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontFamily: 'Plus Jakarta Sans',
                               fontSize: 14,
                               fontWeight: FontWeight.w800,
-                              color: Color(0xFF016042),
+                              color: isDark ? const Color(0xFF80C652) : const Color(0xFF016042),
                             ),
                           ),
                         ],

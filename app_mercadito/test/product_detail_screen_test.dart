@@ -65,4 +65,52 @@ void main() {
     expect(find.text('Unidad'), findsOneWidget);
     expect(find.text('Saco'), findsNothing);
   });
+
+  testWidgets('Tapping Calidad on Segunda Calidad in dark mode opens QualityInfoBottomSheet with #F19D37', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 2.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    final testProduct = {
+      'id': 'PROD-TEST-2',
+      'name': 'Saco de Papas Blancas',
+      'category': 'Tubérculos',
+      'quality': 'Segunda Calidad',
+      'price': '\$280.00',
+      'unit': 'Saco',
+    };
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: ThemeData.dark(),
+        home: ProductDetailScreen(product: testProduct),
+      ),
+    );
+
+    await tester.pump(const Duration(milliseconds: 1600));
+    await tester.pumpAndSettle();
+
+    // Verify Calidad metric column
+    expect(find.text('Calidad'), findsOneWidget);
+    expect(find.text('SEGUNDA CALIDAD'), findsOneWidget);
+
+    // Tap Calidad to open bottom sheet
+    await tester.tap(find.text('SEGUNDA CALIDAD'));
+    await tester.pumpAndSettle();
+
+    // Bottom sheet is displayed
+    expect(find.text('Segunda Calidad'), findsOneWidget);
+    expect(find.text('ENTENDIDO'), findsOneWidget);
+
+    // Verify color on title
+    final titleWidget = tester.widget<Text>(find.text('Segunda Calidad'));
+    expect(titleWidget.style?.color, const Color(0xFFF19D37));
+
+    // Verify color on ENTENDIDO button
+    final buttonFinder = find.widgetWithText(ElevatedButton, 'ENTENDIDO');
+    expect(buttonFinder, findsOneWidget);
+    final buttonWidget = tester.widget<ElevatedButton>(buttonFinder);
+    expect(buttonWidget.style?.backgroundColor?.resolve({}), const Color(0xFFF19D37));
+  });
 }

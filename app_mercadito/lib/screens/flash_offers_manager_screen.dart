@@ -1130,6 +1130,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final effectivePrimary = isDark ? const Color(0xFF80C652) : primaryColor;
     final surfaceBg = isDark
         ? const Color(0xFF0F172A)
         : const Color(0xFFF8F9FF);
@@ -1156,19 +1157,19 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
             }
           },
         ),
-        title: const Text(
+        title: Text(
           'Gestor de Ofertas Relámpago',
           style: TextStyle(
             fontFamily: 'Manrope',
             fontWeight: FontWeight.bold,
             fontSize: 18,
-            color: primaryColor,
+            color: effectivePrimary,
           ),
         ),
         centerTitle: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.bolt, color: primaryColor),
+            icon: Icon(Icons.bolt, color: effectivePrimary),
             onPressed: () {
               // Quick action: switch to productos tab
               _tabController.animateTo(1);
@@ -1178,11 +1179,11 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
         ],
         bottom: TabBar(
           controller: _tabController,
-          labelColor: primaryColor,
+          labelColor: effectivePrimary,
           unselectedLabelColor: isDark
               ? Colors.grey.shade400
               : Colors.grey.shade600,
-          indicatorColor: primaryColor,
+          indicatorColor: effectivePrimary,
           indicatorWeight: 3,
           labelStyle: const TextStyle(
             fontFamily: 'Manrope',
@@ -1202,9 +1203,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          _buildOfertasTab(context, theme, isDark, cardBg, borderColor),
-          _buildProductosTab(context, theme, isDark, cardBg, borderColor),
-          _buildHistoricoTab(context, theme, isDark, cardBg, borderColor),
+          _buildOfertasTab(context, theme, isDark, cardBg, borderColor, effectivePrimary),
+          _buildProductosTab(context, theme, isDark, cardBg, borderColor, effectivePrimary),
+          _buildHistoricoTab(context, theme, isDark, cardBg, borderColor, effectivePrimary),
         ],
       ),
     );
@@ -1219,6 +1220,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
     bool isDark,
     Color cardBg,
     Color borderColor,
+    Color primaryColor,
   ) {
     return ValueListenableBuilder<List<Map<String, dynamic>>>(
       valueListenable: globalFlashOffers,
@@ -1837,12 +1839,16 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                               decoration: BoxDecoration(
                                 color: isWholesale
                                     ? const Color(0xFF0369A1).withValues(alpha: 0.12)
-                                    : const Color(0xFF047857).withValues(alpha: 0.12),
+                                    : (isDark
+                                        ? const Color(0xFF80C652).withValues(alpha: 0.15)
+                                        : const Color(0xFF047857).withValues(alpha: 0.12)),
                                 borderRadius: BorderRadius.circular(6),
                                 border: Border.all(
                                   color: isWholesale
                                       ? const Color(0xFF0369A1).withValues(alpha: 0.4)
-                                      : const Color(0xFF047857).withValues(alpha: 0.4),
+                                      : (isDark
+                                          ? const Color(0xFF80C652).withValues(alpha: 0.4)
+                                          : const Color(0xFF047857).withValues(alpha: 0.4)),
                                   width: 0.8,
                                 ),
                               ),
@@ -1856,7 +1862,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                     size: 11,
                                     color: isWholesale
                                         ? const Color(0xFF0369A1)
-                                        : const Color(0xFF047857),
+                                        : (isDark
+                                            ? const Color(0xFF80C652)
+                                            : const Color(0xFF047857)),
                                   ),
                                   const SizedBox(width: 3),
                                   Text(
@@ -1870,7 +1878,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                               ? const Color(0xFF38BDF8)
                                               : const Color(0xFF0369A1))
                                           : (isDark
-                                              ? const Color(0xFF34D399)
+                                              ? const Color(0xFF80C652)
                                               : const Color(0xFF047857)),
                                     ),
                                   ),
@@ -1960,20 +1968,20 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                     Text.rich(
                       TextSpan(
                         children: [
-                          const TextSpan(
+                          TextSpan(
                             text: 'Inicio: ',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.normal,
-                              color: Color(0xFF047857),
+                              color: isDark ? const Color(0xFF80C652) : const Color(0xFF047857),
                             ),
                           ),
                           TextSpan(
                             text: offer['startTime'] ?? 'hoy, 08:00 AM',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF047857),
+                              color: isDark ? const Color(0xFF80C652) : const Color(0xFF047857),
                             ),
                           ),
                         ],
@@ -2043,12 +2051,16 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                     Expanded(
                       child: _buildMetricRow(
                         icon: Icons.handshake_outlined,
-                        iconBgColor: const Color(0xFF047857).withValues(alpha: 0.12),
-                        iconColor: const Color(0xFF047857),
+                        iconBgColor: isDark
+                            ? const Color(0xFF80C652).withValues(alpha: 0.15)
+                            : const Color(0xFF047857).withValues(alpha: 0.12),
+                        iconColor: isDark
+                            ? const Color(0xFF80C652)
+                            : const Color(0xFF047857),
                         label: 'NEGOCIACIONES EN TIEMPO REAL',
                         value: offer['negotiations'] ?? '24 realizadas',
                         valueTextColor: isDark
-                            ? const Color(0xFF34D399)
+                            ? const Color(0xFF80C652)
                             : const Color(0xFF047857),
                       ),
                     ),
@@ -2127,6 +2139,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
     bool isDark,
     Color cardBg,
     Color borderColor,
+    Color primaryColor,
   ) {
     final Set<String> distinctCategories = {};
     for (final prod in _availableProducts) {
@@ -2890,12 +2903,16 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                   // 2. NEGOCIACIONES
                   _buildMetricRow(
                     icon: Icons.handshake_outlined,
-                    iconBgColor: const Color(0xFF047857).withValues(alpha: 0.12),
-                    iconColor: const Color(0xFF047857),
+                    iconBgColor: isDark
+                        ? const Color(0xFF80C652).withValues(alpha: 0.15)
+                        : const Color(0xFF047857).withValues(alpha: 0.12),
+                    iconColor: isDark
+                        ? const Color(0xFF80C652)
+                        : const Color(0xFF047857),
                     label: 'NEGOCIACIONES',
                     value: prod['negotiations'] ?? '35 realizadas',
                     valueTextColor: isDark
-                        ? const Color(0xFF34D399)
+                        ? const Color(0xFF80C652)
                         : const Color(0xFF047857),
                   ),
                   const SizedBox(height: 5),
@@ -3035,6 +3052,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
     bool isDark,
     Color cardBg,
     Color borderColor,
+    Color primaryColor,
   ) {
     return ValueListenableBuilder<List<Map<String, dynamic>>>(
       valueListenable: globalFlashOffers,
@@ -3853,12 +3871,16 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                   Expanded(
                     child: _buildMetricRow(
                       icon: Icons.handshake_outlined,
-                      iconBgColor: const Color(0xFF047857).withValues(alpha: 0.12),
-                      iconColor: const Color(0xFF047857),
+                      iconBgColor: isDark
+                          ? const Color(0xFF80C652).withValues(alpha: 0.15)
+                          : const Color(0xFF047857).withValues(alpha: 0.12),
+                      iconColor: isDark
+                          ? const Color(0xFF80C652)
+                          : const Color(0xFF047857),
                       label: 'NEGOCIACIONES OBTENIDAS',
                       value: item['negotiations'] ?? '24 realizadas',
                       valueTextColor: isDark
-                          ? const Color(0xFF34D399)
+                          ? const Color(0xFF80C652)
                           : const Color(0xFF047857),
                     ),
                   ),

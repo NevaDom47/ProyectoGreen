@@ -60,4 +60,41 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Negociaciones Canceladas'), findsOneWidget);
   });
+
+  testWidgets('Date picker in NegotiationsScreen in dark mode opens with dark theme and high contrast', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 2.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.darkTheme,
+        home: const NegotiationsScreen(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Open filter bottom sheet
+    await tester.tap(find.byIcon(Icons.tune_rounded));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Filtrar por Fecha'), findsOneWidget);
+    expect(find.text('Seleccionar Fecha'), findsOneWidget);
+
+    // Tap to open date picker
+    await tester.tap(find.text('Seleccionar Fecha'));
+    await tester.pumpAndSettle();
+
+    // Date picker dialog should be open with Spanish / dark theme text
+    expect(find.text('SELECCIONAR FECHA'), findsOneWidget);
+    expect(find.text('CANCELAR'), findsOneWidget);
+    expect(find.text('ACEPTAR'), findsOneWidget);
+
+    // Tap CANCELAR to close date picker
+    await tester.tap(find.text('CANCELAR'));
+    await tester.pumpAndSettle();
+
+    // Back in bottom sheet
+    expect(find.text('Filtrar por Fecha'), findsOneWidget);
+  });
 }

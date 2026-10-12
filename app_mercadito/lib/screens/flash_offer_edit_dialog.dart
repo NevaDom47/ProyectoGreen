@@ -303,7 +303,7 @@ class _FlashOfferEditDialogState extends State<FlashOfferEditDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    const primaryColor = Color(0xFF004532);
+    final primaryColor = isDark ? const Color(0xFF80C652) : const Color(0xFF004532);
     final surfaceBg =
         isDark ? const Color(0xFF121C28) : const Color(0xFFF8F9FF);
     final cardBg = isDark ? const Color(0xFF1E293B) : Colors.white;

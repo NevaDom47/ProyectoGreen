@@ -79,6 +79,7 @@ flutter:
     - assets/images/
     - assets/images/logos/
     - assets/images/pdf/
+    - assets/documents/
     - assets/sounds/
     - assets/animations/Favorito.json
     - assets/animations/Favorito2.json

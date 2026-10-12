@@ -32,7 +32,7 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
     final isDark = theme.brightness == Brightness.dark;
 
     final bgColor = isDark ? const Color(0xFF162B23) : const Color(0xFFF9FAF5);
-    const primaryColor = Color(0xFF016142);
+    final primaryColor = isDark ? const Color(0xFF80C552) : const Color(0xFF016142);
     final surfaceColor = isDark ? const Color(0xFF1E382E) : Colors.white;
     final textColor = isDark ? Colors.white : const Color(0xFF141A15);
     final subtextColor = isDark ? const Color(0xFF94a3b8) : const Color(0xFF435245);
@@ -60,7 +60,7 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
               padding: EdgeInsets.zero,
               icon: Icon(
                 Icons.arrow_back,
-                color: isDark ? const Color(0xFF67C83B) : primaryColor,
+                color: primaryColor,
                 size: 20,
               ),
               onPressed: () {
@@ -78,7 +78,7 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
           style: GoogleFonts.plusJakartaSans(
             fontSize: 18,
             fontWeight: FontWeight.w800,
-            color: isDark ? const Color(0xFF67C83B) : primaryColor,
+            color: primaryColor,
             letterSpacing: -0.5,
           ),
         ),
@@ -100,16 +100,16 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
               tooltip: 'Ayuda',
               icon: Icon(
                 Icons.help_outline_rounded,
-                color: isDark ? const Color(0xFF67C83B) : primaryColor,
+                color: primaryColor,
                 size: 20,
               ),
-              onPressed: () => _showHelpDialog(context),
+              onPressed: () => _showHelpDialog(context, primaryColor),
             ),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: primaryColor,
+        backgroundColor: isDark ? const Color(0xFF285E44) : const Color(0xFF016142),
         foregroundColor: Colors.white,
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -387,12 +387,12 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: _selectedFilter == filters[i]['label']
-                        ? primaryColor
+                        ? (isDark ? const Color(0xFF285E44) : const Color(0xFF016142))
                         : (isDark ? const Color(0xFF1E382E) : const Color(0xFFF3F6EC)),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: _selectedFilter == filters[i]['label']
-                          ? primaryColor
+                          ? (isDark ? const Color(0xFF80C552) : const Color(0xFF016142))
                           : (isDark ? const Color(0xFF2E4E41) : const Color(0xFFD0D9CD)),
                     ),
                   ),
@@ -425,7 +425,7 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
                             fontWeight: FontWeight.w800,
                             color: _selectedFilter == filters[i]['label']
                                 ? Colors.white
-                                : (isDark ? const Color(0xFF67C83B) : primaryColor),
+                                : primaryColor,
                           ),
                         ),
                       ),
@@ -536,7 +536,7 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
                   // Separador vertical
                   Container(
                     width: 1,
-                    color: primaryColor.withValues(alpha: 0.15),
+                    color: isDark ? const Color(0xFF2E4E41) : primaryColor.withValues(alpha: 0.15),
                   ),
 
                 // Contenido derecho del ticket
@@ -569,7 +569,7 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                 decoration: BoxDecoration(
-                                  color: badgeColor.withValues(alpha: 0.12),
+                                  color: badgeColor.withValues(alpha: isDark ? 0.2 : 0.12),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
@@ -634,9 +634,9 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                   decoration: BoxDecoration(
-                                    color: primaryColor.withValues(alpha: 0.08),
+                                    color: primaryColor.withValues(alpha: isDark ? 0.15 : 0.08),
                                     borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: primaryColor.withValues(alpha: 0.2)),
+                                    border: Border.all(color: primaryColor.withValues(alpha: isDark ? 0.35 : 0.2)),
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
@@ -705,7 +705,9 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
                             child: LinearProgressIndicator(
                               value: usagePercent,
                               minHeight: 5,
-                              backgroundColor: primaryColor.withValues(alpha: 0.1),
+                              backgroundColor: isDark
+                                  ? const Color(0xFF80C552).withValues(alpha: 0.15)
+                                  : primaryColor.withValues(alpha: 0.1),
                               valueColor: AlwaysStoppedAnimation<Color>(badgeColor),
                             ),
                           ),
@@ -731,7 +733,7 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
                     icon: const Icon(Icons.visibility_outlined, size: 15),
                     label: const Text('Ver', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                     style: TextButton.styleFrom(foregroundColor: primaryColor),
-                    onPressed: () => _showCouponDetailsDialog(context, coupon),
+                    onPressed: () => _showCouponDetailsDialog(context, coupon, primaryColor),
                   ),
 
                   // 2. Estadísticas (Embudo)
@@ -756,7 +758,7 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
                   IconButton(
                     tooltip: isPaused ? 'Reanudar' : 'Pausar',
                     icon: Icon(isPaused ? Icons.play_arrow_rounded : Icons.pause_rounded, size: 18),
-                    color: isPaused ? const Color(0xFF016142) : const Color(0xFFD97706),
+                    color: isPaused ? primaryColor : const Color(0xFFD97706),
                     onPressed: () {
                       CouponsService.instance.togglePauseCoupon(coupon.id);
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -781,9 +783,9 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
                       } else if (val == 'duplicate') {
                         CouponsService.instance.duplicateCoupon(coupon.id);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Cupón duplicado en modo pausa con éxito.'),
-                            backgroundColor: Color(0xFF016142),
+                          SnackBar(
+                            content: const Text('Cupón duplicado en modo pausa con éxito.'),
+                            backgroundColor: primaryColor,
                           ),
                         );
                       } else if (val == 'finalize') {
@@ -896,7 +898,7 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
   }
 
   // --- Diálogo de Detalle ---
-  void _showCouponDetailsDialog(BuildContext context, Coupon coupon) {
+  void _showCouponDetailsDialog(BuildContext context, Coupon coupon, Color primaryColor) {
     showDialog(
       context: context,
       builder: (context) {
@@ -904,7 +906,7 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: Row(
             children: [
-              const Icon(Icons.confirmation_number_outlined, color: Color(0xFF016142)),
+              Icon(Icons.confirmation_number_outlined, color: primaryColor),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -1000,14 +1002,14 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
     );
   }
 
-  void _showHelpDialog(BuildContext context) {
+  void _showHelpDialog(BuildContext context, Color primaryColor) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.help_outline, color: Color(0xFF016142)),
+            Icon(Icons.help_outline, color: primaryColor),
             SizedBox(width: 8),
             Text('Ciclo de Vida del Cupón', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           ],

@@ -297,6 +297,30 @@ void main() {
       expect(find.text('Aguacate Hass'), findsOneWidget);
     });
 
+    testWidgets('BuyerProfileScreen uses #80C652 in dark mode for preferences and history elements', (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(1080, 5000);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+
+      final testBuyer = Map<String, dynamic>.from(initialMarketplaceBuyers[0]);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.darkTheme,
+          home: BuyerProfileScreen(buyer: testBuyer),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Check 'Ver todo' text style has #80C652
+      final verTodoText = tester.widget<Text>(find.text('Ver todo'));
+      expect(verTodoText.style?.color, const Color(0xFF80C652));
+
+      // Check product chip text style has #80C652
+      final productText = tester.widget<Text>(find.text('Tomate Saladette'));
+      expect(productText.style?.color, const Color(0xFF80C652));
+    });
+
     testWidgets('Calificar Comprador button opens DirectProfileReviewScreen', (WidgetTester tester) async {
       tester.view.physicalSize = const Size(1080, 5000);
       tester.view.devicePixelRatio = 1.0;

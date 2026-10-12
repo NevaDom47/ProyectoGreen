@@ -322,20 +322,62 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         
                         // Terms
                         Center(
-                          child: RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(
-                              style: TextStyle(
-                                fontSize: 11,
-                                letterSpacing: 1.1,
-                                color: isDark ? Colors.grey.shade500 : Colors.grey.shade500,
-                                height: 1.6,
-                              ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Wrap(
+                              alignment: WrapAlignment.center,
+                              crossAxisAlignment: WrapCrossAlignment.center,
                               children: [
-                                const TextSpan(text: 'AL REGISTRARTE, ACEPTAS NUESTROS\n'),
-                                const TextSpan(text: 'TÉRMINOS DE SERVICIO', style: TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
-                                const TextSpan(text: ' Y '),
-                                const TextSpan(text: 'POLÍTICA DE PRIVACIDAD', style: TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                                Text(
+                                  'AL REGISTRARTE, ACEPTAS NUESTROS ',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    letterSpacing: 1.1,
+                                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    onTap: () => context.push('/legal-policies', extra: 0),
+                                    child: Text(
+                                      'TÉRMINOS DE SERVICIO',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        letterSpacing: 1.1,
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.underline,
+                                        color: accentGreen,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  ' Y ',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    letterSpacing: 1.1,
+                                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    onTap: () => context.push('/legal-policies', extra: 1),
+                                    child: Text(
+                                      'POLÍTICA DE PRIVACIDAD',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        letterSpacing: 1.1,
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.underline,
+                                        color: accentGreen,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),

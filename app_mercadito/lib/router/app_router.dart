@@ -632,16 +632,24 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/legal-policies',
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: const LegalPoliciesScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position: animation.drive(Tween(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(CurveTween(curve: Curves.easeOutCubic))),
-            child: child,
-          );
-        },
-      ),
+      pageBuilder: (context, state) {
+        int initialTab = 0;
+        if (state.extra is int) {
+          initialTab = state.extra as int;
+        } else if (state.extra is Map && (state.extra as Map).containsKey('initialTab')) {
+          initialTab = (state.extra as Map)['initialTab'] as int? ?? 0;
+        }
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: LegalPoliciesScreen(initialTabIndex: initialTab),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: animation.drive(Tween(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(CurveTween(curve: Curves.easeOutCubic))),
+              child: child,
+            );
+          },
+        );
+      },
     ),
     GoRoute(
       path: '/coupons',

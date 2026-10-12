@@ -196,6 +196,56 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
 
                   // Confirm Button
                   _buildConfirmButton(actualPrimary, isDarkMode),
+
+                  // Legal Policies notice
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Wrap(
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Text(
+                          'Al continuar, aceptas nuestros ',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 12,
+                            color: actualTextVariant,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () => context.push('/legal-policies', extra: 0),
+                          child: Text(
+                            'Términos y Condiciones',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: actualPrimary,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          ' y la ',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 12,
+                            color: actualTextVariant,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () => context.push('/legal-policies', extra: 1),
+                          child: Text(
+                            'Política de Privacidad',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: actualPrimary,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),

@@ -11,8 +11,8 @@ class MyReviewsScreen extends StatefulWidget {
   // Global/Static tracker for pending buyer reviews
   static final List<Map<String, dynamic>> pendingReviews = [
     {
-      'orderId': 'ORD-4829',
-      'negotiationId': 'NEG-2026-894',
+      'orderId': '#NEG-00001',
+      'negotiationId': 'NEG-00001',
       'productName': 'Tomates Heirloom',
       'vendor': 'Finca La Esperanza',
       'vendorVerified': true,
@@ -28,8 +28,8 @@ class MyReviewsScreen extends StatefulWidget {
       'daysSinceCompleted': 4, // >= 3 -> Habilitado para reseñar
     },
     {
-      'orderId': 'ORD-4712',
-      'negotiationId': 'NEG-2026-751',
+      'orderId': '#NEG-00002',
+      'negotiationId': 'NEG-00002',
       'productName': 'Miel Silvestre',
       'vendor': 'Apicultura Los Pinos',
       'vendorVerified': true,
@@ -45,8 +45,8 @@ class MyReviewsScreen extends StatefulWidget {
       'daysSinceCompleted': 1, // < 3 -> Bloqueado (faltan 2 días)
     },
     {
-      'orderId': 'ORD-4655',
-      'negotiationId': 'NEG-2026-620',
+      'orderId': '#NEG-00003',
+      'negotiationId': 'NEG-00003',
       'productName': 'Queso Curado',
       'vendor': 'Lácteos del Valle',
       'vendorVerified': true,
@@ -66,8 +66,8 @@ class MyReviewsScreen extends StatefulWidget {
   // Tracker for provider pending reviews (buyer reviews awaiting seller's response)
   static final List<Map<String, dynamic>> providerPendingReviews = [
     {
-      'orderId': 'ORD-4510',
-      'negotiationId': 'NEG-2026-512',
+      'orderId': '#NEG-00004',
+      'negotiationId': 'NEG-00004',
       'productName': 'Cesta de Verduras Mixtas',
       'buyer': 'Mariana Ortiz',
       'buyerAvatar': 'https://lh3.googleusercontent.com/aida-public/AB6AXuDkExJjnogapAzYJSb7dQcgEWoBPwi2xrSMgswCUDDdVdRIXBZrVUKFDHMFPh8uh9DUS0PoOVg9IrZX3QGXegq2vzNujlg8qkX9oTAilz4-qbfjAC8xvPkNtl_X5ZFNpvFUAB6cbjL0rQECyadtUul-xcUGi73dT-_8e1Rr3QDvasFOTid1uiY8_3qwe0DHWwWnt-yKwa_USTLTgTbZYGYoRW7zLXOSazPfHD2Ouw_9Onw8CMHvzMiClYcBiFiabXucIHwkS4Ts75c',
@@ -87,8 +87,8 @@ class MyReviewsScreen extends StatefulWidget {
   // Tracker for provider completed reviews (buyer reviews already responded to)
   static final List<Map<String, dynamic>> providerCompletedReviews = [
     {
-      'orderId': 'ORD-4402',
-      'negotiationId': 'NEG-2026-440',
+      'orderId': '#NEG-00005',
+      'negotiationId': 'NEG-00005',
       'productName': 'Aceite de Oliva Virgen Extra',
       'buyer': 'Carlos Ruiz',
       'buyerAvatar': 'https://lh3.googleusercontent.com/aida-public/AB6AXuDP2SAhDf3xiSDi_M640MlgD1SQS_efXAy3Nge5f61w_PC0JqfPVQnJ_kzRN9OgQrCitc4c0LnJKeKKJHU00mVz4zapAJiBALXB2tF9-vkiIl8iYScPOcNMZwg2qMrHJfOf4och7hchrTrvSDLEMP3wTPctSP4iDgSaaRlygMLAx9hQgab4WuZ3LM2naJkAN4LC7H4CrZZrEyxehsOObIA6mq_8FYKPBB7xwkEQ9p6uL63m30AzftO3X0FNrF6k_45fChAU1ky479Y',
@@ -110,6 +110,16 @@ class MyReviewsScreen extends StatefulWidget {
       ? providerPendingReviews.length
       : pendingReviews.length;
 
+  static String formatNegotiationId(dynamic rawId) {
+    if (rawId == null) return '#NEG-00001';
+    final str = rawId.toString().trim();
+    if (str.startsWith('#NEG-')) return str;
+    if (str.startsWith('NEG-')) return '#$str';
+    if (str.startsWith('ORD-')) return str.replaceAll('ORD-', '#NEG-');
+    if (str.startsWith('#ORD-')) return str.replaceAll('#ORD-', '#NEG-');
+    return '#NEG-$str';
+  }
+
   @override
   State<MyReviewsScreen> createState() => _MyReviewsScreenState();
 }
@@ -122,8 +132,8 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
   // Completed reviews state
   final List<Map<String, dynamic>> _completedReviews = [
     {
-      'orderId': 'ORD-4510',
-      'negotiationId': 'NEG-2026-512',
+      'orderId': '#NEG-00004',
+      'negotiationId': 'NEG-00004',
       'productName': 'Cesta de Verduras Mixtas',
       'vendor': 'Huerta San Miguel',
       'vendorVerified': true,
@@ -141,8 +151,8 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
       'producerReply': '¡Muchas gracias por tu comentario! Nos alegra mucho saber que disfrutaste la frescura de nuestra cosecha. Trabajamos con mucho cariño para que cada empaque llegue perfecto a tu mesa. - Huerta San Miguel',
     },
     {
-      'orderId': 'ORD-4402',
-      'negotiationId': 'NEG-2026-440',
+      'orderId': '#NEG-00005',
+      'negotiationId': 'NEG-00005',
       'productName': 'Aceite de Oliva Virgen Extra',
       'vendor': 'Olivar Los Cerezos',
       'vendorVerified': true,
@@ -842,7 +852,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
           Align(
             alignment: Alignment.centerRight,
             child: Text(
-              item['orderId'] ?? 'ORD-0000',
+              MyReviewsScreen.formatNegotiationId(item['orderId'] ?? item['negotiationId']),
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
@@ -2217,14 +2227,18 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Detalles del Acuerdo',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                          color: onSurface,
+                      Expanded(
+                        child: Text(
+                          'Detalles del Acuerdo',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            color: onSurface,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
+                      const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                         decoration: BoxDecoration(
@@ -2232,7 +2246,7 @@ class _MyReviewsScreenState extends State<MyReviewsScreen> {
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
-                          item['orderId'] ?? 'ORD',
+                          MyReviewsScreen.formatNegotiationId(item['orderId'] ?? item['negotiationId']),
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 11,
                             fontWeight: FontWeight.w700,

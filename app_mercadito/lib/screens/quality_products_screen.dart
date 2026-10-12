@@ -525,7 +525,9 @@ class _QualityProductsScreenState extends State<QualityProductsScreen> {
     Map<String, dynamic> tierMeta,
     String cleanQuality,
   ) {
-    final Color primaryColor = tierMeta['primaryColor'];
+    final Color primaryColor = isDark && cleanQuality.toUpperCase().contains('SEGUNDA')
+        ? const Color(0xFFF19D37)
+        : tierMeta['primaryColor'];
     final Color bgColor = isDark ? tierMeta['darkBg'] : tierMeta['lightBg'];
     final Color borderColor = isDark ? tierMeta['darkBorderColor'] : tierMeta['borderColor'];
     final List<Map<String, dynamic>> standards = tierMeta['standards'];

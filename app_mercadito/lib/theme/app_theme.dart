@@ -203,6 +203,49 @@ class AppTheme {
           textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
         ),
       ),
+      datePickerTheme: DatePickerThemeData(
+        backgroundColor: Colors.white,
+        headerBackgroundColor: lightPrimary,
+        headerForegroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        dividerColor: lightBorder,
+        dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return lightPrimary;
+          }
+          return null;
+        }),
+        dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return Colors.white;
+          }
+          if (states.contains(WidgetState.disabled)) {
+            return lightTextTertiary.withValues(alpha: 0.5);
+          }
+          return lightTextPrimary;
+        }),
+        todayForegroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return Colors.white;
+          }
+          return lightPrimary;
+        }),
+        todayBorder: const BorderSide(color: lightPrimary, width: 1.5),
+        yearForegroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return Colors.white;
+          }
+          return lightTextPrimary;
+        }),
+        cancelButtonStyle: TextButton.styleFrom(
+          foregroundColor: lightPrimary,
+          textStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
+        ),
+        confirmButtonStyle: TextButton.styleFrom(
+          foregroundColor: lightPrimary,
+          textStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
+        ),
+      ),
     );
   }
 
@@ -300,6 +343,49 @@ class AppTheme {
           minimumSize: const Size(0, 48),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+        ),
+      ),
+      datePickerTheme: DatePickerThemeData(
+        backgroundColor: darkCard,
+        headerBackgroundColor: darkSecondaryBackground,
+        headerForegroundColor: darkPrimary,
+        surfaceTintColor: Colors.transparent,
+        dividerColor: darkBorder,
+        dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return darkPrimary;
+          }
+          return null;
+        }),
+        dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return const Color(0xFF0F1C18);
+          }
+          if (states.contains(WidgetState.disabled)) {
+            return darkTextTertiary.withValues(alpha: 0.5);
+          }
+          return darkTextPrimary;
+        }),
+        todayForegroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return const Color(0xFF0F1C18);
+          }
+          return darkPrimary;
+        }),
+        todayBorder: const BorderSide(color: darkPrimary, width: 1.5),
+        yearForegroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return const Color(0xFF0F1C18);
+          }
+          return darkTextPrimary;
+        }),
+        cancelButtonStyle: TextButton.styleFrom(
+          foregroundColor: darkPrimary,
+          textStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
+        ),
+        confirmButtonStyle: TextButton.styleFrom(
+          foregroundColor: darkPrimary,
+          textStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
         ),
       ),
     );

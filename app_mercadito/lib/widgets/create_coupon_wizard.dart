@@ -28,6 +28,32 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
   final _titleController = TextEditingController();
   final _codeController = TextEditingController();
   String _selectedCategory = 'FRUTAS & VERDURAS';
+  bool _showTitleError = false;
+
+  bool get _isTitleValid => _titleController.text.trim().length >= 4;
+
+  String get _titleErrorMessage {
+    final text = _titleController.text.trim();
+    if (text.isEmpty) {
+      return 'El título de la promoción es obligatorio.';
+    }
+    if (text.length < 4) {
+      return 'Debe contener al menos 4 caracteres (ingresaste ${text.length}).';
+    }
+    return '';
+  }
+
+  void _onTitleChanged() {
+    if (_showTitleError) {
+      setState(() {
+        if (_isTitleValid) {
+          _showTitleError = false;
+        }
+      });
+    } else {
+      setState(() {});
+    }
+  }
 
   // Paso 2: Beneficio
   CouponBenefitType _selectedBenefitType = CouponBenefitType.percentage;
@@ -64,6 +90,7 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
   @override
   void initState() {
     super.initState();
+    _titleController.addListener(_onTitleChanged);
     if (widget.initialCoupon != null) {
       final c = widget.initialCoupon!;
       _titleController.text = c.title;
@@ -96,6 +123,7 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
 
   @override
   void dispose() {
+    _titleController.removeListener(_onTitleChanged);
     _titleController.dispose();
     _codeController.dispose();
     _benefitValueController.dispose();
@@ -281,7 +309,41 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
 
     return Expanded(
       child: InkWell(
-        onTap: () => setState(() => _currentStep = step),
+        onTap: () {
+          if (step > 1 && !_isTitleValid) {
+            setState(() {
+              _showTitleError = true;
+              _currentStep = 1;
+            });
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: [
+                    const Icon(Icons.warning_amber_rounded, color: Colors.white, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        _titleErrorMessage,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                backgroundColor: const Color(0xFFDC2626),
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                duration: const Duration(seconds: 3),
+              ),
+            );
+            return;
+          }
+          setState(() => _currentStep = step);
+        },
         borderRadius: BorderRadius.circular(12),
         child: Column(
           children: [
@@ -369,13 +431,37 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
         const SizedBox(height: 20),
 
         // Título del cupón
-        Text(
-          'Título de la promoción / cupón *',
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-            color: text,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                'Título de la promoción / cupón *',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: _showTitleError && !_isTitleValid
+                      ? const Color(0xFFEF4444)
+                      : text,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              _titleController.text.trim().isNotEmpty
+                  ? '${_titleController.text.trim().length} / 4 mín.'
+                  : 'Mínimo 4 caracteres',
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: _showTitleError && !_isTitleValid
+                    ? const Color(0xFFEF4444)
+                    : (_isTitleValid
+                        ? (isDark ? const Color(0xFF80C652) : const Color(0xFF059669))
+                        : subtext),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 6),
         TextField(
@@ -387,14 +473,51 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
             filled: true,
             fillColor: isDark ? const Color(0xFF1E382E) : Colors.white,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            errorText: _showTitleError && !_isTitleValid ? _titleErrorMessage : null,
+            errorStyle: GoogleFonts.plusJakartaSans(
+              fontSize: 11.5,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFFEF4444),
+            ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: border, width: 1.2),
+              borderSide: BorderSide(
+                color: _showTitleError && !_isTitleValid
+                    ? const Color(0xFFEF4444)
+                    : border,
+                width: _showTitleError && !_isTitleValid ? 1.5 : 1.2,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: primary, width: 1.8),
+              borderSide: BorderSide(
+                color: _showTitleError && !_isTitleValid
+                    ? const Color(0xFFEF4444)
+                    : primary,
+                width: 1.8,
+              ),
             ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.5),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.8),
+            ),
+            suffixIcon: _isTitleValid
+                ? const Icon(
+                    Icons.check_circle_rounded,
+                    color: Color(0xFF10B981),
+                    size: 20,
+                  )
+                : (_showTitleError
+                    ? const Icon(
+                        Icons.error_outline_rounded,
+                        color: Color(0xFFEF4444),
+                        size: 20,
+                      )
+                    : null),
           ),
         ),
 
@@ -1992,6 +2115,37 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
               onPressed: () {
+                if (_currentStep == 1 && !_isTitleValid) {
+                  setState(() {
+                    _showTitleError = true;
+                  });
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Row(
+                        children: [
+                          const Icon(Icons.warning_amber_rounded, color: Colors.white, size: 20),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              _titleErrorMessage,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      backgroundColor: const Color(0xFFDC2626),
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      duration: const Duration(seconds: 3),
+                    ),
+                  );
+                  return;
+                }
                 if (isLastStep) {
                   _saveAndSubmit();
                 } else {
@@ -2006,9 +2160,40 @@ class _CreateCouponWizardState extends State<CreateCouponWizard> {
   }
 
   void _saveAndSubmit() {
-    final title = _titleController.text.trim().isNotEmpty
-        ? _titleController.text.trim()
-        : 'Promoción Especial';
+    if (!_isTitleValid) {
+      setState(() {
+        _currentStep = 1;
+        _showTitleError = true;
+      });
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.warning_amber_rounded, color: Colors.white, size: 20),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  _titleErrorMessage,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: const Color(0xFFDC2626),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
+
+    final title = _titleController.text.trim();
     final code = _codeController.text.trim().isNotEmpty
         ? _codeController.text.trim().toUpperCase()
         : CouponsService.instance.generateCouponCode();

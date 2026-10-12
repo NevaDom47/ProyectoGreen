@@ -1001,8 +1001,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 'Calidad', 
                                 Icons.eco, 
                                 quality.toUpperCase().contains('PRIMERA') 
-                                  ? const Color(0xFF016142) 
-                                  : (quality.toUpperCase().contains('SEGUNDA') ? Colors.orange : Colors.red), 
+                                  ? (isDark ? const Color(0xFF80C652) : const Color(0xFF016142)) 
+                                  : (quality.toUpperCase().contains('SEGUNDA') 
+                                      ? (isDark ? const Color(0xFFF19D37) : Colors.orange) 
+                                      : Colors.red), 
                                 quality.toUpperCase(), 
                                 isDark, 
                                 textColor, 

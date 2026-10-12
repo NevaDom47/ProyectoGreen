@@ -211,8 +211,8 @@ class ReviewsService {
   static List<ProductNegotiationReview> _createDefaultNegotiationReviews() => [
     // 1. Acuerdo completado hace 4 días (>= 3 días -> HABILITADO para el comprador)
     ProductNegotiationReview(
-      orderId: 'ORD-4829',
-      negotiationId: 'NEG-2026-894',
+      orderId: '#NEG-00001',
+      negotiationId: 'NEG-00001',
       productName: 'Tomates Heirloom',
       vendor: 'Finca La Esperanza',
       vendorVerified: true,
@@ -230,8 +230,8 @@ class ReviewsService {
     ),
     // 2. Acuerdo completado ayer (1 día < 3 días -> BLOQUEADO para el comprador, faltan 2 días)
     ProductNegotiationReview(
-      orderId: 'ORD-4712',
-      negotiationId: 'NEG-2026-751',
+      orderId: '#NEG-00002',
+      negotiationId: 'NEG-00002',
       productName: 'Miel Silvestre',
       vendor: 'Apicultura Los Pinos',
       vendorVerified: true,
@@ -249,8 +249,8 @@ class ReviewsService {
     ),
     // 3. Acuerdo completado hace 2 días (2 días < 3 días -> BLOQUEADO, falta 1 día)
     ProductNegotiationReview(
-      orderId: 'ORD-4655',
-      negotiationId: 'NEG-2026-620',
+      orderId: '#NEG-00003',
+      negotiationId: 'NEG-00003',
       productName: 'Queso Curado',
       vendor: 'Lácteos del Valle',
       vendorVerified: true,
@@ -268,8 +268,8 @@ class ReviewsService {
     ),
     // 4. Reseña ya completada por el comprador pero SIN respuesta del vendedor (Pendiente para el Proveedor)
     ProductNegotiationReview(
-      orderId: 'ORD-4510',
-      negotiationId: 'NEG-2026-512',
+      orderId: '#NEG-00004',
+      negotiationId: 'NEG-00004',
       productName: 'Cesta de Verduras Mixtas',
       vendor: 'Finca La Esperanza',
       vendorVerified: true,
@@ -289,8 +289,8 @@ class ReviewsService {
     ),
     // 5. Reseña completada por el comprador y YA respondida por el vendedor (Completada para ambos)
     ProductNegotiationReview(
-      orderId: 'ORD-4402',
-      negotiationId: 'NEG-2026-440',
+      orderId: '#NEG-00005',
+      negotiationId: 'NEG-00005',
       productName: 'Aceite de Oliva Virgen Extra',
       vendor: 'Finca La Esperanza',
       vendorVerified: true,

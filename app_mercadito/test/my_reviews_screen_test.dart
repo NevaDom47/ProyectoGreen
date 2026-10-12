@@ -39,6 +39,7 @@ void main() {
     expect(find.text('Completadas'), findsOneWidget);
 
     // Verify pending items are present
+    expect(find.text('#NEG-00001'), findsOneWidget);
     expect(find.text('Tomates Heirloom'), findsOneWidget);
     expect(find.text('Finca La Esperanza'), findsOneWidget);
     expect(find.text('CANTIDAD'), findsWidgets);
@@ -51,6 +52,7 @@ void main() {
     await tester.tap(find.text('Acuerdo').first);
     await tester.pumpAndSettle();
     expect(find.text('Detalles del Acuerdo'), findsOneWidget);
+    expect(find.text('#NEG-00001'), findsWidgets); // Modal badge also shows #NEG-00001
     expect(find.text('Volumen Negociado'), findsOneWidget);
 
     // Scroll to action button and tap
@@ -92,7 +94,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // ORD-4712 (Miel Silvestre) has daysSinceCompleted: 1 (< 3 days)
+    // #NEG-00002 (Miel Silvestre) has daysSinceCompleted: 1 (< 3 days)
     expect(find.text('Miel Silvestre'), findsOneWidget);
     expect(find.textContaining('Disponible en 2 días'), findsWidgets);
 

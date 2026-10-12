@@ -13,7 +13,7 @@ class AccountConfigScreen extends StatefulWidget {
 class _AccountConfigScreenState extends State<AccountConfigScreen> {
   // Local State for User Information
   String _fullName = 'Mateo Estrada';
-  String _userName = '@mateo_cosecha';
+  final String _userName = '@mateo_cosecha';
   String _email = 'm.estrada@agro-mail.com';
   String _phone = '+52 55 1234 5678';
 
@@ -261,15 +261,6 @@ class _AccountConfigScreenState extends State<AccountConfigScreen> {
             color: onSurfaceColor,
           ),
         ),
-        const SizedBox(height: 4),
-        Text(
-          'Productor Premium',
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: secondaryTextColor,
-          ),
-        ),
       ],
     );
   }
@@ -318,11 +309,8 @@ class _AccountConfigScreenState extends State<AccountConfigScreen> {
                 surfaceColor, 
                 onSurfaceColor, 
                 outlineColor,
-                onTap: () => _showEditModal(
-                  label: 'Nombre de usuario',
-                  initialValue: _userName,
-                  onSave: (val) => setState(() => _userName = val),
-                ),
+                isEnabled: false,
+                onTap: null,
               ),
             ),
           ],
@@ -362,79 +350,129 @@ class _AccountConfigScreenState extends State<AccountConfigScreen> {
     );
   }
 
-  Widget _buildInfoTile(String label, String value, bool isDark, Color surfaceColor, Color onSurfaceColor, Color outlineColor, {bool isVerified = false, VoidCallback? onTap}) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: surfaceColor,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: outlineColor),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.02),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            )
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label.toUpperCase(),
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 8,
-                fontWeight: FontWeight.w700,
-                color: Colors.grey,
-                letterSpacing: 1.5,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          value,
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: onSurfaceColor,
-                          ),
-                          overflow: TextOverflow.ellipsis,
+  Widget _buildInfoTile(
+    String label, 
+    String value, 
+    bool isDark, 
+    Color surfaceColor, 
+    Color onSurfaceColor, 
+    Color outlineColor, {
+    bool isVerified = false, 
+    bool isEnabled = true,
+    VoidCallback? onTap,
+  }) {
+    final effectiveTileBg = !isEnabled
+        ? (isDark ? surfaceColor.withValues(alpha: 0.5) : const Color(0xFFF1F4F0))
+        : surfaceColor;
+    final effectiveLabelColor = !isEnabled
+        ? (isDark ? Colors.white30 : Colors.grey[400]!)
+        : Colors.grey;
+    final effectiveValueColor = !isEnabled
+        ? (isDark ? Colors.white38 : const Color(0xFF8A928D))
+        : onSurfaceColor;
+    final effectiveChevronColor = !isEnabled
+        ? (isDark ? Colors.white12 : Colors.grey[300]!)
+        : Colors.grey;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: isEnabled ? onTap : null,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: effectiveTileBg,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: outlineColor),
+            boxShadow: isEnabled
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.02),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    )
+                  ]
+                : null,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    label.toUpperCase(),
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 8,
+                      fontWeight: FontWeight.w700,
+                      color: effectiveLabelColor,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                  if (!isEnabled)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
+                      decoration: BoxDecoration(
+                        color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        'INACTIVO',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 7.5,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.5,
+                          color: isDark ? Colors.white38 : Colors.grey[600],
                         ),
                       ),
-                      if (isVerified) ...[
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF00462f).withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(99),
-                          ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Flexible(
                           child: Text(
-                            'VERIFICADO',
+                            value,
                             style: GoogleFonts.plusJakartaSans(
-                              fontSize: 7,
-                              fontWeight: FontWeight.w900,
-                              color: const Color(0xFF00462f),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: effectiveValueColor,
                             ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        if (isVerified) ...[
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF00462f).withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(99),
+                            ),
+                            child: Text(
+                              'VERIFICADO',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 7,
+                                fontWeight: FontWeight.w900,
+                                color: const Color(0xFF00462f),
+                              ),
+                            ),
+                          ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
-                ),
-                const Icon(Icons.chevron_right, color: Colors.grey, size: 18),
-              ],
-            ),
-          ],
+                  Icon(Icons.chevron_right, color: effectiveChevronColor, size: 18),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

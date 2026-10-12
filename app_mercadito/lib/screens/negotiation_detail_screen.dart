@@ -14,6 +14,17 @@ class NegotiationDetailScreen extends StatelessWidget {
     required this.negotiation,
   });
 
+  static String formatNegotiationId(dynamic rawId) {
+    if (rawId == null) return '#NEG-88290';
+    final str = rawId.toString().trim();
+    if (str.startsWith('#FAC-')) return str.replaceAll('#FAC-', '#NEG-');
+    if (str.startsWith('FAC-')) return str.replaceAll('FAC-', '#NEG-');
+    if (str.startsWith('# NEG-')) return str.replaceAll('# NEG-', '#NEG-');
+    if (str.startsWith('#NEG-')) return str;
+    if (str.startsWith('NEG-')) return '#$str';
+    return '#NEG-$str';
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -162,7 +173,7 @@ class NegotiationDetailScreen extends StatelessWidget {
                               final pdfBytes = await PdfInvoiceService.generateInvoice(negotiation);
                               await Printing.layoutPdf(
                                 onLayout: (format) async => pdfBytes,
-                                name: 'comprobante_${negotiation['invoice_id'] ?? 'factura'}.pdf',
+                                name: 'comprobante_${formatNegotiationId(negotiation['invoice_id']).replaceAll('#', '')}.pdf',
                               );
                             } catch (e) {
                               if (context.mounted) {
@@ -319,7 +330,7 @@ class NegotiationDetailScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        negotiation['invoice_id'] ?? '#FAC-88290',
+                        formatNegotiationId(negotiation['invoice_id']),
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
@@ -1066,7 +1077,7 @@ class NegotiationDetailScreen extends StatelessWidget {
                   const SizedBox(width: 6),
                   Flexible(
                     child: Text(
-                      'Folio: ${negotiation['invoice_id'] ?? '#FAC-88290'}',
+                      'Folio: ${formatNegotiationId(negotiation['invoice_id'])}',
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,

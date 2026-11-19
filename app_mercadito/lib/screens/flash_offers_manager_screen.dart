@@ -33,7 +33,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
   static const Color primaryColor = Color(0xFF004532);
 
   late TabController _tabController;
-  final TextEditingController _productSearchController = TextEditingController();
+  final TextEditingController _productSearchController =
+      TextEditingController();
   String _selectedFilter = 'Todas';
   String _selectedCategory = 'Todos';
   String _searchQuery = '';
@@ -300,59 +301,51 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
     // If 3 or fewer units, show direct chips
     if (availableUnitsList.length <= 3) {
       return Row(
-        children:
-            availableUnitsList.map((u) {
-              final isUnitSelected =
-                  currentUnit.toUpperCase() == u.toUpperCase();
-              return Padding(
-                padding: const EdgeInsets.only(right: 3),
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _availableProductSelectedUnit[productName] = u;
-                    });
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color:
-                          isUnitSelected
-                              ? activeColor
-                              : (isDark
-                                  ? const Color(0xFF0F172A)
-                                  : const Color(0xFFF1F5F9)),
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(
-                        color:
-                            isUnitSelected
-                                ? activeColor
-                                : (isDark
-                                    ? const Color(0xFF334155)
-                                    : const Color(0xFFCBD5E1)),
-                        width: 0.8,
-                      ),
-                    ),
-                    child: Text(
-                      u,
-                      style: TextStyle(
-                        fontFamily: 'JetBrains Mono',
-                        fontSize: 8,
-                        fontWeight: FontWeight.w800,
-                        color:
-                            isUnitSelected
-                                ? Colors.white
-                                : (isDark
-                                    ? Colors.grey.shade300
-                                    : Colors.grey.shade700),
-                      ),
-                    ),
+        children: availableUnitsList.map((u) {
+          final isUnitSelected = currentUnit.toUpperCase() == u.toUpperCase();
+          return Padding(
+            padding: const EdgeInsets.only(right: 3),
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _availableProductSelectedUnit[productName] = u;
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: isUnitSelected
+                      ? activeColor
+                      : (isDark
+                            ? const Color(0xFF0F172A)
+                            : const Color(0xFFF1F5F9)),
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(
+                    color: isUnitSelected
+                        ? activeColor
+                        : (isDark
+                              ? const Color(0xFF334155)
+                              : const Color(0xFFCBD5E1)),
+                    width: 0.8,
                   ),
                 ),
-              );
-            }).toList(),
+                child: Text(
+                  u,
+                  style: TextStyle(
+                    fontFamily: 'JetBrains Mono',
+                    fontSize: 8,
+                    fontWeight: FontWeight.w800,
+                    color: isUnitSelected
+                        ? Colors.white
+                        : (isDark
+                              ? Colors.grey.shade300
+                              : Colors.grey.shade700),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }).toList(),
       );
     }
 
@@ -392,20 +385,18 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                 decoration: BoxDecoration(
-                  color:
-                      isUnitSelected
-                          ? activeColor
-                          : (isDark
-                              ? const Color(0xFF0F172A)
-                              : const Color(0xFFF1F5F9)),
+                  color: isUnitSelected
+                      ? activeColor
+                      : (isDark
+                            ? const Color(0xFF0F172A)
+                            : const Color(0xFFF1F5F9)),
                   borderRadius: BorderRadius.circular(4),
                   border: Border.all(
-                    color:
-                        isUnitSelected
-                            ? activeColor
-                            : (isDark
-                                ? const Color(0xFF334155)
-                                : const Color(0xFFCBD5E1)),
+                    color: isUnitSelected
+                        ? activeColor
+                        : (isDark
+                              ? const Color(0xFF334155)
+                              : const Color(0xFFCBD5E1)),
                     width: 0.8,
                   ),
                 ),
@@ -415,12 +406,11 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                     fontFamily: 'JetBrains Mono',
                     fontSize: 8,
                     fontWeight: FontWeight.w800,
-                    color:
-                        isUnitSelected
-                            ? Colors.white
-                            : (isDark
-                                ? Colors.grey.shade300
-                                : Colors.grey.shade700),
+                    color: isUnitSelected
+                        ? Colors.white
+                        : (isDark
+                              ? Colors.grey.shade300
+                              : Colors.grey.shade700),
                   ),
                 ),
               ),
@@ -439,10 +429,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
               side: BorderSide(
-                color:
-                    isDark
-                        ? const Color(0xFF334155)
-                        : const Color(0xFFE2E8F0),
+                color: isDark
+                    ? const Color(0xFF334155)
+                    : const Color(0xFFE2E8F0),
               ),
             ),
             tooltip: 'Ver todas las unidades ($hiddenCount más)',
@@ -466,20 +455,16 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                         style: TextStyle(
                           fontFamily: 'JetBrains Mono',
                           fontSize: 11,
-                          fontWeight:
-                              isSelected ? FontWeight.w900 : FontWeight.w600,
-                          color:
-                              isSelected
-                                  ? activeColor
-                                  : (isDark ? Colors.white : Colors.black87),
+                          fontWeight: isSelected
+                              ? FontWeight.w900
+                              : FontWeight.w600,
+                          color: isSelected
+                              ? activeColor
+                              : (isDark ? Colors.white : Colors.black87),
                         ),
                       ),
                       if (isSelected)
-                        Icon(
-                          Icons.check,
-                          size: 14,
-                          color: activeColor,
-                        ),
+                        Icon(Icons.check, size: 14, color: activeColor),
                     ],
                   ),
                 );
@@ -488,16 +473,14 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
               decoration: BoxDecoration(
-                color:
-                    isDark
-                        ? const Color(0xFF0F172A)
-                        : const Color(0xFFF1F5F9),
+                color: isDark
+                    ? const Color(0xFF0F172A)
+                    : const Color(0xFFF1F5F9),
                 borderRadius: BorderRadius.circular(4),
                 border: Border.all(
-                  color:
-                      isDark
-                          ? const Color(0xFF334155)
-                          : const Color(0xFFCBD5E1),
+                  color: isDark
+                      ? const Color(0xFF334155)
+                      : const Color(0xFFCBD5E1),
                   width: 0.8,
                 ),
               ),
@@ -510,8 +493,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                       fontFamily: 'JetBrains Mono',
                       fontSize: 8,
                       fontWeight: FontWeight.bold,
-                      color:
-                          isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+                      color: isDark
+                          ? Colors.grey.shade400
+                          : Colors.grey.shade700,
                     ),
                   ),
                   const Icon(
@@ -629,7 +613,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
     final cat = (item['category'] ?? '').toString();
     final catCode = cat.length >= 3 ? cat.substring(0, 3).toUpperCase() : 'PRD';
     final nameClean = name.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
-    final nameCode = nameClean.length >= 3 ? nameClean.substring(0, 3).toUpperCase() : 'GEN';
+    final nameCode = nameClean.length >= 3
+        ? nameClean.substring(0, 3).toUpperCase()
+        : 'GEN';
     return '$catCode-$nameCode-01';
   }
 
@@ -642,7 +628,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    final isTest = WidgetsBinding.instance.runtimeType.toString().contains('Test');
+    final isTest = WidgetsBinding.instance.runtimeType.toString().contains(
+      'Test',
+    );
     if (!isTest) {
       startGlobalFlashTimer(); // Sincroniza reloj regresivo global
     }
@@ -821,11 +809,17 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
   Color _getQualityBadgeBgColor(String badge, bool isDark) {
     final b = badge.toUpperCase();
     if (b.contains('PRIMERA') || b.contains('1')) {
-      return isDark ? const Color(0xFF016042).withValues(alpha: 0.35) : const Color(0xFFDCE9E5);
+      return isDark
+          ? const Color(0xFF016042).withValues(alpha: 0.35)
+          : const Color(0xFFDCE9E5);
     } else if (b.contains('SEGUNDA') || b.contains('2')) {
-      return isDark ? const Color(0xFFFF9A04).withValues(alpha: 0.25) : const Color(0xFFFFF4E5);
+      return isDark
+          ? const Color(0xFFFF9A04).withValues(alpha: 0.25)
+          : const Color(0xFFFFF4E5);
     } else {
-      return isDark ? const Color(0xFFF44336).withValues(alpha: 0.25) : const Color(0xFFFDEDED);
+      return isDark
+          ? const Color(0xFFF44336).withValues(alpha: 0.25)
+          : const Color(0xFFFDEDED);
     }
   }
 
@@ -872,7 +866,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
     final secs = offer['secondsRemaining'] as int? ?? 0;
     final now = DateTime.now();
     final endTime = now.add(Duration(seconds: secs));
-    final isToday = endTime.day == now.day &&
+    final isToday =
+        endTime.day == now.day &&
         endTime.month == now.month &&
         endTime.year == now.year;
     final isTomorrow =
@@ -950,7 +945,10 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
               child: Text(
                 'Cancelar Oferta',
                 style: TextStyle(
-                    fontFamily: 'Manrope', fontWeight: FontWeight.bold, fontSize: 18),
+                  fontFamily: 'Manrope',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
               ),
             ),
           ],
@@ -996,8 +994,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                               ? '¡Oferta cancelada! "$productName" se ha bloqueado por 1 hora tras 3 cancelaciones anticipadas.'
                               : 'Oferta relámpago cancelada ($count/3 cancelaciones antes de bloqueo).',
                         ),
-                        backgroundColor:
-                            isNowLocked ? Colors.red.shade900 : Colors.redAccent,
+                        backgroundColor: isNowLocked
+                            ? Colors.red.shade900
+                            : Colors.redAccent,
                         duration: const Duration(seconds: 4),
                       ),
                     );
@@ -1053,11 +1052,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
   Future<void> _pickHistoryDateRange(BuildContext context, bool isDark) async {
     final now = DateTime.now();
     final firstAllowed = now.subtract(const Duration(days: 90));
-    final initialRange = _historyDateRange ??
-        DateTimeRange(
-          start: now.subtract(const Duration(days: 7)),
-          end: now,
-        );
+    final initialRange =
+        _historyDateRange ??
+        DateTimeRange(start: now.subtract(const Duration(days: 7)), end: now);
 
     try {
       final picked = await showDateRangePicker(
@@ -1239,9 +1236,30 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          _buildOfertasTab(context, theme, isDark, cardBg, borderColor, effectivePrimary),
-          _buildProductosTab(context, theme, isDark, cardBg, borderColor, effectivePrimary),
-          _buildHistoricoTab(context, theme, isDark, cardBg, borderColor, effectivePrimary),
+          _buildOfertasTab(
+            context,
+            theme,
+            isDark,
+            cardBg,
+            borderColor,
+            effectivePrimary,
+          ),
+          _buildProductosTab(
+            context,
+            theme,
+            isDark,
+            cardBg,
+            borderColor,
+            effectivePrimary,
+          ),
+          _buildHistoricoTab(
+            context,
+            theme,
+            isDark,
+            cardBg,
+            borderColor,
+            effectivePrimary,
+          ),
         ],
       ),
     );
@@ -1297,17 +1315,19 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
             if (secs > 1800) {
               return false; // Solo ofertas por debajo de los 30 min (1800 segundos)
             }
-          } else if (_selectedFilter == 'Activas' || _selectedFilter == 'Todas') {
+          } else if (_selectedFilter == 'Activas' ||
+              _selectedFilter == 'Todas') {
             // All offers in activeOffersList have secondsRemaining > 0
           } else {
             // Filter by product tag / category (e.g. 'Raíces', 'Frutas', 'Hortalizas', 'Tubérculos', 'Cítricos')
-            final offerCategory =
-                (offer['category'] ?? '').toString().toLowerCase();
+            final offerCategory = (offer['category'] ?? '')
+                .toString()
+                .toLowerCase();
             final offerBadge = (offer['badge'] ?? '').toString().toLowerCase();
             final offerTags = (offer['tags'] is List)
                 ? (offer['tags'] as List)
-                    .map((e) => e.toString().toLowerCase())
-                    .toList()
+                      .map((e) => e.toString().toLowerCase())
+                      .toList()
                 : <String>[];
             final target = _selectedFilter.toLowerCase();
 
@@ -1480,22 +1500,23 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                             color: isSelected
                                 ? const Color(0xFF016042)
                                 : (isDark
-                                    ? const Color(0xFF1E293B)
-                                    : Colors.white),
+                                      ? const Color(0xFF1E293B)
+                                      : Colors.white),
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
                               color: isSelected
                                   ? const Color(0xFF016042)
                                   : (isDark
-                                      ? const Color(0xFF334155)
-                                      : const Color(0xFFCCDFD9)),
+                                        ? const Color(0xFF334155)
+                                        : const Color(0xFFCCDFD9)),
                               width: 1.0,
                             ),
                             boxShadow: isSelected
                                 ? [
                                     BoxShadow(
-                                      color: const Color(0xFF016042)
-                                          .withValues(alpha: 0.22),
+                                      color: const Color(
+                                        0xFF016042,
+                                      ).withValues(alpha: 0.22),
                                       blurRadius: 6,
                                       offset: const Offset(0, 2),
                                     ),
@@ -1512,8 +1533,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                   color: isSelected
                                       ? Colors.white
                                       : (isDark
-                                          ? Colors.grey.shade400
-                                          : const Color(0xFF737373)),
+                                            ? Colors.grey.shade400
+                                            : const Color(0xFF737373)),
                                 ),
                                 const SizedBox(width: 6),
                               ],
@@ -1528,8 +1549,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                   color: isSelected
                                       ? Colors.white
                                       : (isDark
-                                          ? Colors.grey.shade300
-                                          : const Color(0xFF737373)),
+                                            ? Colors.grey.shade300
+                                            : const Color(0xFF737373)),
                                 ),
                               ),
                             ],
@@ -1593,7 +1614,11 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
               else
                 Column(
                   children: [
-                    for (int index = 0; index < filteredOffers.length; index++) ...[
+                    for (
+                      int index = 0;
+                      index < filteredOffers.length;
+                      index++
+                    ) ...[
                       if (index > 0) const SizedBox(height: 16),
                       _buildActiveOfferCard(
                         context,
@@ -1656,7 +1681,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                 child: Container(
                   height: 140,
                   width: double.infinity,
-                  color: isDark ? const Color(0xFF0F172A) : Colors.grey.shade200,
+                  color: isDark
+                      ? const Color(0xFF0F172A)
+                      : Colors.grey.shade200,
                   child: (offer['img'] ?? '').toString().startsWith('http')
                       ? Image.network(
                           offer['img'],
@@ -1732,11 +1759,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
-                        Icons.timer,
-                        size: 14,
-                        color: Colors.white,
-                      ),
+                      const Icon(Icons.timer, size: 14, color: Colors.white),
                       const SizedBox(width: 4),
                       Text(
                         _formatTimer(secsRemaining),
@@ -1768,12 +1791,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black54,
-                            blurRadius: 4,
-                          ),
-                        ],
+                        shadows: [Shadow(color: Colors.black54, blurRadius: 4)],
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -1786,10 +1804,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                         fontSize: 10,
                         letterSpacing: 0.2,
                         shadows: const [
-                          Shadow(
-                            color: Colors.black54,
-                            blurRadius: 3,
-                          ),
+                          Shadow(color: Colors.black54, blurRadius: 3),
                         ],
                       ),
                     ),
@@ -1877,17 +1892,29 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                               ),
                               decoration: BoxDecoration(
                                 color: isWholesale
-                                    ? const Color(0xFF0369A1).withValues(alpha: 0.12)
+                                    ? const Color(
+                                        0xFF0369A1,
+                                      ).withValues(alpha: 0.12)
                                     : (isDark
-                                        ? const Color(0xFF80C652).withValues(alpha: 0.15)
-                                        : const Color(0xFF047857).withValues(alpha: 0.12)),
+                                          ? const Color(
+                                              0xFF80C652,
+                                            ).withValues(alpha: 0.15)
+                                          : const Color(
+                                              0xFF047857,
+                                            ).withValues(alpha: 0.12)),
                                 borderRadius: BorderRadius.circular(6),
                                 border: Border.all(
                                   color: isWholesale
-                                      ? const Color(0xFF0369A1).withValues(alpha: 0.4)
+                                      ? const Color(
+                                          0xFF0369A1,
+                                        ).withValues(alpha: 0.4)
                                       : (isDark
-                                          ? const Color(0xFF80C652).withValues(alpha: 0.4)
-                                          : const Color(0xFF047857).withValues(alpha: 0.4)),
+                                            ? const Color(
+                                                0xFF80C652,
+                                              ).withValues(alpha: 0.4)
+                                            : const Color(
+                                                0xFF047857,
+                                              ).withValues(alpha: 0.4)),
                                   width: 0.8,
                                 ),
                               ),
@@ -1902,8 +1929,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                     color: isWholesale
                                         ? const Color(0xFF0369A1)
                                         : (isDark
-                                            ? const Color(0xFF80C652)
-                                            : const Color(0xFF047857)),
+                                              ? const Color(0xFF80C652)
+                                              : const Color(0xFF047857)),
                                   ),
                                   const SizedBox(width: 3),
                                   Text(
@@ -1914,11 +1941,11 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                       fontWeight: FontWeight.bold,
                                       color: isWholesale
                                           ? (isDark
-                                              ? const Color(0xFF38BDF8)
-                                              : const Color(0xFF0369A1))
+                                                ? const Color(0xFF38BDF8)
+                                                : const Color(0xFF0369A1))
                                           : (isDark
-                                              ? const Color(0xFF80C652)
-                                              : const Color(0xFF047857)),
+                                                ? const Color(0xFF80C652)
+                                                : const Color(0xFF047857)),
                                     ),
                                   ),
                                 ],
@@ -1994,10 +2021,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                 ),
 
                 const SizedBox(height: 12),
-                Divider(
-                  color: borderColor.withValues(alpha: 0.5),
-                  height: 1,
-                ),
+                Divider(color: borderColor.withValues(alpha: 0.5), height: 1),
                 const SizedBox(height: 12),
 
                 // Timing Row (Requirement 1: Inicio, Fin, Duración)
@@ -2012,7 +2036,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.normal,
-                              color: isDark ? const Color(0xFF80C652) : const Color(0xFF047857),
+                              color: isDark
+                                  ? const Color(0xFF80C652)
+                                  : const Color(0xFF047857),
                             ),
                           ),
                           TextSpan(
@@ -2020,7 +2046,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: isDark ? const Color(0xFF80C652) : const Color(0xFF047857),
+                              color: isDark
+                                  ? const Color(0xFF80C652)
+                                  : const Color(0xFF047857),
                             ),
                           ),
                         ],
@@ -2078,10 +2106,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                 ),
 
                 const SizedBox(height: 12),
-                Divider(
-                  color: borderColor.withValues(alpha: 0.5),
-                  height: 1,
-                ),
+                Divider(color: borderColor.withValues(alpha: 0.5), height: 1),
                 const SizedBox(height: 12),
 
                 // Real-Time Metrics (Requirement 3: Negociaciones & Visualizaciones)
@@ -2107,7 +2132,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                     Expanded(
                       child: _buildMetricRow(
                         icon: Icons.visibility_outlined,
-                        iconBgColor: const Color(0xFF0284C7).withValues(alpha: 0.12),
+                        iconBgColor: const Color(
+                          0xFF0284C7,
+                        ).withValues(alpha: 0.12),
                         iconColor: const Color(0xFF0284C7),
                         label: 'VISUALIZACIONES EN TIEMPO REAL',
                         value: offer['views'] ?? '1,420 vistas',
@@ -2146,14 +2173,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                       ),
                     ),
                     style: OutlinedButton.styleFrom(
-                      minimumSize: const Size(
-                        double.infinity,
-                        44,
-                      ),
+                      minimumSize: const Size(double.infinity, 44),
                       side: BorderSide(
-                        color: Colors.redAccent.withValues(
-                          alpha: 0.4,
-                        ),
+                        color: Colors.redAccent.withValues(alpha: 0.4),
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -2203,13 +2225,16 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
         final supplier = (prod['supplier'] ?? '').toString().toLowerCase();
         final location = (prod['location'] ?? '').toString().toLowerCase();
         final badge = (prod['badge'] ?? '').toString().toLowerCase();
-        final negotiations =
-            (prod['negotiations'] ?? '').toString().toLowerCase();
+        final negotiations = (prod['negotiations'] ?? '')
+            .toString()
+            .toLowerCase();
         final views = (prod['views'] ?? '').toString().toLowerCase();
-        final priceRetail =
-            (prod['priceRetailKg'] ?? '').toString().toLowerCase();
-        final priceWholesale =
-            (prod['priceWholesaleKg'] ?? '').toString().toLowerCase();
+        final priceRetail = (prod['priceRetailKg'] ?? '')
+            .toString()
+            .toLowerCase();
+        final priceWholesale = (prod['priceWholesaleKg'] ?? '')
+            .toString()
+            .toLowerCase();
         final price = (prod['price'] ?? '').toString().toLowerCase();
         final tags = (prod['tags'] as List<dynamic>? ?? [])
             .map((t) => t.toString().toLowerCase())
@@ -2219,7 +2244,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
             .join(' ');
 
         final sku = (prod['sku'] ?? '').toString().toLowerCase();
-        final matches = name.contains(query) ||
+        final matches =
+            name.contains(query) ||
             sku.contains(query) ||
             category.contains(query) ||
             supplier.contains(query) ||
@@ -2342,10 +2368,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: primaryColor,
-                        width: 1.5,
-                      ),
+                      borderSide: BorderSide(color: primaryColor, width: 1.5),
                     ),
                   ),
                 ),
@@ -2372,16 +2395,17 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                       label: Text(cat),
                       selected: isSelected,
                       selectedColor: const Color(0xFF016042),
-                      backgroundColor:
-                          isDark ? const Color(0xFF1E293B) : Colors.white,
+                      backgroundColor: isDark
+                          ? const Color(0xFF1E293B)
+                          : Colors.white,
                       checkmarkColor: Colors.white,
                       showCheckmark: false,
                       side: BorderSide(
                         color: isSelected
                             ? const Color(0xFF016042)
                             : (isDark
-                                ? const Color(0xFF334155)
-                                : const Color(0xFFCCDFD9)),
+                                  ? const Color(0xFF334155)
+                                  : const Color(0xFFCCDFD9)),
                         width: 1.0,
                       ),
                       shape: RoundedRectangleBorder(
@@ -2396,8 +2420,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                         color: isSelected
                             ? Colors.white
                             : (isDark
-                                ? Colors.grey.shade400
-                                : const Color(0xFF737373)),
+                                  ? Colors.grey.shade400
+                                  : const Color(0xFF737373)),
                       ),
                       onSelected: (selected) {
                         if (selected) setState(() => _selectedCategory = cat);
@@ -2415,15 +2439,18 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
           if (filteredAvailable.isEmpty)
             Center(
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 40,
+                  horizontal: 20,
+                ),
                 child: Column(
                   children: [
                     Icon(
                       Icons.search_off_rounded,
                       size: 52,
-                      color:
-                          isDark ? Colors.grey.shade600 : Colors.grey.shade400,
+                      color: isDark
+                          ? Colors.grey.shade600
+                          : Colors.grey.shade400,
                     ),
                     const SizedBox(height: 12),
                     Text(
@@ -2462,8 +2489,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                       label: const Text('Limpiar Filtros'),
                       style: TextButton.styleFrom(
                         foregroundColor: primaryColor,
-                        textStyle:
-                            const TextStyle(fontWeight: FontWeight.bold),
+                        textStyle: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
@@ -2530,8 +2556,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
     );
 
     final bool isWholesale = currentSalesMode == 'wholesale';
-    final Color activeThemeColor =
-        isWholesale ? const Color(0xFF0369A1) : const Color(0xFF047857);
+    final Color activeThemeColor = isWholesale
+        ? const Color(0xFF0369A1)
+        : const Color(0xFF047857);
     final bool isLocked = isProductLockedForOffers(productName);
     final int remainingLockout = getProductLockoutRemainingMinutes(productName);
     final bool hasActiveOffer = hasActiveOfferForProductUnit(
@@ -2605,7 +2632,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                               fontFamily: 'Manrope',
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              color: isDark ? Colors.white : const Color(0xFF0F172A),
+                              color: isDark
+                                  ? Colors.white
+                                  : const Color(0xFF0F172A),
                             ),
                           ),
                           const SizedBox(height: 1),
@@ -2635,8 +2664,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                         fontWeight: FontWeight.w900,
                         color: isDark
                             ? (isWholesale
-                                ? const Color(0xFF38BDF8)
-                                : const Color(0xFF34D399))
+                                  ? const Color(0xFF38BDF8)
+                                  : const Color(0xFF34D399))
                             : activeThemeColor,
                       ),
                     ),
@@ -2653,10 +2682,14 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                     Container(
                       padding: const EdgeInsets.all(2),
                       decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF111827) : const Color(0xFFF3F4F6),
+                        color: isDark
+                            ? const Color(0xFF111827)
+                            : const Color(0xFFF3F4F6),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB),
+                          color: isDark
+                              ? const Color(0xFF374151)
+                              : const Color(0xFFE5E7EB),
                           width: 0.8,
                         ),
                       ),
@@ -2666,7 +2699,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                           GestureDetector(
                             onTap: () {
                               setState(() {
-                                _availableProductSalesMode[productName] = 'retail';
+                                _availableProductSalesMode[productName] =
+                                    'retail';
                               });
                             },
                             behavior: HitTestBehavior.opaque,
@@ -2679,14 +2713,16 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                               decoration: BoxDecoration(
                                 color: !isWholesale
                                     ? (isDark
-                                        ? const Color(0xFF047857)
-                                        : const Color(0xFF059669))
+                                          ? const Color(0xFF047857)
+                                          : const Color(0xFF059669))
                                     : Colors.transparent,
                                 borderRadius: BorderRadius.circular(6),
                                 boxShadow: !isWholesale
                                     ? [
                                         BoxShadow(
-                                          color: Colors.black.withValues(alpha: 0.12),
+                                          color: Colors.black.withValues(
+                                            alpha: 0.12,
+                                          ),
                                           blurRadius: 4,
                                           offset: const Offset(0, 1),
                                         ),
@@ -2701,7 +2737,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                     size: 10,
                                     color: !isWholesale
                                         ? Colors.white
-                                        : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                                        : (isDark
+                                              ? Colors.grey[400]
+                                              : Colors.grey[600]),
                                   ),
                                   const SizedBox(width: 2.5),
                                   Text(
@@ -2714,7 +2752,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                           : FontWeight.w500,
                                       color: !isWholesale
                                           ? Colors.white
-                                          : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                                          : (isDark
+                                                ? Colors.grey[400]
+                                                : Colors.grey[600]),
                                     ),
                                   ),
                                 ],
@@ -2725,7 +2765,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                           GestureDetector(
                             onTap: () {
                               setState(() {
-                                _availableProductSalesMode[productName] = 'wholesale';
+                                _availableProductSalesMode[productName] =
+                                    'wholesale';
                               });
                             },
                             behavior: HitTestBehavior.opaque,
@@ -2738,14 +2779,16 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                               decoration: BoxDecoration(
                                 color: isWholesale
                                     ? (isDark
-                                        ? const Color(0xFF0284C7)
-                                        : const Color(0xFF0369A1))
+                                          ? const Color(0xFF0284C7)
+                                          : const Color(0xFF0369A1))
                                     : Colors.transparent,
                                 borderRadius: BorderRadius.circular(6),
                                 boxShadow: isWholesale
                                     ? [
                                         BoxShadow(
-                                          color: Colors.black.withValues(alpha: 0.12),
+                                          color: Colors.black.withValues(
+                                            alpha: 0.12,
+                                          ),
                                           blurRadius: 4,
                                           offset: const Offset(0, 1),
                                         ),
@@ -2760,7 +2803,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                     size: 10,
                                     color: isWholesale
                                         ? Colors.white
-                                        : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                                        : (isDark
+                                              ? Colors.grey[400]
+                                              : Colors.grey[600]),
                                   ),
                                   const SizedBox(width: 2.5),
                                   Text(
@@ -2773,7 +2818,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                           : FontWeight.w500,
                                       color: isWholesale
                                           ? Colors.white
-                                          : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                                          : (isDark
+                                                ? Colors.grey[400]
+                                                : Colors.grey[600]),
                                     ),
                                   ),
                                 ],
@@ -2790,8 +2837,8 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                         isWholesale
                             ? 'POR MAYOR'
                             : (priceData['unitLabel']?.toLowerCase() == 'kg'
-                                ? 'POR KILO'
-                                : 'POR ${priceData['unitLabel']?.toUpperCase() ?? 'KILO'}'),
+                                  ? 'POR KILO'
+                                  : 'POR ${priceData['unitLabel']?.toUpperCase() ?? 'KILO'}'),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -2799,7 +2846,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                           fontSize: 8.5,
                           fontWeight: FontWeight.w800,
                           color: isWholesale
-                              ? (isDark ? const Color(0xFF38BDF8) : const Color(0xFF0284C7))
+                              ? (isDark
+                                    ? const Color(0xFF38BDF8)
+                                    : const Color(0xFF0284C7))
                               : (isDark ? Colors.grey[400] : Colors.grey[600]),
                           letterSpacing: 0.2,
                         ),
@@ -2872,7 +2921,10 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                   },
                   borderRadius: BorderRadius.circular(6),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: isDark
                           ? const Color(0xFF0F172A)
@@ -2959,7 +3011,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                   // 3. VISUALIZACIONES
                   _buildMetricRow(
                     icon: Icons.visibility_outlined,
-                    iconBgColor: const Color(0xFF0284C7).withValues(alpha: 0.12),
+                    iconBgColor: const Color(
+                      0xFF0284C7,
+                    ).withValues(alpha: 0.12),
                     iconColor: const Color(0xFF0284C7),
                     label: 'VISUALIZACIONES',
                     value: prod['views'] ?? '1,280 vistas',
@@ -3053,7 +3107,11 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                         customProduct['selectedUnit'] = currentUnit;
                         _openEditDialog(customProduct);
                       },
-                      icon: const Icon(Icons.bolt, size: 14, color: Colors.white),
+                      icon: const Icon(
+                        Icons.bolt,
+                        size: 14,
+                        color: Colors.white,
+                      ),
                       label: const Text(
                         'Añadir Oferta',
                         style: TextStyle(
@@ -3232,7 +3290,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                   children: [
                     _buildHistoryFilterChip(
                       label: 'Últimas 5',
-                      isSelected: _historyDateRange == null && _historyQuickFilter == 'Últimas 5',
+                      isSelected:
+                          _historyDateRange == null &&
+                          _historyQuickFilter == 'Últimas 5',
                       isDark: isDark,
                       onTap: () {
                         setState(() {
@@ -3244,7 +3304,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                     const SizedBox(width: 8),
                     _buildHistoryFilterChip(
                       label: 'Últimos 7 días',
-                      isSelected: _historyDateRange == null && _historyQuickFilter == '7 Días',
+                      isSelected:
+                          _historyDateRange == null &&
+                          _historyQuickFilter == '7 Días',
                       isDark: isDark,
                       onTap: () {
                         setState(() {
@@ -3256,7 +3318,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                     const SizedBox(width: 8),
                     _buildHistoryFilterChip(
                       label: 'Últimos 15 días',
-                      isSelected: _historyDateRange == null && _historyQuickFilter == '15 Días',
+                      isSelected:
+                          _historyDateRange == null &&
+                          _historyQuickFilter == '15 Días',
                       isDark: isDark,
                       onTap: () {
                         setState(() {
@@ -3268,7 +3332,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                     const SizedBox(width: 8),
                     _buildHistoryFilterChip(
                       label: 'Todas',
-                      isSelected: _historyDateRange == null && _historyQuickFilter == 'Todas',
+                      isSelected:
+                          _historyDateRange == null &&
+                          _historyQuickFilter == 'Todas',
                       isDark: isDark,
                       onTap: () {
                         setState(() {
@@ -3283,22 +3349,31 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                       onTap: () => _pickHistoryDateRange(context, isDark),
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 180),
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7.5),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 7.5,
+                        ),
                         decoration: BoxDecoration(
                           color: isCustomDateRange
                               ? const Color(0xFF016042)
-                              : (isDark ? const Color(0xFF1E293B) : Colors.white),
+                              : (isDark
+                                    ? const Color(0xFF1E293B)
+                                    : Colors.white),
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
                             color: isCustomDateRange
                                 ? const Color(0xFF016042)
-                                : (isDark ? const Color(0xFF334155) : const Color(0xFFCCDFD9)),
+                                : (isDark
+                                      ? const Color(0xFF334155)
+                                      : const Color(0xFFCCDFD9)),
                             width: 1.0,
                           ),
                           boxShadow: isCustomDateRange
                               ? [
                                   BoxShadow(
-                                    color: const Color(0xFF016042).withValues(alpha: 0.25),
+                                    color: const Color(
+                                      0xFF016042,
+                                    ).withValues(alpha: 0.25),
                                     blurRadius: 6,
                                     offset: const Offset(0, 2),
                                   ),
@@ -3313,7 +3388,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                               size: 15,
                               color: isCustomDateRange
                                   ? Colors.white
-                                  : (isDark ? Colors.grey.shade400 : const Color(0xFF016042)),
+                                  : (isDark
+                                        ? Colors.grey.shade400
+                                        : const Color(0xFF016042)),
                             ),
                             const SizedBox(width: 6),
                             Text(
@@ -3322,11 +3399,15 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                   : 'Filtrar por Calendario',
                               style: TextStyle(
                                 fontFamily: 'Manrope',
-                                fontWeight: isCustomDateRange ? FontWeight.bold : FontWeight.w600,
+                                fontWeight: isCustomDateRange
+                                    ? FontWeight.bold
+                                    : FontWeight.w600,
                                 fontSize: 13,
                                 color: isCustomDateRange
                                     ? Colors.white
-                                    : (isDark ? Colors.grey.shade300 : const Color(0xFF016042)),
+                                    : (isDark
+                                          ? Colors.grey.shade300
+                                          : const Color(0xFF016042)),
                               ),
                             ),
                           ],
@@ -3340,7 +3421,10 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
               if (isCustomDateRange) ...[
                 const SizedBox(height: 10),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFF016042).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
@@ -3364,7 +3448,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                             fontFamily: 'Manrope',
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: isDark ? const Color(0xFF34D399) : const Color(0xFF016042),
+                            color: isDark
+                                ? const Color(0xFF34D399)
+                                : const Color(0xFF016042),
                           ),
                         ),
                       ),
@@ -3375,7 +3461,11 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                             _historyQuickFilter = 'Últimas 5';
                           });
                         },
-                        icon: const Icon(Icons.close, size: 14, color: Colors.redAccent),
+                        icon: const Icon(
+                          Icons.close,
+                          size: 14,
+                          color: Colors.redAccent,
+                        ),
                         label: const Text(
                           'Limpiar',
                           style: TextStyle(
@@ -3385,7 +3475,10 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                           ),
                         ),
                         style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
                           minimumSize: Size.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
@@ -3433,7 +3526,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 12,
-                          color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                          color: isDark
+                              ? Colors.grey.shade400
+                              : Colors.grey.shade600,
                         ),
                       ),
                       const SizedBox(height: 14),
@@ -3447,7 +3542,10 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF016042),
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -3522,7 +3620,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                   height: 58,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: isDark ? const Color(0xFF0F172A) : Colors.grey.shade100,
+                    color: isDark
+                        ? const Color(0xFF0F172A)
+                        : Colors.grey.shade100,
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
@@ -3530,14 +3630,22 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                         ? Image.network(
                             imgSrc,
                             fit: BoxFit.cover,
-                            errorBuilder: (c, e, s) =>
-                                const Icon(Icons.image, size: 28, color: Colors.grey),
+                            errorBuilder: (c, e, s) => const Icon(
+                              Icons.image,
+                              size: 28,
+                              color: Colors.grey,
+                            ),
                           )
                         : Image.asset(
-                            imgSrc.isNotEmpty ? imgSrc : 'assets/images/PapaGemini.png',
+                            imgSrc.isNotEmpty
+                                ? imgSrc
+                                : 'assets/images/PapaGemini.png',
                             fit: BoxFit.cover,
-                            errorBuilder: (c, e, s) =>
-                                const Icon(Icons.image, size: 28, color: Colors.grey),
+                            errorBuilder: (c, e, s) => const Icon(
+                              Icons.image,
+                              size: 28,
+                              color: Colors.grey,
+                            ),
                           ),
                   ),
                 ),
@@ -3558,7 +3666,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                                     fontFamily: 'Manrope',
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
-                                    color: isDark ? Colors.white : Colors.black87,
+                                    color: isDark
+                                        ? Colors.white
+                                        : Colors.black87,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -3642,7 +3752,10 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
               children: [
                 // Modality Badge
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2.5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2.5,
+                  ),
                   decoration: BoxDecoration(
                     color: isWholesale
                         ? const Color(0xFF0369A1).withValues(alpha: 0.12)
@@ -3675,11 +3788,11 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                           fontWeight: FontWeight.bold,
                           color: isWholesale
                               ? (isDark
-                                  ? const Color(0xFF38BDF8)
-                                  : const Color(0xFF0369A1))
+                                    ? const Color(0xFF38BDF8)
+                                    : const Color(0xFF0369A1))
                               : (isDark
-                                  ? const Color(0xFF34D399)
-                                  : const Color(0xFF047857)),
+                                    ? const Color(0xFF34D399)
+                                    : const Color(0xFF047857)),
                         ),
                       ),
                     ],
@@ -3688,7 +3801,10 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
 
                 // Unit Badge
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2.5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2.5,
+                  ),
                   decoration: BoxDecoration(
                     color: isDark
                         ? const Color(0xFF0F172A)
@@ -3749,7 +3865,10 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
               },
               borderRadius: BorderRadius.circular(8),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: isDark
                       ? const Color(0xFF0F172A)
@@ -3927,7 +4046,9 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                   Expanded(
                     child: _buildMetricRow(
                       icon: Icons.visibility_outlined,
-                      iconBgColor: const Color(0xFF0284C7).withValues(alpha: 0.12),
+                      iconBgColor: const Color(
+                        0xFF0284C7,
+                      ).withValues(alpha: 0.12),
                       iconColor: const Color(0xFF0284C7),
                       label: 'VISUALIZACIONES OBTENIDAS',
                       value: item['views'] ?? '1,420 vistas',
@@ -3950,7 +4071,11 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
                 onPressed: () {
                   _openEditDialog(item['rawProduct'] ?? item);
                 },
-                icon: const Icon(Icons.refresh, size: 14, color: Color(0xFF016042)),
+                icon: const Icon(
+                  Icons.refresh,
+                  size: 14,
+                  color: Color(0xFF016042),
+                ),
                 label: const Text(
                   'Reactivar Oferta con este Producto',
                   style: TextStyle(
@@ -3977,4 +4102,3 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
     );
   }
 }
-

@@ -94,11 +94,11 @@ void main() {
     expect(find.text('Primera Calidad'), findsWidgets);
     expect(find.text('Huerta Los Arcos'), findsOneWidget);
 
-    // 2. Verify Educational Banner with standards
+    // 2. Verify Educational Banner (without redundant badge and standards pills)
     expect(find.text('Selección Premium de Exportación'), findsOneWidget);
-    expect(find.text('Calibre A+'), findsOneWidget);
-    expect(find.text('Cosecha Hoy'), findsOneWidget);
-    expect(find.text('100% Frescura'), findsOneWidget);
+    expect(find.text('Calibre A+'), findsNothing);
+    expect(find.text('Cosecha Hoy'), findsNothing);
+    expect(find.text('100% Frescura'), findsNothing);
 
     // 3. Verify Search Bar
     expect(find.byType(TextField), findsOneWidget);
@@ -250,14 +250,14 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    // Verify Segunda Calidad header and standards
+    // Verify Segunda Calidad header (without redundant badge and standards pills)
     expect(find.text('Segunda Calidad'), findsWidgets);
     expect(find.text('Mismo sabor y frescura a precio accesible'), findsOneWidget);
-    expect(find.text('SEGUNDA'), findsOneWidget);
-    expect(find.text('Sabor Auténtico'), findsOneWidget);
-    expect(find.text('Ahorro Garantizado'), findsOneWidget);
-    expect(find.text('Directo de Finca'), findsOneWidget);
-    expect(find.text('Desperdicio Cero'), findsOneWidget);
+    expect(find.text('SEGUNDA'), findsNothing);
+    expect(find.text('Sabor Auténtico'), findsNothing);
+    expect(find.text('Ahorro Garantizado'), findsNothing);
+    expect(find.text('Directo de Finca'), findsNothing);
+    expect(find.text('Desperdicio Cero'), findsNothing);
 
     final exception = tester.takeException();
     expect(exception, isNull);

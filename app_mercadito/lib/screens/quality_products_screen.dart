@@ -591,7 +591,6 @@ class _QualityProductsScreenState extends State<QualityProductsScreen> {
         : tierMeta['primaryColor'];
     final Color bgColor = isDark ? tierMeta['darkBg'] : tierMeta['lightBg'];
     final Color borderColor = isDark ? tierMeta['darkBorderColor'] : tierMeta['borderColor'];
-    final List<Map<String, dynamic>> standards = tierMeta['standards'];
 
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 12, 16, 8),
@@ -627,37 +626,15 @@ class _QualityProductsScreenState extends State<QualityProductsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Flexible(
-                          child: Text(
-                            tierMeta['title'].toString().toUpperCase(),
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 0.5,
-                              color: primaryColor,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: primaryColor.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Text(
-                            tierMeta['badgeText'],
-                            style: TextStyle(
-                              fontSize: 9,
-                              fontWeight: FontWeight.bold,
-                              color: primaryColor,
-                            ),
-                          ),
-                        ),
-                      ],
+                    Text(
+                      tierMeta['title'].toString().toUpperCase(),
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.5,
+                        color: primaryColor,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 2),
                     Text(
@@ -681,40 +658,6 @@ class _QualityProductsScreenState extends State<QualityProductsScreen> {
               height: 1.45,
               color: isDark ? Colors.grey[300] : const Color(0xFF475569),
             ),
-          ),
-          const SizedBox(height: 12),
-          // Standards Pill Badges
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: standards.map((s) {
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: borderColor.withValues(alpha: 0.8),
-                    width: 0.8,
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(s['icon'] as IconData, size: 12, color: primaryColor),
-                    const SizedBox(width: 4),
-                    Text(
-                      s['label'].toString(),
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: isDark ? Colors.grey[200] : const Color(0xFF1E293B),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
           ),
         ],
       ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:app_mercadito/models/notification_item.dart';
-import 'package:app_mercadito/screens/notification_emulator_screen.dart';
 import 'package:app_mercadito/services/native_notification_bridge.dart';
 import 'package:app_mercadito/services/notification_emulator_catalog.dart';
 import 'package:app_mercadito/services/notification_service.dart';
@@ -64,7 +63,7 @@ void main() {
     });
   });
 
-  group('InAppNotificationHost & NotificationEmulatorScreen widget tests', () {
+  group('InAppNotificationHost widget tests', () {
     testWidgets('InAppNotificationHost renders banner in Light & Dark mode and dismisses cleanly',
         (tester) async {
       tester.view.physicalSize = const Size(1080, 2400);
@@ -128,89 +127,7 @@ void main() {
       expect(find.text('Contraoferta recibida de Juan Agro'), findsNothing);
     });
 
-    testWidgets(
-        'NotificationEmulatorScreen renders all 8 categories cleanly on 1080x2400 without overflow and triggers En App banner',
-        (tester) async {
-      tester.view.physicalSize = const Size(1080, 2400);
-      tester.view.devicePixelRatio = 3.0;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          builder: (context, child) => InAppNotificationHost(
-            displayDuration: const Duration(seconds: 2),
-            child: child ?? const SizedBox.shrink(),
-          ),
-          home: const NotificationEmulatorScreen(),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.text('Emulador de Notificaciones'), findsOneWidget);
-      expect(find.text('Dentro de la App'), findsOneWidget);
-      expect(find.text('Fuera de la App'), findsOneWidget);
-      expect(find.text('CATEGORÍAS INDIVIDUALES (8)'), findsOneWidget);
-
-      // Verificar cada una de las 8 categorías haciendo scroll limpio
-      for (final preset in NotificationEmulatorCatalog.allPresets) {
-        final labelFinder = find.text(preset.categoryLabel);
-        await tester.scrollUntilVisible(
-          labelFinder,
-          240,
-          scrollable: find.byType(Scrollable).first,
-        );
-        expect(labelFinder, findsWidgets);
-      }
-
-      // Regresar arriba y pulsar "En App" en Pedidos
-      await tester.scrollUntilVisible(
-        find.text('Emulación por Modalidad'),
-        -300,
-        scrollable: find.byType(Scrollable).first,
-      );
-      await tester.pumpAndSettle();
-
-      final firstEnAppButton = find.widgetWithText(OutlinedButton, 'En App').first;
-      await tester.ensureVisible(firstEnAppButton);
-      await tester.pumpAndSettle();
-      await tester.tap(firstEnAppButton);
-      await tester.pump();
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 300));
-
-      expect(find.text('En la app • Ahora'), findsOneWidget);
-      expect(find.text('Tu pedido #MERC-9942 salió a entrega'), findsWidgets);
-
-      // Cerrar banner y cambiar a modo Fuera de la App para comprobar switch de minimizar
-      final closeBtn = find.byKey(const ValueKey('close_in_app_banner_button'));
-      if (closeBtn.evaluate().isNotEmpty) {
-        await tester.tap(closeBtn);
-        await tester.pumpAndSettle();
-      }
-
-      await tester.scrollUntilVisible(
-        find.text('Fuera de la App'),
-        -300,
-        scrollable: find.byType(Scrollable).first,
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Fuera de la App'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Minimizar app al enviar'), findsOneWidget);
-      expect(
-        find.text('Emular las 8 categorías (Fuera de la App)'),
-        findsOneWidget,
-      );
-
-      final exception = tester.takeException();
-      expect(exception, isNull);
-    });
-
-    testWidgets('GoRouter MaterialApp.router integration renders InAppNotificationHost banner on top of /notification-emulator',
+    testWidgets('GoRouter MaterialApp.router integration renders InAppNotificationHost banner on top of route',
         (tester) async {
       tester.view.physicalSize = const Size(1080, 2400);
       tester.view.devicePixelRatio = 3.0;
@@ -220,11 +137,13 @@ void main() {
       final navKey = GlobalKey<NavigatorState>();
       final router = GoRouter(
         navigatorKey: navKey,
-        initialLocation: '/notification-emulator',
+        initialLocation: '/home',
         routes: [
           GoRoute(
-            path: '/notification-emulator',
-            builder: (context, state) => const NotificationEmulatorScreen(),
+            path: '/home',
+            builder: (context, state) => const Scaffold(
+              body: Center(child: Text('Home Route')),
+            ),
           ),
         ],
       );
@@ -243,14 +162,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Emulador de Notificaciones'), findsOneWidget);
-
-      await tester.scrollUntilVisible(
-        find.text('Pedidos'),
-        200,
-        scrollable: find.byType(Scrollable).first,
-      );
-      await tester.pumpAndSettle();
+      expect(find.text('Home Route'), findsOneWidget);
 
       service.emitCategoryDemo(NotificationCategory.pedidos, isExternal: false);
       await tester.pump();

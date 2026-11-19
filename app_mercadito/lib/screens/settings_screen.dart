@@ -101,16 +101,6 @@ class SettingsScreen extends StatelessWidget {
                               isDark: isDark,
                               onTap: () => context.push('/alerts'),
                             ),
-                            _buildDivider(borderColor),
-                            _buildSettingsTile(
-                              'Emulador de Notificaciones',
-                              Icons.science_outlined,
-                              textColor,
-                              true,
-                              'Probar',
-                              isDark: isDark,
-                              onTap: () => context.push('/notification-emulator'),
-                            ),
                           ],
                           _buildDivider(borderColor),
                           _buildSettingsTile(

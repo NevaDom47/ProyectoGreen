@@ -7,7 +7,6 @@ import '../screens/home_feed_screen.dart';
 import '../screens/register_screen.dart';
 import '../screens/providers_screen.dart';
 import '../screens/providers_map_screen.dart';
-import '../screens/notification_emulator_screen.dart';
 import '../screens/notifications_screen.dart';
 import '../screens/chat_list_screen.dart';
 import '../screens/chat_detail_screen.dart';
@@ -361,13 +360,6 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/notifications',
       builder: (context, state) => const NotificationsScreen(),
-    ),
-    GoRoute(
-      path: '/notification-emulator',
-      pageBuilder: (context, state) => buildSmoothTransitionPage(
-        state: state,
-        child: const NotificationEmulatorScreen(),
-      ),
     ),
     GoRoute(
       path: '/flash-offers',

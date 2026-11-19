@@ -225,14 +225,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     ],
                   ),
                 ),
-                // Botón Emulador de Notificaciones
-                IconButton(
-                  icon: Icon(Icons.science_outlined, color: primaryColor, size: 22),
-                  tooltip: 'Emulador de notificaciones',
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
-                  onPressed: () => context.push('/notification-emulator'),
-                ),
                 // Botón Marcar todas como leídas
                 IconButton(
                   icon: Icon(Icons.done_all_rounded, color: primaryColor, size: 22),

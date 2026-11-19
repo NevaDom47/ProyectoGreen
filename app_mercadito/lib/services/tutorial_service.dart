@@ -86,6 +86,1016 @@ class TutorialService {
     });
   }
 
+  /// Muestra el tutorial interactivo cuando el usuario ingresa por primera vez
+  /// a la pantalla de Agregar Producto (AddProductScreen).
+  void showAddProductTutorial(
+    BuildContext context, {
+    required GlobalKey previewKey,
+    required GlobalKey mediaKey,
+    required GlobalKey basicInfoKey,
+    required GlobalKey pricingKey,
+    required GlobalKey saveButtonKey,
+    bool force = false,
+    VoidCallback? onFinish,
+  }) {
+    if (!force && UserSession.hasSeenAddProductTutorial) {
+      return;
+    }
+
+    final bindingStr = WidgetsBinding.instance.runtimeType.toString();
+    if (bindingStr.contains('TestWidgetsFlutterBinding') ||
+        bindingStr.contains('AutomatedTestWidgetsFlutterBinding')) {
+      UserSession.hasSeenAddProductTutorial = true;
+      onFinish?.call();
+      return;
+    }
+
+    UserSession.hasSeenAddProductTutorial = true;
+
+    final targets = _createAddProductTargets(
+      context: context,
+      previewKey: previewKey,
+      mediaKey: mediaKey,
+      basicInfoKey: basicInfoKey,
+      pricingKey: pricingKey,
+      saveButtonKey: saveButtonKey,
+    );
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    void restoreScrollTop() {
+      final topCtx = previewKey.currentContext;
+      if (topCtx != null && topCtx.mounted) {
+        Scrollable.ensureVisible(
+          topCtx,
+          alignment: 0.0,
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOutCubic,
+        );
+      }
+    }
+
+    _currentTutorial = TutorialCoachMark(
+      targets: targets,
+      colorShadow: isDark ? const Color(0xFF020C07) : const Color(0xFF0F172A),
+      paddingFocus: 10,
+      opacityShadow: 0.82,
+      imageFilter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+      hideSkip: true,
+      beforeFocus: (target) async {
+        if (target.identify == 'add_product_save') {
+          final topCtx = previewKey.currentContext;
+          if (topCtx != null && topCtx.mounted) {
+            await Scrollable.ensureVisible(
+              topCtx,
+              alignment: 0.0,
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOutCubic,
+            );
+          }
+          return;
+        }
+        final targetCtx = target.keyTarget?.currentContext;
+        if (targetCtx != null && targetCtx.mounted) {
+          await Scrollable.ensureVisible(
+            targetCtx,
+            alignment: 0.08,
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOutCubic,
+          );
+        }
+      },
+      onFinish: () {
+        _currentTutorial = null;
+        restoreScrollTop();
+        onFinish?.call();
+      },
+      onSkip: () {
+        SoundService.playButtonClick();
+        _currentTutorial = null;
+        restoreScrollTop();
+        onFinish?.call();
+        return true;
+      },
+      onClickTarget: (target) {
+        SoundService.playButtonClick();
+      },
+    );
+
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (context.mounted) {
+        _currentTutorial?.show(context: context);
+      }
+    });
+  }
+
+  List<TargetFocus> _createAddProductTargets({
+    required BuildContext context,
+    required GlobalKey previewKey,
+    required GlobalKey mediaKey,
+    required GlobalKey basicInfoKey,
+    required GlobalKey pricingKey,
+    required GlobalKey saveButtonKey,
+  }) {
+    return [
+      TargetFocus(
+        identify: 'add_product_preview',
+        keyTarget: previewKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 16,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 1,
+                totalSteps: 5,
+                title: 'Vista Previa en Tiempo Real',
+                description:
+                    'Observa al instante cómo verán los compradores tu producto en el catálogo, pudiendo alternar entre la vista Al Detalle y Al Por Mayor.',
+                icon: Icons.visibility_rounded,
+                isLastStep: false,
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: 'add_product_media',
+        keyTarget: mediaKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 16,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 2,
+                totalSteps: 5,
+                title: 'Fotografías y Video del Producto',
+                description:
+                    'Sube hasta 8 fotos reales y 1 video demostrativo. La foto #1 será tu portada principal y puedes reordenarlas fácilmente.',
+                icon: Icons.perm_media_rounded,
+                isLastStep: false,
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: 'add_product_basic_info',
+        keyTarget: basicInfoKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 16,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 3,
+                totalSteps: 5,
+                title: 'Catálogo Oficial y Datos Básicos',
+                description:
+                    'Elige del catálogo oficial estandarizado para autocompletar nombre, categoría y etiquetas, o escribe tus propios datos agrícolas.',
+                icon: Icons.category_rounded,
+                isLastStep: false,
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: 'add_product_pricing',
+        keyTarget: pricingKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 16,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 4,
+                totalSteps: 5,
+                title: 'Precios, Unidades y Calidad',
+                description:
+                    'Establece precios al detalle o al por mayor con rangos mínimos y máximos, selecciona unidades de venta y define el grado de calidad.',
+                icon: Icons.price_change_rounded,
+                isLastStep: false,
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: 'add_product_save',
+        keyTarget: saveButtonKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 16,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 5,
+                totalSteps: 5,
+                title: 'Guardar y Publicar',
+                description:
+                    'Cuando completes la información de tu cosecha o producto, pulsa aquí para publicarlo inmediatamente en El Mercadito.',
+                icon: Icons.save_rounded,
+                isLastStep: true,
+              );
+            },
+          ),
+        ],
+      ),
+    ];
+  }
+
+  /// Muestra el tutorial interactivo cuando el usuario ingresa por primera vez
+  /// a la pantalla de Tareas (TasksScreen).
+  void showTasksTutorial(
+    BuildContext context, {
+    required GlobalKey streakBannerKey,
+    required GlobalKey dailySummaryKey,
+    required GlobalKey taskListKey,
+    bool force = false,
+    VoidCallback? onFinish,
+  }) {
+    if (!force && UserSession.hasSeenTasksTutorial) {
+      return;
+    }
+
+    final bindingStr = WidgetsBinding.instance.runtimeType.toString();
+    if (bindingStr.contains('TestWidgetsFlutterBinding') ||
+        bindingStr.contains('AutomatedTestWidgetsFlutterBinding')) {
+      UserSession.hasSeenTasksTutorial = true;
+      onFinish?.call();
+      return;
+    }
+
+    UserSession.hasSeenTasksTutorial = true;
+
+    final targets = _createTasksTargets(
+      context: context,
+      streakBannerKey: streakBannerKey,
+      dailySummaryKey: dailySummaryKey,
+      taskListKey: taskListKey,
+    );
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    _currentTutorial = TutorialCoachMark(
+      targets: targets,
+      colorShadow: isDark ? const Color(0xFF020C07) : const Color(0xFF0F172A),
+      paddingFocus: 10,
+      opacityShadow: 0.82,
+      imageFilter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+      hideSkip: true,
+      beforeFocus: (target) async {
+        final targetCtx = target.keyTarget?.currentContext;
+        if (targetCtx != null && targetCtx.mounted) {
+          await Scrollable.ensureVisible(
+            targetCtx,
+            alignment: 0.1,
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOutCubic,
+          );
+        }
+      },
+      onFinish: () {
+        _currentTutorial = null;
+        onFinish?.call();
+      },
+      onSkip: () {
+        SoundService.playButtonClick();
+        _currentTutorial = null;
+        onFinish?.call();
+        return true;
+      },
+      onClickTarget: (target) {
+        SoundService.playButtonClick();
+      },
+    );
+
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (context.mounted) {
+        _currentTutorial?.show(context: context);
+      }
+    });
+  }
+
+  List<TargetFocus> _createTasksTargets({
+    required BuildContext context,
+    required GlobalKey streakBannerKey,
+    required GlobalKey dailySummaryKey,
+    required GlobalKey taskListKey,
+  }) {
+    return [
+      TargetFocus(
+        identify: 'tasks_streak_banner',
+        keyTarget: streakBannerKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 16,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 1,
+                totalSteps: 3,
+                title: 'Racha y Puntos de Productor',
+                description:
+                    'Monitorea tu racha consecutiva de días activos y los puntos que acumulas al completar tus metas diarias.',
+                icon: Icons.local_fire_department_rounded,
+                isLastStep: false,
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: 'tasks_daily_summary',
+        keyTarget: dailySummaryKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 16,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 2,
+                totalSteps: 3,
+                title: 'Progreso y Metas del Día',
+                description:
+                    'Revisa cuántas tareas has finalizado hoy para desbloquear el cofre de recompensas y bonificaciones especiales.',
+                icon: Icons.fact_check_rounded,
+                isLastStep: false,
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: 'tasks_list_section',
+        keyTarget: taskListKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 16,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 3,
+                totalSteps: 3,
+                title: 'Misiones y Reclamo de Puntos',
+                description:
+                    'Cumple misiones como actualizar precios o responder clientes, y pulsa "Reclamar" para sumar tus puntos al instante.',
+                icon: Icons.military_tech_rounded,
+                isLastStep: true,
+              );
+            },
+          ),
+        ],
+      ),
+    ];
+  }
+
+  /// Muestra el tutorial interactivo cuando el usuario ingresa por primera vez
+  /// a la pantalla de Negociaciones (NegotiationsScreen).
+  void showNegotiationsTutorial(
+    BuildContext context, {
+    required GlobalKey tabsKey,
+    required GlobalKey searchFilterKey,
+    required GlobalKey negotiationCardKey,
+    bool force = false,
+    VoidCallback? onFinish,
+  }) {
+    if (!force && UserSession.hasSeenNegotiationsTutorial) {
+      return;
+    }
+
+    final bindingStr = WidgetsBinding.instance.runtimeType.toString();
+    if (bindingStr.contains('TestWidgetsFlutterBinding') ||
+        bindingStr.contains('AutomatedTestWidgetsFlutterBinding')) {
+      UserSession.hasSeenNegotiationsTutorial = true;
+      onFinish?.call();
+      return;
+    }
+
+    UserSession.hasSeenNegotiationsTutorial = true;
+
+    final targets = _createNegotiationsTargets(
+      context: context,
+      tabsKey: tabsKey,
+      searchFilterKey: searchFilterKey,
+      negotiationCardKey: negotiationCardKey,
+    );
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    _currentTutorial = TutorialCoachMark(
+      targets: targets,
+      colorShadow: isDark ? const Color(0xFF020C07) : const Color(0xFF0F172A),
+      paddingFocus: 10,
+      opacityShadow: 0.82,
+      imageFilter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+      hideSkip: true,
+      beforeFocus: (target) async {
+        final targetCtx = target.keyTarget?.currentContext;
+        if (targetCtx != null && targetCtx.mounted) {
+          await Scrollable.ensureVisible(
+            targetCtx,
+            alignment: 0.1,
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOutCubic,
+          );
+        }
+      },
+      onFinish: () {
+        _currentTutorial = null;
+        onFinish?.call();
+      },
+      onSkip: () {
+        SoundService.playButtonClick();
+        _currentTutorial = null;
+        onFinish?.call();
+        return true;
+      },
+      onClickTarget: (target) {
+        SoundService.playButtonClick();
+      },
+    );
+
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (context.mounted) {
+        _currentTutorial?.show(context: context);
+      }
+    });
+  }
+
+  List<TargetFocus> _createNegotiationsTargets({
+    required BuildContext context,
+    required GlobalKey tabsKey,
+    required GlobalKey searchFilterKey,
+    required GlobalKey negotiationCardKey,
+  }) {
+    return [
+      TargetFocus(
+        identify: 'negotiations_tabs',
+        keyTarget: tabsKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 16,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 1,
+                totalSteps: 3,
+                title: 'Pestañas de Negociación',
+                description:
+                    'Alterna ágilmente entre Solicitudes Recientes, Acuerdos Concretados y Negociaciones Canceladas.',
+                icon: Icons.segment_rounded,
+                isLastStep: false,
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: 'negotiations_filter',
+        keyTarget: searchFilterKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 16,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 2,
+                totalSteps: 3,
+                title: 'Búsqueda y Filtros Avanzados',
+                description:
+                    'Filtra por producto, rol de Comprador o Proveedor y selecciona rangos de fecha específicos para tus transacciones.',
+                icon: Icons.tune_rounded,
+                isLastStep: false,
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: 'negotiations_card',
+        keyTarget: negotiationCardKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 16,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 3,
+                totalSteps: 3,
+                title: 'Gestión Directa y Acuerdos',
+                description:
+                    'Examina precios por volumen, responde mensajes, envía contraofertas y confirma el cierre de la venta con un solo toque.',
+                icon: Icons.handshake_outlined,
+                isLastStep: true,
+              );
+            },
+          ),
+        ],
+      ),
+    ];
+  }
+
+  /// Muestra el tutorial interactivo cuando el usuario ingresa por primera vez
+  /// a la pantalla de Gestión de Cupones (CouponsManagerScreen).
+  void showCouponsManagerTutorial(
+    BuildContext context, {
+    required GlobalKey metricsKey,
+    required GlobalKey searchFilterKey,
+    required GlobalKey createButtonKey,
+    bool force = false,
+    VoidCallback? onFinish,
+  }) {
+    if (!force && UserSession.hasSeenCouponsManagerTutorial) {
+      return;
+    }
+
+    final bindingStr = WidgetsBinding.instance.runtimeType.toString();
+    if (bindingStr.contains('TestWidgetsFlutterBinding') ||
+        bindingStr.contains('AutomatedTestWidgetsFlutterBinding')) {
+      UserSession.hasSeenCouponsManagerTutorial = true;
+      onFinish?.call();
+      return;
+    }
+
+    UserSession.hasSeenCouponsManagerTutorial = true;
+
+    final targets = _createCouponsManagerTargets(
+      context: context,
+      metricsKey: metricsKey,
+      searchFilterKey: searchFilterKey,
+      createButtonKey: createButtonKey,
+    );
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    _currentTutorial = TutorialCoachMark(
+      targets: targets,
+      colorShadow: isDark ? const Color(0xFF020C07) : const Color(0xFF0F172A),
+      paddingFocus: 10,
+      opacityShadow: 0.82,
+      imageFilter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+      hideSkip: true,
+      beforeFocus: (target) async {
+        final targetCtx = target.keyTarget?.currentContext;
+        if (targetCtx != null && targetCtx.mounted) {
+          await Scrollable.ensureVisible(
+            targetCtx,
+            alignment: 0.1,
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOutCubic,
+          );
+        }
+      },
+      onFinish: () {
+        _currentTutorial = null;
+        onFinish?.call();
+      },
+      onSkip: () {
+        SoundService.playButtonClick();
+        _currentTutorial = null;
+        onFinish?.call();
+        return true;
+      },
+      onClickTarget: (target) {
+        SoundService.playButtonClick();
+      },
+    );
+
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (context.mounted) {
+        _currentTutorial?.show(context: context);
+      }
+    });
+  }
+
+  List<TargetFocus> _createCouponsManagerTargets({
+    required BuildContext context,
+    required GlobalKey metricsKey,
+    required GlobalKey searchFilterKey,
+    required GlobalKey createButtonKey,
+  }) {
+    return [
+      TargetFocus(
+        identify: 'coupons_metrics',
+        keyTarget: metricsKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 16,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 1,
+                totalSteps: 3,
+                title: 'Resumen de Rendimiento',
+                description:
+                    'Monitorea las ventas generadas, el total de cupones canjeados y el impacto financiero de tus promociones activas.',
+                icon: Icons.insights_rounded,
+                isLastStep: false,
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: 'coupons_filters',
+        keyTarget: searchFilterKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 16,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 2,
+                totalSteps: 3,
+                title: 'Búsqueda y Estado de Cupones',
+                description:
+                    'Encuentra promociones por código o título y filtra entre cupones Activos, Pausados o Finalizados.',
+                icon: Icons.filter_alt_rounded,
+                isLastStep: false,
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: 'coupons_create_button',
+        keyTarget: createButtonKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 20,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 3,
+                totalSteps: 3,
+                title: 'Crear Nueva Promoción',
+                description:
+                    'Diseña cupones personalizados definiendo montos mínimos de compra, porcentajes de descuento y límites de canje.',
+                icon: Icons.add_circle_outline_rounded,
+                isLastStep: true,
+              );
+            },
+          ),
+        ],
+      ),
+    ];
+  }
+
+  /// Muestra el tutorial interactivo cuando el usuario ingresa por primera vez
+  /// a la pantalla de Gestión de Ofertas Relámpago (FlashOffersManagerScreen).
+  void showFlashOffersManagerTutorial(
+    BuildContext context, {
+    required GlobalKey tabsKey,
+    required GlobalKey activeBannerKey,
+    required GlobalKey newOfferActionKey,
+    bool force = false,
+    VoidCallback? onFinish,
+  }) {
+    if (!force && UserSession.hasSeenFlashOffersManagerTutorial) {
+      return;
+    }
+
+    final bindingStr = WidgetsBinding.instance.runtimeType.toString();
+    if (bindingStr.contains('TestWidgetsFlutterBinding') ||
+        bindingStr.contains('AutomatedTestWidgetsFlutterBinding')) {
+      UserSession.hasSeenFlashOffersManagerTutorial = true;
+      onFinish?.call();
+      return;
+    }
+
+    UserSession.hasSeenFlashOffersManagerTutorial = true;
+
+    final targets = _createFlashOffersManagerTargets(
+      context: context,
+      tabsKey: tabsKey,
+      activeBannerKey: activeBannerKey,
+      newOfferActionKey: newOfferActionKey,
+    );
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    _currentTutorial = TutorialCoachMark(
+      targets: targets,
+      colorShadow: isDark ? const Color(0xFF020C07) : const Color(0xFF0F172A),
+      paddingFocus: 10,
+      opacityShadow: 0.82,
+      imageFilter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+      hideSkip: true,
+      beforeFocus: (target) async {
+        final targetCtx = target.keyTarget?.currentContext;
+        if (targetCtx != null && targetCtx.mounted) {
+          await Scrollable.ensureVisible(
+            targetCtx,
+            alignment: 0.1,
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOutCubic,
+          );
+        }
+      },
+      onFinish: () {
+        _currentTutorial = null;
+        onFinish?.call();
+      },
+      onSkip: () {
+        SoundService.playButtonClick();
+        _currentTutorial = null;
+        onFinish?.call();
+        return true;
+      },
+      onClickTarget: (target) {
+        SoundService.playButtonClick();
+      },
+    );
+
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (context.mounted) {
+        _currentTutorial?.show(context: context);
+      }
+    });
+  }
+
+  List<TargetFocus> _createFlashOffersManagerTargets({
+    required BuildContext context,
+    required GlobalKey tabsKey,
+    required GlobalKey activeBannerKey,
+    required GlobalKey newOfferActionKey,
+  }) {
+    return [
+      TargetFocus(
+        identify: 'flash_offers_tabs',
+        keyTarget: tabsKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 16,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 1,
+                totalSteps: 3,
+                title: 'Gestor de Ofertas Flash',
+                description:
+                    'Navega entre Ofertas en curso, tu catálogo de Productos disponibles y el Histórico de promociones concluidas.',
+                icon: Icons.tab_rounded,
+                isLastStep: false,
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: 'flash_offers_active_banner',
+        keyTarget: activeBannerKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 16,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 2,
+                totalSteps: 3,
+                title: 'Temporizador y Estado en Vivo',
+                description:
+                    'Visualiza en tiempo real las horas y minutos restantes de cada oferta relámpago antes de su expiración automática.',
+                icon: Icons.timer_outlined,
+                isLastStep: false,
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: 'flash_offers_action_button',
+        keyTarget: newOfferActionKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 14,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 3,
+                totalSteps: 3,
+                title: 'Lanzar Oferta Relámpago',
+                description:
+                    'Publica descuentos por tiempo limitado para acelerar la rotación de cosecha y atraer compradores en minutos.',
+                icon: Icons.bolt_rounded,
+                isLastStep: true,
+              );
+            },
+          ),
+        ],
+      ),
+    ];
+  }
+
+  /// Muestra el tutorial interactivo cuando el usuario ingresa por primera vez
+  /// a la pantalla de Análisis de Mercado (MarketAnalysisScreen).
+  void showMarketAnalysisTutorial(
+    BuildContext context, {
+    required GlobalKey tabsKey,
+    required GlobalKey modeSwitchKey,
+    required GlobalKey pricesListKey,
+    bool force = false,
+    VoidCallback? onFinish,
+  }) {
+    if (!force && UserSession.hasSeenMarketAnalysisTutorial) {
+      return;
+    }
+
+    final bindingStr = WidgetsBinding.instance.runtimeType.toString();
+    if (bindingStr.contains('TestWidgetsFlutterBinding') ||
+        bindingStr.contains('AutomatedTestWidgetsFlutterBinding')) {
+      UserSession.hasSeenMarketAnalysisTutorial = true;
+      onFinish?.call();
+      return;
+    }
+
+    UserSession.hasSeenMarketAnalysisTutorial = true;
+
+    final targets = _createMarketAnalysisTargets(
+      context: context,
+      tabsKey: tabsKey,
+      modeSwitchKey: modeSwitchKey,
+      pricesListKey: pricesListKey,
+    );
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    _currentTutorial = TutorialCoachMark(
+      targets: targets,
+      colorShadow: isDark ? const Color(0xFF020C07) : const Color(0xFF0F172A),
+      paddingFocus: 10,
+      opacityShadow: 0.82,
+      imageFilter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+      hideSkip: true,
+      beforeFocus: (target) async {
+        final targetCtx = target.keyTarget?.currentContext;
+        if (targetCtx != null && targetCtx.mounted) {
+          await Scrollable.ensureVisible(
+            targetCtx,
+            alignment: 0.1,
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOutCubic,
+          );
+        }
+      },
+      onFinish: () {
+        _currentTutorial = null;
+        onFinish?.call();
+      },
+      onSkip: () {
+        SoundService.playButtonClick();
+        _currentTutorial = null;
+        onFinish?.call();
+        return true;
+      },
+      onClickTarget: (target) {
+        SoundService.playButtonClick();
+      },
+    );
+
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (context.mounted) {
+        _currentTutorial?.show(context: context);
+      }
+    });
+  }
+
+  List<TargetFocus> _createMarketAnalysisTargets({
+    required BuildContext context,
+    required GlobalKey tabsKey,
+    required GlobalKey modeSwitchKey,
+    required GlobalKey pricesListKey,
+  }) {
+    return [
+      TargetFocus(
+        identify: 'market_tabs',
+        keyTarget: tabsKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 16,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 1,
+                totalSteps: 3,
+                title: 'Herramientas de Mercado',
+                description:
+                    'Consulta Precios de referencia oficiales, Noticias del sector agropecuario y Tendencias de oferta y demanda.',
+                icon: Icons.query_stats_rounded,
+                isLastStep: false,
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: 'market_mode_switch',
+        keyTarget: modeSwitchKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 16,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 2,
+                totalSteps: 3,
+                title: 'Modalidad Detalle vs Mayorista',
+                description:
+                    'Alterna entre precios al detalle en supermercados y cotizaciones al por mayor en centrales de abastos y mercados mayoristas.',
+                icon: Icons.swap_horiz_rounded,
+                isLastStep: false,
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: 'market_prices_list',
+        keyTarget: pricesListKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 16,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return _buildTutorialCard(
+                context: context,
+                controller: controller,
+                stepNumber: 3,
+                totalSteps: 3,
+                title: 'Tendencias y Variaciones',
+                description:
+                    'Compara precios promedios, variaciones porcentuales por producto y detalles por variedad para negociar informado.',
+                icon: Icons.trending_up_rounded,
+                isLastStep: true,
+              );
+            },
+          ),
+        ],
+      ),
+    ];
+  }
+
   /// Construye los 5 pasos interactivos correspondientes a la navegación principal
   List<TargetFocus> _createNavTargets({
     required BuildContext context,

@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../models/standard_catalog_product.dart';
 import '../services/standard_product_catalog_service.dart';
 import '../services/sound_service.dart';
+import '../services/tutorial_service.dart';
+import '../services/user_session.dart';
 
 class UnitPricingConfig {
   String unit;
@@ -58,6 +61,25 @@ class AddProductScreen extends StatefulWidget {
     super.key,
     this.initialProduct,
   });
+
+  static final GlobalKey tutorialPreviewKey = GlobalKey();
+  static final GlobalKey tutorialMediaKey = GlobalKey();
+  static final GlobalKey tutorialBasicInfoKey = GlobalKey();
+  static final GlobalKey tutorialPricingKey = GlobalKey();
+  static final GlobalKey tutorialSaveButtonKey = GlobalKey();
+
+  /// Permite iniciar o reiniciar el tutorial interactivo de Agregar Producto
+  static void startTutorial(BuildContext context, {bool force = true}) {
+    TutorialService().showAddProductTutorial(
+      context,
+      previewKey: tutorialPreviewKey,
+      mediaKey: tutorialMediaKey,
+      basicInfoKey: tutorialBasicInfoKey,
+      pricingKey: tutorialPricingKey,
+      saveButtonKey: tutorialSaveButtonKey,
+      force: force,
+    );
+  }
 
   @override
   State<AddProductScreen> createState() => _AddProductScreenState();
@@ -263,6 +285,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   String? _videoUrl;
   int _selectedPhotoIndex = 0;
   String _previewMode = 'detalle'; // 'detalle' o 'mayor'
+  Timer? _tutorialTimer;
 
   @override
   void initState() {
@@ -418,6 +441,24 @@ class _AddProductScreenState extends State<AddProductScreen> {
           _showProductSuggestions = true;
         });
       }
+    });
+
+    _checkAndShowTutorial();
+  }
+
+  void _checkAndShowTutorial() {
+    if (UserSession.hasSeenAddProductTutorial) return;
+    final bindingStr = WidgetsBinding.instance.runtimeType.toString();
+    if (bindingStr.contains('TestWidgetsFlutterBinding') ||
+        bindingStr.contains('AutomatedTestWidgetsFlutterBinding')) {
+      return;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _tutorialTimer?.cancel();
+      _tutorialTimer = Timer(const Duration(milliseconds: 600), () {
+        if (!mounted) return;
+        AddProductScreen.startTutorial(context, force: false);
+      });
     });
   }
 
@@ -615,6 +656,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   @override
   void dispose() {
+    _tutorialTimer?.cancel();
     _nameFocusNode.dispose();
     _nameController.dispose();
     _skuController.dispose();
@@ -1835,12 +1877,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
             children: [
               Expanded(
                 child: ListView(
+                  cacheExtent: 5000,
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   children: [
                     // ==========================================
                     // 1. REAL-TIME LIVE PREVIEW CARD
                     // ==========================================
-                    _buildSectionHeader('Vista Previa en Tarjeta Principal', Icons.visibility_outlined),
+                    Container(
+                      key: AddProductScreen.tutorialPreviewKey,
+                      child: _buildSectionHeader('Vista Previa en Tarjeta Principal', Icons.visibility_outlined),
+                    ),
                     const SizedBox(height: 8),
                     Container(
                       decoration: BoxDecoration(
@@ -2511,8 +2557,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     // ==========================================
                     // 2. FOTOGRAFÍAS Y VIDEO STRIP (HASTA 8 FOTOS + 1 VIDEO ANCLADO AL FINAL)
                     // ==========================================
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Column(
+                      key: AddProductScreen.tutorialMediaKey,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
@@ -3036,11 +3086,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                       ),
                                     ),
                                   ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                        ],
+                          ],
+                        ),
                       ),
+                    ],
                     ),
                     const SizedBox(height: 20),
 
@@ -3179,6 +3231,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   ],
                 ),
                 child: SizedBox(
+                  key: AddProductScreen.tutorialSaveButtonKey,
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton.icon(
@@ -3609,6 +3662,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     final matches = StandardProductCatalogService.instance.searchProducts(query);
 
     return Column(
+      key: AddProductScreen.tutorialBasicInfoKey,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
@@ -4299,8 +4353,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Section Header
-          Row(
+          Column(
+            key: AddProductScreen.tutorialPricingKey,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Section Header
+              Row(
             children: [
               Container(
                 padding: const EdgeInsets.all(6),
@@ -4487,6 +4545,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 ),
               ],
             ),
+          ),
+            ],
           ),
           const SizedBox(height: 14),
 

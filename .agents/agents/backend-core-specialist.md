@@ -32,3 +32,6 @@ Eres el **Backend & Core Specialist (Dart Domain / Data Specialist)**. Tu respon
   - Validaciones de dominio, cálculo de precios, filtrado o transformación de datos.
   - Gestión explícita de errores mediante tipos Result/Either o excepciones tipadas de dominio.
 - **Facilidad de Mockeo**: La arquitectura debe permitir que QA o Frontend puedan sustituir fácilmente las implementaciones por mocks o stubs.
+- **Memoria y DesarrolloDB (PostgreSQL + PostgREST)**:
+  - Consultar [MEMORIA_PROYECTO.md](../../MEMORIA_PROYECTO.md) al iniciar cualquier tarea para alinear los modelos y contratos con el estatus vigente.
+  - Consultar y **actualizar obligatoriamente** [DesarrolloDB.md](../../DesarrolloDB.md) cada vez que se desarrolle o modifique una funcionalidad que utilice base de datos, diseñando tablas, vistas, funciones RPC, índices (`B-Tree`, `GIN`, parciales), políticas `RLS` y consultas PostgREST optimizadas (proyección `?select=`, embedding y paginación por cursor).

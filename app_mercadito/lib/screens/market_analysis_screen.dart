@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,12 +6,28 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import '../models/market_news_model.dart';
 import '../services/market_news_service.dart';
+import '../services/tutorial_service.dart';
 import '../widgets/infinite_marquee_ticker.dart';
 
 enum MarketPricesState { normal, loading, noConnection, empty }
 
 class MarketAnalysisScreen extends StatefulWidget {
   const MarketAnalysisScreen({super.key});
+
+  static final GlobalKey tutorialTabsKey = GlobalKey();
+  static final GlobalKey tutorialModeSwitchKey = GlobalKey();
+  static final GlobalKey tutorialPricesListKey = GlobalKey();
+
+  /// Permite iniciar o reiniciar el tutorial interactivo de Análisis de Mercado
+  static void startTutorial(BuildContext context, {bool force = true}) {
+    TutorialService().showMarketAnalysisTutorial(
+      context,
+      tabsKey: tutorialTabsKey,
+      modeSwitchKey: tutorialModeSwitchKey,
+      pricesListKey: tutorialPricesListKey,
+      force: force,
+    );
+  }
 
   @override
   State<MarketAnalysisScreen> createState() => _MarketAnalysisScreenState();
@@ -156,11 +173,20 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
     },
   ];
 
+  Timer? _tutorialTimer;
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _currentState = MarketPricesState.loading;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _tutorialTimer?.cancel();
+      _tutorialTimer = Timer(const Duration(milliseconds: 600), () {
+        if (!mounted) return;
+        MarketAnalysisScreen.startTutorial(context, force: false);
+      });
+    });
     Future.delayed(const Duration(milliseconds: 600), () {
       if (mounted) {
         setState(() {
@@ -172,6 +198,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
 
   @override
   void dispose() {
+    _tutorialTimer?.cancel();
     _tabController.dispose();
     _searchController.dispose();
     _newsSearchController.dispose();
@@ -317,6 +344,7 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
           child: Column(
             children: [
               TabBar(
+                key: MarketAnalysisScreen.tutorialTabsKey,
                 controller: _tabController,
                 labelColor: primaryColor,
                 unselectedLabelColor: isDark ? Colors.grey[400] : const Color(0xFF6F7973),
@@ -426,41 +454,44 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
           // Price Type Switcher (Segmented Control: Al Detalle vs Al por Mayor)
           Opacity(
             opacity: effectiveState == MarketPricesState.loading ? 0.5 : 1.0,
-            child: Column(
-              children: [
-                _buildPriceTypeSegmentedControl(
-                  isDark,
-                  primaryColor,
-                  primaryContainer,
-                  surfaceContainerHigh,
-                  onSurfaceVariant,
-                  surfaceContainerLowest,
-                  surfaceVariant,
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(
-                      _isWholesale ? Icons.inventory_2_outlined : Icons.shopping_bag_outlined,
-                      size: 14,
-                      color: primaryColor,
-                    ),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        _isWholesale
-                            ? 'Precios promedio de venta al por mayor (Mercados Centrales)'
-                            : 'Precios promedio de venta al detalle (Supermercados y tiendas)',
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: onSurfaceVariant,
+            child: KeyedSubtree(
+              key: MarketAnalysisScreen.tutorialModeSwitchKey,
+              child: Column(
+                children: [
+                  _buildPriceTypeSegmentedControl(
+                    isDark,
+                    primaryColor,
+                    primaryContainer,
+                    surfaceContainerHigh,
+                    onSurfaceVariant,
+                    surfaceContainerLowest,
+                    surfaceVariant,
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Icon(
+                        _isWholesale ? Icons.inventory_2_outlined : Icons.shopping_bag_outlined,
+                        size: 14,
+                        color: primaryColor,
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          _isWholesale
+                              ? 'Precios promedio de venta al por mayor (Mercados Centrales)'
+                              : 'Precios promedio de venta al detalle (Supermercados y tiendas)',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: onSurfaceVariant,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -518,12 +549,15 @@ class _MarketAnalysisScreenState extends State<MarketAnalysisScreen> with Single
           const SizedBox(height: 24),
 
           // Dynamic State Body
-          switch (effectiveState) {
-            MarketPricesState.normal => _buildProductList(filtered, isDark, primaryColor, surfaceContainerLowest, surfaceVariant, onSurface, onSurfaceVariant),
-            MarketPricesState.loading => _buildLoadingSkeleton(isDark, surfaceContainerLowest, surfaceVariant, primaryContainer),
-            MarketPricesState.noConnection => _buildNoConnectionState(primaryColor, onSurface, onSurfaceVariant),
-            MarketPricesState.empty => _buildEmptyState(primaryColor, onSurface, onSurfaceVariant),
-          },
+          KeyedSubtree(
+            key: MarketAnalysisScreen.tutorialPricesListKey,
+            child: switch (effectiveState) {
+              MarketPricesState.normal => _buildProductList(filtered, isDark, primaryColor, surfaceContainerLowest, surfaceVariant, onSurface, onSurfaceVariant),
+              MarketPricesState.loading => _buildLoadingSkeleton(isDark, surfaceContainerLowest, surfaceVariant, primaryContainer),
+              MarketPricesState.noConnection => _buildNoConnectionState(primaryColor, onSurface, onSurfaceVariant),
+              MarketPricesState.empty => _buildEmptyState(primaryColor, onSurface, onSurfaceVariant),
+            },
+          ),
 
           const SizedBox(height: 40),
         ],

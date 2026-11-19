@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,10 +8,26 @@ import 'package:lottie/lottie.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/skeleton_loading.dart';
 import '../services/sound_service.dart';
+import '../services/tutorial_service.dart';
 import '../theme/app_theme.dart';
 
 class TasksScreen extends StatefulWidget {
   const TasksScreen({super.key});
+
+  static final GlobalKey tutorialStreakBannerKey = GlobalKey();
+  static final GlobalKey tutorialDailySummaryKey = GlobalKey();
+  static final GlobalKey tutorialTaskListKey = GlobalKey();
+
+  /// Permite iniciar o reiniciar el tutorial interactivo de Tareas
+  static void startTutorial(BuildContext context, {bool force = true}) {
+    TutorialService().showTasksTutorial(
+      context,
+      streakBannerKey: tutorialStreakBannerKey,
+      dailySummaryKey: tutorialDailySummaryKey,
+      taskListKey: tutorialTaskListKey,
+      force: force,
+    );
+  }
 
   @override
   State<TasksScreen> createState() => _TasksScreenState();
@@ -27,6 +44,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
   final int _totalDailyTasks = 10;
   final int _streakDays = 5;
   bool _isLoading = true;
+  Timer? _tutorialTimer;
 
   late List<_TaskModel> _tasks;
 
@@ -35,6 +53,13 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
     super.initState();
     Future.delayed(const Duration(milliseconds: 600), () {
       if (mounted) setState(() => _isLoading = false);
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _tutorialTimer?.cancel();
+      _tutorialTimer = Timer(const Duration(milliseconds: 600), () {
+        if (!mounted) return;
+        TasksScreen.startTutorial(context, force: false);
+      });
     });
     _controller = AnimationController(
       vsync: this,
@@ -124,6 +149,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
 
   @override
   void dispose() {
+    _tutorialTimer?.cancel();
     _controller.dispose();
     _bgController.dispose();
     _pulseController.dispose();
@@ -400,13 +426,27 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _animateItem(_buildGamifiedHeroBanner(isDark), 0),
+                      KeyedSubtree(
+                        key: TasksScreen.tutorialStreakBannerKey,
+                        child: _animateItem(_buildGamifiedHeroBanner(isDark), 0),
+                      ),
                       const SizedBox(height: 20),
-                      _animateItem(_buildDailySummaryRow(isDark), 1),
+                      KeyedSubtree(
+                        key: TasksScreen.tutorialDailySummaryKey,
+                        child: _animateItem(_buildDailySummaryRow(isDark), 1),
+                      ),
                       const SizedBox(height: 24),
-                      _animateItem(_buildTaskListHeader(isDark), 2),
-                      const SizedBox(height: 12),
-                      _buildTaskGrid(isDark),
+                      KeyedSubtree(
+                        key: TasksScreen.tutorialTaskListKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _animateItem(_buildTaskListHeader(isDark), 2),
+                            const SizedBox(height: 12),
+                            _buildTaskGrid(isDark),
+                          ],
+                        ),
+                      ),
                       const SizedBox(height: 24),
                       _animateItem(_buildTrustProfileCard(isDark), 5),
                       const SizedBox(height: 20),

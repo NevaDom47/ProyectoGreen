@@ -1,15 +1,32 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/coupon_model.dart';
 import '../services/coupons_service.dart';
+import '../services/tutorial_service.dart';
 import '../widgets/coupon_stats_sheet.dart';
 // import '../widgets/share_coupon_sheet.dart'; // Comentado temporalmente para futura actualización
 import '../widgets/create_coupon_wizard.dart';
 
 class CouponsManagerScreen extends StatefulWidget {
   const CouponsManagerScreen({super.key});
+
+  static final GlobalKey tutorialMetricsKey = GlobalKey();
+  static final GlobalKey tutorialSearchFilterKey = GlobalKey();
+  static final GlobalKey tutorialCreateButtonKey = GlobalKey();
+
+  /// Permite iniciar o reiniciar el tutorial interactivo de Gestión de Cupones
+  static void startTutorial(BuildContext context, {bool force = true}) {
+    TutorialService().showCouponsManagerTutorial(
+      context,
+      metricsKey: tutorialMetricsKey,
+      searchFilterKey: tutorialSearchFilterKey,
+      createButtonKey: tutorialCreateButtonKey,
+      force: force,
+    );
+  }
 
   @override
   State<CouponsManagerScreen> createState() => _CouponsManagerScreenState();
@@ -19,9 +36,23 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
   String _selectedFilter = 'Todos'; // 'Todos', 'Activos', 'Pausados', 'Finalizados'
+  Timer? _tutorialTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _tutorialTimer?.cancel();
+      _tutorialTimer = Timer(const Duration(milliseconds: 600), () {
+        if (!mounted) return;
+        CouponsManagerScreen.startTutorial(context, force: false);
+      });
+    });
+  }
 
   @override
   void dispose() {
+    _tutorialTimer?.cancel();
     _searchController.dispose();
     super.dispose();
   }
@@ -108,20 +139,23 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: isDark ? const Color(0xFF285E44) : const Color(0xFF016142),
-        foregroundColor: Colors.white,
-        elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        icon: const Icon(Icons.add, size: 20),
-        label: Text(
-          'Crear cupón',
-          style: GoogleFonts.plusJakartaSans(
-            fontWeight: FontWeight.w800,
-            fontSize: 13,
+      floatingActionButton: KeyedSubtree(
+        key: CouponsManagerScreen.tutorialCreateButtonKey,
+        child: FloatingActionButton.extended(
+          backgroundColor: isDark ? const Color(0xFF285E44) : const Color(0xFF016142),
+          foregroundColor: Colors.white,
+          elevation: 0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          icon: const Icon(Icons.add, size: 20),
+          label: Text(
+            'Crear cupón',
+            style: GoogleFonts.plusJakartaSans(
+              fontWeight: FontWeight.w800,
+              fontSize: 13,
+            ),
           ),
+          onPressed: () => CreateCouponWizard.show(context),
         ),
-        onPressed: () => CreateCouponWizard.show(context),
       ),
       body: ValueListenableBuilder<List<Coupon>>(
         valueListenable: CouponsService.instance.couponsNotifier,
@@ -148,17 +182,23 @@ class _CouponsManagerScreenState extends State<CouponsManagerScreen> {
           return Column(
             children: [
               // 1. Resumen superior de indicadores
-              _buildMetricsHeader(metrics, isDark, primaryColor, surfaceColor, borderColor, textColor, subtextColor),
+              KeyedSubtree(
+                key: CouponsManagerScreen.tutorialMetricsKey,
+                child: _buildMetricsHeader(metrics, isDark, primaryColor, surfaceColor, borderColor, textColor, subtextColor),
+              ),
 
               // 2. Buscador y Filtros
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                child: Column(
-                  children: [
-                    _buildSearchBar(isDark, surfaceColor, borderColor, textColor, subtextColor, primaryColor),
-                    const SizedBox(height: 10),
-                    _buildFilterChips(isDark, primaryColor, surfaceColor, borderColor, subtextColor, allCoupons),
-                  ],
+              KeyedSubtree(
+                key: CouponsManagerScreen.tutorialSearchFilterKey,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  child: Column(
+                    children: [
+                      _buildSearchBar(isDark, surfaceColor, borderColor, textColor, subtextColor, primaryColor),
+                      const SizedBox(height: 10),
+                      _buildFilterChips(isDark, primaryColor, surfaceColor, borderColor, subtextColor, allCoupons),
+                    ],
+                  ),
                 ),
               ),
 

@@ -17,7 +17,7 @@ void main() {
 
       // Verify the essential brand elements exist on screen
       expect(find.text('Accede a la frescura del campo en un clic'), findsOneWidget);
-      expect(find.text('Conexión directa productor - comprador'), findsOneWidget);
+      expect(find.text('Conexión directa productor - comprador'), findsNothing);
       expect(find.text('Saltar'), findsOneWidget);
       expect(find.text('© 2026 El Mercadito S.A.'), findsOneWidget);
 

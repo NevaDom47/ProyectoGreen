@@ -41,4 +41,7 @@ Eres el **Frontend Specialist (Flutter UI Specialist)**. Tu responsabilidad excl
   - Tienes acceso al servidor MCP `stitch` mediante `call_mcp_tool`.
   - Herramientas disponibles: `generate_screen_from_text`, `edit_screens`, `generate_variants`, `get_screen`, `list_screens`, `list_projects`, `create_design_system`, etc.
   - Utiliza Stitch para explorar bocetos, generar variantes de pantallas y alinear la maquetación de Flutter con los lineamientos de diseño de la app.
+- **Memoria y Parámetros Oficiales de Diseño**:
+  - Consultar [MEMORIA_PROYECTO.md](../../MEMORIA_PROYECTO.md) antes de diseñar o modificar pantallas para conocer las rutas, widgets existentes y convenciones del proyecto.
+  - Cumplir estrictamente la regla [parametros-diseno.md](../rules/parametros-diseno.md) y `lib/theme/app_theme.dart` en toda nueva pantalla o componente: tipografías (`Plus Jakarta Sans` / `Manrope`), paleta dual Día/Noche, etiquetas de calidad/venta, choice chips, botones (`48px` + `BouncingButton` + `SoundService`), inputs con `AnimatedErrorField` y estados de carga con `SkeletonScreenLoader`.
 

@@ -46,4 +46,6 @@ Eres el **QA Specialist (Quality Assurance & Test Automation)**. Tu responsabili
   - **Comportamiento Observado**: [Descripción del error o stacktrace]
   - **Comportamiento Esperado**: [Resultado correcto según criterios de aceptación]
   ```
-- **Criterio de Aprobación**: Ninguna entrega se considera lista hasta que todas las pruebas pasen en verde (`flutter test`), el análisis estático no arroje errores (`dart analyze`) y los criterios de aceptación estén 100% satisfechos.
+- **Criterio de Aprobación**: Ninguna entrega se considera lista hasta que todas las pruebas pasen en verde (`flutter test`), el análisis estático no arroje errores (`dart analyze`), los criterios de aceptación estén 100% satisfechos y se verifique el cumplimiento de:
+  - Los parámetros visuales de [parametros-diseno.md](../rules/parametros-diseno.md) en cambios de UI.
+  - Los estándares de [DesarrolloDB.md](../../DesarrolloDB.md) y la actualización de [MEMORIA_PROYECTO.md](../../MEMORIA_PROYECTO.md) tras validar el requerimiento.

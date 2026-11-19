@@ -216,7 +216,7 @@ class _SplashScreenState extends State<SplashScreen>
 
                           const SizedBox(height: 24),
 
-                          // Lema y valor diferencial con Fade y Slide suave
+                          // Lema con Fade y Slide suave
                           AnimatedBuilder(
                             animation: _controller,
                             builder: (context, child) {
@@ -228,52 +228,13 @@ class _SplashScreenState extends State<SplashScreen>
                                 ),
                               );
                             },
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Accede a la frescura del campo en un clic',
-                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                        color: secondaryTextColor,
-                                        fontSize: 15,
-                                      ),
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 18),
-
-                                // Badge de valor diferencial
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 14,
-                                    vertical: 6,
+                            child: Text(
+                              'Accede a la frescura del campo en un clic',
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    color: secondaryTextColor,
+                                    fontSize: 15,
                                   ),
-                                  decoration: BoxDecoration(
-                                    color: primaryColor.withValues(alpha: isDark ? 0.16 : 0.08),
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
-                                      color: primaryColor.withValues(alpha: isDark ? 0.3 : 0.15),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.eco_rounded,
-                                        size: 16,
-                                        color: primaryColor,
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        'Conexión directa productor - comprador',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600,
-                                          color: primaryColor,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                              textAlign: TextAlign.center,
                             ),
                           ),
                         ],

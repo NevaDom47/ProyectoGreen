@@ -98,6 +98,12 @@ class UserSession {
 
   // Tutorial / Guía interactiva
   static bool hasSeenNavTutorial = false;
+  static bool hasSeenAddProductTutorial = false;
+  static bool hasSeenTasksTutorial = false;
+  static bool hasSeenNegotiationsTutorial = false;
+  static bool hasSeenCouponsManagerTutorial = false;
+  static bool hasSeenFlashOffersManagerTutorial = false;
+  static bool hasSeenMarketAnalysisTutorial = false;
 
   // Provider Onboarding Details
   static bool isProviderOnboarded = false;
@@ -292,6 +298,12 @@ class UserSession {
     sundaySchedule = 'Cerrado';
     isSundayClosed = true;
     isSaturdayClosed = false;
+
+    hasSeenTasksTutorial = false;
+    hasSeenNegotiationsTutorial = false;
+    hasSeenCouponsManagerTutorial = false;
+    hasSeenFlashOffersManagerTutorial = false;
+    hasSeenMarketAnalysisTutorial = false;
 
     resetVerification();
   }

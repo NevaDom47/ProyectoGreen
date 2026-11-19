@@ -1,12 +1,29 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import '../data/global_state.dart';
 import '../services/sound_service.dart';
+import '../services/tutorial_service.dart';
 import '../theme/app_theme.dart';
 
 class NegotiationsScreen extends StatefulWidget {
   const NegotiationsScreen({super.key});
+
+  static final GlobalKey tutorialTabsKey = GlobalKey();
+  static final GlobalKey tutorialSearchFilterKey = GlobalKey();
+  static final GlobalKey tutorialCardKey = GlobalKey();
+
+  /// Permite iniciar o reiniciar el tutorial interactivo de Negociaciones
+  static void startTutorial(BuildContext context, {bool force = true}) {
+    TutorialService().showNegotiationsTutorial(
+      context,
+      tabsKey: tutorialTabsKey,
+      searchFilterKey: tutorialSearchFilterKey,
+      negotiationCardKey: tutorialCardKey,
+      force: force,
+    );
+  }
 
   @override
   State<NegotiationsScreen> createState() => _NegotiationsScreenState();
@@ -18,9 +35,23 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
   String _roleFilter = 'Todos';
   DateTime? _selectedDate;
   final TextEditingController _searchController = TextEditingController();
+  Timer? _tutorialTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _tutorialTimer?.cancel();
+      _tutorialTimer = Timer(const Duration(milliseconds: 600), () {
+        if (!mounted) return;
+        NegotiationsScreen.startTutorial(context, force: false);
+      });
+    });
+  }
 
   @override
   void dispose() {
+    _tutorialTimer?.cancel();
     _searchController.dispose();
     super.dispose();
   }
@@ -476,11 +507,17 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Custom Segmented Switcher Tabs
-              _buildSegmentSwitcher(isDark, surfaceColor, borderColor, onSurfaceColor, secondaryTextColor),
+              KeyedSubtree(
+                key: NegotiationsScreen.tutorialTabsKey,
+                child: _buildSegmentSwitcher(isDark, surfaceColor, borderColor, onSurfaceColor, secondaryTextColor),
+              ),
               const SizedBox(height: 14),
 
               // Search Bar & Filter Button (Matching Mercado screen style)
-              _buildSearchAndFilterRow(isDark, borderColor, isFilterActive),
+              KeyedSubtree(
+                key: NegotiationsScreen.tutorialSearchFilterKey,
+                child: _buildSearchAndFilterRow(isDark, borderColor, isFilterActive),
+              ),
               const SizedBox(height: 20),
 
               // Section Header
@@ -499,14 +536,17 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
               // Active Tab Content List
               if (_selectedTabIndex == 0)
                 if (_filteredPending.isEmpty)
-                  _buildEmptyState(
-                    icon: Icons.inbox_outlined,
-                    title: 'No hay negociaciones pendientes',
-                    message: _searchQuery.isEmpty && !isFilterActive
-                        ? 'Actualmente no tienes solicitudes de negociación activas.'
-                        : 'No se encontraron resultados con los filtros actuales.',
-                    isDark: isDark,
-                    secondaryTextColor: secondaryTextColor,
+                  KeyedSubtree(
+                    key: NegotiationsScreen.tutorialCardKey,
+                    child: _buildEmptyState(
+                      icon: Icons.inbox_outlined,
+                      title: 'No hay negociaciones pendientes',
+                      message: _searchQuery.isEmpty && !isFilterActive
+                          ? 'Actualmente no tienes solicitudes de negociación activas.'
+                          : 'No se encontraron resultados con los filtros actuales.',
+                      isDark: isDark,
+                      secondaryTextColor: secondaryTextColor,
+                    ),
                   )
                 else
                   ListView.separated(
@@ -516,7 +556,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                     separatorBuilder: (context, index) => const SizedBox(height: 12),
                     itemBuilder: (context, index) {
                       final item = _filteredPending[index];
-                      return _buildNegotiationCard(
+                      final card = _buildNegotiationCard(
                         item: item,
                         isDark: isDark,
                         surfaceColor: surfaceColor,
@@ -599,6 +639,12 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                           );
                         },
                       );
+                      return index == 0
+                          ? KeyedSubtree(
+                              key: NegotiationsScreen.tutorialCardKey,
+                              child: card,
+                            )
+                          : card;
                     },
                   )
               else if (_selectedTabIndex == 1)

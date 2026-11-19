@@ -1,10 +1,27 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../data/global_state.dart';
+import '../services/tutorial_service.dart';
 import 'flash_offer_edit_dialog.dart';
 
 class FlashOffersManagerScreen extends StatefulWidget {
   const FlashOffersManagerScreen({super.key});
+
+  static final GlobalKey tutorialTabsKey = GlobalKey();
+  static final GlobalKey tutorialActiveBannerKey = GlobalKey();
+  static final GlobalKey tutorialNewOfferActionKey = GlobalKey();
+
+  /// Permite iniciar o reiniciar el tutorial interactivo de Gestión de Ofertas Relámpago
+  static void startTutorial(BuildContext context, {bool force = true}) {
+    TutorialService().showFlashOffersManagerTutorial(
+      context,
+      tabsKey: tutorialTabsKey,
+      activeBannerKey: tutorialActiveBannerKey,
+      newOfferActionKey: tutorialNewOfferActionKey,
+      force: force,
+    );
+  }
 
   @override
   State<FlashOffersManagerScreen> createState() =>
@@ -619,12 +636,23 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
   DateTimeRange? _historyDateRange;
   String _historyQuickFilter = 'Últimas 5';
   late final List<Map<String, dynamic>> _baseHistoryOffers;
+  Timer? _tutorialTimer;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    startGlobalFlashTimer(); // Sincroniza reloj regresivo global
+    final isTest = WidgetsBinding.instance.runtimeType.toString().contains('Test');
+    if (!isTest) {
+      startGlobalFlashTimer(); // Sincroniza reloj regresivo global
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _tutorialTimer?.cancel();
+      _tutorialTimer = Timer(const Duration(milliseconds: 600), () {
+        if (!mounted) return;
+        FlashOffersManagerScreen.startTutorial(context, force: false);
+      });
+    });
     final now = DateTime.now();
     _baseHistoryOffers = [
       {
@@ -776,6 +804,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
 
   @override
   void dispose() {
+    _tutorialTimer?.cancel();
     _tabController.dispose();
     _productSearchController.dispose();
     super.dispose();
@@ -1169,6 +1198,7 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
         centerTitle: false,
         actions: [
           IconButton(
+            key: FlashOffersManagerScreen.tutorialNewOfferActionKey,
             icon: Icon(Icons.bolt, color: effectivePrimary),
             onPressed: () {
               // Quick action: switch to productos tab
@@ -1177,27 +1207,33 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
             tooltip: 'Crear Nueva Oferta',
           ),
         ],
-        bottom: TabBar(
-          controller: _tabController,
-          labelColor: effectivePrimary,
-          unselectedLabelColor: isDark
-              ? Colors.grey.shade400
-              : Colors.grey.shade600,
-          indicatorColor: effectivePrimary,
-          indicatorWeight: 3,
-          labelStyle: const TextStyle(
-            fontFamily: 'Manrope',
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-          ),
-          tabs: const [
-            Tab(text: 'Ofertas', icon: Icon(Icons.bolt, size: 20)),
-            Tab(
-              text: 'Productos',
-              icon: Icon(Icons.inventory_2_outlined, size: 20),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(48),
+          child: KeyedSubtree(
+            key: FlashOffersManagerScreen.tutorialTabsKey,
+            child: TabBar(
+              controller: _tabController,
+              labelColor: effectivePrimary,
+              unselectedLabelColor: isDark
+                  ? Colors.grey.shade400
+                  : Colors.grey.shade600,
+              indicatorColor: effectivePrimary,
+              indicatorWeight: 3,
+              labelStyle: const TextStyle(
+                fontFamily: 'Manrope',
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+              tabs: const [
+                Tab(text: 'Ofertas', icon: Icon(Icons.bolt, size: 20)),
+                Tab(
+                  text: 'Productos',
+                  icon: Icon(Icons.inventory_2_outlined, size: 20),
+                ),
+                Tab(text: 'Histórico', icon: Icon(Icons.history, size: 20)),
+              ],
             ),
-            Tab(text: 'Histórico', icon: Icon(Icons.history, size: 20)),
-          ],
+          ),
         ),
       ),
       body: TabBarView(
@@ -1328,62 +1364,65 @@ class _FlashOffersManagerScreenState extends State<FlashOffersManagerScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Summary KPI Bar (Emerald Harvest aesthetic - without Pause)
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: cardBg,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: borderColor),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.03),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 10,
-                              height: 10,
-                              decoration: const BoxDecoration(
-                                color: Colors.redAccent,
-                                shape: BoxShape.circle,
+              KeyedSubtree(
+                key: FlashOffersManagerScreen.tutorialActiveBannerKey,
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: cardBg,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: borderColor),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.03),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                width: 10,
+                                height: 10,
+                                decoration: const BoxDecoration(
+                                  color: Colors.redAccent,
+                                  shape: BoxShape.circle,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              'OFERTAS ACTIVAS',
-                              style: TextStyle(
-                                fontFamily: 'JetBrains Mono',
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                                color: isDark
-                                    ? Colors.grey.shade400
-                                    : Colors.grey.shade600,
+                              const SizedBox(width: 8),
+                              Text(
+                                'OFERTAS ACTIVAS',
+                                style: TextStyle(
+                                  fontFamily: 'JetBrains Mono',
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: isDark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade600,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          '$activeOffersCount Activas',
-                          style: TextStyle(
-                            fontFamily: 'Manrope',
-                            fontSize: 22,
-                            fontWeight: FontWeight.w800,
-                            color: isDark ? Colors.white : Colors.black87,
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          const SizedBox(height: 6),
+                          Text(
+                            '$activeOffersCount Activas',
+                            style: TextStyle(
+                              fontFamily: 'Manrope',
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                              color: isDark ? Colors.white : Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
 

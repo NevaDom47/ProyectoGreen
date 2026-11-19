@@ -50,6 +50,9 @@ class UserSession {
   /// Initially null to simulate first-time login where no role is chosen yet.
   static String? selectedRole;
 
+  static bool get isProvider => selectedRole == 'proveedor';
+  static bool get isBuyer => selectedRole == 'comprador' || selectedRole == null;
+
   /// Returns standard 8-digit formatted ID according to role:
   /// Provider: PROV-00000001
   /// Buyer: BUY-00000001

@@ -254,12 +254,13 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final barColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final bubbleColor = isDark ? const Color(0xFF0F172A) : Colors.white;
+    final barColor = isDark ? const Color(0xFF1C222B) : Colors.white;
+    final bubbleColor = isDark ? const Color(0xFF14181F) : Colors.white;
     final activeColor = isDark ? const Color(0xFF34D399) : const Color(0xFF00462F);
-    final inactiveColor = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
-    final shadowColor = isDark ? Colors.black.withValues(alpha: 0.45) : Colors.black.withValues(alpha: 0.09);
-    final bubbleBorder = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
+    final inactiveColor = isDark ? const Color(0xFF9CA3AF) : const Color(0xFF64748B);
+    final shadowColor = isDark ? Colors.black.withValues(alpha: 0.25) : Colors.black.withValues(alpha: 0.09);
+    final bubbleBorder = isDark ? const Color(0xFF262D38) : const Color(0xFFE2E8F0);
+    final navBorderColor = isDark ? const Color(0xFF262D38) : null;
 
     const double barHeight = 64.0;
     const double bubbleDiameter = 54.0;
@@ -296,6 +297,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                         itemCount: _items.length,
                         barColor: barColor,
                         shadowColor: shadowColor,
+                        borderColor: navBorderColor,
                         notchDepth: notchDepth,
                         notchWidth: notchWidth,
                       ),
@@ -451,6 +453,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
   }
 
   Widget _buildChatBreakdownTooltip(bool isDark) {
+    final alertColor = isDark ? const Color(0xFFEF4444) : const Color(0xFFBD4437);
     return AnimatedBuilder(
       animation: _chatAlertAnimation,
       builder: (context, child) {
@@ -481,7 +484,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFBD4437),
+                        color: alertColor,
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
                           color: Colors.white.withValues(alpha: 0.25),
@@ -489,7 +492,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFBD4437).withValues(alpha: 0.45),
+                            color: alertColor.withValues(alpha: 0.45),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
@@ -554,7 +557,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
                         child: Container(
                           width: 10,
                           height: 5,
-                          color: const Color(0xFFBD4437),
+                          color: alertColor,
                         ),
                       ),
                     ),
@@ -569,13 +572,14 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar>
   }
 
   Widget _buildBadge(int count, bool isDark) {
+    final badgeColor = isDark ? const Color(0xFFEF4444) : const Color(0xFFBD4437);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       decoration: BoxDecoration(
-        color: const Color(0xFFBD4437),
+        color: badgeColor,
         borderRadius: BorderRadius.circular(9),
         border: Border.all(
-          color: const Color(0xFFBD4437),
+          color: badgeColor,
           width: 1.5,
         ),
         boxShadow: const [
@@ -633,6 +637,7 @@ class _CurvedNavBarPainter extends CustomPainter {
   final int itemCount;
   final Color barColor;
   final Color shadowColor;
+  final Color? borderColor;
   final double notchDepth;
   final double notchWidth;
 
@@ -641,6 +646,7 @@ class _CurvedNavBarPainter extends CustomPainter {
     required this.itemCount,
     required this.barColor,
     required this.shadowColor,
+    this.borderColor,
     this.notchDepth = 22.0,
     this.notchWidth = 38.0,
   });
@@ -655,9 +661,11 @@ class _CurvedNavBarPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     final path = Path();
+    final topBorderPath = Path();
 
     // Top-left starting point (flush to left edge)
     path.moveTo(0, 0);
+    topBorderPath.moveTo(0, 0);
 
     // If an item is active, draw the concave smooth notch
     if (activeIndex >= 0 && activeIndex < itemCount) {
@@ -665,9 +673,15 @@ class _CurvedNavBarPainter extends CustomPainter {
       final rightScoop = (activeX + notchWidth).clamp(0.0, size.width);
 
       path.lineTo(leftScoop, 0);
+      topBorderPath.lineTo(leftScoop, 0);
 
       // Left cubic curve into notch trough
       path.cubicTo(
+        activeX - (notchWidth * 0.55), 0,
+        activeX - (notchWidth * 0.45), notchDepth,
+        activeX, notchDepth,
+      );
+      topBorderPath.cubicTo(
         activeX - (notchWidth * 0.55), 0,
         activeX - (notchWidth * 0.45), notchDepth,
         activeX, notchDepth,
@@ -679,10 +693,16 @@ class _CurvedNavBarPainter extends CustomPainter {
         activeX + (notchWidth * 0.55), 0,
         rightScoop, 0,
       );
+      topBorderPath.cubicTo(
+        activeX + (notchWidth * 0.45), notchDepth,
+        activeX + (notchWidth * 0.55), 0,
+        rightScoop, 0,
+      );
     }
 
     // Top edge to top-right corner (flush)
     path.lineTo(size.width, 0);
+    topBorderPath.lineTo(size.width, 0);
 
     // Right edge down to bottom of screen (flush)
     path.lineTo(size.width, size.height);
@@ -698,13 +718,23 @@ class _CurvedNavBarPainter extends CustomPainter {
     // Draw soft shadow and main curved bar
     canvas.drawShadow(path, shadowColor, 10.0, false);
     canvas.drawPath(path, paint);
+
+    // Draw subtle 1px top border if configured
+    if (borderColor != null) {
+      final borderPaint = Paint()
+        ..color = borderColor!
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0;
+      canvas.drawPath(topBorderPath, borderPaint);
+    }
   }
 
   @override
   bool shouldRepaint(covariant _CurvedNavBarPainter oldDelegate) {
     return oldDelegate.activeIndex != activeIndex ||
         oldDelegate.barColor != barColor ||
-        oldDelegate.shadowColor != shadowColor;
+        oldDelegate.shadowColor != shadowColor ||
+        oldDelegate.borderColor != borderColor;
   }
 }
 

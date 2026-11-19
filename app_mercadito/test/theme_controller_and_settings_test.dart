@@ -67,33 +67,33 @@ void main() {
   group('AppTheme token validation', () {
     test('Modo dia y noche.md color tokens match required specifications', () {
       expect(AppTheme.lightBackground, const Color(0xFFF7F9F8));
-      expect(AppTheme.darkBackground, const Color(0xFF101815));
+      expect(AppTheme.darkBackground, const Color(0xFF0B0E11));
 
       expect(AppTheme.lightSecondaryBackground, const Color(0xFFEEF5F1));
-      expect(AppTheme.darkSecondaryBackground, const Color(0xFF17221E));
+      expect(AppTheme.darkSecondaryBackground, const Color(0xFF14181F));
 
       expect(AppTheme.lightCard, const Color(0xFFFFFFFF));
-      expect(AppTheme.darkCard, const Color(0xFF1C2924));
+      expect(AppTheme.darkCard, const Color(0xFF14181F));
 
       expect(AppTheme.lightCardElevated, const Color(0xFFFFFFFF));
-      expect(AppTheme.darkCardElevated, const Color(0xFF22332C));
+      expect(AppTheme.darkCardElevated, const Color(0xFF1C222B));
 
-      expect(AppTheme.darkPrimary, const Color(0xFF67C83B));
-      expect(AppTheme.darkPrimaryCta, const Color(0xFF2F7D59));
-      expect(AppTheme.darkPrimaryLight, const Color(0xFF203D31));
+      expect(AppTheme.darkPrimary, const Color(0xFF10B981));
+      expect(AppTheme.darkPrimaryCta, const Color(0xFF10B981));
+      expect(AppTheme.darkPrimaryLight, const Color(0x2410B981));
 
-      expect(AppTheme.darkTextPrimary, const Color(0xFFF1F5F3));
-      expect(AppTheme.darkTextSecondary, const Color(0xFFAAB8B1));
-      expect(AppTheme.darkTextTertiary, const Color(0xFF718078));
+      expect(AppTheme.darkTextPrimary, const Color(0xFFF3F4F6));
+      expect(AppTheme.darkTextSecondary, const Color(0xFF9CA3AF));
+      expect(AppTheme.darkTextTertiary, const Color(0xFF6B7280));
 
-      expect(AppTheme.darkBorder, const Color(0xFF2B3A34));
-      expect(AppTheme.darkInput, const Color(0xFF1C3028));
-      expect(AppTheme.darkIcon, const Color(0xFFA7B8B0));
+      expect(AppTheme.darkBorder, const Color(0xFF262D38));
+      expect(AppTheme.darkInput, const Color(0xFF14181F));
+      expect(AppTheme.darkIcon, const Color(0xFF9CA3AF));
 
-      expect(AppTheme.functionalSuccess, const Color(0xFF67C83B));
+      expect(AppTheme.functionalSuccess, const Color(0xFF34D399));
       expect(AppTheme.functionalOffer, const Color(0xFFF5A623));
       expect(AppTheme.functionalDiscount, const Color(0xFFFFB340));
-      expect(AppTheme.functionalError, const Color(0xFFFF6B6B));
+      expect(AppTheme.functionalError, const Color(0xFFEF4444));
       expect(AppTheme.functionalInfo, const Color(0xFF58A6FF));
       expect(AppTheme.functionalFavorite, const Color(0xFFFF6B81));
     });

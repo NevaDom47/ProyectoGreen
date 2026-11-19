@@ -84,11 +84,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final isDark = theme.brightness == Brightness.dark;
     
     final primaryColor = const Color(0xFF016042);
-    final accentGreen = isDark ? const Color(0xFF80C652) : primaryColor;
-    final bgColor = isDark ? const Color(0xFF0F1C18) : const Color(0xFFF5F8F7);
-    final surfaceColor = isDark ? const Color(0xFF1F2924) : Colors.white;
-    final textColor = isDark ? Colors.white : const Color(0xFF0F172A); 
-    final hintColor = isDark ? const Color(0xFF6B7280) : Colors.grey.shade400;
+    final emeraldAccent = const Color(0xFF10B981);
+    final bgColor = isDark ? const Color(0xFF0B0E11) : const Color(0xFFF5F8F7);
+    final surfaceColor = isDark ? const Color(0xFF14181F) : Colors.white;
+    final topBarColor = isDark ? const Color(0xFF1C222B) : primaryColor;
+    final textColor = isDark ? const Color(0xFFF3F4F6) : const Color(0xFF0F172A); 
+    final subtextColor = isDark ? const Color(0xFF9CA3AF) : Colors.grey.shade600;
+    final hintColor = const Color(0xFF6B7280);
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -97,28 +99,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Top Navigation
+              // Top Navigation (Surface 2 #1C222B con borde inferior de 1px solid #262D38 en Noche)
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 22),
                 decoration: BoxDecoration(
-                  color: primaryColor,
+                  color: topBarColor,
                   borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(20),
                     bottomRight: Radius.circular(20),
                   ),
+                  border: isDark
+                      ? const Border(
+                          bottom: BorderSide(color: Color(0xFF262D38), width: 1),
+                        )
+                      : null,
                   boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.12),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
+                    if (!isDark)
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.12),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
                   ],
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: isDark ? const Color(0xFFF3F4F6) : Colors.white,
+                        size: 24,
+                      ),
                       onPressed: () {
                         if (context.canPop()) {
                           context.pop();
@@ -130,21 +142,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     Expanded(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
-                        children: const [
+                        children: [
                           Text(
                             'Crear cuenta nueva',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: isDark ? const Color(0xFFF3F4F6) : Colors.white,
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
                               height: 1.2,
                             ),
                           ),
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4),
                           Text(
                             'Únete a El Mercadito',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: isDark ? const Color(0xFF9CA3AF) : Colors.white,
                               fontSize: 14,
                             ),
                           ),
@@ -172,7 +184,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: _emailController,
                           surfaceColor: surfaceColor,
                           primaryColor: primaryColor,
-                          accentColor: accentGreen,
+                          accentColor: emeraldAccent,
                           textColor: textColor,
                           hintColor: hintColor,
                           isDark: isDark,
@@ -192,7 +204,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: _passwordController,
                           surfaceColor: surfaceColor,
                           primaryColor: primaryColor,
-                          accentColor: accentGreen,
+                          accentColor: emeraldAccent,
                           textColor: textColor,
                           hintColor: hintColor,
                           isDark: isDark,
@@ -221,7 +233,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: _confirmPasswordController,
                           surfaceColor: surfaceColor,
                           primaryColor: primaryColor,
-                          accentColor: accentGreen,
+                          accentColor: emeraldAccent,
                           textColor: textColor,
                           hintColor: hintColor,
                           isDark: isDark,
@@ -245,21 +257,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         
                         const SizedBox(height: 40),
                         
-                        // Submit Button with Bouncing micro-animation
+                        // Submit Button with Bouncing micro-animation (#10B981 con texto #06281E SemiBold)
                         BouncingButton(
                           onTap: _handleRegister,
                           child: Container(
                             width: double.infinity,
                             padding: const EdgeInsets.symmetric(vertical: 18),
                             decoration: BoxDecoration(
-                              color: accentGreen,
+                              color: isDark ? emeraldAccent : primaryColor,
                               borderRadius: BorderRadius.circular(14),
                               boxShadow: [
-                                BoxShadow(
-                                  color: accentGreen.withValues(alpha: isDark ? 0.35 : 0.4),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 4),
-                                ),
+                                if (!isDark)
+                                  BoxShadow(
+                                    color: primaryColor.withValues(alpha: 0.3),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
                               ],
                             ),
                             child: Row(
@@ -268,15 +281,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 Text(
                                   'Crear cuenta',
                                   style: TextStyle(
-                                    color: isDark ? const Color(0xFF0F1C18) : Colors.white,
+                                    color: isDark ? const Color(0xFF06281E) : Colors.white,
                                     fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                                 const SizedBox(width: 10),
                                 Icon(
                                   Icons.arrow_forward,
-                                  color: isDark ? const Color(0xFF0F1C18) : Colors.white,
+                                  color: isDark ? const Color(0xFF06281E) : Colors.white,
                                   size: 22,
                                 ),
                               ],
@@ -294,7 +307,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             Text(
                               '¿Ya tienes una cuenta? ',
                               style: TextStyle(
-                                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                color: subtextColor,
                                 fontSize: 15,
                               ),
                             ),
@@ -309,7 +322,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               child: Text(
                                 'Inicia sesión aquí',
                                 style: TextStyle(
-                                  color: accentGreen,
+                                  color: isDark ? emeraldAccent : primaryColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
                                 ),
@@ -348,7 +361,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         letterSpacing: 1.1,
                                         fontWeight: FontWeight.bold,
                                         decoration: TextDecoration.underline,
-                                        color: accentGreen,
+                                        color: isDark ? emeraldAccent : primaryColor,
                                       ),
                                     ),
                                   ),
@@ -358,7 +371,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   style: TextStyle(
                                     fontSize: 11,
                                     letterSpacing: 1.1,
-                                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                    color: subtextColor,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -373,7 +386,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         letterSpacing: 1.1,
                                         fontWeight: FontWeight.bold,
                                         decoration: TextDecoration.underline,
-                                        color: accentGreen,
+                                        color: isDark ? emeraldAccent : primaryColor,
                                       ),
                                     ),
                                   ),
@@ -415,88 +428,104 @@ class _RegisterScreenState extends State<RegisterScreen> {
     VoidCallback? onToggleVisibility,
     List<TextInputFormatter>? inputFormatters,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 8),
-          child: Text(
-            label,
-            style: TextStyle(
-              color: isDark ? accentColor : primaryColor,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-        AnimatedErrorField(
-          errorText: errorText,
-          borderRadius: 12,
-          child: Container(
-            height: 58,
-            decoration: BoxDecoration(
-              color: surfaceColor,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: errorText != null
-                    ? Colors.transparent
-                    : (isDark ? const Color(0xFF2A3D34) : primaryColor.withValues(alpha: 0.2)),
+    return Focus(
+      child: Builder(
+        builder: (context) {
+          final hasFocus = Focus.of(context).hasFocus;
+          final borderColor = errorText != null
+              ? Colors.transparent
+              : (isDark
+                  ? (hasFocus ? const Color(0xFF10B981) : const Color(0xFF262D38))
+                  : (hasFocus ? primaryColor : primaryColor.withValues(alpha: 0.2)));
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 4, bottom: 8),
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    color: isDark ? const Color(0xFFF3F4F6) : primaryColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
-              boxShadow: [
-                if (!isDark)
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.03),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 54,
-                  alignment: Alignment.center,
-                  child: Icon(
-                    icon,
-                    color: isDark ? accentColor : primaryColor.withValues(alpha: 0.6),
-                    size: 24,
-                  ),
-                ),
-                Expanded(
-                  child: TextField(
-                    controller: controller,
-                    keyboardType: keyboardType,
-                    obscureText: obscureText,
-                    inputFormatters: inputFormatters,
-                    onChanged: onChanged,
-                    style: TextStyle(color: textColor, fontSize: 16),
-                    decoration: InputDecoration(
-                      hintText: hint,
-                      hintStyle: TextStyle(color: hintColor, fontSize: 16),
-                      border: InputBorder.none,
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 18),
+              AnimatedErrorField(
+                errorText: errorText,
+                borderRadius: 12,
+                child: Container(
+                  height: 58,
+                  decoration: BoxDecoration(
+                    color: surfaceColor,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: borderColor,
+                      width: hasFocus && isDark ? 1.5 : 1.0,
                     ),
+                    boxShadow: [
+                      if (!isDark)
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.03),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                    ],
                   ),
-                ),
-                if (isPassword)
-                  GestureDetector(
-                    onTap: onToggleVisibility,
-                    child: Container(
-                      width: 54,
-                      alignment: Alignment.center,
-                      child: Icon(
-                        obscureText ? Icons.visibility : Icons.visibility_off,
-                        color: isDark ? accentColor : primaryColor.withValues(alpha: 0.4),
-                        size: 24,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 54,
+                        alignment: Alignment.center,
+                        child: Icon(
+                          icon,
+                          color: isDark
+                              ? (hasFocus ? const Color(0xFF10B981) : const Color(0xFF6B7280))
+                              : primaryColor.withValues(alpha: 0.6),
+                          size: 24,
+                        ),
                       ),
-                    ),
+                      Expanded(
+                        child: TextField(
+                          controller: controller,
+                          keyboardType: keyboardType,
+                          obscureText: obscureText,
+                          inputFormatters: inputFormatters,
+                          onChanged: onChanged,
+                          style: TextStyle(color: textColor, fontSize: 16),
+                          decoration: InputDecoration(
+                            hintText: hint,
+                            hintStyle: TextStyle(color: hintColor, fontSize: 16),
+                            border: InputBorder.none,
+                            isDense: true,
+                            contentPadding: const EdgeInsets.symmetric(vertical: 18),
+                          ),
+                        ),
+                      ),
+                      if (isPassword)
+                        GestureDetector(
+                          onTap: onToggleVisibility,
+                          child: Container(
+                            width: 54,
+                            alignment: Alignment.center,
+                            child: Icon(
+                              obscureText ? Icons.visibility : Icons.visibility_off,
+                              color: isDark
+                                  ? const Color(0xFF6B7280)
+                                  : primaryColor.withValues(alpha: 0.4),
+                              size: 24,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
-              ],
-            ),
-          ),
-        ),
-      ],
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

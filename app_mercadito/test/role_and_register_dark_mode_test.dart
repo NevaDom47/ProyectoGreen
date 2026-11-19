@@ -63,7 +63,7 @@ void main() {
   });
 
   group('RegisterScreen Dark Mode & Logo Removal Tests', () {
-    testWidgets('RegisterScreen does not display logo M and uses #80C652 for labels, icons and submit button',
+    testWidgets('RegisterScreen does not display logo M and uses refined dark mode tokens for labels, icons and submit button',
         (WidgetTester tester) async {
       await tester.pumpWidget(createDarkThemeApp(const RegisterScreen()));
       await tester.pumpAndSettle();
@@ -82,36 +82,36 @@ void main() {
       expect(find.text('Nombre de Usuario (Opcional)'), findsNothing);
       expect(find.byIcon(Icons.person), findsNothing);
 
-      // Verify label texts use #80C652
+      // Verify label texts use #F3F4F6 (Soft White)
       final emailLabel = tester.widget<Text>(find.text('Correo Electrónico'));
-      expect(emailLabel.style?.color, const Color(0xFF80C652));
+      expect(emailLabel.style?.color, const Color(0xFFF3F4F6));
 
       final passLabel = tester.widget<Text>(find.text('Contraseña'));
-      expect(passLabel.style?.color, const Color(0xFF80C652));
+      expect(passLabel.style?.color, const Color(0xFFF3F4F6));
 
       final confirmPassLabel = tester.widget<Text>(find.text('Confirmar Contraseña'));
-      expect(confirmPassLabel.style?.color, const Color(0xFF80C652));
+      expect(confirmPassLabel.style?.color, const Color(0xFFF3F4F6));
 
-      // Verify icons use #80C652
+      // Verify icons use #6B7280 in dark mode
       final mailIcon = tester.widget<Icon>(find.byIcon(Icons.mail));
-      expect(mailIcon.color, const Color(0xFF80C652));
+      expect(mailIcon.color, const Color(0xFF6B7280));
 
       final lockIcon = tester.widget<Icon>(find.byIcon(Icons.lock));
-      expect(lockIcon.color, const Color(0xFF80C652));
+      expect(lockIcon.color, const Color(0xFF6B7280));
 
       final lockResetIcon = tester.widget<Icon>(find.byIcon(Icons.lock_reset));
-      expect(lockResetIcon.color, const Color(0xFF80C652));
+      expect(lockResetIcon.color, const Color(0xFF6B7280));
 
       final visibilityIcon = tester.widget<Icon>(find.byIcon(Icons.visibility).first);
-      expect(visibilityIcon.color, const Color(0xFF80C652));
+      expect(visibilityIcon.color, const Color(0xFF6B7280));
 
-      // Verify submit button container uses #80C652
+      // Verify submit button container uses #10B981
       final submitText = find.text('Crear cuenta');
       final submitContainer = tester.widget<Container>(
         find.ancestor(of: submitText, matching: find.byType(Container)).first,
       );
       final submitDeco = submitContainer.decoration as BoxDecoration?;
-      expect(submitDeco?.color, const Color(0xFF80C652));
+      expect(submitDeco?.color, const Color(0xFF10B981));
     });
   });
 }

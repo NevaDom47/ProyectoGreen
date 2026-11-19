@@ -196,13 +196,13 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    // Custom colors from the specific design if different
-    final bgColor = isDark ? const Color(0xFF0f231d) : const Color(0xFFf5f8f7);
+    // Tokens Modo Noche minimalista (#0B0E11 / #14181F / #1C222B)
+    final bgColor = isDark ? const Color(0xFF0B0E11) : const Color(0xFFf5f8f7);
     final surfaceColor = isDark
-        ? const Color(0xFF1f2937)
-        : Colors.white; // approx slate-800
+        ? const Color(0xFF14181F)
+        : Colors.white;
     final searchBgColor = isDark
-        ? const Color(0xFF1f2937)
+        ? const Color(0xFF14181F)
         : const Color(0xFFE5F1EB);
 
     return Scaffold(
@@ -427,7 +427,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                 borderRadius: BorderRadius.circular(12),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: isDark ? const Color(0xFF347659) : theme.colorScheme.primary,
+                    color: isDark ? const Color(0xFF10B981) : theme.colorScheme.primary,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
@@ -436,15 +436,19 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                       vertical: 10,
                     ),
                     child: Row(
-                      children: const [
-                        Icon(Icons.search, size: 16, color: Colors.white),
-                        SizedBox(width: 4),
+                      children: [
+                        Icon(
+                          Icons.search,
+                          size: 16,
+                          color: isDark ? const Color(0xFF06281E) : Colors.white,
+                        ),
+                        const SizedBox(width: 4),
                         Text(
                           'Proveedores',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: isDark ? const Color(0xFF06281E) : Colors.white,
                             fontSize: 14,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ],
@@ -460,21 +464,31 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
             decoration: BoxDecoration(
               color: searchBgColor,
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isDark ? const Color(0xFF262D38) : Colors.transparent,
+                width: 1,
+              ),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
             child: Row(
               children: [
-                Icon(Icons.search, color: theme.colorScheme.primary),
+                Icon(
+                  Icons.search,
+                  color: isDark ? const Color(0xFF6B7280) : theme.colorScheme.primary,
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: TextField(
                     readOnly: true,
                     onTap: () => context.push('/search'),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       border: InputBorder.none,
                       focusedBorder: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       hintText: 'Buscar productos agrícolas...',
+                      hintStyle: TextStyle(
+                        color: isDark ? const Color(0xFF6B7280) : Colors.grey,
+                      ),
                       fillColor: Colors.transparent,
                     ),
                   ),
@@ -493,7 +507,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
 
   Widget _buildAnalysisBanner(ThemeData theme) {
     final isDark = theme.brightness == Brightness.dark;
-    final bannerColor = isDark ? const Color(0xFF347659) : theme.colorScheme.primary;
+    final bannerColor = theme.colorScheme.primary;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -501,8 +515,18 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
         width: double.infinity,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: bannerColor,
+          color: isDark ? null : bannerColor,
+          gradient: isDark
+              ? const LinearGradient(
+                  colors: [Color(0xFF142822), Color(0xFF14181F)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : null,
           borderRadius: BorderRadius.circular(16),
+          border: isDark
+              ? Border.all(color: const Color(0xFF1F3D33), width: 1)
+              : null,
         ),
         child: Stack(
           clipBehavior: Clip.none,
@@ -510,10 +534,10 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Análisis de Mercado',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: isDark ? const Color(0xFFF3F4F6) : Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -524,7 +548,9 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                   child: Text(
                     'Tendencias de cosecha y pronósticos de precios para el próximo trimestre.',
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.9),
+                      color: isDark
+                          ? const Color(0xFF9CA3AF)
+                          : Colors.white.withValues(alpha: 0.9),
                       fontSize: 12,
                     ),
                   ),
@@ -533,14 +559,22 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                 ElevatedButton(
                   onPressed: () => context.push('/market-analysis'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: bannerColor,
+                    backgroundColor: isDark
+                        ? const Color(0xFF10B981)
+                        : Colors.white,
+                    foregroundColor: isDark
+                        ? const Color(0xFF06281E)
+                        : bannerColor,
                     minimumSize: const Size(120, 36),
                     padding: const EdgeInsets.symmetric(horizontal: 16),
+                    elevation: 0,
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 12,
+                    ),
                   ),
                   child: const Text(
                     'Ver Reporte',
-                    style: TextStyle(fontSize: 12),
                   ),
                 ),
               ],
@@ -551,7 +585,9 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
               child: Icon(
                 Icons.bar_chart,
                 size: 140,
-                color: Colors.white.withValues(alpha: 0.2),
+                color: isDark
+                    ? const Color(0xFF10B981).withValues(alpha: 0.12)
+                    : Colors.white.withValues(alpha: 0.2),
               ),
             ),
           ],
@@ -760,10 +796,10 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
       return Container(
         padding: const EdgeInsets.all(2),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF111827) : const Color(0xFFF3F4F6),
+          color: isDark ? const Color(0xFF14181F) : const Color(0xFFF3F4F6),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB),
+            color: isDark ? const Color(0xFF262D38) : const Color(0xFFE5E7EB),
             width: 0.8,
           ),
         ),
@@ -785,11 +821,19 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                 decoration: BoxDecoration(
                   color: isRetailSelected
                       ? (isDark
-                            ? const Color(0xFF047857)
+                            ? const Color(0x2410B981) // rgba(16, 185, 129, 0.14)
                             : const Color(0xFF059669))
-                      : Colors.transparent,
+                      : (isDark ? const Color(0xFF1C222B) : Colors.transparent),
                   borderRadius: BorderRadius.circular(6),
-                  boxShadow: isRetailSelected
+                  border: isDark
+                      ? Border.all(
+                          color: isRetailSelected
+                              ? const Color(0x4D10B981)
+                              : const Color(0xFF2E3744),
+                          width: 0.8,
+                        )
+                      : null,
+                  boxShadow: isRetailSelected && !isDark
                       ? [
                           BoxShadow(
                             color: Colors.black.withValues(alpha: 0.12),
@@ -806,16 +850,16 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                       Icons.shopping_bag_outlined,
                       size: 11,
                       color: isRetailSelected
-                          ? Colors.white
-                          : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                          ? (isDark ? const Color(0xFF34D399) : Colors.white)
+                          : (isDark ? const Color(0xFFD1D5DB) : Colors.grey[600]),
                     ),
                     const SizedBox(width: 3),
                     Text(
                       'Detalle',
                       style: GoogleFonts.inter(
                         color: isRetailSelected
-                            ? Colors.white
-                            : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                            ? (isDark ? const Color(0xFF34D399) : Colors.white)
+                            : (isDark ? const Color(0xFFD1D5DB) : Colors.grey[600]),
                         fontSize: 10,
                         fontWeight: isRetailSelected
                             ? FontWeight.w700
@@ -840,11 +884,19 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                 decoration: BoxDecoration(
                   color: isWholesaleSelected
                       ? (isDark
-                            ? const Color(0xFF0284C7)
+                            ? const Color(0x2410B981)
                             : const Color(0xFF0369A1))
-                      : Colors.transparent,
+                      : (isDark ? const Color(0xFF1C222B) : Colors.transparent),
                   borderRadius: BorderRadius.circular(6),
-                  boxShadow: isWholesaleSelected
+                  border: isDark
+                      ? Border.all(
+                          color: isWholesaleSelected
+                              ? const Color(0x4D10B981)
+                              : const Color(0xFF2E3744),
+                          width: 0.8,
+                        )
+                      : null,
+                  boxShadow: isWholesaleSelected && !isDark
                       ? [
                           BoxShadow(
                             color: Colors.black.withValues(alpha: 0.12),
@@ -861,16 +913,16 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                       Icons.inventory_2_outlined,
                       size: 11,
                       color: isWholesaleSelected
-                          ? Colors.white
-                          : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                          ? (isDark ? const Color(0xFF34D399) : Colors.white)
+                          : (isDark ? const Color(0xFFD1D5DB) : Colors.grey[600]),
                     ),
                     const SizedBox(width: 3),
                     Text(
                       'Por Mayor',
                       style: GoogleFonts.inter(
                         color: isWholesaleSelected
-                            ? Colors.white
-                            : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                            ? (isDark ? const Color(0xFF34D399) : Colors.white)
+                            : (isDark ? const Color(0xFFD1D5DB) : Colors.grey[600]),
                         fontSize: 10,
                         fontWeight: isWholesaleSelected
                             ? FontWeight.w700
@@ -896,21 +948,21 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
 
     final Color bgColor = isRetailOnly
         ? (isDark
-              ? const Color(0xFF064E3B).withValues(alpha: 0.35)
+              ? const Color(0x2410B981)
               : const Color(0xFFECFDF5))
         : (isDark
-              ? const Color(0xFF075985).withValues(alpha: 0.35)
+              ? const Color(0xFF1C222B)
               : const Color(0xFFF0F9FF));
     final Color borderColor = isRetailOnly
         ? (isDark
-              ? const Color(0xFF059669).withValues(alpha: 0.4)
+              ? const Color(0x4D10B981)
               : const Color(0xFFA7F3D0))
         : (isDark
-              ? const Color(0xFF0284C7).withValues(alpha: 0.4)
+              ? const Color(0xFF2E3744)
               : const Color(0xFFBAE6FD));
     final Color textColor = isRetailOnly
-        ? (isDark ? const Color(0xFF6EE7B7) : const Color(0xFF047857))
-        : (isDark ? const Color(0xFF7DD3FC) : const Color(0xFF0369A1));
+        ? (isDark ? const Color(0xFF34D399) : const Color(0xFF047857))
+        : (isDark ? const Color(0xFFD1D5DB) : const Color(0xFF0369A1));
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
@@ -1148,15 +1200,21 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
       child: Container(
         width: cardWidth,
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1f2937) : Colors.white,
+          color: isDark ? const Color(0xFF14181F) : Colors.white,
           borderRadius: BorderRadius.circular(cardRadius),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          border: Border.all(
+            color: isDark ? const Color(0xFF262D38) : Colors.transparent,
+            width: 1,
+          ),
+          boxShadow: isDark
+              ? []
+              : [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1310,29 +1368,22 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                               height: isCompact ? 34 : 38,
                               decoration: BoxDecoration(
                                 color: isDark
-                                    ? const Color(0xFF064E3B).withValues(alpha: 0.6)
+                                    ? const Color(0xFF1C222B)
                                     : const Color(0xFFDFF0E8),
                                 shape: BoxShape.circle,
                                 border: Border.all(
                                   color: isDark
-                                      ? const Color(0xFF059669).withValues(alpha: 0.7)
+                                      ? const Color(0xFF262D38)
                                       : const Color(0xFF88C8A8),
-                                  width: 1.2,
+                                  width: 1.0,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.15),
-                                    blurRadius: 6,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
                               ),
                               child: Center(
                                 child: Icon(
                                   Icons.shopping_cart_outlined,
                                   size: isCompact ? 18 : 20,
                                   color: isDark
-                                      ? const Color(0xFF6EE7B7)
+                                      ? const Color(0xFF34D399)
                                       : const Color(0xFF1B4D3E),
                                 ),
                               ),
@@ -1374,6 +1425,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                               style: TextStyle(
                                 fontSize: isCompact ? 13.5 : 17,
                                 fontWeight: FontWeight.bold,
+                                color: isDark ? const Color(0xFFF3F4F6) : Colors.black,
                                 height: 1.2,
                               ),
                               maxLines: 2,
@@ -1386,7 +1438,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                                 fontFamily: 'Manrope',
                                 fontSize: isCompact ? 8.5 : 9.5,
                                 fontWeight: FontWeight.w500,
-                                color: isDark ? Colors.grey.shade400 : const Color(0xFF94A3B8),
+                                color: isDark ? const Color(0xFF6B7280) : const Color(0xFF94A3B8),
                                 letterSpacing: 0.2,
                               ),
                             ),
@@ -1401,7 +1453,7 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                             Text(
                               displayOldPrice,
                               style: TextStyle(
-                                color: Colors.grey,
+                                color: isDark ? const Color(0xFF6B7280) : Colors.grey,
                                 fontSize: isCompact ? 9.5 : 11,
                                 decoration: TextDecoration.lineThrough,
                                 fontWeight: FontWeight.bold,
@@ -1425,7 +1477,9 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                                 style: TextStyle(
                                   color: isWholesale
                                       ? const Color(0xFF0284C7)
-                                      : theme.colorScheme.primary,
+                                      : (isDark
+                                          ? const Color(0xFFF3F4F6)
+                                          : theme.colorScheme.primary),
                                   fontSize: isCompact ? 16.5 : 20,
                                   fontWeight: FontWeight.w900,
                                   height: 1.1,
@@ -1521,19 +1575,23 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                                       vertical: 2,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: theme.colorScheme.primary
-                                          .withValues(alpha: 0.1),
+                                      color: isDark
+                                          ? const Color(0x2410B981)
+                                          : theme.colorScheme.primary
+                                              .withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(4),
                                       border: Border.all(
-                                        color: theme.colorScheme.primary
-                                            .withValues(alpha: 0.3),
+                                        color: isDark
+                                            ? const Color(0x4D10B981)
+                                            : theme.colorScheme.primary
+                                                .withValues(alpha: 0.3),
                                       ),
                                     ),
                                     child: Text(
                                       tag.toString(),
                                       style: TextStyle(
                                         color: isDark
-                                            ? const Color(0xFF6ee7b7)
+                                            ? const Color(0xFF34D399)
                                             : theme.colorScheme.primary,
                                         fontSize: isCompact ? 9 : 10,
                                         fontWeight: FontWeight.bold,
@@ -1591,7 +1649,10 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                     ),
                   ),
                   SizedBox(height: isCompact ? 8 : 12),
-                  const Divider(color: Color(0xFFE0E3DF), thickness: 0.8),
+                  Divider(
+                    color: isDark ? const Color(0xFF262D38) : const Color(0xFFE0E3DF),
+                    thickness: 0.8,
+                  ),
                   SizedBox(height: isCompact ? 8 : 12),
                   // CALIDAD Row
                   GestureDetector(
@@ -1895,13 +1956,21 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF047857),
-                          foregroundColor: Colors.white,
+                          backgroundColor: isDark
+                              ? const Color(0xFF10B981)
+                              : const Color(0xFF047857),
+                          foregroundColor: isDark
+                              ? const Color(0xFF06281E)
+                              : Colors.white,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                           padding: EdgeInsets.zero,
+                          textStyle: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                          ),
                         ),
                       ),
                     ),
@@ -2920,49 +2989,50 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
   }
 
   Widget _buildDrawer(BuildContext context, bool isDark, Color primaryColor) {
+    // Drawer en Surface 2 (#1C222B) con borde lateral de 1px (#262D38)
     final bgColor = isDark
-        ? const Color(0xFF022c22)
-        : const Color(0xFFecfdf5); // emerald-950 and emerald-50
+        ? const Color(0xFF1C222B)
+        : const Color(0xFFecfdf5);
     final textHeaderColor = isDark
-        ? const Color(0xFFecfdf5)
-        : const Color(0xFF064e3b); // emerald-50 and emerald-900
+        ? const Color(0xFFF3F4F6)
+        : const Color(0xFF064e3b);
     final subtextColor = isDark
-        ? const Color(0xFFd1fae5).withValues(alpha: 0.6)
-        : const Color(
-            0xFF065f46,
-          ).withValues(alpha: 0.6); // emerald-100/60 and emerald-800/60
+        ? const Color(0xFF9CA3AF)
+        : const Color(0xFF065f46).withValues(alpha: 0.6);
     final dividerColor = isDark
-        ? const Color(0xFF065f46).withValues(alpha: 0.2)
-        : const Color(
-            0xFFd1fae5,
-          ).withValues(alpha: 0.2); // emerald-800/20 and emerald-100/20
+        ? const Color(0xFF262D38)
+        : const Color(0xFFd1fae5).withValues(alpha: 0.2);
 
-    // Normal items
+    // Normal items (inactivo #9CA3AF, activo/hover rgba(16, 185, 129, 0.14))
     final itemTextColor = isDark
-        ? const Color(0xFFd1fae5).withValues(alpha: 0.7)
+        ? const Color(0xFF9CA3AF)
         : const Color(0xFF065f46).withValues(alpha: 0.7);
     final itemHoverBg = isDark
-        ? const Color(0xFF065f46).withValues(alpha: 0.5)
+        ? const Color(0x2410B981)
         : const Color(0xFFd1fae5).withValues(alpha: 0.5);
 
     // Logout
     final logoutColor = isDark
-        ? const Color(0xFFffdad6).withValues(alpha: 0.8)
+        ? const Color(0xFFEF4444)
         : const Color(0xFFba1a1a).withValues(alpha: 0.8);
 
+    final isProvider = UserSession.isProvider;
     final avatarUrl =
         UserSession.profilePictureUrl ??
-        (UserSession.selectedRole == 'proveedor'
+        (isProvider
             ? 'assets/images/Foto Sin perfil Proveedor.png'
             : 'assets/images/Foto sin perfil.png');
 
     return Drawer(
       backgroundColor: bgColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
+      shape: RoundedRectangleBorder(
+        borderRadius: const BorderRadius.only(
           topRight: Radius.circular(16),
           bottomRight: Radius.circular(16),
         ),
+        side: isDark
+            ? const BorderSide(color: Color(0xFF262D38), width: 1)
+            : BorderSide.none,
       ),
       child: SafeArea(
         child: Column(
@@ -2982,7 +3052,10 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                         padding: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(color: primaryColor, width: 2),
+                          border: Border.all(
+                            color: isDark ? const Color(0xFF10B981) : primaryColor,
+                            width: 2,
+                          ),
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(30),
@@ -3004,13 +3077,13 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: primaryColor,
+                          color: isDark ? const Color(0xFF10B981) : primaryColor,
                           shape: BoxShape.circle,
                         ),
                         padding: const EdgeInsets.all(2),
-                        child: const Icon(
+                        child: Icon(
                           Icons.verified,
-                          color: Colors.white,
+                          color: isDark ? const Color(0xFF06281E) : Colors.white,
                           size: 14,
                         ),
                       ),
@@ -3048,78 +3121,274 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 children: [
-                  _buildDrawerItem(
-                    'Tareas',
-                    Icons.assignment_outlined,
-                    itemTextColor,
-                    itemHoverBg,
-                    false,
-                    onTap: () {
-                      context.pop();
-                      context.push('/tasks');
-                    },
-                    trailing: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(
-                          0xFFF20C0E,
-                        ), // Red color for badge #F20C0E
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Text(
-                        '5',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
+                  if (!isProvider) ...[
+                    // Opciones del Menú del Rol de Comprador
+                    _buildDrawerItem(
+                      'Tareas',
+                      Icons.assignment_outlined,
+                      itemTextColor,
+                      itemHoverBg,
+                      false,
+                      onTap: () {
+                        context.pop();
+                        context.push('/tasks');
+                      },
+                      trailing: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF20C0E),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Text(
+                          '5',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  _buildDrawerItem(
-                    'Negociaciones',
-                    Icons.handshake,
-                    itemTextColor,
-                    itemHoverBg,
-                    false,
-                    onTap: () {
-                      context.pop();
-                      context.push('/negotiations');
-                    },
-                    trailing: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF20C0E),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Text(
-                        '3',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
+                    _buildDrawerItem(
+                      'Reseñas',
+                      Icons.rate_review_outlined,
+                      itemTextColor,
+                      itemHoverBg,
+                      false,
+                      onTap: () {
+                        context.pop();
+                        context.push('/my-reviews');
+                      },
+                      trailing: MyReviewsScreen.pendingReviewsCount > 0
+                          ? Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF20C0E),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                '${MyReviewsScreen.pendingReviewsCount}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )
+                          : null,
+                    ),
+                    _buildDrawerItem(
+                      'Cupones',
+                      Icons.confirmation_number,
+                      itemTextColor,
+                      itemHoverBg,
+                      false,
+                      onTap: () {
+                        context.pop();
+                        context.push('/coupons');
+                      },
+                    ),
+                    _buildDrawerItem(
+                      'Productos Favoritos',
+                      Icons.favorite_rounded,
+                      itemTextColor,
+                      itemHoverBg,
+                      false,
+                      onTap: () {
+                        context.pop();
+                        context.push('/favorites');
+                      },
+                    ),
+                    _buildDrawerItem(
+                      'Proveedores Favoritos',
+                      Icons.favorite,
+                      itemTextColor,
+                      itemHoverBg,
+                      false,
+                      onTap: () {
+                        context.pop();
+                        context.push('/favorite-providers');
+                      },
+                    ),
+                    _buildDrawerItem(
+                      'Mapa de Proveedores',
+                      Icons.map_outlined,
+                      itemTextColor,
+                      itemHoverBg,
+                      false,
+                      onTap: () {
+                        context.pop();
+                        context.push('/providers-map');
+                      },
+                    ),
+                  ] else ...[
+                    // Opciones del Menú del Rol de Proveedor
+                    _buildDrawerItem(
+                      'Tareas',
+                      Icons.assignment_outlined,
+                      itemTextColor,
+                      itemHoverBg,
+                      false,
+                      onTap: () {
+                        context.pop();
+                        context.push('/tasks');
+                      },
+                      trailing: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF20C0E),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Text(
+                          '5',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  _buildDrawerItem(
-                    'Reseñas',
-                    Icons.rate_review_outlined,
-                    itemTextColor,
-                    itemHoverBg,
-                    false,
-                    onTap: () {
-                      context.pop();
-                      context.push('/my-reviews');
-                    },
-                    trailing: MyReviewsScreen.pendingReviewsCount > 0
-                        ? Container(
+                    _buildDrawerItem(
+                      'Negociaciones',
+                      Icons.handshake,
+                      itemTextColor,
+                      itemHoverBg,
+                      false,
+                      onTap: () {
+                        context.pop();
+                        context.push('/negotiations');
+                      },
+                      trailing: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF20C0E),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Text(
+                          '3',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    _buildDrawerItem(
+                      'Reseñas',
+                      Icons.rate_review_outlined,
+                      itemTextColor,
+                      itemHoverBg,
+                      false,
+                      onTap: () {
+                        context.pop();
+                        context.push('/my-reviews');
+                      },
+                      trailing: MyReviewsScreen.pendingReviewsCount > 0
+                          ? Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF20C0E),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                '${MyReviewsScreen.pendingReviewsCount}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )
+                          : null,
+                    ),
+                    _buildDrawerItem(
+                      'Compradores',
+                      Icons.person_search_rounded,
+                      itemTextColor,
+                      itemHoverBg,
+                      false,
+                      onTap: () {
+                        context.pop();
+                        context.push('/favorite-buyers');
+                      },
+                    ),
+                    _buildDrawerItem(
+                      'Gestión de Cupones',
+                      Icons.confirmation_number_outlined,
+                      itemTextColor,
+                      itemHoverBg,
+                      false,
+                      onTap: () {
+                        context.pop();
+                        context.push('/coupons-manager');
+                      },
+                    ),
+                    _buildDrawerItem(
+                      'Gestor de Ofertas',
+                      Icons.bolt,
+                      itemTextColor,
+                      itemHoverBg,
+                      false,
+                      onTap: () {
+                        context.pop();
+                        context.push('/flash-offers-manager');
+                      },
+                    ),
+                    _buildDrawerItem(
+                      'Gestion Producto',
+                      Icons.inventory_2_outlined,
+                      itemTextColor,
+                      itemHoverBg,
+                      false,
+                      onTap: () {
+                        context.pop();
+                        context.push('/product-management');
+                      },
+                    ),
+                    _buildDrawerItem(
+                      'Dashboard',
+                      Icons.dashboard,
+                      itemTextColor,
+                      itemHoverBg,
+                      false,
+                      onTap: () {
+                        context.pop();
+                        context.push('/dashboard');
+                      },
+                    ),
+                    _buildDrawerItem(
+                      'Reportes',
+                      Icons.flag_outlined,
+                      itemTextColor,
+                      itemHoverBg,
+                      false,
+                      onTap: () {
+                        context.pop();
+                        context.push('/reports');
+                      },
+                      trailing: ValueListenableBuilder(
+                        valueListenable: ReportsService.instance.reportsNotifier,
+                        builder: (context, reports, _) {
+                          final count = reports.where((r) => r.status == 'pending').length;
+                          if (count == 0) return const SizedBox.shrink();
+                          return Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 6,
                               vertical: 2,
@@ -3129,152 +3398,29 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
-                              '${MyReviewsScreen.pendingReviewsCount}',
+                              '$count',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                          )
-                        : null,
-                  ),
-                  _buildDrawerItem(
-                    'Cupones',
-                    Icons.confirmation_number,
-                    itemTextColor,
-                    itemHoverBg,
-                    false,
-                    onTap: () {
-                      context.pop();
-                      context.push('/coupons');
-                    },
-                  ),
-                  _buildDrawerItem(
-                    'Productos favoritos',
-                    Icons.favorite_rounded,
-                    itemTextColor,
-                    itemHoverBg,
-                    false,
-                    onTap: () {
-                      context.pop();
-                      context.push('/favorites');
-                    },
-                  ),
-                  _buildDrawerItem(
-                    'Proveedores favoritos',
-                    Icons.favorite,
-                    itemTextColor,
-                    itemHoverBg,
-                    false,
-                    onTap: () {
-                      context.pop();
-                      context.push('/favorite-providers');
-                    },
-                  ),
-                  _buildDrawerItem(
-                    'Mapa de Proveedores',
-                    Icons.map_outlined,
-                    itemTextColor,
-                    itemHoverBg,
-                    false,
-                    onTap: () {
-                      context.pop();
-                      context.push('/providers-map');
-                    },
-                  ),
-                  _buildDrawerItem(
-                    'Compradores',
-                    Icons.person_search_rounded,
-                    itemTextColor,
-                    itemHoverBg,
-                    false,
-                    onTap: () {
-                      context.pop();
-                      context.push('/favorite-buyers');
-                    },
-                  ),
-                  _buildDrawerItem(
-                    'Gestión de Cupones',
-                    Icons.confirmation_number_outlined,
-                    itemTextColor,
-                    itemHoverBg,
-                    false,
-                    onTap: () {
-                      context.pop();
-                      context.push('/coupons-manager');
-                    },
-                  ),
-                  _buildDrawerItem(
-                    'Gestor de Ofertas',
-                    Icons.bolt,
-                    itemTextColor,
-                    itemHoverBg,
-                    false,
-                    onTap: () {
-                      context.pop();
-                      context.push('/flash-offers-manager');
-                    },
-                  ),
-
-                  _buildDrawerItem(
-                    'Gestion Producto',
-                    Icons.inventory_2_outlined,
-                    itemTextColor,
-                    itemHoverBg,
-                    false,
-                    onTap: () {
-                      context.pop();
-                      context.push('/product-management');
-                    },
-                  ),
-                  _buildDrawerItem(
-                    'Dashboard',
-                    Icons.dashboard,
-                    itemTextColor,
-                    itemHoverBg,
-                    false,
-                    onTap: () {
-                      context.pop();
-                      context.push('/dashboard');
-                    },
-                  ),
-                  _buildDrawerItem(
-                    'Reportes',
-                    Icons.flag_outlined,
-                    itemTextColor,
-                    itemHoverBg,
-                    false,
-                    onTap: () {
-                      context.pop();
-                      context.push('/reports');
-                    },
-                    trailing: ValueListenableBuilder(
-                      valueListenable: ReportsService.instance.reportsNotifier,
-                      builder: (context, reports, _) {
-                        final count = reports.where((r) => r.status == 'pending').length;
-                        if (count == 0) return const SizedBox.shrink();
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF20C0E),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            '$count',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        );
+                          );
+                        },
+                      ),
+                    ),
+                    _buildDrawerItem(
+                      'Mapa de Proveedores',
+                      Icons.map_outlined,
+                      itemTextColor,
+                      itemHoverBg,
+                      false,
+                      onTap: () {
+                        context.pop();
+                        context.push('/providers-map');
                       },
                     ),
-                  ),
+                  ],
                   Divider(color: dividerColor, height: 32),
                   _buildDrawerItem(
                     'Configuración',
@@ -3519,15 +3665,19 @@ class _MarketTickerWidgetState extends State<MarketTickerWidget> {
           itemBuilder: (context, index) {
             final item = items[index % items.length];
             final isUp = item['up'] as bool;
+            final changeColor = isUp
+                ? (widget.isDark ? const Color(0xFF34D399) : Colors.green)
+                : (widget.isDark ? const Color(0xFFEF4444) : Colors.red);
             return Container(
               width: 140,
               margin: const EdgeInsets.only(left: 16, right: 0),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: widget.surfaceColor,
+                color: widget.isDark ? const Color(0xFF14181F) : widget.surfaceColor,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: widget.isDark ? Colors.grey[800]! : Colors.grey[200]!,
+                  color: widget.isDark ? const Color(0xFF262D38) : Colors.grey[200]!,
+                  width: 1,
                 ),
               ),
               child: Column(
@@ -3539,16 +3689,18 @@ class _MarketTickerWidgetState extends State<MarketTickerWidget> {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: widget.isDark
+                          ? const Color(0xFFF3F4F6)
+                          : Theme.of(context).colorScheme.primary,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     (item['market'] as String).toUpperCase(),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 9,
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey,
+                      color: widget.isDark ? const Color(0xFF9CA3AF) : Colors.grey,
                       letterSpacing: 0.5,
                     ),
                     overflow: TextOverflow.ellipsis,
@@ -3556,9 +3708,10 @@ class _MarketTickerWidgetState extends State<MarketTickerWidget> {
                   const SizedBox(height: 4),
                   Text(
                     item['price'] as String,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
+                      color: widget.isDark ? const Color(0xFFF3F4F6) : Colors.black,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -3567,7 +3720,7 @@ class _MarketTickerWidgetState extends State<MarketTickerWidget> {
                       Icon(
                         isUp ? Icons.trending_up : Icons.trending_down,
                         size: 12,
-                        color: isUp ? Colors.green : Colors.red,
+                        color: changeColor,
                       ),
                       const SizedBox(width: 4),
                       Text(
@@ -3575,7 +3728,7 @@ class _MarketTickerWidgetState extends State<MarketTickerWidget> {
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
-                          color: isUp ? Colors.green : Colors.red,
+                          color: changeColor,
                         ),
                       ),
                     ],

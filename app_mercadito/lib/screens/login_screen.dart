@@ -72,6 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final isDarkMode = theme.brightness == Brightness.dark;
 
     return Scaffold(
+      backgroundColor: isDarkMode ? const Color(0xFF0B0E11) : null,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -80,16 +81,20 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 448),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surface,
+                  color: isDarkMode
+                      ? const Color(0xFF14181F)
+                      : theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
+                  border: isDarkMode
+                      ? Border.all(color: const Color(0xFF262D38), width: 1)
+                      : null,
                   boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(
-                        alpha: isDarkMode ? 0.3 : 0.1,
+                    if (!isDarkMode)
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
                       ),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
-                    ),
                   ],
                 ),
                 child: Column(
@@ -106,7 +111,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           child: Icon(
                             Icons.arrow_back,
-                            color: theme.colorScheme.primary,
+                            color: isDarkMode
+                                ? const Color(0xFF10B981)
+                                : theme.colorScheme.primary,
                           ),
                         ),
                       ),
@@ -133,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             'Accede a la frescura del campo en un clic',
                             style: theme.textTheme.bodyLarge?.copyWith(
                               color: isDarkMode
-                                  ? Colors.grey[400]
+                                  ? const Color(0xFF9CA3AF)
                                   : Colors.grey[600],
                             ),
                             textAlign: TextAlign.center,
@@ -148,6 +155,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 'Correo electrónico o Usuario',
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
+                                  color: isDarkMode
+                                      ? const Color(0xFFF3F4F6)
+                                      : null,
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -156,8 +166,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                 borderRadius: 12,
                                 child: TextField(
                                   controller: _emailController,
-                                  decoration: const InputDecoration(
+                                  decoration: InputDecoration(
                                     hintText: 'tu@correo.com',
+                                    prefixIcon: Icon(
+                                      Icons.person_outline,
+                                      color: isDarkMode
+                                          ? const Color(0xFF6B7280)
+                                          : theme.colorScheme.primary.withValues(alpha: 0.6),
+                                    ),
                                   ),
                                   keyboardType: TextInputType.emailAddress,
                                   onChanged: (_) {
@@ -173,6 +189,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 'Contraseña',
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
+                                  color: isDarkMode
+                                      ? const Color(0xFFF3F4F6)
+                                      : null,
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -184,13 +203,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                   obscureText: _obscurePassword,
                                   decoration: InputDecoration(
                                     hintText: '••••••••',
+                                    prefixIcon: Icon(
+                                      Icons.lock_outline,
+                                      color: isDarkMode
+                                          ? const Color(0xFF6B7280)
+                                          : theme.colorScheme.primary.withValues(alpha: 0.6),
+                                    ),
                                     suffixIcon: IconButton(
                                       icon: Icon(
                                         _obscurePassword
                                             ? Icons.visibility
                                             : Icons.visibility_off,
                                         color: isDarkMode
-                                            ? Colors.grey[500]
+                                            ? const Color(0xFF6B7280)
                                             : Colors.grey[400],
                                       ),
                                       onPressed: () {
@@ -217,7 +242,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: () =>
                                       context.push('/forgot-password'),
                                   style: TextButton.styleFrom(
-                                    foregroundColor: theme.colorScheme.primary,
+                                    foregroundColor: isDarkMode
+                                        ? const Color(0xFF10B981)
+                                        : theme.colorScheme.primary,
                                     padding: EdgeInsets.zero,
                                     minimumSize: Size.zero,
                                     tapTargetSize:
@@ -242,12 +269,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                   child: ElevatedButton(
                                     onPressed: _handleLogin,
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          theme.colorScheme.primary,
-                                      foregroundColor: Colors.white,
-                                      elevation: 2,
-                                      shadowColor: theme.colorScheme.primary
-                                          .withValues(alpha: 0.3),
+                                      backgroundColor: isDarkMode
+                                          ? const Color(0xFF10B981)
+                                          : theme.colorScheme.primary,
+                                      foregroundColor: isDarkMode
+                                          ? const Color(0xFF06281E)
+                                          : Colors.white,
+                                      elevation: isDarkMode ? 0 : 2,
+                                      shadowColor: isDarkMode
+                                          ? Colors.transparent
+                                          : theme.colorScheme.primary
+                                              .withValues(alpha: 0.3),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),

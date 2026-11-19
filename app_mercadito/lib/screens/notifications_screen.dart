@@ -1261,25 +1261,4 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       ),
     );
   }
-
-  Widget _buildCategorySwitchTile({
-    required String title,
-    required String subtitle,
-    required NotificationCategory category,
-    required NotificationPreferences prefs,
-    required Color primaryColor,
-    required Color textColor,
-    required Color subtextColor,
-    required ValueChanged<bool> onChanged,
-  }) {
-    final isEnabled = prefs.categoryChannels[category] ?? true;
-    return SwitchListTile(
-      title: Text(title, style: TextStyle(color: textColor, fontWeight: FontWeight.w600, fontSize: 13.5)),
-      subtitle: Text(subtitle, style: TextStyle(color: subtextColor, fontSize: 11)),
-      value: isEnabled,
-      activeThumbColor: primaryColor,
-      activeTrackColor: primaryColor.withValues(alpha: 0.38),
-      onChanged: onChanged,
-    );
-  }
 }

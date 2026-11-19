@@ -22,30 +22,34 @@ class AppTheme {
   static const Color lightWhite = Color(0xFFFFFFFF);
 
   // ==========================================
-  // TOKENS MODO NOCHE (según Modo dia y noche.md)
+  // TOKENS MODO NOCHE (Refactor Minimalista Sofisticado)
   // ==========================================
-  static const Color darkBackground = Color(0xFF101815);
-  static const Color darkSecondaryBackground = Color(0xFF17221E);
-  static const Color darkCard = Color(0xFF1C2924);
-  static const Color darkCardElevated = Color(0xFF22332C);
-  static const Color darkPrimary = Color(0xFF67C83B);
-  static const Color darkPrimaryCta = Color(0xFF2F7D59);
-  static const Color darkPrimaryLight = Color(0xFF203D31);
-  static const Color darkTextPrimary = Color(0xFFF1F5F3);
-  static const Color darkTextSecondary = Color(0xFFAAB8B1);
-  static const Color darkTextTertiary = Color(0xFF718078);
-  static const Color darkBorder = Color(0xFF2B3A34);
-  static const Color darkInput = Color(0xFF1C3028);
-  static const Color darkIcon = Color(0xFFA7B8B0);
-  static const Color darkWhite = Color(0xFFF1F5F3);
+  static const Color darkBackground = Color(0xFF0B0E11);
+  static const Color darkSecondaryBackground = Color(0xFF14181F);
+  static const Color darkCard = Color(0xFF14181F); // Surface 1
+  static const Color darkCardElevated = Color(0xFF1C222B); // Surface 2
+  static const Color darkSurface1 = Color(0xFF14181F);
+  static const Color darkSurface2 = Color(0xFF1C222B);
+  static const Color darkPrimary = Color(0xFF10B981); // Emerald
+  static const Color darkPrimaryCta = Color(0xFF10B981);
+  static const Color darkOnPrimary = Color(0xFF06281E);
+  static const Color darkPrimaryLight = Color(0x2410B981); // rgba(16, 185, 129, 0.14)
+  static const Color darkTextPrimary = Color(0xFFF3F4F6); // Soft white
+  static const Color darkTextSecondary = Color(0xFF9CA3AF);
+  static const Color darkTextTertiary = Color(0xFF6B7280);
+  static const Color darkBorder = Color(0xFF262D38);
+  static const Color darkBorderSubtle = Color(0xFF2E3744);
+  static const Color darkInput = Color(0xFF14181F);
+  static const Color darkIcon = Color(0xFF9CA3AF);
+  static const Color darkWhite = Color(0xFFF3F4F6);
 
   // ==========================================
   // COLORES FUNCIONALES (Modo Noche adaptados)
   // ==========================================
-  static const Color functionalSuccess = Color(0xFF67C83B);
+  static const Color functionalSuccess = Color(0xFF34D399);
   static const Color functionalOffer = Color(0xFFF5A623);
   static const Color functionalDiscount = Color(0xFFFFB340);
-  static const Color functionalError = Color(0xFFFF6B6B);
+  static const Color functionalError = Color(0xFFEF4444);
   static const Color functionalInfo = Color(0xFF58A6FF);
   static const Color functionalFavorite = Color(0xFFFF6B81);
 
@@ -259,24 +263,29 @@ class AppTheme {
       brightness: Brightness.dark,
       colorScheme: const ColorScheme.dark(
         primary: darkPrimary,
-        onPrimary: Colors.white,
+        onPrimary: darkOnPrimary,
         primaryContainer: darkPrimaryLight,
-        onPrimaryContainer: darkTextPrimary,
-        secondary: darkPrimaryCta,
-        onSecondary: Colors.white,
+        onPrimaryContainer: darkPrimary,
+        secondary: darkPrimary,
+        onSecondary: darkOnPrimary,
         surface: darkCard,
         onSurface: darkTextPrimary,
         surfaceContainerHighest: darkCardElevated,
         outline: darkBorder,
+        outlineVariant: darkBorderSubtle,
         error: functionalError,
         onError: Colors.white,
       ),
       scaffoldBackgroundColor: darkBackground,
       cardColor: darkCard,
-      cardTheme: const CardThemeData(
+      cardTheme: CardThemeData(
         color: darkCard,
         elevation: 0,
         margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(color: darkBorder, width: 1),
+        ),
       ),
       dividerColor: darkBorder,
       dividerTheme: const DividerThemeData(
@@ -294,8 +303,8 @@ class AppTheme {
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: darkCardElevated,
-        selectedItemColor: darkPrimary,
-        unselectedItemColor: darkTextTertiary,
+        selectedItemColor: Color(0xFF34D399),
+        unselectedItemColor: darkTextSecondary,
       ),
       textTheme: GoogleFonts.plusJakartaSansTextTheme(ThemeData.dark().textTheme).copyWith(
         displayLarge: GoogleFonts.plusJakartaSans(color: darkTextPrimary, fontWeight: FontWeight.bold),
@@ -307,47 +316,47 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: darkInput,
+        fillColor: darkCard,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: darkBorder),
+          borderSide: const BorderSide(color: darkBorder, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: darkBorder),
+          borderSide: const BorderSide(color: darkBorder, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: darkPrimary, width: 2),
+          borderSide: const BorderSide(color: darkPrimary, width: 1.5),
         ),
         labelStyle: const TextStyle(color: darkTextSecondary, fontWeight: FontWeight.w600),
         hintStyle: const TextStyle(color: darkTextTertiary),
+        prefixIconColor: darkTextTertiary,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: darkPrimaryCta,
-          foregroundColor: Colors.white,
+          backgroundColor: darkPrimary,
+          foregroundColor: darkOnPrimary,
           minimumSize: const Size(0, 48),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          elevation: 2,
-          shadowColor: Colors.black.withValues(alpha: 0.3),
+          textStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w600, fontSize: 16),
+          elevation: 0,
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: darkTextPrimary,
-          backgroundColor: darkCard,
-          side: const BorderSide(color: darkBorder),
+          foregroundColor: const Color(0xFFD1D5DB),
+          backgroundColor: darkCardElevated,
+          side: const BorderSide(color: darkBorderSubtle, width: 1),
           minimumSize: const Size(0, 48),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+          textStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w600, fontSize: 16),
         ),
       ),
       datePickerTheme: DatePickerThemeData(
-        backgroundColor: darkCard,
-        headerBackgroundColor: darkSecondaryBackground,
+        backgroundColor: darkCardElevated,
+        headerBackgroundColor: darkCard,
         headerForegroundColor: darkPrimary,
         surfaceTintColor: Colors.transparent,
         dividerColor: darkBorder,
@@ -359,7 +368,7 @@ class AppTheme {
         }),
         dayForegroundColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return const Color(0xFF0F1C18);
+            return darkOnPrimary;
           }
           if (states.contains(WidgetState.disabled)) {
             return darkTextTertiary.withValues(alpha: 0.5);
@@ -368,14 +377,14 @@ class AppTheme {
         }),
         todayForegroundColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return const Color(0xFF0F1C18);
+            return darkOnPrimary;
           }
           return darkPrimary;
         }),
         todayBorder: const BorderSide(color: darkPrimary, width: 1.5),
         yearForegroundColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return const Color(0xFF0F1C18);
+            return darkOnPrimary;
           }
           return darkTextPrimary;
         }),

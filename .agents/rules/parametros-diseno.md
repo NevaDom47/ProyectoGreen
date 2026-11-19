@@ -27,63 +27,65 @@
 
 | Token / Elemento | Modo Día (`AppTheme`) | Modo Noche (`AppTheme`) | Helper Dinámico en `AppTheme` |
 | :--- | :--- | :--- | :--- |
-| **Fondo principal** | `#F7F9F8` (`lightBackground`) | `#101815` (`darkBackground`) | `getBackgroundColor(context)` |
-| **Fondo secundario** | `#EEF5F1` (`lightSecondaryBackground`) | `#17221E` (`darkSecondaryBackground`) | `getSecondaryBackgroundColor(context)` |
-| **Cards estándar** | `#FFFFFF` (`lightCard`) | `#1C2924` (`darkCard`) | `getCardColor(context)` |
-| **Card elevada** | `#FFFFFF` (`lightCardElevated`) | `#22332C` (`darkCardElevated`) | `getElevatedCardColor(context)` |
-| **Verde principal (Acento)** | `#016042` (`lightPrimary`) | `#67C83B` (`darkPrimary`) | `getPrimaryColor(context)` |
-| **Verde fuerte / Botón CTA** | `#016042` (`lightPrimaryCta`) | `#2F7D59` (`darkPrimaryCta`) | `getPrimaryCtaColor(context)` |
-| **Verde claro (Contenedor suave)** | `#E5F0EB` (`lightPrimaryLight`) | `#203D31` (`darkPrimaryLight`) | `Theme.of(context).colorScheme.primaryContainer` |
-| **Texto principal** | `#20262B` (`lightTextPrimary`) | `#F1F5F3` (`darkTextPrimary`) | `getTextColor(context)` |
-| **Texto secundario** | `#697177` (`lightTextSecondary`) | `#AAB8B1` (`darkTextSecondary`) | `getSecondaryTextColor(context)` |
-| **Texto terciario** | `#9AA2A7` (`lightTextTertiary`) | `#718078` (`darkTextTertiary`) | `getTertiaryTextColor(context)` |
-| **Bordes y divisores** | `#E2E7E4` (`lightBorder`) | `#2B3A34` (`darkBorder`) | `getBorderColor(context)` |
-| **Input / Búsqueda** | `#E8F2ED` (`lightInput`) | `#1C3028` (`darkInput`) | `getInputColor(context)` |
-| **Iconos normales** | `#52615B` (`lightIcon`) | `#A7B8B0` (`darkIcon`) | `getIconColor(context)` |
+| **Fondo principal** | `#F7F9F8` (`lightBackground`) | `#0B0E11` (`darkBackground`) | `getBackgroundColor(context)` |
+| **Fondo secundario / Surface 1** | `#EEF5F1` (`lightSecondaryBackground`) | `#14181F` (`darkSecondaryBackground`) | `getSecondaryBackgroundColor(context)` |
+| **Cards estándar (Surface 1)** | `#FFFFFF` (`lightCard`) | `#14181F` (`darkCard`) | `getCardColor(context)` |
+| **Card elevada / Drawer / Nav (Surface 2)** | `#FFFFFF` (`lightCardElevated`) | `#1C222B` (`darkCardElevated`) | `getElevatedCardColor(context)` |
+| **Verde principal (Acento Esmeralda)** | `#016042` (`lightPrimary`) | `#10B981` (`darkPrimary`) | `getPrimaryColor(context)` |
+| **Verde fuerte / Botón CTA** | `#016042` (`lightPrimaryCta`) | `#10B981` (`darkPrimaryCta`) | `getPrimaryCtaColor(context)` |
+| **Verde claro / Contenedor activo** | `#E5F0EB` (`lightPrimaryLight`) | `rgba(16, 185, 129, 0.14)` (`darkPrimaryLight`) | `Theme.of(context).colorScheme.primaryContainer` |
+| **Texto principal** | `#20262B` (`lightTextPrimary`) | `#F3F4F6` (`darkTextPrimary`) | `getTextColor(context)` |
+| **Texto secundario** | `#697177` (`lightTextSecondary`) | `#9CA3AF` (`darkTextSecondary`) | `getSecondaryTextColor(context)` |
+| **Texto terciario / Placeholder / SKU** | `#9AA2A7` (`lightTextTertiary`) | `#6B7280` (`darkTextTertiary`) | `getTertiaryTextColor(context)` |
+| **Bordes sutiles (1px)** | `#E2E7E4` (`lightBorder`) | `#262D38` (`darkBorder`) | `getBorderColor(context)` |
+| **Bordes secundarios / inactivos** | `#CCDFD9` | `#2E3744` (`darkBorderSubtle`) | `Theme.of(context).colorScheme.outlineVariant` |
+| **Input / Búsqueda** | `#E8F2ED` (`lightInput`) | `#14181F` (`darkInput`) | `getInputColor(context)` |
+| **Iconos normales** | `#52615B` (`lightIcon`) | `#9CA3AF` (`darkIcon`) | `getIconColor(context)` |
 
 ### Colores Funcionales y de Estado
-- **Éxito (`functionalSuccess`)**: `#67C83B`
+- **Éxito / Variaciones Positivas (+)**: `#34D399` (Noche) / `#67C83B` (Día)
 - **Oferta (`functionalOffer`)**: `#F5A623`
 - **Descuento (`functionalDiscount`)**: `#FFB340`
-- **Error**: `#DC2626` / `#E03131` (Día) | `#FF6B6B` (`functionalError`, Noche)
+- **Error / Variaciones Negativas (-) / Badges**: `#DC2626` / `#E03131` (Día) | `#EF4444` (`functionalError`, Noche con texto blanco)
 - **Información (`functionalInfo`)**: `#58A6FF`
 - **Favorito (`functionalFavorite`)**: `#FF6B81`
 - **Verificación Oficial (`VerifiedBadge.verifiedBlue`)**: `#1D9BF0` sobre base circular `#FFFFFF`
-- **Alerta / Badge de Chat (`CustomBottomNavBar`)**: `#BD4437` con texto `#FFFFFF`
+- **Alerta / Badge de Chat (`CustomBottomNavBar`)**: `#EF4444` con texto `#FFFFFF` (Noche) / `#BD4437` (Día)
 
 ---
 
 ## 4. Etiquetas (Badges) y Choice Chips
 
 ### 4.1 Etiquetas de Calidad de Producto
-- **Primera Calidad**: Fondo `#DCE9E5` (Noche: `#016042` al 35% alpha) | Texto `#016042` (Noche: `#6EE7B7`).
+- **Primera Calidad**: Fondo `#DCE9E5` (Noche: `rgba(16, 185, 129, 0.14)`) | Texto `#016042` (Noche: `#34D399`).
 - **Segunda Calidad**: Fondo `#FFF4E5` (Noche: `#FF9A04` al 25% alpha) | Texto `#FF9A04` (Noche: `#FDBA74`).
-- **Tercera Calidad**: Fondo `#FDEDED` (Noche: `#F44336` al 25% alpha) | Texto `#F44336` (Noche: `#FCA5A5`).
+- **Tercera Calidad**: Fondo `#FDEDED` (Noche: `#EF4444` al 25% alpha) | Texto `#F44336` (Noche: `#FCA5A5`).
 
 ### 4.2 Etiquetas de Categoría y Modalidad de Venta
 - **Categoría**: Fondo `#EAF2E8` | Texto `#016042` | Borde `#BBD5C7`.
-- **Al Detalle**: Fondo `#059669` (Noche: `#047857`) | Texto `#F1F9F7` / `#FFFFFF` | Borde `#059669`.
-- **Al Por Mayor**: Fondo `#0369A1` (Noche: `#0284C7`) | Texto `#EDF4F8` / `#FFFFFF` | Borde `#0369A1`.
+- **Al Detalle (Activo)**: Fondo `rgba(16, 185, 129, 0.14)` (Noche) | Borde `#10B981` (30% opacidad) | Texto `#34D399`. (Día: Fondo `#059669` | Texto `#FFFFFF`).
+- **Al Por Mayor (Inactivo)**: Fondo `#1C222B` (Noche) | Borde `#2E3744` | Texto `#D1D5DB`. (Día: Fondo `#0369A1` | Texto `#FFFFFF`).
+- **Banner Análisis de Mercado**: Degradado oscuro sutil de `#142822` a `#14181F` con borde `#1F3D33`, título en `#F3F4F6`, texto en `#9CA3AF` y botón CTA en `#10B981`.
 
 ### 4.3 Choice Chips (Filtros y Selectores)
-- **Seleccionado**: Fondo `#016042` | Texto e Icono `#FFFFFF` | Borde `#016042`.
-- **No seleccionado**: Fondo `#F1F4F0` | Texto e Icono `#737373` | Borde `#CCDFD9` (en Modo Noche adaptar superficie al contenedor oscuro con borde `darkBorder`).
+- **Activo**: Fondo `rgba(16, 185, 129, 0.14)` | Borde `#10B981` (30% opacidad) | Texto `#34D399` (Noche). Fondo `#016042` | Texto e Icono `#FFFFFF` (Día).
+- **Inactivo**: Fondo `#1C222B` | Borde `#2E3744` | Texto `#D1D5DB` (Noche). Fondo `#F1F4F0` | Borde `#CCDFD9` (Día).
 
 ---
 
 ## 5. Diseño de Botones y Microinteracciones
 
-- **Botón Primario (`ElevatedButton`)**:
+- **Botón Primario (`ElevatedButton`)** ("Proveedores", "Agregar al carrito", "Crear cuenta"):
   - Altura mínima: `48px` (`minimumSize: const Size(0, 48)`).
   - Borde redondeado: `BorderRadius.circular(8)` (o `12` en CTAs destacados de tarjetas/modales).
-  - Fondo: `#016042` (`lightPrimaryCta`) en Día / `#2F7D59` (`darkPrimaryCta`) en Noche.
-  - Texto: `#FFFFFF`, `fontSize: 16`, `FontWeight.bold`.
-  - Elevación: `2`, sombra `lightPrimary.withValues(alpha: 0.3)` (Día) / `Colors.black.withValues(alpha: 0.3)` (Noche).
+  - Fondo: `#016042` (`lightPrimaryCta`) en Día / `#10B981` (`darkPrimary`) en Noche.
+  - Texto: `#FFFFFF` (Día) / `#06281E` o `#FFFFFF` en negrita SemiBold (ratio > 4.5:1) en Noche.
+  - Elevación: `2` (Día) / `0` en Noche (evita sombras pesadas y neón excesivo).
 - **Botón Secundario (`OutlinedButton`)**:
   - Altura mínima: `48px`, `BorderRadius.circular(8)`.
-  - Fondo: `#FFFFFF` (Día) / `#1C2924` (`darkCard` en Noche).
-  - Borde: `1px` `lightBorder` (`#E2E7E4`) / `darkBorder` (`#2B3A34`).
-  - Texto: `TextPrimary`, `fontSize: 16`, `FontWeight.w600`.
+  - Fondo: `#FFFFFF` (Día) / `#1C222B` (Noche).
+  - Borde: `1px` `lightBorder` (`#E2E7E4`) / `darkBorderSubtle` (`#2E3744`).
+  - Texto: `TextPrimary` (Día) / `#D1D5DB` (Noche), `fontSize: 16`, `FontWeight.w600`.
 - **Feedback Táctil y Sonoro Obligatorio**:
   - Envolver botones personalizados, tarjetas clicables e iconos accionables en `BouncingButton` (`lib/widgets/bouncing_button.dart`), que aplica escala `0.95` en `110ms`, háptica `HapticFeedback.selectionClick()` y `SoundService.playButtonClick()`.
   - Los botones nativos Material heredan automáticamente `SoundFeedbackSplashFactory` desde `AppTheme`.
@@ -93,21 +95,24 @@
 ## 6. Inputs, Formularios y Validación de Errores
 
 - **Campos de Texto (`InputDecorationTheme`)**:
-  - `filled: true`, `fillColor`: `#E8F2ED` (Día) / `#1C3028` (Noche).
+  - `filled: true`, `fillColor`: `#E8F2ED` (Día) / `#14181F` (Noche).
   - `contentPadding`: `EdgeInsets.symmetric(horizontal: 16, vertical: 14)`.
-  - Bordes (`border` / `enabledBorder`): `OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: border))`.
-  - Foco (`focusedBorder`): `borderSide: BorderSide(color: primary, width: 2)`.
+  - Bordes (`border` / `enabledBorder`): `OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: border, width: 1))`. Borde Noche: `#262D38`.
+  - Foco (`focusedBorder`): `borderSide: BorderSide(color: isDark ? Color(0xFF10B981) : primary, width: 1.5)`.
+  - Icono izquierdo: `#52615B` (Día) / `#6B7280` (Noche).
+  - Hint / Placeholder: `#9AA2A7` (Día) / `#6B7280` (Noche).
 - **Validación Visual y Sonora (`AnimatedErrorField`)**:
   - Envolver campos con validación obligatoria en `AnimatedErrorField` (`lib/widgets/animated_error_field.dart`, `borderRadius: 12.0`).
-  - Al producirse error: vibración horizontal senoidal (`400ms`), borde rojo (`#E03131` Día / `#FF6B6B` Noche, `1.6px`), mensaje inferior con `Icons.error_outline_rounded`, háptica y `SoundService.playError()`.
+  - Al producirse error: vibración horizontal senoidal (`400ms`), borde rojo (`#E03131` Día / `#EF4444` Noche, `1.6px`), mensaje inferior con `Icons.error_outline_rounded`, háptica y `SoundService.playError()`.
 
 ---
 
 ## 7. Tarjetas, Imágenes, Estados de UI y Navegación
 
 - **Tarjetas y Separación en Modo Noche**:
-  - Tarjetas estándar: `elevation: 0`, `borderRadius: 12–16`, borde `1px` con `AppTheme.getBorderColor(context)`.
-  - En Modo Noche usar `darkCard` (`#1C2924`) sobre `darkBackground` (`#101815`) para lograr separación limpia sin sombras fuertes.
+  - Tarjetas estándar (Surface 1): `elevation: 0`, `borderRadius: 12–16`, color `#14181F`, borde sutil `1px solid #262D38`.
+  - Elevación por color sin sombras pesadas sobre el fondo `#0B0E11`.
+  - Drawer, Bottom Bar y Modales (Surface 2): color `#1C222B` con borde superior/lateral `1px solid #262D38`.
   - **Regla estricta de imágenes**: **Nunca oscurecer** ni aplicar overlays oscuros agresivos sobre las fotografías de productos en Modo Noche.
   - Contenedores de formularios centrados (Login, Registro, Verificación): `BoxConstraints(maxWidth: 448)`, `borderRadius: 12`, sombra `blurRadius: 20, offset: Offset(0, 10)`.
 - **Estados de UI y Skeletons**:

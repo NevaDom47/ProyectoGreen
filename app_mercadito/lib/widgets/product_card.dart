@@ -20,10 +20,17 @@ class ProductCard extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? Colors.grey[800] : Colors.white,
+        color: isDark ? const Color(0xFF14181F) : Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.1)),
-        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))],
+        border: Border.all(
+          color: isDark
+              ? const Color(0xFF262D38)
+              : theme.colorScheme.primary.withValues(alpha: 0.1),
+          width: 1,
+        ),
+        boxShadow: isDark
+            ? []
+            : const [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,8 +44,12 @@ class ProductCard extends StatelessWidget {
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) => Container(
                 height: 120,
-                color: Colors.grey[300],
-                child: const Icon(Icons.broken_image, size: 40, color: Colors.grey),
+                color: isDark ? const Color(0xFF1C222B) : Colors.grey[300],
+                child: Icon(
+                  Icons.broken_image,
+                  size: 40,
+                  color: isDark ? const Color(0xFF6B7280) : Colors.grey,
+                ),
               ),
             ),
           ),
@@ -48,10 +59,32 @@ class ProductCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? const Color(0xFFF3F4F6) : Colors.black87,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 const SizedBox(height: 4),
-                Text('\$$price', style: TextStyle(color: theme.colorScheme.primary, fontSize: 16, fontWeight: FontWeight.bold)),
-                Text(_formatUnit(priceUnit), style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                Text(
+                  '\$$price',
+                  style: TextStyle(
+                    color: isDark ? const Color(0xFFF3F4F6) : theme.colorScheme.primary,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  _formatUnit(priceUnit),
+                  style: TextStyle(
+                    color: isDark ? const Color(0xFF9CA3AF) : Colors.grey,
+                    fontSize: 12,
+                  ),
+                ),
               ],
             ),
           ),

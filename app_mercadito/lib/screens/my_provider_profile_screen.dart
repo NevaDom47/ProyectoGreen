@@ -2565,60 +2565,6 @@ class _MyProviderProfileScreenState extends State<MyProviderProfileScreen> {
     );
   }
 
-  Widget _buildVerificationStatusChip() {
-    final status = UserSession.verificationStatus;
-    Color bg;
-    Color fg;
-    String label;
-    IconData icon;
-
-    if (status == 'verified') {
-      bg = const Color(0xFFF0F9FF);
-      fg = VerifiedBadge.verifiedBlue;
-      label = 'Verificado';
-      icon = Icons.verified;
-    } else if (status == 'pending') {
-      bg = const Color(0xFFFFFBEB);
-      fg = const Color(0xFFD97706);
-      label = 'En Revisión';
-      icon = Icons.hourglass_top_rounded;
-    } else if (status == 'rejected') {
-      bg = const Color(0xFFFEF2F2);
-      fg = const Color(0xFFDC2626);
-      label = 'Rechazado';
-      icon = Icons.error_outline;
-    } else {
-      bg = const Color(0xFFF1F5F9);
-      fg = const Color(0xFF64748B);
-      label = 'No Verificado';
-      icon = Icons.shield_outlined;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 12, color: fg),
-          const SizedBox(width: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontFamily: 'Plus Jakarta Sans',
-              fontSize: 10.5,
-              fontWeight: FontWeight.w700,
-              color: fg,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildVerificationCard(
     Color primaryColor,
     Color cardBgColor,

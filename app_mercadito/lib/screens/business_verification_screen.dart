@@ -116,7 +116,7 @@ class _BusinessVerificationScreenState extends State<BusinessVerificationScreen>
 
     if (!cameraSuccess) {
       final slug = documentLabel.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '_');
-      final mockName = 'foto_camara_${slug}.jpg';
+      final mockName = 'foto_camara_$slug.jpg';
       setState(() {
         if (documentKey == 'legal_doc') {
           _docFileName = mockName;

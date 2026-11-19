@@ -428,12 +428,14 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
                         children: [
                           const Icon(Icons.check_circle, color: Colors.white),
                           const SizedBox(width: 12),
-                          Text(
-                            _selectedRole == 'comprador'
-                                ? 'Rol de Comprador seleccionado. Comencemos tu perfil.'
-                                : 'Rol de Proveedor / Negociante seleccionado. Comencemos tu perfil.',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontWeight: FontWeight.w600,
+                          Expanded(
+                            child: Text(
+                              _selectedRole == 'comprador'
+                                  ? 'Rol de Comprador seleccionado. Comencemos tu perfil.'
+                                  : 'Rol de Proveedor / Negociante seleccionado. Comencemos tu perfil.',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ],

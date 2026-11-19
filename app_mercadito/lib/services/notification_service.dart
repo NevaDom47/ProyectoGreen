@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/notification_item.dart';
+import 'native_notification_bridge.dart';
+import 'notification_emulator_catalog.dart';
 import 'sound_service.dart';
 
 class NotificationPreferences {
@@ -182,6 +185,22 @@ class NotificationService with WidgetsBindingObserver {
 
   final ValueNotifier<NotificationPreferences> preferences =
       ValueNotifier<NotificationPreferences>(NotificationPreferences());
+
+  final ValueNotifier<NotificationItem?> activeInAppBanner =
+      ValueNotifier<NotificationItem?>(null);
+
+  final StreamController<NotificationItem> _inAppBannerController =
+      StreamController<NotificationItem>.broadcast();
+
+  /// Stream de notificaciones entrantes mientras el usuario navega dentro de la app.
+  Stream<NotificationItem> get inAppBannerStream => _inAppBannerController.stream;
+
+  /// Limpia el banner flotante In-App activo (opcionalmente validando su id).
+  void clearActiveInAppBanner([String? expectedId]) {
+    if (expectedId == null || activeInAppBanner.value?.id == expectedId) {
+      activeInAppBanner.value = null;
+    }
+  }
 
   void _initSampleData() {
     notifications.value = [
@@ -431,6 +450,55 @@ class NotificationService with WidgetsBindingObserver {
         ],
         isRead: true,
       ),
+
+      // 10. AYER - Oferta Relámpago
+      NotificationItem(
+        id: 'notif-10',
+        title: '¡Oferta Relámpago -20% en Aguacate Semil!',
+        description: 'Finca Verde Valle lanzó 80 cajas con descuento flash por cierre de cosecha.',
+        whyItMatters: 'Stock limitado por tiempo reducido.',
+        category: NotificationCategory.ofertas,
+        priority: NotificationPriority.important,
+        timeAgo: '1 d',
+        timestamp: DateTime.now().subtract(const Duration(days: 1, hours: 3)),
+        dateGroup: 'AYER',
+        icon: Icons.flash_on_rounded,
+        iconBgColor: const Color(0xFFF5A623).withValues(alpha: 0.16),
+        iconColor: const Color(0xFFF5A623),
+        priceTag: '-20% FLASH',
+        actions: [
+          const NotificationAction(
+            label: 'Ver oferta',
+            type: NotificationActionType.viewProduct,
+            isPrimary: true,
+          ),
+        ],
+        isRead: true,
+      ),
+
+      // 11. ANTERIORES - Sistema y Cuenta
+      NotificationItem(
+        id: 'notif-11',
+        title: 'Seguridad de cuenta verificada',
+        description: 'Tu dispositivo móvil fue vinculado con éxito para recibir avisos en tiempo real.',
+        whyItMatters: 'Mantén tus alertas activas para responder negociaciones a tiempo.',
+        category: NotificationCategory.sistema,
+        priority: NotificationPriority.info,
+        timeAgo: '4 d',
+        timestamp: DateTime.now().subtract(const Duration(days: 4)),
+        dateGroup: 'ANTERIORES',
+        icon: Icons.verified_user_rounded,
+        iconBgColor: const Color(0xFF1D9BF0).withValues(alpha: 0.15),
+        iconColor: const Color(0xFF1D9BF0),
+        actions: [
+          const NotificationAction(
+            label: 'Ver alertas',
+            type: NotificationActionType.viewCart,
+            isPrimary: false,
+          ),
+        ],
+        isRead: true,
+      ),
     ];
     _updateUnreadCount();
   }
@@ -522,28 +590,82 @@ class NotificationService with WidgetsBindingObserver {
     _updateUnreadCount();
   }
 
-  /// Emite una notificación adaptando el sonido según si el usuario está
-  /// dentro de la aplicación navegando (sonido in-app) o fuera en el sistema (sonido barra del teléfono).
-  void pushNotification({
+  /// Resuelve la ruta GoRouter destino al tocar una notificación in-app o externa.
+  String resolveRouteForNotification(NotificationItem item) {
+    if (item.actions.isNotEmpty) {
+      final primaryAction = item.actions.firstWhere(
+        (a) => a.isPrimary,
+        orElse: () => item.actions.first,
+      );
+      switch (primaryAction.type) {
+        case NotificationActionType.viewOrder:
+        case NotificationActionType.trackOrder:
+          return '/order-history';
+        case NotificationActionType.viewNegotiation:
+        case NotificationActionType.acceptOffer:
+        case NotificationActionType.counterOffer:
+          return '/negotiations';
+        case NotificationActionType.viewCoupon:
+        case NotificationActionType.copyCoupon:
+          return '/coupons';
+        case NotificationActionType.viewMarket:
+          return '/market-analysis';
+        case NotificationActionType.viewVendor:
+          return '/providers';
+        case NotificationActionType.viewCart:
+          return '/cart';
+        case NotificationActionType.viewProduct:
+          if (item.category == NotificationCategory.ofertas) {
+            return '/flash-offers';
+          }
+          if (item.category == NotificationCategory.recomendaciones) {
+            return '/search';
+          }
+          return '/providers';
+        case NotificationActionType.openUrl:
+        case NotificationActionType.dismiss:
+          break;
+      }
+    }
+    return NativeNotificationBridge.categoryMetadata(item.category).defaultRoute;
+  }
+
+  /// Emite una notificación adaptando el canal y sonido según si el usuario está
+  /// dentro de la aplicación navegando (banner in-app + sonido interno)
+  /// o fuera en el sistema (push nativo Android + sonido del sistema).
+  NotificationItem pushNotification({
     required String title,
     required String description,
+    String? whyItMatters,
     NotificationCategory category = NotificationCategory.sistema,
     NotificationPriority priority = NotificationPriority.important,
     String? priceTag,
+    IconData? icon,
+    Color? iconColor,
+    Color? iconBgColor,
     List<NotificationAction> actions = const [],
     bool? forceExternal,
+    bool dispatchNativePush = true,
+    Duration externalDelay = Duration.zero,
+    bool minimizeApp = false,
   }) {
     final isExternal = forceExternal ?? !isAppInForeground;
+    final meta = NativeNotificationBridge.categoryMetadata(category);
+    final preset = NotificationEmulatorCatalog.presetFor(category);
+
     final item = NotificationItem(
-      id: 'notif-${DateTime.now().millisecondsSinceEpoch}',
+      id: 'notif-${DateTime.now().microsecondsSinceEpoch}',
       title: title,
       description: description,
+      whyItMatters: whyItMatters,
       category: category,
       priority: priority,
       timeAgo: 'Ahora',
       timestamp: DateTime.now(),
       dateGroup: 'HOY',
-      icon: Icons.notifications_active_rounded,
+      icon: icon ?? preset.icon,
+      iconColor: iconColor ?? Colors.white,
+      iconBgColor: iconBgColor ?? preset.accentColor,
       priceTag: priceTag,
       actions: actions,
       isRead: false,
@@ -553,10 +675,122 @@ class NotificationService with WidgetsBindingObserver {
     _updateUnreadCount();
 
     if (isExternal) {
-      SoundService.playAppNotification();
+      if (dispatchNativePush) {
+        final actionLabel = actions.isNotEmpty ? actions.first.label : preset.primaryActionLabel;
+        final expanded = whyItMatters != null && whyItMatters.isNotEmpty
+            ? '$description\n$whyItMatters'
+            : description;
+        final summary = priceTag != null ? '${meta.label} • $priceTag' : meta.label;
+        NativeNotificationBridge.instance
+            .showExternalNotification(
+              NativeExternalNotificationPayload(
+                category: category,
+                title: title,
+                body: description,
+                expandedBody: expanded,
+                summaryText: summary,
+                route: resolveRouteForNotification(item),
+                notificationId: item.id,
+                actionLabel: actionLabel,
+              ),
+              delay: externalDelay,
+              minimizeApp: minimizeApp,
+            )
+            .then((dispatched) {
+          if (!dispatched) {
+            SoundService.playAppNotification();
+          }
+        });
+      } else {
+        SoundService.playAppNotification();
+      }
     } else {
       SoundService.playInAppNotification();
+      activeInAppBanner.value = item;
+      if (!_inAppBannerController.isClosed) {
+        _inAppBannerController.add(item);
+      }
     }
+
+    return item;
+  }
+
+  /// Emite una demostración de notificación para una categoría concreta en modo
+  /// dentro de la app (`isExternal: false`) o fuera de la app (`isExternal: true`).
+  NotificationItem emitCategoryDemo(
+    NotificationCategory category, {
+    required bool isExternal,
+    Duration externalDelay = Duration.zero,
+    bool minimizeApp = false,
+  }) {
+    final preset = NotificationEmulatorCatalog.presetFor(category);
+    return pushNotification(
+      title: preset.title,
+      description: preset.description,
+      whyItMatters: preset.whyItMatters,
+      category: preset.category,
+      priority: preset.priority,
+      priceTag: preset.priceTag,
+      icon: preset.icon,
+      iconColor: Colors.white,
+      iconBgColor: preset.accentColor,
+      actions: preset.actions,
+      forceExternal: isExternal,
+      externalDelay: externalDelay,
+      minimizeApp: minimizeApp,
+    );
+  }
+
+  /// Emite en lote las 8 categorías concretas de notificación fuera de la app (barra/cajón Android).
+  Future<List<NotificationItem>> emitAllCategoriesExternal({
+    bool minimizeApp = true,
+    Duration initialDelay = const Duration(milliseconds: 1800),
+    Duration interval = const Duration(milliseconds: 1000),
+  }) async {
+    final baseSeed = DateTime.now().microsecondsSinceEpoch;
+    final created = <NotificationItem>[];
+    final payloads = <NativeExternalNotificationPayload>[];
+
+    for (var i = 0; i < NotificationEmulatorCatalog.allPresets.length; i++) {
+      final preset = NotificationEmulatorCatalog.allPresets[i];
+      final item = preset.toNotificationItem(uniqueSeed: baseSeed + i);
+      created.add(item);
+      payloads.add(
+        NativeExternalNotificationPayload(
+          category: preset.category,
+          title: preset.title,
+          body: preset.description,
+          expandedBody: '${preset.description}\n${preset.whyItMatters}',
+          summaryText: preset.priceTag != null
+              ? '${preset.categoryLabel} • ${preset.priceTag}'
+              : preset.categoryLabel,
+          route: preset.route,
+          notificationId: item.id,
+          actionLabel: preset.primaryActionLabel,
+        ),
+      );
+    }
+
+    notifications.value = [...created.reversed, ...notifications.value];
+    _updateUnreadCount();
+
+    final dispatched = await NativeNotificationBridge.instance.showExternalBatch(
+      payloads,
+      minimizeApp: minimizeApp,
+      initialDelay: initialDelay,
+      interval: interval,
+    );
+
+    if (!dispatched) {
+      await SoundService.playAppNotification();
+    }
+
+    return created;
+  }
+
+  /// Limpia todas las notificaciones nativas mostradas en la barra del teléfono Android.
+  Future<void> cancelAllExternalNotifications() async {
+    await NativeNotificationBridge.instance.cancelAllExternalNotifications();
   }
 
   /// Dispara sonido para notificación que aparece en la barra del teléfono (fuera de la app)

@@ -34,6 +34,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     'Cupones',
     'Mercado',
     'Vendedores',
+    'Recomendaciones',
+    'Sistema',
   ];
 
   @override
@@ -185,14 +187,17 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 Expanded(
                   child: Row(
                     children: [
-                      Text(
-                        'Notificaciones',
-                        style: TextStyle(
-                          color: textColor,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: -0.5,
-                          fontFamily: 'Plus Jakarta Sans',
+                      Flexible(
+                        child: Text(
+                          'Notificaciones',
+                          style: TextStyle(
+                            color: textColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: -0.5,
+                            fontFamily: 'Plus Jakarta Sans',
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -220,10 +225,20 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     ],
                   ),
                 ),
+                // Botón Emulador de Notificaciones
+                IconButton(
+                  icon: Icon(Icons.science_outlined, color: primaryColor, size: 22),
+                  tooltip: 'Emulador de notificaciones',
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                  onPressed: () => context.push('/notification-emulator'),
+                ),
                 // Botón Marcar todas como leídas
                 IconButton(
                   icon: Icon(Icons.done_all_rounded, color: primaryColor, size: 22),
                   tooltip: 'Marcar todas como leídas',
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                   onPressed: () {
                     _service.markAllAsRead();
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -239,6 +254,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 IconButton(
                   icon: Icon(Icons.tune_rounded, color: primaryColor, size: 22),
                   tooltip: 'Preferencias de notificaciones',
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                   onPressed: () => _showPreferencesBottomSheet(context, isDark, primaryColor, textColor, subtextColor),
                 ),
               ],
@@ -334,21 +351,33 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     );
   }
 
+  bool _matchesTab(int index, NotificationItem n) {
+    switch (index) {
+      case 0:
+        return true; // Todo
+      case 1:
+        return n.category == NotificationCategory.pedidos;
+      case 2:
+        return n.category == NotificationCategory.negociaciones;
+      case 3:
+        return n.category == NotificationCategory.ofertas;
+      case 4:
+        return n.category == NotificationCategory.cupones;
+      case 5:
+        return n.category == NotificationCategory.mercado;
+      case 6:
+        return n.category == NotificationCategory.vendedores;
+      case 7:
+        return n.category == NotificationCategory.recomendaciones;
+      case 8:
+        return n.category == NotificationCategory.sistema;
+      default:
+        return true;
+    }
+  }
+
   int _getTabUnreadCount(int index, List<NotificationItem> notifs) {
-    return notifs.where((n) {
-      if (n.isRead) return false;
-      if (index == 0) return true; // Todo
-      if (index == 1) return n.category == NotificationCategory.pedidos;
-      if (index == 2) return n.category == NotificationCategory.negociaciones;
-      if (index == 3) {
-        return n.category == NotificationCategory.ofertas ||
-            n.category == NotificationCategory.recomendaciones;
-      }
-      if (index == 4) return n.category == NotificationCategory.cupones;
-      if (index == 5) return n.category == NotificationCategory.mercado;
-      if (index == 6) return n.category == NotificationCategory.vendedores;
-      return false;
-    }).length;
+    return notifs.where((n) => !n.isRead && _matchesTab(index, n)).length;
   }
 
   List<Widget> _buildGroupedNotifications({
@@ -361,19 +390,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     required Color borderColor,
   }) {
     // Filtrado por Tab
-    final filtered = notifications.where((n) {
-      if (_selectedTab == 0) return true;
-      if (_selectedTab == 1) return n.category == NotificationCategory.pedidos;
-      if (_selectedTab == 2) return n.category == NotificationCategory.negociaciones;
-      if (_selectedTab == 3) {
-        return n.category == NotificationCategory.ofertas ||
-            n.category == NotificationCategory.recomendaciones;
-      }
-      if (_selectedTab == 4) return n.category == NotificationCategory.cupones;
-      if (_selectedTab == 5) return n.category == NotificationCategory.mercado;
-      if (_selectedTab == 6) return n.category == NotificationCategory.vendedores;
-      return true;
-    }).toList();
+    final filtered = notifications
+        .where((n) => _matchesTab(_selectedTab, n))
+        .toList();
 
     if (filtered.isEmpty) {
       return [
@@ -567,39 +586,15 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
-                        child: Row(
-                          children: [
-                            Flexible(
-                              child: Text(
-                                item.title,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  color: textColor,
-                                  fontFamily: 'Plus Jakarta Sans',
-                                  height: 1.2,
-                                ),
-                              ),
-                            ),
-                            if (item.priority == NotificationPriority.urgent) ...[
-                              const SizedBox(width: 6),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
-                                decoration: BoxDecoration(
-                                  color: AppTheme.functionalError.withValues(alpha: 0.15),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: const Text(
-                                  'URGENTE',
-                                  style: TextStyle(
-                                    color: AppTheme.functionalError,
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ],
+                        child: Text(
+                          item.title,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: textColor,
+                            fontFamily: 'Plus Jakarta Sans',
+                            height: 1.2,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -845,10 +840,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         break;
 
       case NotificationActionType.viewMarket:
-        context.push('/market');
+        context.push('/market-analysis');
         break;
 
       case NotificationActionType.viewProduct:
+        if (item.category == NotificationCategory.ofertas) {
+          context.push('/flash-offers');
+        } else if (item.category == NotificationCategory.recomendaciones) {
+          context.push('/search');
+        } else {
+          context.push('/providers');
+        }
+        break;
+
       case NotificationActionType.viewVendor:
         context.push('/providers');
         break;

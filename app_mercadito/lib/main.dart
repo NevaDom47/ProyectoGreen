@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'router/app_router.dart';
 import 'theme/app_theme.dart';
 import 'theme/theme_controller.dart';
+import 'widgets/in_app_notification_host.dart';
 
 // Variables globales para compatibilidad en toda la aplicación
 final ValueNotifier<ThemeMode> appThemeMode = ThemeController.themeMode;
@@ -29,6 +30,12 @@ class AppMercadito extends StatelessWidget {
           darkTheme: AppTheme.darkTheme,
           themeMode: currentMode,
           routerConfig: appRouter,
+          builder: (context, child) {
+            return InAppNotificationHost(
+              navigatorKey: rootNavigatorKey,
+              child: child ?? const SizedBox.shrink(),
+            );
+          },
         );
       },
     );

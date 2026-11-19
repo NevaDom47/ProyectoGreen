@@ -430,12 +430,15 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Color _getQualityColor(String quality) {
-    if (quality.toLowerCase().contains('primera'))
+    if (quality.toLowerCase().contains('primera')) {
       return const Color(0xFF10B981);
-    if (quality.toLowerCase().contains('segunda'))
+    }
+    if (quality.toLowerCase().contains('segunda')) {
       return const Color(0xFFF59E0B);
-    if (quality.toLowerCase().contains('tercera'))
+    }
+    if (quality.toLowerCase().contains('tercera')) {
       return const Color(0xFFEF4444);
+    }
     return Colors.grey;
   }
 

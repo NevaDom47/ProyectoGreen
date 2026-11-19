@@ -210,6 +210,50 @@ class _AlertsScreenState extends State<AlertsScreen> {
                         ),
                       ],
 
+                      const SizedBox(height: 16),
+
+                      // Card directo al Emulador de Notificaciones en tiempo real
+                      _buildSettingsGroup(
+                        surfaceColor: surfaceColor,
+                        borderColor: borderColor,
+                        children: [
+                          ListTile(
+                            leading: Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: vividGreen.withValues(alpha: 0.14),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(
+                                Icons.science_outlined,
+                                color: vividGreen,
+                              ),
+                            ),
+                            title: Text(
+                              'Emulador de Notificaciones',
+                              style: TextStyle(
+                                color: textColor,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14.5,
+                              ),
+                            ),
+                            subtitle: Text(
+                              'Probar las 8 categorías dentro y fuera de la app',
+                              style: TextStyle(
+                                color: subtextColor,
+                                fontSize: 11.5,
+                              ),
+                            ),
+                            trailing: Icon(
+                              Icons.chevron_right_rounded,
+                              color: vividGreen,
+                            ),
+                            onTap: () => context.push('/notification-emulator'),
+                          ),
+                        ],
+                      ),
+
                       const SizedBox(height: 20),
 
                       // Sections container (dimmed if notifications disabled)

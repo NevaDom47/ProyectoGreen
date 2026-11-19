@@ -132,16 +132,23 @@ class CouponCard extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  discount,
-                                  style: TextStyle(
-                                    color: effectivePrimary,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w900,
-                                    height: 1.0,
+                                Flexible(
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      discount,
+                                      style: TextStyle(
+                                        color: effectivePrimary,
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w900,
+                                        height: 1.0,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                                if (badge != null)
+                                if (badge != null) ...[
+                                  const SizedBox(width: 6),
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                     decoration: BoxDecoration(
@@ -153,6 +160,7 @@ class CouponCard extends StatelessWidget {
                                       style: TextStyle(color: effectivePrimary, fontSize: 10, fontWeight: FontWeight.bold),
                                     ),
                                   ),
+                                ],
                               ],
                             ),
                             const SizedBox(height: 4),
@@ -192,19 +200,24 @@ class CouponCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'VENCE EL',
-                                  style: TextStyle(color: subtextColor.withValues(alpha: 0.6), fontSize: 10, fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  expiry,
-                                  style: TextStyle(color: effectiveText, fontSize: 12, fontWeight: FontWeight.bold),
-                                ),
-                              ],
+                            Flexible(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'VENCE EL',
+                                    style: TextStyle(color: subtextColor.withValues(alpha: 0.6), fontSize: 10, fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    expiry,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(color: effectiveText, fontSize: 12, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
                             ),
+                            const SizedBox(width: 8),
                             GestureDetector(
                               onTap: onButtonTap,
                               child: Container(

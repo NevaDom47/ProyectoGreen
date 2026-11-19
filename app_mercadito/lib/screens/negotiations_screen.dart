@@ -30,7 +30,8 @@ class NegotiationsScreen extends StatefulWidget {
 }
 
 class _NegotiationsScreenState extends State<NegotiationsScreen> {
-  int _selectedTabIndex = 0; // 0 for Pendientes, 1 for Completadas, 2 for Canceladas
+  int _selectedTabIndex =
+      0; // 0 for Pendientes, 1 for Completadas, 2 for Canceladas
   String _searchQuery = '';
   String _roleFilter = 'Todos';
   DateTime? _selectedDate;
@@ -60,20 +61,36 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
     if (_selectedDate == null) return true;
     if (dateStr == 'Justo ahora') {
       final now = DateTime.now();
-      return _selectedDate!.year == now.year && _selectedDate!.month == now.month && _selectedDate!.day == now.day;
+      return _selectedDate!.year == now.year &&
+          _selectedDate!.month == now.month &&
+          _selectedDate!.day == now.day;
     }
-    
-    final months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+    final months = [
+      'Ene',
+      'Feb',
+      'Mar',
+      'Abr',
+      'May',
+      'Jun',
+      'Jul',
+      'Ago',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dic',
+    ];
     final dayStr = _selectedDate!.day.toString().padLeft(2, '0');
     final formattedDate = '$dayStr ${months[_selectedDate!.month - 1]}';
-    
+
     return dateStr.toLowerCase().contains(formattedDate.toLowerCase());
   }
 
   List<Map<String, dynamic>> get _filteredPending {
     return mockNegotiations.where((item) {
-      final matchesSearch = (item['product'] as String).toLowerCase().contains(_searchQuery) ||
-                            (item['buyer'] as String).toLowerCase().contains(_searchQuery);
+      final matchesSearch =
+          (item['product'] as String).toLowerCase().contains(_searchQuery) ||
+          (item['buyer'] as String).toLowerCase().contains(_searchQuery);
       final matchesRole = _roleFilter == 'Todos' || item['role'] == _roleFilter;
       final matchesDate = _matchesDate(item['date'] as String);
       return matchesSearch && matchesRole && matchesDate;
@@ -82,8 +99,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
 
   List<Map<String, dynamic>> get _filteredCompleted {
     return mockCompletedNegotiations.where((item) {
-      final matchesSearch = (item['product'] as String).toLowerCase().contains(_searchQuery) ||
-                            (item['buyer'] as String).toLowerCase().contains(_searchQuery);
+      final matchesSearch =
+          (item['product'] as String).toLowerCase().contains(_searchQuery) ||
+          (item['buyer'] as String).toLowerCase().contains(_searchQuery);
       final matchesRole = _roleFilter == 'Todos' || item['role'] == _roleFilter;
       final matchesDate = _matchesDate(item['date'] as String);
       return matchesSearch && matchesRole && matchesDate;
@@ -92,10 +110,13 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
 
   List<Map<String, dynamic>> get _filteredCancelled {
     return mockCancelledNegotiations.where((item) {
-      final matchesSearch = (item['product'] as String).toLowerCase().contains(_searchQuery) ||
-                            (item['buyer'] as String).toLowerCase().contains(_searchQuery);
+      final matchesSearch =
+          (item['product'] as String).toLowerCase().contains(_searchQuery) ||
+          (item['buyer'] as String).toLowerCase().contains(_searchQuery);
       final matchesRole = _roleFilter == 'Todos' || item['role'] == _roleFilter;
-      final matchesDate = _matchesDate(item['requestDate'] as String) || _matchesDate(item['cancelDate'] as String);
+      final matchesDate =
+          _matchesDate(item['requestDate'] as String) ||
+          _matchesDate(item['cancelDate'] as String);
       return matchesSearch && matchesRole && matchesDate;
     }).toList();
   }
@@ -143,8 +164,18 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
               ),
               const SizedBox(height: 12),
               _buildFilterOption('Todos', isDark, onSurfaceColor, borderColor),
-              _buildFilterOption('Comprador', isDark, onSurfaceColor, borderColor),
-              _buildFilterOption('Proveedor', isDark, onSurfaceColor, borderColor),
+              _buildFilterOption(
+                'Comprador',
+                isDark,
+                onSurfaceColor,
+                borderColor,
+              ),
+              _buildFilterOption(
+                'Proveedor',
+                isDark,
+                onSurfaceColor,
+                borderColor,
+              ),
               const SizedBox(height: 20),
               Text(
                 'Filtrar por Fecha',
@@ -168,16 +199,18 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                     size: 20,
                   ),
                   title: Text(
-                    _selectedDate != null 
-                      ? '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
-                      : 'Seleccionar Fecha',
+                    _selectedDate != null
+                        ? '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
+                        : 'Seleccionar Fecha',
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 14,
-                      fontWeight: _selectedDate != null ? FontWeight.w700 : FontWeight.w500,
+                      fontWeight: _selectedDate != null
+                          ? FontWeight.w700
+                          : FontWeight.w500,
                       color: onSurfaceColor,
                     ),
                   ),
-                  trailing: _selectedDate != null 
+                  trailing: _selectedDate != null
                       ? IconButton(
                           icon: const Icon(Icons.clear, size: 18),
                           onPressed: () {
@@ -206,63 +239,106 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                                     onPrimary: Color(0xFF0F1C18),
                                     surface: AppTheme.darkCard,
                                     onSurface: AppTheme.darkTextPrimary,
-                                    surfaceContainerHighest: AppTheme.darkCardElevated,
-                                    onSurfaceVariant: AppTheme.darkTextSecondary,
+                                    surfaceContainerHighest:
+                                        AppTheme.darkCardElevated,
+                                    onSurfaceVariant:
+                                        AppTheme.darkTextSecondary,
                                   )
                                 : const ColorScheme.light(
                                     primary: AppTheme.lightPrimary,
                                     onPrimary: Colors.white,
                                     surface: Colors.white,
                                     onSurface: AppTheme.lightTextPrimary,
-                                    onSurfaceVariant: AppTheme.lightTextSecondary,
+                                    onSurfaceVariant:
+                                        AppTheme.lightTextSecondary,
                                   ),
                             dialogTheme: DialogThemeData(
-                              backgroundColor: isDark ? AppTheme.darkCard : Colors.white,
+                              backgroundColor: isDark
+                                  ? AppTheme.darkCard
+                                  : Colors.white,
                             ),
                             datePickerTheme: DatePickerThemeData(
-                              backgroundColor: isDark ? AppTheme.darkCard : Colors.white,
-                              headerBackgroundColor: isDark ? AppTheme.darkSecondaryBackground : AppTheme.lightPrimary,
-                              headerForegroundColor: isDark ? AppTheme.darkPrimary : Colors.white,
+                              backgroundColor: isDark
+                                  ? AppTheme.darkCard
+                                  : Colors.white,
+                              headerBackgroundColor: isDark
+                                  ? AppTheme.darkSecondaryBackground
+                                  : AppTheme.lightPrimary,
+                              headerForegroundColor: isDark
+                                  ? AppTheme.darkPrimary
+                                  : Colors.white,
                               surfaceTintColor: Colors.transparent,
-                              dividerColor: isDark ? AppTheme.darkBorder : AppTheme.lightBorder,
-                              dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
-                                if (states.contains(WidgetState.selected)) {
-                                  return isDark ? AppTheme.darkPrimary : AppTheme.lightPrimary;
-                                }
-                                return null;
-                              }),
-                              dayForegroundColor: WidgetStateProperty.resolveWith((states) {
-                                if (states.contains(WidgetState.selected)) {
-                                  return isDark ? const Color(0xFF0F1C18) : Colors.white;
-                                }
-                                if (states.contains(WidgetState.disabled)) {
-                                  return isDark ? AppTheme.darkTextTertiary : AppTheme.lightTextTertiary;
-                                }
-                                return isDark ? AppTheme.darkTextPrimary : AppTheme.lightTextPrimary;
-                              }),
-                              todayForegroundColor: WidgetStateProperty.resolveWith((states) {
-                                if (states.contains(WidgetState.selected)) {
-                                  return isDark ? const Color(0xFF0F1C18) : Colors.white;
-                                }
-                                return isDark ? AppTheme.darkPrimary : AppTheme.lightPrimary;
-                              }),
+                              dividerColor: isDark
+                                  ? AppTheme.darkBorder
+                                  : AppTheme.lightBorder,
+                              dayBackgroundColor:
+                                  WidgetStateProperty.resolveWith((states) {
+                                    if (states.contains(WidgetState.selected)) {
+                                      return isDark
+                                          ? AppTheme.darkPrimary
+                                          : AppTheme.lightPrimary;
+                                    }
+                                    return null;
+                                  }),
+                              dayForegroundColor:
+                                  WidgetStateProperty.resolveWith((states) {
+                                    if (states.contains(WidgetState.selected)) {
+                                      return isDark
+                                          ? const Color(0xFF0F1C18)
+                                          : Colors.white;
+                                    }
+                                    if (states.contains(WidgetState.disabled)) {
+                                      return isDark
+                                          ? AppTheme.darkTextTertiary
+                                          : AppTheme.lightTextTertiary;
+                                    }
+                                    return isDark
+                                        ? AppTheme.darkTextPrimary
+                                        : AppTheme.lightTextPrimary;
+                                  }),
+                              todayForegroundColor:
+                                  WidgetStateProperty.resolveWith((states) {
+                                    if (states.contains(WidgetState.selected)) {
+                                      return isDark
+                                          ? const Color(0xFF0F1C18)
+                                          : Colors.white;
+                                    }
+                                    return isDark
+                                        ? AppTheme.darkPrimary
+                                        : AppTheme.lightPrimary;
+                                  }),
                               todayBorder: BorderSide(
-                                color: isDark ? AppTheme.darkPrimary : AppTheme.lightPrimary,
+                                color: isDark
+                                    ? AppTheme.darkPrimary
+                                    : AppTheme.lightPrimary,
                                 width: 1.5,
                               ),
-                              yearForegroundColor: WidgetStateProperty.resolveWith((states) {
-                                if (states.contains(WidgetState.selected)) {
-                                  return isDark ? const Color(0xFF0F1C18) : Colors.white;
-                                }
-                                return isDark ? AppTheme.darkTextPrimary : AppTheme.lightTextPrimary;
-                              }),
+                              yearForegroundColor:
+                                  WidgetStateProperty.resolveWith((states) {
+                                    if (states.contains(WidgetState.selected)) {
+                                      return isDark
+                                          ? const Color(0xFF0F1C18)
+                                          : Colors.white;
+                                    }
+                                    return isDark
+                                        ? AppTheme.darkTextPrimary
+                                        : AppTheme.lightTextPrimary;
+                                  }),
                               cancelButtonStyle: TextButton.styleFrom(
-                                foregroundColor: isDark ? AppTheme.darkPrimary : AppTheme.lightPrimary,
-                                textStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
+                                foregroundColor: isDark
+                                    ? AppTheme.darkPrimary
+                                    : AppTheme.lightPrimary,
+                                textStyle: GoogleFonts.plusJakartaSans(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               confirmButtonStyle: TextButton.styleFrom(
-                                foregroundColor: isDark ? AppTheme.darkPrimary : AppTheme.lightPrimary,
-                                textStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
+                                foregroundColor: isDark
+                                    ? AppTheme.darkPrimary
+                                    : AppTheme.lightPrimary,
+                                textStyle: GoogleFonts.plusJakartaSans(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
@@ -287,7 +363,12 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
     );
   }
 
-  Widget _buildFilterOption(String role, bool isDark, Color onSurfaceColor, Color borderColor) {
+  Widget _buildFilterOption(
+    String role,
+    bool isDark,
+    Color onSurfaceColor,
+    Color borderColor,
+  ) {
     final isSelected = _roleFilter == role;
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -297,7 +378,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
             : Colors.transparent,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: isSelected ? AppTheme.primary : borderColor.withValues(alpha: 0.6),
+          color: isSelected
+              ? AppTheme.primary
+              : borderColor.withValues(alpha: 0.6),
           width: isSelected ? 1.5 : 1,
         ),
       ),
@@ -337,7 +420,8 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
       'role': 'Comprador',
       'date': '14 Oct, 10:30 AM',
       'message': '"¿Podemos ajustar el precio por 50kg?"',
-      'image': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCp_n5G7_2I867ct5e-4CxrG4gpPtX8pmpapt4aGcC8xz68OZLjnNg-5DYRK132D7F3eX_k8BoG4fTReYFGRj3rY-Jjrh6CCKlFuVKrc2vK2Cck9xI0Bh53PEelQvXLDtOpF9uAcnzZm1oAuz3YQynfjH5mou2BHFGWgrCQ9iqS339N33AeUYKYqr0_eKPEZgei3hQHpOvVIxks814hCGYU1qVMPi8ITHHW9aOm4w38UTDu28jMg78JNyZO5acs0qcN-r2cIcfwCnw',
+      'image':
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuCp_n5G7_2I867ct5e-4CxrG4gpPtX8pmpapt4aGcC8xz68OZLjnNg-5DYRK132D7F3eX_k8BoG4fTReYFGRj3rY-Jjrh6CCKlFuVKrc2vK2Cck9xI0Bh53PEelQvXLDtOpF9uAcnzZm1oAuz3YQynfjH5mou2BHFGWgrCQ9iqS339N33AeUYKYqr0_eKPEZgei3hQHpOvVIxks814hCGYU1qVMPi8ITHHW9aOm4w38UTDu28jMg78JNyZO5acs0qcN-r2cIcfwCnw',
     },
     {
       'product': 'Aguacate Hass',
@@ -345,7 +429,8 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
       'role': 'Proveedor',
       'date': '13 Oct, 04:15 PM',
       'message': '"Me interesa comprar el lote completo si hay descuento."',
-      'image': 'https://lh3.googleusercontent.com/aida-public/AB6AXuC9dKnp_y_8GU6tHdoCtuiMB8r7xhLSO_EhoBQ3SgBFwConiY_XCZE6ZzktYB7aDhvyzRfqrik3cSYRCUrkGlExaT71igcG4DsOaJberIKM-FywWLEIq3nwVzKYGXLiAC_yO_f9XUgAkiD7fWMNHvsPTriBvcUIdnbxkiwuSUtkeEBge-A2yzyyt7vV1WkwwUTjCxoyHm49HQBNhhz1zdsJX6E135iYXXYZseNemHx7YTxxV2dlBaAotUYes08RHX0r7OxvU1ddjkM',
+      'image':
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuC9dKnp_y_8GU6tHdoCtuiMB8r7xhLSO_EhoBQ3SgBFwConiY_XCZE6ZzktYB7aDhvyzRfqrik3cSYRCUrkGlExaT71igcG4DsOaJberIKM-FywWLEIq3nwVzKYGXLiAC_yO_f9XUgAkiD7fWMNHvsPTriBvcUIdnbxkiwuSUtkeEBge-A2yzyyt7vV1WkwwUTjCxoyHm49HQBNhhz1zdsJX6E135iYXXYZseNemHx7YTxxV2dlBaAotUYes08RHX0r7OxvU1ddjkM',
     },
     {
       'product': 'Limón Persa',
@@ -353,8 +438,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
       'role': 'Comprador',
       'date': '12 Oct, 09:00 AM',
       'message': '"¿Tienen disponibilidad para entrega mañana?"',
-      'image': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCfOelLVxfc2Z5vEipAQdeiJXE5-zkfaCdzZ_kfJhVaYK3I_YiLKxl8WYn3e1CMuyRyQIMfHNANfO72pR_S-laYQcgXKce227Aklxxz-jOTMlRenPI_8_0yD0QauhZ9tcL1QPpkt98ZSt0q9vWn4OmkqcH4TdLNmtpKld3f5aK8QDtmjgWHQH6sUFo43Cr16qh-YCODh8Xxf6nPU8e1JGGzKOdTj02eHzd-Hr3AyDl29KqdMWbobtdeOQgEdq3F3ILWDQmcqSzvGwI',
-    }
+      'image':
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuCfOelLVxfc2Z5vEipAQdeiJXE5-zkfaCdzZ_kfJhVaYK3I_YiLKxl8WYn3e1CMuyRyQIMfHNANfO72pR_S-laYQcgXKce227Aklxxz-jOTMlRenPI_8_0yD0QauhZ9tcL1QPpkt98ZSt0q9vWn4OmkqcH4TdLNmtpKld3f5aK8QDtmjgWHQH6sUFo43Cr16qh-YCODh8Xxf6nPU8e1JGGzKOdTj02eHzd-Hr3AyDl29KqdMWbobtdeOQgEdq3F3ILWDQmcqSzvGwI',
+    },
   ];
 
   final List<Map<String, dynamic>> mockCompletedNegotiations = [
@@ -366,7 +452,8 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
       'date': '12 Oct 2023',
       'price': '\$45.00 / kg',
       'quantity': '150 kg',
-      'image': 'https://lh3.googleusercontent.com/aida-public/AB6AXuB32zMtkIjodpTPfadClO6p0RBB_YGRBvqx5chQPmObhnrSPb8EnB0DOWn_4QJSrQWP665O6SUtHuucrWl9EaSJShWWYFW-WZ-Cy08SXOGW8rUfR_384bGdjGSAT9Ri12ICkNcX8y_nHzV2eedCwbqFqNwg11waXHrdS49xkxD02in2kJjXG-RfJTkFhN5CL5m9_n36-QZX8hnnOneKxuOCLIez6dwSb6W_VuVytqYxpa7MQlPVMlXVGMvz96ZI1JKij6hNHOWeuig',
+      'image':
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuB32zMtkIjodpTPfadClO6p0RBB_YGRBvqx5chQPmObhnrSPb8EnB0DOWn_4QJSrQWP665O6SUtHuucrWl9EaSJShWWYFW-WZ-Cy08SXOGW8rUfR_384bGdjGSAT9Ri12ICkNcX8y_nHzV2eedCwbqFqNwg11waXHrdS49xkxD02in2kJjXG-RfJTkFhN5CL5m9_n36-QZX8hnnOneKxuOCLIez6dwSb6W_VuVytqYxpa7MQlPVMlXVGMvz96ZI1JKij6hNHOWeuig',
     },
     {
       'invoice_id': '#NEG-88289',
@@ -376,8 +463,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
       'date': '05 Oct 2023',
       'price': '\$68.50 / kg',
       'quantity': '500 kg',
-      'image': 'https://lh3.googleusercontent.com/aida-public/AB6AXuAED0sR_3E7lj3NxGReM6Ekx2ocYmfTZlJ8cQj7wyVr_pEOi4A27Aa6v5M81aG0YieKw3hGsQ-aR_xRYNseUt-4j3ZTTdjxBPfmCCkCm0q6ozYF6eZ_VN4tguI93G2rZNcJeEZv7v5nD8g41hlZvcUt9ckMjsX2iMVdnafVON52_UKuZfvCm1D3jUYevVB-paZbQxJf-8Vso3R0tDRClS_BRMU4IdrS9c7CQxClnAuynkN9f92UCNhlVhFIqbeNajOfkjVglzAu5cM',
-    }
+      'image':
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuAED0sR_3E7lj3NxGReM6Ekx2ocYmfTZlJ8cQj7wyVr_pEOi4A27Aa6v5M81aG0YieKw3hGsQ-aR_xRYNseUt-4j3ZTTdjxBPfmCCkCm0q6ozYF6eZ_VN4tguI93G2rZNcJeEZv7v5nD8g41hlZvcUt9ckMjsX2iMVdnafVON52_UKuZfvCm1D3jUYevVB-paZbQxJf-8Vso3R0tDRClS_BRMU4IdrS9c7CQxClnAuynkN9f92UCNhlVhFIqbeNajOfkjVglzAu5cM',
+    },
   ];
 
   final List<Map<String, dynamic>> mockCancelledNegotiations = [
@@ -392,8 +480,10 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
       'quantity': '100',
       'saleType': 'kg',
       'reason': 'Encontré un mejor precio',
-      'comments': 'El comprador canceló porque consiguió una oferta directa a menor precio en la central.',
-      'image': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCp_n5G7_2I867ct5e-4CxrG4gpPtX8pmpapt4aGcC8xz68OZLjnNg-5DYRK132D7F3eX_k8BoG4fTReYFGRj3rY-Jjrh6CCKlFuVKrc2vK2Cck9xI0Bh53PEelQvXLDtOpF9uAcnzZm1oAuz3YQynfjH5mou2BHFGWgrCQ9iqS339N33AeUYKYqr0_eKPEZgei3hQHpOvVIxks814hCGYU1qVMPi8ITHHW9aOm4w38UTDu28jMg78JNyZO5acs0qcN-r2cIcfwCnw',
+      'comments':
+          'El comprador canceló porque consiguió una oferta directa a menor precio en la central.',
+      'image':
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuCp_n5G7_2I867ct5e-4CxrG4gpPtX8pmpapt4aGcC8xz68OZLjnNg-5DYRK132D7F3eX_k8BoG4fTReYFGRj3rY-Jjrh6CCKlFuVKrc2vK2Cck9xI0Bh53PEelQvXLDtOpF9uAcnzZm1oAuz3YQynfjH5mou2BHFGWgrCQ9iqS339N33AeUYKYqr0_eKPEZgei3hQHpOvVIxks814hCGYU1qVMPi8ITHHW9aOm4w38UTDu28jMg78JNyZO5acs0qcN-r2cIcfwCnw',
     },
     {
       'invoice_id': '#NEG-88287',
@@ -406,9 +496,11 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
       'quantity': '20',
       'saleType': 'caja',
       'reason': 'El producto ya no está disponible',
-      'comments': 'El proveedor no cuenta con stock suficiente en bodega para surtir las 20 cajas.',
-      'image': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCfOelLVxfc2Z5vEipAQdeiJXE5-zkfaCdzZ_kfJhVaYK3I_YiLKxl8WYn3e1CMuyRyQIMfHNANfO72pR_S-laYQcgXKce227Aklxxz-jOTMlRenPI_8_0yD0QauhZ9tcL1QPpkt98ZSt0q9vWn4OmkqcH4TdLNmtpKld3f5aK8QDtmjgWHQH6sUFo43Cr16qh-YCODh8Xxf6nPU8e1JGGzKOdTj02eHzd-Hr3AyDl29KqdMWbobtdeOQgEdq3F3ILWDQmcqSzvGwI',
-    }
+      'comments':
+          'El proveedor no cuenta con stock suficiente en bodega para surtir las 20 cajas.',
+      'image':
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuCfOelLVxfc2Z5vEipAQdeiJXE5-zkfaCdzZ_kfJhVaYK3I_YiLKxl8WYn3e1CMuyRyQIMfHNANfO72pR_S-laYQcgXKce227Aklxxz-jOTMlRenPI_8_0yD0QauhZ9tcL1QPpkt98ZSt0q9vWn4OmkqcH4TdLNmtpKld3f5aK8QDtmjgWHQH6sUFo43Cr16qh-YCODh8Xxf6nPU8e1JGGzKOdTj02eHzd-Hr3AyDl29KqdMWbobtdeOQgEdq3F3ILWDQmcqSzvGwI',
+    },
   ];
 
   @override
@@ -475,10 +567,14 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                 width: 38,
                 height: 38,
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF0F3628) : const Color(0xFFE8F5EE),
+                  color: isDark
+                      ? const Color(0xFF0F3628)
+                      : const Color(0xFFE8F5EE),
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: isDark ? const Color(0xFF1E8262) : const Color(0xFFA5D6A7),
+                    color: isDark
+                        ? const Color(0xFF1E8262)
+                        : const Color(0xFFA5D6A7),
                     width: 0.8,
                   ),
                 ),
@@ -493,10 +589,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(
-            color: borderColor,
-            height: 1,
-          ),
+          child: Container(color: borderColor, height: 1),
         ),
       ),
       body: SingleChildScrollView(
@@ -509,14 +602,24 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
               // Custom Segmented Switcher Tabs
               KeyedSubtree(
                 key: NegotiationsScreen.tutorialTabsKey,
-                child: _buildSegmentSwitcher(isDark, surfaceColor, borderColor, onSurfaceColor, secondaryTextColor),
+                child: _buildSegmentSwitcher(
+                  isDark,
+                  surfaceColor,
+                  borderColor,
+                  onSurfaceColor,
+                  secondaryTextColor,
+                ),
               ),
               const SizedBox(height: 14),
 
               // Search Bar & Filter Button (Matching Mercado screen style)
               KeyedSubtree(
                 key: NegotiationsScreen.tutorialSearchFilterKey,
-                child: _buildSearchAndFilterRow(isDark, borderColor, isFilterActive),
+                child: _buildSearchAndFilterRow(
+                  isDark,
+                  borderColor,
+                  isFilterActive,
+                ),
               ),
               const SizedBox(height: 20),
 
@@ -524,7 +627,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
               Text(
                 _selectedTabIndex == 0
                     ? 'Solicitudes Recientes'
-                    : (_selectedTabIndex == 1 ? 'Acuerdos Concretados' : 'Negociaciones Canceladas'),
+                    : (_selectedTabIndex == 1
+                          ? 'Acuerdos Concretados'
+                          : 'Negociaciones Canceladas'),
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 17,
                   fontWeight: FontWeight.w700,
@@ -553,7 +658,8 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: _filteredPending.length,
-                    separatorBuilder: (context, index) => const SizedBox(height: 12),
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 12),
                     itemBuilder: (context, index) {
                       final item = _filteredPending[index];
                       final card = _buildNegotiationCard(
@@ -570,10 +676,14 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                             onConfirmCancel: () {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: const Text('La negociación ha sido cancelada.'),
+                                  content: const Text(
+                                    'La negociación ha sido cancelada.',
+                                  ),
                                   backgroundColor: Colors.red.shade700,
                                   behavior: SnackBarBehavior.floating,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                                 ),
                               );
                             },
@@ -598,7 +708,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                           });
 
                           // Synchronize with global order history
-                          final currentOrders = List<Map<String, dynamic>>.from(globalOrders.value);
+                          final currentOrders = List<Map<String, dynamic>>.from(
+                            globalOrders.value,
+                          );
                           currentOrders.insert(0, {
                             'id': nextId,
                             'invoice_no': nextId,
@@ -609,7 +721,8 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                             'status': 'Entregado',
                             'imageUrl': item['image'],
                             'payment_method': 'Efectivo contra entrega',
-                            'shipping_address': 'Av. de la Reforma 222, Colonia Juárez, Ciudad de México',
+                            'shipping_address':
+                                'Av. de la Reforma 222, Colonia Juárez, Ciudad de México',
                             'quantity_label': '100 kg',
                             'initial_price': '\$50.00 / kg',
                             'final_price': '\$50.00 / kg',
@@ -620,21 +733,25 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                                 'price': '\$50.00',
                                 'quantity': 100,
                                 'unit': 'kg',
-                                'img': item['image']
-                              }
+                                'img': item['image'],
+                              },
                             ],
                             'subtotal': '\$5,000.00',
                             'delivery_fee': '\$5.00',
-                            'total': '\$5,005.00'
+                            'total': '\$5,005.00',
                           });
                           globalOrders.value = currentOrders;
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: const Text('Negociación finalizada y movida a Completadas.'),
+                              content: const Text(
+                                'Negociación finalizada y movida a Completadas.',
+                              ),
                               backgroundColor: AppTheme.primary,
                               behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                             ),
                           );
                         },
@@ -652,7 +769,8 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                   _buildEmptyState(
                     icon: Icons.history_rounded,
                     title: 'No hay negociaciones completadas',
-                    message: 'Aún no has completado ninguna negociación con este criterio.',
+                    message:
+                        'Aún no has completado ninguna negociación con este criterio.',
                     isDark: isDark,
                     secondaryTextColor: secondaryTextColor,
                   )
@@ -661,7 +779,8 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: _filteredCompleted.length,
-                    separatorBuilder: (context, index) => const SizedBox(height: 12),
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 12),
                     itemBuilder: (context, index) {
                       final item = _filteredCompleted[index];
                       return _buildCompletedCard(
@@ -674,33 +793,34 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                       );
                     },
                   )
+              else if (_filteredCancelled.isEmpty)
+                _buildEmptyState(
+                  icon: Icons.cancel_outlined,
+                  title: 'No hay negociaciones canceladas',
+                  message:
+                      'No tienes registro de negociaciones canceladas con este criterio.',
+                  isDark: isDark,
+                  secondaryTextColor: secondaryTextColor,
+                )
               else
-                if (_filteredCancelled.isEmpty)
-                  _buildEmptyState(
-                    icon: Icons.cancel_outlined,
-                    title: 'No hay negociaciones canceladas',
-                    message: 'No tienes registro de negociaciones canceladas con este criterio.',
-                    isDark: isDark,
-                    secondaryTextColor: secondaryTextColor,
-                  )
-                else
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _filteredCancelled.length,
-                    separatorBuilder: (context, index) => const SizedBox(height: 12),
-                    itemBuilder: (context, index) {
-                      final item = _filteredCancelled[index];
-                      return _buildCancelledCard(
-                        item: item,
-                        isDark: isDark,
-                        surfaceColor: surfaceColor,
-                        onSurfaceColor: onSurfaceColor,
-                        secondaryTextColor: secondaryTextColor,
-                        borderColor: borderColor,
-                      );
-                    },
-                  ),
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: _filteredCancelled.length,
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 12),
+                  itemBuilder: (context, index) {
+                    final item = _filteredCancelled[index];
+                    return _buildCancelledCard(
+                      item: item,
+                      isDark: isDark,
+                      surfaceColor: surfaceColor,
+                      onSurfaceColor: onSurfaceColor,
+                      secondaryTextColor: secondaryTextColor,
+                      borderColor: borderColor,
+                    );
+                  },
+                ),
             ],
           ),
         ),
@@ -727,9 +847,33 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
       ),
       child: Row(
         children: [
-          _buildTabItem(0, 'Pendientes', mockNegotiations.length, activeBg, onSurfaceColor, inactiveText, isDark),
-          _buildTabItem(1, 'Completadas', mockCompletedNegotiations.length, activeBg, onSurfaceColor, inactiveText, isDark),
-          _buildTabItem(2, 'Canceladas', mockCancelledNegotiations.length, activeBg, onSurfaceColor, inactiveText, isDark),
+          _buildTabItem(
+            0,
+            'Pendientes',
+            mockNegotiations.length,
+            activeBg,
+            onSurfaceColor,
+            inactiveText,
+            isDark,
+          ),
+          _buildTabItem(
+            1,
+            'Completadas',
+            mockCompletedNegotiations.length,
+            activeBg,
+            onSurfaceColor,
+            inactiveText,
+            isDark,
+          ),
+          _buildTabItem(
+            2,
+            'Canceladas',
+            mockCancelledNegotiations.length,
+            activeBg,
+            onSurfaceColor,
+            inactiveText,
+            isDark,
+          ),
         ],
       ),
     );
@@ -767,36 +911,53 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                 : null,
           ),
           child: Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  label,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-                    fontSize: 12,
-                    color: isSelected ? onSurfaceColor : inactiveText,
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? AppTheme.primary.withValues(alpha: isDark ? 0.35 : 0.12)
-                        : (isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05)),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    '$count',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 10,
-                      color: isSelected ? AppTheme.primaryLight : inactiveText,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      label,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontWeight: isSelected
+                            ? FontWeight.w700
+                            : FontWeight.w600,
+                        fontSize: 12,
+                        color: isSelected ? onSurfaceColor : inactiveText,
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 4),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 5,
+                        vertical: 1,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? AppTheme.primary.withValues(
+                                alpha: isDark ? 0.35 : 0.12,
+                              )
+                            : (isDark
+                                  ? Colors.white10
+                                  : Colors.black.withValues(alpha: 0.05)),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        '$count',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 10,
+                          color: isSelected
+                              ? AppTheme.primaryLight
+                              : inactiveText,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
@@ -804,8 +965,14 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
     );
   }
 
-  Widget _buildSearchAndFilterRow(bool isDark, Color borderColor, bool isFilterActive) {
-    final searchBgColor = isDark ? const Color(0xFF1f2937) : const Color(0xFFE5F1EB);
+  Widget _buildSearchAndFilterRow(
+    bool isDark,
+    Color borderColor,
+    bool isFilterActive,
+  ) {
+    final searchBgColor = isDark
+        ? const Color(0xFF1f2937)
+        : const Color(0xFFE5F1EB);
 
     return Row(
       children: [
@@ -828,7 +995,8 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                 Expanded(
                   child: TextField(
                     controller: _searchController,
-                    onChanged: (val) => setState(() => _searchQuery = val.toLowerCase()),
+                    onChanged: (val) =>
+                        setState(() => _searchQuery = val.toLowerCase()),
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       isDense: true,
@@ -960,7 +1128,11 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                       width: 70,
                       height: 70,
                       color: isDark ? AppTheme.slate700 : AppTheme.slate200,
-                      child: const Icon(Icons.broken_image, size: 24, color: Colors.grey),
+                      child: const Icon(
+                        Icons.broken_image,
+                        size: 24,
+                        color: Colors.grey,
+                      ),
                     ),
                   ),
                 ),
@@ -997,7 +1169,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                                           ? Icons.storefront_outlined
                                           : Icons.person_outline_rounded,
                                       size: 13,
-                                      color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
+                                      color: isDark
+                                          ? const Color(0xFF67C83B)
+                                          : AppTheme.primary,
                                     ),
                                     const SizedBox(width: 4),
                                     Flexible(
@@ -1006,7 +1180,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                                         style: GoogleFonts.plusJakartaSans(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w600,
-                                          color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
+                                          color: isDark
+                                              ? const Color(0xFF67C83B)
+                                              : AppTheme.primary,
                                         ),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
@@ -1019,9 +1195,14 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                           ),
                           const SizedBox(width: 6),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 7,
+                              vertical: 3,
+                            ),
                             decoration: BoxDecoration(
-                              color: isDark ? AppTheme.slate900 : const Color(0xFFF1F5F2),
+                              color: isDark
+                                  ? AppTheme.slate900
+                                  : const Color(0xFFF1F5F2),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
@@ -1040,11 +1221,16 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                       // Proposal message bubble
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
                           color: messageBg,
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: borderColor.withValues(alpha: 0.6)),
+                          border: Border.all(
+                            color: borderColor.withValues(alpha: 0.6),
+                          ),
                         ),
                         child: Text(
                           item['message'],
@@ -1067,59 +1253,75 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                OutlinedButton(
-                  onPressed: () => _showActionConfirmationDialog(
-                    context: context,
-                    title: '¿Cancelar negociación?',
-                    message: 'La solicitud de negociación será cancelada y archivada.',
-                    confirmText: 'Sí, Cancelar',
-                    confirmColor: const Color(0xFFDC2626),
-                    onConfirm: onCancel,
-                    isDark: isDark,
+                Flexible(
+                  child: OutlinedButton(
+                    onPressed: () => _showActionConfirmationDialog(
+                      context: context,
+                      title: '¿Cancelar negociación?',
+                      message:
+                          'La solicitud de negociación será cancelada y archivada.',
+                      confirmText: 'Sí, Cancelar',
+                      confirmColor: const Color(0xFFDC2626),
+                      onConfirm: onCancel,
+                      isDark: isDark,
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size(0, 38),
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      side: BorderSide(
+                        color: isDark
+                            ? const Color(0xFF5C2424)
+                            : const Color(0xFFFECACA),
+                      ),
+                      backgroundColor: isDark
+                          ? const Color(0xFF2A1414)
+                          : const Color(0xFFFEF2F2),
+                      foregroundColor: isDark
+                          ? const Color(0xFFFCA5A5)
+                          : const Color(0xFFDC2626),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      textStyle: GoogleFonts.plusJakartaSans(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12,
+                      ),
+                    ),
+                    child: const Text('Cancelar'),
                   ),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(0, 38),
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    side: BorderSide(
-                      color: isDark ? const Color(0xFF5C2424) : const Color(0xFFFECACA),
-                    ),
-                    backgroundColor: isDark ? const Color(0xFF2A1414) : const Color(0xFFFEF2F2),
-                    foregroundColor: isDark ? const Color(0xFFFCA5A5) : const Color(0xFFDC2626),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    textStyle: GoogleFonts.plusJakartaSans(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 12,
-                    ),
-                  ),
-                  child: const Text('Cancelar'),
                 ),
                 const SizedBox(width: 8),
-                ElevatedButton.icon(
-                  onPressed: () => _showActionConfirmationDialog(
-                    context: context,
-                    title: '¿Finalizar negociación?',
-                    message: 'La negociación será cerrada exitosamente y se generará la orden.',
-                    confirmText: 'Sí, Finalizar',
-                    confirmColor: AppTheme.primary,
-                    onConfirm: onFinalize,
-                    isDark: isDark,
-                  ),
-                  icon: const Icon(Icons.check_circle_outline_rounded, size: 15, color: Colors.white),
-                  label: const Text('Finalizar'),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(0, 38),
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
-                    backgroundColor: AppTheme.primary,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                Flexible(
+                  child: ElevatedButton.icon(
+                    onPressed: () => _showActionConfirmationDialog(
+                      context: context,
+                      title: '¿Finalizar negociación?',
+                      message:
+                          'La negociación será cerrada exitosamente y se generará la orden.',
+                      confirmText: 'Sí, Finalizar',
+                      confirmColor: AppTheme.primary,
+                      onConfirm: onFinalize,
+                      isDark: isDark,
                     ),
-                    textStyle: GoogleFonts.plusJakartaSans(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 12,
+                    icon: const Icon(
+                      Icons.check_circle_outline_rounded,
+                      size: 15,
+                      color: Colors.white,
+                    ),
+                    label: const Text('Finalizar'),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(0, 38),
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      backgroundColor: AppTheme.primary,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      textStyle: GoogleFonts.plusJakartaSans(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ),
@@ -1211,7 +1413,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF0D3224) : const Color(0xFFE8F5E9),
+                  color: isDark
+                      ? const Color(0xFF0D3224)
+                      : const Color(0xFFE8F5E9),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Row(
@@ -1220,7 +1424,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                     Icon(
                       Icons.check_circle_rounded,
                       size: 13,
-                      color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
+                      color: isDark
+                          ? const Color(0xFF67C83B)
+                          : AppTheme.primary,
                     ),
                     const SizedBox(width: 4),
                     Text(
@@ -1229,7 +1435,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                         fontSize: 9,
                         fontWeight: FontWeight.w800,
                         letterSpacing: 0.8,
-                        color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
+                        color: isDark
+                            ? const Color(0xFF67C83B)
+                            : AppTheme.primary,
                       ),
                     ),
                   ],
@@ -1267,7 +1475,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 15,
                         fontWeight: FontWeight.w800,
-                        color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
+                        color: isDark
+                            ? const Color(0xFF67C83B)
+                            : AppTheme.primary,
                       ),
                     ),
                   ],
@@ -1321,7 +1531,10 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                   color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
                 ),
                 style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
@@ -1413,7 +1626,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF3B1E1E) : const Color(0xFFFFECEC),
+                  color: isDark
+                      ? const Color(0xFF3B1E1E)
+                      : const Color(0xFFFFECEC),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Row(
@@ -1422,7 +1637,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                     Icon(
                       Icons.cancel_rounded,
                       size: 13,
-                      color: isDark ? const Color(0xFFFF8B8B) : const Color(0xFFD32F2F),
+                      color: isDark
+                          ? const Color(0xFFFF8B8B)
+                          : const Color(0xFFD32F2F),
                     ),
                     const SizedBox(width: 4),
                     Text(
@@ -1431,7 +1648,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                         fontSize: 9,
                         fontWeight: FontWeight.w800,
                         letterSpacing: 0.8,
-                        color: isDark ? const Color(0xFFFF8B8B) : const Color(0xFFD32F2F),
+                        color: isDark
+                            ? const Color(0xFFFF8B8B)
+                            : const Color(0xFFD32F2F),
                       ),
                     ),
                   ],
@@ -1458,7 +1677,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: isDark ? const Color(0xFFFF8B8B) : const Color(0xFFD32F2F),
+                  color: isDark
+                      ? const Color(0xFFFF8B8B)
+                      : const Color(0xFFD32F2F),
                 ),
               ),
             ],
@@ -1532,7 +1753,11 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF231717) : const Color(0xFFFFF6F6),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: isDark ? const Color(0xFF4C2A2A) : const Color(0xFFFFE3E3)),
+              border: Border.all(
+                color: isDark
+                    ? const Color(0xFF4C2A2A)
+                    : const Color(0xFFFFE3E3),
+              ),
             ),
             child: Text(
               'Motivo: ${item['reason']}',
@@ -1540,28 +1765,39 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                 fontSize: 12,
                 fontStyle: FontStyle.italic,
                 fontWeight: FontWeight.w600,
-                color: isDark ? const Color(0xFFFFB4B4) : const Color(0xFFB71C1C),
+                color: isDark
+                    ? const Color(0xFFFFB4B4)
+                    : const Color(0xFFB71C1C),
               ),
             ),
           ),
 
           // Note if present
-          if (item['comments'] != null && item['comments'].toString().isNotEmpty) ...[
+          if (item['comments'] != null &&
+              item['comments'].toString().isNotEmpty) ...[
             const SizedBox(height: 8),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1F1515) : const Color(0xFFFFFDFD),
+                color: isDark
+                    ? const Color(0xFF1F1515)
+                    : const Color(0xFFFFFDFD),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: isDark ? const Color(0xFF4C2A2A) : const Color(0xFFFFECEC)),
+                border: Border.all(
+                  color: isDark
+                      ? const Color(0xFF4C2A2A)
+                      : const Color(0xFFFFECEC),
+                ),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(
                     Icons.edit_note_rounded,
-                    color: isDark ? const Color(0xFFFFB4B4) : const Color(0xFFB71C1C),
+                    color: isDark
+                        ? const Color(0xFFFFB4B4)
+                        : const Color(0xFFB71C1C),
                     size: 18,
                   ),
                   const SizedBox(width: 8),
@@ -1570,12 +1806,16 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          item['role'] == 'Proveedor' ? 'NOTA DEL PROVEEDOR' : 'NOTA DEL COMPRADOR',
+                          item['role'] == 'Proveedor'
+                              ? 'NOTA DEL PROVEEDOR'
+                              : 'NOTA DEL COMPRADOR',
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 9,
                             fontWeight: FontWeight.w800,
                             letterSpacing: 0.8,
-                            color: isDark ? const Color(0xFFFFB4B4) : const Color(0xFFB71C1C),
+                            color: isDark
+                                ? const Color(0xFFFFB4B4)
+                                : const Color(0xFFB71C1C),
                           ),
                         ),
                         const SizedBox(height: 2),
@@ -1662,7 +1902,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         side: BorderSide(color: borderColor),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                       child: Text(
                         'No, Volver',
@@ -1686,7 +1928,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                         foregroundColor: Colors.white,
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                       child: Text(
                         confirmText,
@@ -1726,11 +1970,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                 color: isDark ? AppTheme.slate800 : const Color(0xFFE8F2EC),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                icon,
-                size: 36,
-                color: AppTheme.primaryLight,
-              ),
+              child: Icon(icon, size: 36, color: AppTheme.primaryLight),
             ),
             const SizedBox(height: 16),
             Text(
@@ -1768,10 +2008,10 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
     final onSurfaceColor = isDark ? AppTheme.slate100 : AppTheme.slate900;
     final secondaryTextColor = isDark ? AppTheme.slate400 : AppTheme.slate500;
     final borderColor = isDark ? AppTheme.slate700 : AppTheme.slate200;
-    
+
     String selectedReason = 'Encontré un mejor precio';
     final TextEditingController commentsController = TextEditingController();
-    
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1785,7 +2025,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
               ),
               decoration: BoxDecoration(
                 color: surfaceColor,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(24),
+                ),
               ),
               padding: EdgeInsets.only(
                 left: 20,
@@ -1814,7 +2056,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
-                        color: isDark ? const Color(0xFFFF8B8B) : const Color(0xFFDC2626),
+                        color: isDark
+                            ? const Color(0xFFFF8B8B)
+                            : const Color(0xFFDC2626),
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -1826,12 +2070,14 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    
+
                     // Product Preview Card
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: isDark ? AppTheme.slate900 : const Color(0xFFF8FAFC),
+                        color: isDark
+                            ? AppTheme.slate900
+                            : const Color(0xFFF8FAFC),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: borderColor),
                       ),
@@ -1863,7 +2109,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                                   '${negotiation['buyer']} • ${negotiation['role'] ?? 'Comprador'}',
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: 12,
-                                    color: isDark ? const Color(0xFF67C83B) : AppTheme.primary,
+                                    color: isDark
+                                        ? const Color(0xFF67C83B)
+                                        : AppTheme.primary,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -1874,7 +2122,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                       ),
                     ),
                     const SizedBox(height: 14),
-                    
+
                     // Reasons List
                     ...[
                       'Encontré un mejor precio',
@@ -1892,7 +2140,10 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                         },
                         borderRadius: BorderRadius.circular(8),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 4,
+                          ),
                           child: Row(
                             children: [
                               Container(
@@ -1901,9 +2152,11 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border: Border.all(
-                                    color: isSelected 
+                                    color: isSelected
                                         ? AppTheme.primary
-                                        : (isDark ? Colors.white30 : Colors.black26),
+                                        : (isDark
+                                              ? Colors.white30
+                                              : Colors.black26),
                                     width: isSelected ? 5 : 1.5,
                                   ),
                                 ),
@@ -1913,8 +2166,12 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                                 reason,
                                 style: GoogleFonts.plusJakartaSans(
                                   fontSize: 13,
-                                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                                  color: isSelected ? onSurfaceColor : secondaryTextColor,
+                                  fontWeight: isSelected
+                                      ? FontWeight.w700
+                                      : FontWeight.w500,
+                                  color: isSelected
+                                      ? onSurfaceColor
+                                      : secondaryTextColor,
                                 ),
                               ),
                             ],
@@ -1922,14 +2179,18 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                         ),
                       );
                     }),
-                    
+
                     const SizedBox(height: 12),
-                    
+
                     // Comments Area
                     Builder(
                       builder: (context) {
-                        final bool isCommentRequired = selectedReason == 'Problemas con el proveedor' || selectedReason == 'Otro (especificar)';
-                        final int currentLength = commentsController.text.trim().length;
+                        final bool isCommentRequired =
+                            selectedReason == 'Problemas con el proveedor' ||
+                            selectedReason == 'Otro (especificar)';
+                        final int currentLength = commentsController.text
+                            .trim()
+                            .length;
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -1937,12 +2198,16 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  isCommentRequired ? 'Detalles (Obligatorio)*' : 'Comentarios adicionales',
+                                  isCommentRequired
+                                      ? 'Detalles (Obligatorio)*'
+                                      : 'Comentarios adicionales',
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w700,
-                                    color: isCommentRequired 
-                                        ? (isDark ? const Color(0xFFFFB4AB) : const Color(0xFFDC2626))
+                                    color: isCommentRequired
+                                        ? (isDark
+                                              ? const Color(0xFFFFB4AB)
+                                              : const Color(0xFFDC2626))
                                         : secondaryTextColor,
                                   ),
                                 ),
@@ -1958,11 +2223,15 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                             const SizedBox(height: 6),
                             Container(
                               decoration: BoxDecoration(
-                                color: isDark ? AppTheme.slate900 : const Color(0xFFF8FAFC),
+                                color: isDark
+                                    ? AppTheme.slate900
+                                    : const Color(0xFFF8FAFC),
                                 borderRadius: BorderRadius.circular(10),
                                 border: Border.all(
                                   color: isCommentRequired && currentLength < 28
-                                      ? (isDark ? const Color(0xFFBA1A1A) : const Color(0xFFFECACA))
+                                      ? (isDark
+                                            ? const Color(0xFFBA1A1A)
+                                            : const Color(0xFFFECACA))
                                       : borderColor,
                                 ),
                               ),
@@ -1973,12 +2242,18 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                                 onChanged: (text) {
                                   setModalState(() {});
                                 },
-                                style: GoogleFonts.plusJakartaSans(fontSize: 13, color: onSurfaceColor),
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 13,
+                                  color: onSurfaceColor,
+                                ),
                                 decoration: InputDecoration(
-                                  hintText: isCommentRequired 
-                                      ? 'Por favor, detalla el motivo (mínimo 28 caracteres)...' 
+                                  hintText: isCommentRequired
+                                      ? 'Por favor, detalla el motivo (mínimo 28 caracteres)...'
                                       : 'Escribe cualquier detalle adicional...',
-                                  hintStyle: GoogleFonts.plusJakartaSans(fontSize: 12, color: secondaryTextColor),
+                                  hintStyle: GoogleFonts.plusJakartaSans(
+                                    fontSize: 12,
+                                    color: secondaryTextColor,
+                                  ),
                                   contentPadding: const EdgeInsets.all(12),
                                   border: InputBorder.none,
                                   counterText: '',
@@ -1990,7 +2265,9 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                               Text(
                                 'Faltan ${28 - currentLength} caracteres para el mínimo requerido.',
                                 style: GoogleFonts.plusJakartaSans(
-                                  color: isDark ? const Color(0xFFFFB4AB) : const Color(0xFFDC2626),
+                                  color: isDark
+                                      ? const Color(0xFFFFB4AB)
+                                      : const Color(0xFFDC2626),
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -1998,51 +2275,69 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                             ],
                           ],
                         );
-                      }
+                      },
                     ),
-                    
+
                     const SizedBox(height: 18),
-                    
+
                     // Action Buttons
                     Builder(
                       builder: (context) {
-                        final bool isCommentRequired = selectedReason == 'Problemas con el proveedor' || selectedReason == 'Otro (especificar)';
-                        final int currentLength = commentsController.text.trim().length;
-                        final bool isButtonEnabled = !isCommentRequired || (currentLength >= 28 && currentLength <= 500);
-                        
+                        final bool isCommentRequired =
+                            selectedReason == 'Problemas con el proveedor' ||
+                            selectedReason == 'Otro (especificar)';
+                        final int currentLength = commentsController.text
+                            .trim()
+                            .length;
+                        final bool isButtonEnabled =
+                            !isCommentRequired ||
+                            (currentLength >= 28 && currentLength <= 500);
+
                         return ElevatedButton(
-                          onPressed: isButtonEnabled ? () {
-                            final finalReason = selectedReason == 'Otro (especificar)' 
-                                ? (commentsController.text.isNotEmpty ? commentsController.text : 'Otro motivo')
-                                : selectedReason;
-                            
-                            Navigator.pop(context);
-                            
-                            setState(() {
-                              mockNegotiations.remove(negotiation);
-                              mockCancelledNegotiations.insert(0, {
-                                'product': negotiation['product'],
-                                'buyer': negotiation['buyer'],
-                                'role': negotiation['role'],
-                                'requestDate': negotiation['date'],
-                                'cancelDate': 'Justo ahora',
-                                'price': '\$22.00 / caja',
-                                'quantity': '20',
-                                'saleType': 'caja',
-                                'reason': finalReason,
-                                'comments': commentsController.text,
-                                'image': negotiation['image'],
-                              });
-                              _selectedTabIndex = 2; // Auto-switch to Cancelled tab
-                            });
-                            
-                            onConfirmCancel();
-                          } : null,
+                          onPressed: isButtonEnabled
+                              ? () {
+                                  final finalReason =
+                                      selectedReason == 'Otro (especificar)'
+                                      ? (commentsController.text.isNotEmpty
+                                            ? commentsController.text
+                                            : 'Otro motivo')
+                                      : selectedReason;
+
+                                  Navigator.pop(context);
+
+                                  setState(() {
+                                    mockNegotiations.remove(negotiation);
+                                    mockCancelledNegotiations.insert(0, {
+                                      'product': negotiation['product'],
+                                      'buyer': negotiation['buyer'],
+                                      'role': negotiation['role'],
+                                      'requestDate': negotiation['date'],
+                                      'cancelDate': 'Justo ahora',
+                                      'price': '\$22.00 / caja',
+                                      'quantity': '20',
+                                      'saleType': 'caja',
+                                      'reason': finalReason,
+                                      'comments': commentsController.text,
+                                      'image': negotiation['image'],
+                                    });
+                                    _selectedTabIndex =
+                                        2; // Auto-switch to Cancelled tab
+                                  });
+
+                                  onConfirmCancel();
+                                }
+                              : null,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: isButtonEnabled ? const Color(0xFFDC2626) : (isDark ? Colors.white12 : Colors.black12),
-                            foregroundColor: isButtonEnabled ? Colors.white : (isDark ? Colors.white30 : Colors.black38),
+                            backgroundColor: isButtonEnabled
+                                ? const Color(0xFFDC2626)
+                                : (isDark ? Colors.white12 : Colors.black12),
+                            foregroundColor: isButtonEnabled
+                                ? Colors.white
+                                : (isDark ? Colors.white30 : Colors.black38),
                             minimumSize: const Size(double.infinity, 44),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                             elevation: 0,
                           ),
                           child: Text(
@@ -2053,7 +2348,7 @@ class _NegotiationsScreenState extends State<NegotiationsScreen> {
                             ),
                           ),
                         );
-                      }
+                      },
                     ),
                     const SizedBox(height: 8),
                     TextButton(

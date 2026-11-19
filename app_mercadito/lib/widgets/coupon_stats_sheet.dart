@@ -216,7 +216,7 @@ class CouponStatsSheet extends StatelessWidget {
                       mainAxisSpacing: 12,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      childAspectRatio: 2.2,
+                      childAspectRatio: 1.95,
                       children: [
                         _buildMetricCard(
                           'Ventas generadas',

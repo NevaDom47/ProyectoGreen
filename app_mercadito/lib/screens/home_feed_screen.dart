@@ -2829,12 +2829,15 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                                     color: Colors.grey,
                                   ),
                                   const SizedBox(width: 4),
-                                  Text(
-                                    item['supplier'] as String,
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.bold,
+                                  Flexible(
+                                    child: Text(
+                                      item['supplier'] as String,
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                 ],
@@ -2875,44 +2878,51 @@ class _HomeFeedScreenState extends State<HomeFeedScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.baseline,
-                                    textBaseline: TextBaseline.alphabetic,
-                                    children: [
-                                      AnimatedSwitcher(
-                                        duration:
-                                            const Duration(milliseconds: 200),
-                                        child: Text(
-                                          displayPrice,
-                                          key: ValueKey<String>(displayPrice),
-                                          style: TextStyle(
-                                            color: isWholesale
-                                                ? (isDark
-                                                    ? const Color(0xFF38BDF8)
-                                                    : const Color(0xFF0284C7))
-                                                : theme.colorScheme.primary,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
+                                  Flexible(
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      alignment: Alignment.centerLeft,
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.baseline,
+                                        textBaseline: TextBaseline.alphabetic,
+                                        children: [
+                                          AnimatedSwitcher(
+                                            duration:
+                                                const Duration(milliseconds: 200),
+                                            child: Text(
+                                              displayPrice,
+                                              key: ValueKey<String>(displayPrice),
+                                              style: TextStyle(
+                                                color: isWholesale
+                                                    ? (isDark
+                                                        ? const Color(0xFF38BDF8)
+                                                        : const Color(0xFF0284C7))
+                                                    : theme.colorScheme.primary,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                          if (isWholesale &&
+                                              item['wholesaleMin'] != null) ...[
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              '(${item['wholesaleMin']})',
+                                              style: TextStyle(
+                                                fontSize: 9,
+                                                fontWeight: FontWeight.w600,
+                                                color: isDark
+                                                    ? const Color(0xFF7DD3FC)
+                                                    : const Color(0xFF0284C7),
+                                              ),
+                                            ),
+                                          ],
+                                        ],
                                       ),
-                                      if (isWholesale &&
-                                          item['wholesaleMin'] != null) ...[
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          '(${item['wholesaleMin']})',
-                                          style: TextStyle(
-                                            fontSize: 9,
-                                            fontWeight: FontWeight.w600,
-                                            color: isDark
-                                                ? const Color(0xFF7DD3FC)
-                                                : const Color(0xFF0284C7),
-                                          ),
-                                        ),
-                                      ],
-                                    ],
+                                    ),
                                   ),
+                                  const SizedBox(width: 8),
                                   ValueListenableBuilder<
                                     List<Map<String, dynamic>>
                                   >(

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:app_mercadito/screens/product_detail_screen.dart';
 import 'package:app_mercadito/screens/quality_products_screen.dart';
 
 class _TestHttpOverrides extends HttpOverrides {
@@ -107,13 +108,15 @@ void main() {
     expect(find.text('Todos'), findsOneWidget);
     expect(find.text('Al Detalle'), findsWidgets);
     expect(find.text('Por Mayor'), findsWidgets);
-    expect(find.text('Frutas'), findsOneWidget);
-    expect(find.text('Hortalizas'), findsOneWidget);
+    expect(find.text('Frutas'), findsWidgets);
+    expect(find.text('Hortalizas'), findsWidgets);
 
-    // 5. Verify Products are displayed with SKU and Action Buttons
+    // 5. Verify Products are displayed with SKU and Home-homologated Card elements
     expect(find.textContaining('SKU: FRU-FRE-01'), findsOneWidget);
     expect(find.text('Fresas Extra'), findsOneWidget);
-    expect(find.text('AGREGAR AL CARRITO'), findsWidgets);
+    expect(find.text('Oferta'), findsWidgets);
+    expect(find.text('(128 reseñas)'), findsWidgets);
+    expect(find.text('Agregar al carrito'), findsWidgets);
 
     final exception = tester.takeException();
     expect(exception, isNull);
@@ -181,12 +184,48 @@ void main() {
     await tester.pumpAndSettle();
 
     // Wholesale price should be shown
-    expect(find.textContaining('por mayor'), findsWidgets);
+    expect(find.text('POR MAYOR'), findsWidgets);
 
-    // Tap AGREGAR AL CARRITO
-    await tester.tap(find.text('AGREGAR AL CARRITO').first);
+    // Tap Agregar al carrito
+    final addCartButton = find.text('Agregar al carrito').first;
+    await tester.ensureVisible(addCartButton);
+    await tester.pumpAndSettle();
+    await tester.tap(addCartButton);
     await tester.pump();
     expect(find.textContaining('agregado al carrito'), findsOneWidget);
+
+    final exception = tester.takeException();
+    expect(exception, isNull);
+  });
+
+  testWidgets('QualityProductsScreen opens ProductDetailScreen when tapping a product card', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 3.0; // 360 x 800 dp
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: QualityProductsScreen(
+          quality: 'Primera Calidad',
+          provider: mockProvider,
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Tap on the product card title to navigate to ProductDetailScreen
+    await tester.tap(find.text('Fresas Extra'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 1600));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ProductDetailScreen), findsOneWidget);
+    expect(find.text('Fresas Extra'), findsWidgets);
+    expect(find.text('Huerta Los Arcos'), findsWidgets);
 
     final exception = tester.takeException();
     expect(exception, isNull);

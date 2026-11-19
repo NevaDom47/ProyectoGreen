@@ -325,7 +325,7 @@ class HelpSupportScreen extends StatelessWidget {
                       physics: const NeverScrollableScrollPhysics(),
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
-                      childAspectRatio: 2.3,
+                      childAspectRatio: 2.05,
                       children: [
                         _buildCategoryCard(
                           context,

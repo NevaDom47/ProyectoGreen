@@ -801,78 +801,96 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text(
-                            '\$',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 18,
-                              color: const Color(0xFFf59e0b),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            basePrice.toStringAsFixed(2),
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 32,
-                              color: textColor,
-                              fontWeight: FontWeight.w800,
-                              height: 1.0,
-                            ),
-                          ),
-                          if (_selectedSaleType == 'mayor') ...[
-                            const SizedBox(width: 6),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF0284C7).withValues(alpha: 0.12),
-                                borderRadius: BorderRadius.circular(6),
-                                border: Border.all(color: const Color(0xFF0284C7).withValues(alpha: 0.25), width: 1),
-                              ),
-                              child: Text(
-                                'Por Mayor',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xFF0284C7),
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      '\$',
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: 18,
+                                        color: const Color(0xFFf59e0b),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      basePrice.toStringAsFixed(2),
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: 32,
+                                        color: textColor,
+                                        fontWeight: FontWeight.w800,
+                                        height: 1.0,
+                                      ),
+                                    ),
+                                    if (_selectedSaleType == 'mayor') ...[
+                                      const SizedBox(width: 6),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFF0284C7).withValues(alpha: 0.12),
+                                          borderRadius: BorderRadius.circular(6),
+                                          border: Border.all(color: const Color(0xFF0284C7).withValues(alpha: 0.25), width: 1),
+                                        ),
+                                        child: Text(
+                                          'Por Mayor',
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                            color: const Color(0xFF0284C7),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ],
                                 ),
                               ),
                             ),
-                          ],
-                          const Spacer(),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              // Unit Chips
-                              Row(
-                                children: _availableUnits.map((unit) {
-                                  final isSelected = _selectedUnit == unit;
-                                  final activeColor = _selectedSaleType == 'mayor' ? const Color(0xFF0284C7) : primary;
-                                  return GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        _selectedUnit = unit;
-                                        _updateQuantity(_quantity);
-                                      });
-                                    },
-                                    child: Container(
-                                      margin: const EdgeInsets.only(left: 6),
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color: isSelected ? activeColor : (isDark ? Colors.grey[800] : const Color(0xFFe9eceb)),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Text(
-                                        unit,
-                                        style: GoogleFonts.plusJakartaSans(
-                                          fontSize: 12,
-                                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                                          color: isSelected ? Colors.white : subtitleColor,
+                          ),
+                          const SizedBox(width: 12),
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                // Unit Chips
+                                Wrap(
+                                  spacing: 6,
+                                  runSpacing: 6,
+                                  alignment: WrapAlignment.end,
+                                  children: _availableUnits.map((unit) {
+                                    final isSelected = _selectedUnit == unit;
+                                    final activeColor = _selectedSaleType == 'mayor' ? const Color(0xFF0284C7) : primary;
+                                    return GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _selectedUnit = unit;
+                                          _updateQuantity(_quantity);
+                                        });
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: isSelected ? activeColor : (isDark ? Colors.grey[800] : const Color(0xFFe9eceb)),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          unit,
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontSize: 12,
+                                            fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                                            color: isSelected ? Colors.white : subtitleColor,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                              const SizedBox(height: 12),
+                                    );
+                                  }).toList(),
+                                ),
+                                const SizedBox(height: 12),
                               // Quantity Selector
                               Container(
                                 decoration: BoxDecoration(
@@ -881,6 +899,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 ),
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                                 child: Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     GestureDetector(
                                       onTap: () => _updateQuantity(_quantity - 1),
@@ -945,6 +964,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 ),
                               ),
                             ],
+                          ),
                           ),
                         ],
                       ),

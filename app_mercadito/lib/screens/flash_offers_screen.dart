@@ -56,7 +56,9 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
       if (_searchQuery.isNotEmpty) {
         final query = _searchQuery.toLowerCase();
 
-        final sku = (offer['sku'] ?? _getProductSku(offer)).toString().toLowerCase();
+        final sku = (offer['sku'] ?? _getProductSku(offer))
+            .toString()
+            .toLowerCase();
         final name = (offer['name'] ?? '').toString().toLowerCase();
         final category = (offer['category'] ?? '').toString().toLowerCase();
         final supplier = (offer['supplier'] ?? '').toString().toLowerCase();
@@ -64,11 +66,16 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
         final badge = (offer['badge'] ?? '').toString().toLowerCase();
         final price = (offer['price'] ?? '').toString().toLowerCase();
         final oldPrice = (offer['oldPrice'] ?? '').toString().toLowerCase();
-        final wholesalePrice = (offer['wholesalePrice'] ?? '').toString().toLowerCase();
+        final wholesalePrice = (offer['wholesalePrice'] ?? '')
+            .toString()
+            .toLowerCase();
         final discount = (offer['discount'] ?? '').toString().toLowerCase();
-        final tags = (offer['tags'] as List? ?? []).map((t) => t.toString().toLowerCase()).join(' ');
+        final tags = (offer['tags'] as List? ?? [])
+            .map((t) => t.toString().toLowerCase())
+            .join(' ');
 
-        final fullSearchableContent = '$sku $name $category $supplier $location $badge $price $oldPrice $wholesalePrice $discount $tags';
+        final fullSearchableContent =
+            '$sku $name $category $supplier $location $badge $price $oldPrice $wholesalePrice $discount $tags';
 
         if (!fullSearchableContent.contains(query)) {
           return false;
@@ -89,11 +96,16 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
       // Category filter evaluation
       if (_selectedCategoryFilter != 'Todos') {
         final filterLower = _selectedCategoryFilter.toLowerCase();
-        final categoryLower = (offer['category'] ?? '').toString().toLowerCase();
+        final categoryLower = (offer['category'] ?? '')
+            .toString()
+            .toLowerCase();
         final badgeLower = (offer['badge'] ?? '').toString().toLowerCase();
-        final tagsList = (offer['tags'] as List? ?? []).map((t) => t.toString().toLowerCase()).toList();
+        final tagsList = (offer['tags'] as List? ?? [])
+            .map((t) => t.toString().toLowerCase())
+            .toList();
 
-        final matchesCategory = categoryLower.contains(filterLower) ||
+        final matchesCategory =
+            categoryLower.contains(filterLower) ||
             badgeLower.contains(filterLower) ||
             tagsList.any((t) => t.contains(filterLower));
 
@@ -200,7 +212,11 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                     physics: const BouncingScrollPhysics(),
                     child: Row(
                       children: [
-                        _buildFilterChip('Todos', isDark, filterType: 'discount'),
+                        _buildFilterChip(
+                          'Todos',
+                          isDark,
+                          filterType: 'discount',
+                        ),
                         _buildFilterChip(
                           '50% OFF',
                           isDark,
@@ -215,8 +231,16 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                           icon: Icons.bolt,
                           iconColor: Colors.orange,
                         ),
-                        _buildFilterChip('25% OFF', isDark, filterType: 'discount'),
-                        _buildFilterChip('10% OFF', isDark, filterType: 'discount'),
+                        _buildFilterChip(
+                          '25% OFF',
+                          isDark,
+                          filterType: 'discount',
+                        ),
+                        _buildFilterChip(
+                          '10% OFF',
+                          isDark,
+                          filterType: 'discount',
+                        ),
                       ],
                     ),
                   ),
@@ -228,7 +252,11 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                     physics: const BouncingScrollPhysics(),
                     child: Row(
                       children: [
-                        _buildFilterChip('Todos', isDark, filterType: 'category'),
+                        _buildFilterChip(
+                          'Todos',
+                          isDark,
+                          filterType: 'category',
+                        ),
                         _buildFilterChip(
                           'Frutas',
                           isDark,
@@ -324,7 +352,7 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: 0.60,
+                          mainAxisExtent: 368,
                           crossAxisSpacing: 12,
                           mainAxisSpacing: 12,
                         ),
@@ -381,8 +409,8 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
               color: isSelected
                   ? const Color(0xFF059669)
                   : (isDark
-                      ? const Color(0xFF334155)
-                      : const Color(0xFFCBD5E1)),
+                        ? const Color(0xFF334155)
+                        : const Color(0xFFCBD5E1)),
               width: 0.8,
             ),
           ),
@@ -418,10 +446,14 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
     );
   }
 
-  void _showExpiredOfferBottomSheet(BuildContext context, Map<String, dynamic> data) {
+  void _showExpiredOfferBottomSheet(
+    BuildContext context,
+    Map<String, dynamic> data,
+  ) {
     final supplierName = data['supplier'] ?? 'el proveedor';
     final productName = data['name'] ?? 'este producto';
-    final regularPrice = data['oldPrice'] ?? data['wholesaleOldPrice'] ?? '\$22.50';
+    final regularPrice =
+        data['oldPrice'] ?? data['wholesaleOldPrice'] ?? '\$22.50';
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     showModalBottomSheet(
@@ -453,7 +485,11 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                 color: Colors.amber.withValues(alpha: 0.15),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.timer_off_outlined, color: Colors.amber, size: 32),
+              child: const Icon(
+                Icons.timer_off_outlined,
+                color: Colors.amber,
+                size: 32,
+              ),
             ),
             const SizedBox(height: 16),
             Text(
@@ -487,7 +523,11 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.handshake_outlined, color: Color(0xFF047857), size: 24),
+                  const Icon(
+                    Icons.handshake_outlined,
+                    color: Color(0xFF047857),
+                    size: 24,
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
@@ -522,11 +562,15 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                 ),
                 onPressed: () {
                   Navigator.pop(context);
-                  context.push('/chat', extra: {
-                    'name': supplierName,
-                    'product': productName,
-                    'initialMessage': 'Hola $supplierName, vi que la oferta relámpago de $productName acaba de terminar. ¿Será posible conseguir un precio especial?',
-                  });
+                  context.push(
+                    '/chat',
+                    extra: {
+                      'name': supplierName,
+                      'product': productName,
+                      'initialMessage':
+                          'Hola $supplierName, vi que la oferta relámpago de $productName acaba de terminar. ¿Será posible conseguir un precio especial?',
+                    },
+                  );
                 },
               ),
             ),
@@ -558,10 +602,20 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
     if (item['sku'] != null && item['sku'].toString().trim().isNotEmpty) {
       return item['sku'].toString().trim();
     }
-    final name = (item['name'] ?? 'PROD').toString().replaceAll(' ', '').toUpperCase();
-    final nameCode = name.length >= 3 ? name.substring(0, 3) : name.padRight(3, 'X');
-    final cat = (item['category'] ?? 'GEN').toString().replaceAll(' ', '').toUpperCase();
-    final catCode = cat.length >= 3 ? cat.substring(0, 3) : cat.padRight(3, 'X');
+    final name = (item['name'] ?? 'PROD')
+        .toString()
+        .replaceAll(' ', '')
+        .toUpperCase();
+    final nameCode = name.length >= 3
+        ? name.substring(0, 3)
+        : name.padRight(3, 'X');
+    final cat = (item['category'] ?? 'GEN')
+        .toString()
+        .replaceAll(' ', '')
+        .toUpperCase();
+    final catCode = cat.length >= 3
+        ? cat.substring(0, 3)
+        : cat.padRight(3, 'X');
     return '$catCode-$nameCode-01';
   }
 
@@ -592,17 +646,17 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
 
     final String displayPrice = isExpired
         ? (isWholesale
-            ? (data['wholesaleOldPrice'] ?? data['oldPrice'] ?? '\$17.50')
-            : (data['oldPrice'] ?? '\$22.50'))
+              ? (data['wholesaleOldPrice'] ?? data['oldPrice'] ?? '\$17.50')
+              : (data['oldPrice'] ?? '\$22.50'))
         : (isWholesale
-            ? (data['wholesalePrice'] ?? data['price'] ?? '\$14.50')
-            : (data['price'] ?? '\$18.00'));
+              ? (data['wholesalePrice'] ?? data['price'] ?? '\$14.50')
+              : (data['price'] ?? '\$18.00'));
 
     final String? displayOldPrice = isExpired
         ? null
         : (isWholesale
-            ? (data['wholesaleOldPrice'] ?? data['oldPrice'])
-            : data['oldPrice']);
+              ? (data['wholesaleOldPrice'] ?? data['oldPrice'])
+              : data['oldPrice']);
 
     return GestureDetector(
       key: ValueKey('card_gesture_$name'),
@@ -773,7 +827,7 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                                     ? Colors.white
                                     : const Color(0xFF0F172A),
                               ),
-                              maxLines: 2,
+                              maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 2),
@@ -782,41 +836,13 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                               style: GoogleFonts.inter(
                                 fontSize: 9.0,
                                 fontWeight: FontWeight.w500,
-                                color: isDark ? Colors.grey.shade400 : const Color(0xFF94A3B8),
+                                color: isDark
+                                    ? Colors.grey.shade400
+                                    : const Color(0xFF94A3B8),
                                 letterSpacing: 0.2,
                               ),
-                            ),
-                            const SizedBox(height: 4),
-
-                            // Sales Mode Switcher [ Detalle | Por Mayor ]
-                            _buildCardSalesModeBadge(salesMode, name, isDark),
-                            const SizedBox(height: 4),
-
-                            // Rating & Reviews
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.star,
-                                  color: Colors.orange,
-                                  size: 13,
-                                ),
-                                const SizedBox(width: 3),
-                                Text(
-                                  data['rating'] ?? '4.8',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(width: 3),
-                                Text(
-                                  '(128)',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 10,
-                                    color: Colors.grey[500],
-                                  ),
-                                ),
-                              ],
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
@@ -824,58 +850,105 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                       const SizedBox(width: 6),
 
                       // Price Column
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          if (displayOldPrice != null)
-                            Text(
-                              displayOldPrice,
-                              style: GoogleFonts.inter(
-                                color: Colors.grey,
-                                fontSize: 10,
-                                decoration: TextDecoration.lineThrough,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          Text(
-                            displayPrice,
-                            style: GoogleFonts.inter(
-                              color: isWholesale
-                                  ? const Color(0xFF047857)
-                                  : const Color(0xFF047857),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w900,
-                              height: 1.1,
-                            ),
-                          ),
-                          const SizedBox(height: 1),
-                          Column(
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 64),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerRight,
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Text(
-                                isWholesale ? 'POR MAYOR' : 'POR KILO',
-                                style: GoogleFonts.inter(
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.bold,
-                                  color: isWholesale
-                                      ? const Color(0xFF047857)
-                                      : Colors.grey[600],
-                                ),
-                              ),
-                              if (isWholesale && data['wholesaleMin'] != null)
+                              if (displayOldPrice != null)
                                 Text(
-                                  '(${data['wholesaleMin']})',
+                                  displayOldPrice,
                                   style: GoogleFonts.inter(
-                                    fontSize: 7,
-                                    fontWeight: FontWeight.w700,
-                                    color: const Color(0xFF047857).withValues(alpha: 0.85),
+                                    color: Colors.grey,
+                                    fontSize: 10,
+                                    decoration: TextDecoration.lineThrough,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
+                              Text(
+                                displayPrice,
+                                style: GoogleFonts.inter(
+                                  color: isWholesale
+                                      ? const Color(0xFF047857)
+                                      : const Color(0xFF047857),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w900,
+                                  height: 1.1,
+                                ),
+                              ),
+                              const SizedBox(height: 1),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    isWholesale ? 'POR MAYOR' : 'POR KILO',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 8,
+                                      fontWeight: FontWeight.bold,
+                                      color: isWholesale
+                                          ? const Color(0xFF047857)
+                                          : Colors.grey[600],
+                                    ),
+                                  ),
+                                  if (isWholesale &&
+                                      data['wholesaleMin'] != null)
+                                    Text(
+                                      '(${data['wholesaleMin']})',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 7,
+                                        fontWeight: FontWeight.w700,
+                                        color: const Color(
+                                          0xFF047857,
+                                        ).withValues(alpha: 0.85),
+                                      ),
+                                    ),
+                                ],
+                              ),
                             ],
                           ),
-                        ],
+                        ),
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 4),
+
+                  // Sales Mode Switcher [ Detalle | Por Mayor ]
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: _buildCardSalesModeBadge(salesMode, name, isDark),
+                  ),
+                  const SizedBox(height: 4),
+
+                  // Rating & Reviews
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.star, color: Colors.orange, size: 13),
+                        const SizedBox(width: 3),
+                        Text(
+                          data['rating'] ?? '4.8',
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 3),
+                        Text(
+                          '(128)',
+                          style: GoogleFonts.inter(
+                            fontSize: 10,
+                            color: Colors.grey[500],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
 
                   const SizedBox(height: 6),
@@ -1046,12 +1119,17 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
                                   ),
                                 ),
                                 const SizedBox(width: 4),
-                                Text(
-                                  '• A ${data['distance'] != null ? data['distance'].toString() : '4.2'} km',
-                                  style: TextStyle(
-                                    fontSize: 9.5,
-                                    fontWeight: FontWeight.bold,
-                                    color: isDark ? const Color(0xFF6EE7B7) : const Color(0xFF059669),
+                                Flexible(
+                                  child: Text(
+                                    '• A ${data['distance'] != null ? data['distance'].toString() : '4.2'} km',
+                                    style: TextStyle(
+                                      fontSize: 9.5,
+                                      fontWeight: FontWeight.bold,
+                                      color: isDark
+                                          ? const Color(0xFF6EE7B7)
+                                          : const Color(0xFF059669),
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               ],
@@ -1087,30 +1165,36 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
               : const Color(0xFFF1F5F9),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: isDark
-                ? const Color(0xFF475569)
-                : const Color(0xFFE2E8F0),
+            color: isDark ? const Color(0xFF475569) : const Color(0xFFE2E8F0),
           ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.timer_off_outlined,
-              color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF64748B),
-              size: 13,
-            ),
-            const SizedBox(width: 4),
-            Text(
-              'OFERTA FINALIZADA',
-              style: GoogleFonts.inter(
-                fontSize: 9,
-                fontWeight: FontWeight.bold,
-                color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF64748B),
-                letterSpacing: 0.3,
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.timer_off_outlined,
+                color: isDark
+                    ? const Color(0xFF9CA3AF)
+                    : const Color(0xFF64748B),
+                size: 13,
               ),
-            ),
-          ],
+              const SizedBox(width: 4),
+              Text(
+                'OFERTA FINALIZADA',
+                style: GoogleFonts.inter(
+                  fontSize: 9,
+                  fontWeight: FontWeight.bold,
+                  color: isDark
+                      ? const Color(0xFF9CA3AF)
+                      : const Color(0xFF64748B),
+                  letterSpacing: 0.3,
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -1132,59 +1216,65 @@ class _FlashOffersScreenState extends State<FlashOffersScreen>
               : const Color(0xFFD1FAE5),
         ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.schedule,
-            color: isDark ? const Color(0xFF6EE7B7) : const Color(0xFF047857),
-            size: 13,
-          ),
-          const SizedBox(width: 4),
-          Text(
-            'Termina en:',
-            style: GoogleFonts.inter(
-              fontSize: 9,
-              fontWeight: FontWeight.w600,
-              color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF3F4944),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.schedule,
+              color: isDark ? const Color(0xFF6EE7B7) : const Color(0xFF047857),
+              size: 13,
             ),
-          ),
-          const SizedBox(width: 5),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildSmallTimeUnitBox(hours, isDark),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: Text(
-                  ':',
-                  style: GoogleFonts.inter(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: isDark
-                        ? const Color(0xFF9CA3AF)
-                        : const Color(0xFF3F4944),
+            const SizedBox(width: 4),
+            Text(
+              'Termina en:',
+              style: GoogleFonts.inter(
+                fontSize: 9,
+                fontWeight: FontWeight.w600,
+                color: isDark
+                    ? const Color(0xFF9CA3AF)
+                    : const Color(0xFF3F4944),
+              ),
+            ),
+            const SizedBox(width: 5),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildSmallTimeUnitBox(hours, isDark),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: Text(
+                    ':',
+                    style: GoogleFonts.inter(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: isDark
+                          ? const Color(0xFF9CA3AF)
+                          : const Color(0xFF3F4944),
+                    ),
                   ),
                 ),
-              ),
-              _buildSmallTimeUnitBox(minutes, isDark),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: Text(
-                  ':',
-                  style: GoogleFonts.inter(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: isDark
-                        ? const Color(0xFF9CA3AF)
-                        : const Color(0xFF3F4944),
+                _buildSmallTimeUnitBox(minutes, isDark),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: Text(
+                    ':',
+                    style: GoogleFonts.inter(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: isDark
+                          ? const Color(0xFF9CA3AF)
+                          : const Color(0xFF3F4944),
+                    ),
                   ),
                 ),
-              ),
-              _buildSmallTimeUnitBox(seconds, isDark),
-            ],
-          ),
-        ],
+                _buildSmallTimeUnitBox(seconds, isDark),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

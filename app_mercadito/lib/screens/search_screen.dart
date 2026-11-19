@@ -1579,38 +1579,50 @@ class _SearchScreenState extends State<SearchScreen> {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   const SizedBox(height: 1.5),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'SKU: ${p['sku'] ?? _getProductSku(p)}',
-                                        style: TextStyle(
-                                          fontFamily: 'Manrope',
-                                          fontSize: 8.5,
-                                          fontWeight: FontWeight.w500,
-                                          color: isDark ? const Color(0xFF6B7280) : const Color(0xFF94A3B8),
-                                          letterSpacing: 0.2,
-                                        ),
-                                      ),
-                                      if (p['rating'] != null) ...[
-                                        const SizedBox(width: 6),
-                                        const Icon(Icons.star, size: 10, color: Colors.orange),
-                                        const SizedBox(width: 2),
+                                  FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    alignment: Alignment.centerLeft,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
                                         Text(
-                                          '${p['rating']}',
+                                          'SKU: ${p['sku'] ?? _getProductSku(p)}',
                                           style: TextStyle(
+                                            fontFamily: 'Manrope',
                                             fontSize: 8.5,
-                                            fontWeight: FontWeight.bold,
-                                            color: isDark ? Colors.grey[300] : const Color(0xFF475569),
+                                            fontWeight: FontWeight.w500,
+                                            color: isDark ? const Color(0xFF6B7280) : const Color(0xFF94A3B8),
+                                            letterSpacing: 0.2,
                                           ),
                                         ),
+                                        if (p['rating'] != null) ...[
+                                          const SizedBox(width: 6),
+                                          const Icon(Icons.star, size: 10, color: Colors.orange),
+                                          const SizedBox(width: 2),
+                                          Text(
+                                            '${p['rating']}',
+                                            style: TextStyle(
+                                              fontSize: 8.5,
+                                              fontWeight: FontWeight.bold,
+                                              color: isDark ? Colors.grey[300] : const Color(0xFF475569),
+                                            ),
+                                          ),
+                                        ],
                                       ],
-                                    ],
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
                             const SizedBox(width: 4),
-                            _buildSalesModeIndicator(p, theme, isDark, productTitle),
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 88),
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerRight,
+                                child: _buildSalesModeIndicator(p, theme, isDark, productTitle),
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 4),
@@ -1824,79 +1836,85 @@ class _SearchScreenState extends State<SearchScreen> {
                               ),
                               const SizedBox(width: 6),
                               // Styled Unit Selector Chip on the right
-                              PopupMenuButton<String>(
-                                initialValue: selectedUnit,
-                                padding: EdgeInsets.zero,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                elevation: 4,
-                                onSelected: (String newValue) {
-                                  setState(() {
-                                    _selectedUnits[productTitle] = newValue;
-                                  });
-                                },
-                                itemBuilder: (context) => availableUnits.map((u) {
-                                  final isCurrent = u == selectedUnit;
-                                  return PopupMenuItem(
-                                    value: u,
-                                    height: 36,
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          isCurrent ? Icons.check_circle_rounded : Icons.radio_button_unchecked,
-                                          size: 14,
-                                          color: isCurrent
-                                              ? (isDark ? const Color(0xFF34D399) : theme.colorScheme.primary)
-                                              : Colors.grey[400],
+                              Flexible(
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.centerLeft,
+                                  child: PopupMenuButton<String>(
+                                    initialValue: selectedUnit,
+                                    padding: EdgeInsets.zero,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                    elevation: 4,
+                                    onSelected: (String newValue) {
+                                      setState(() {
+                                        _selectedUnits[productTitle] = newValue;
+                                      });
+                                    },
+                                    itemBuilder: (context) => availableUnits.map((u) {
+                                      final isCurrent = u == selectedUnit;
+                                      return PopupMenuItem(
+                                        value: u,
+                                        height: 36,
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              isCurrent ? Icons.check_circle_rounded : Icons.radio_button_unchecked,
+                                              size: 14,
+                                              color: isCurrent
+                                                  ? (isDark ? const Color(0xFF34D399) : theme.colorScheme.primary)
+                                                  : Colors.grey[400],
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              'Venta por: $u',
+                                              style: TextStyle(
+                                                fontFamily: 'Manrope',
+                                                fontSize: 12,
+                                                fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
+                                                color: isCurrent
+                                                    ? (isDark ? const Color(0xFF34D399) : theme.colorScheme.primary)
+                                                    : (isDark ? const Color(0xFFF3F4F6) : Colors.black87),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          'Venta por: $u',
-                                          style: TextStyle(
-                                            fontFamily: 'Manrope',
-                                            fontSize: 12,
-                                            fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
-                                            color: isCurrent
-                                                ? (isDark ? const Color(0xFF34D399) : theme.colorScheme.primary)
-                                                : (isDark ? const Color(0xFFF3F4F6) : Colors.black87),
+                                      );
+                                    }).toList(),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3.5),
+                                      decoration: BoxDecoration(
+                                        color: isDark
+                                            ? const Color(0xFF1C222B)
+                                            : theme.colorScheme.primary.withValues(alpha: 0.08),
+                                        borderRadius: BorderRadius.circular(16),
+                                        border: Border.all(
+                                          color: isDark
+                                              ? const Color(0xFF2E3744)
+                                              : theme.colorScheme.primary.withValues(alpha: 0.22),
+                                          width: 0.8,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            'Venta por: $selectedUnit',
+                                            style: TextStyle(
+                                              fontFamily: 'Manrope',
+                                              fontSize: 9,
+                                              fontWeight: FontWeight.w700,
+                                              color: isDark ? const Color(0xFFD1D5DB) : const Color(0xFF0F172A),
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }).toList(),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3.5),
-                                  decoration: BoxDecoration(
-                                    color: isDark
-                                        ? const Color(0xFF1C222B)
-                                        : theme.colorScheme.primary.withValues(alpha: 0.08),
-                                    borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(
-                                      color: isDark
-                                          ? const Color(0xFF2E3744)
-                                          : theme.colorScheme.primary.withValues(alpha: 0.22),
-                                      width: 0.8,
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        'Venta por: $selectedUnit',
-                                        style: TextStyle(
-                                          fontFamily: 'Manrope',
-                                          fontSize: 9,
-                                          fontWeight: FontWeight.w700,
-                                          color: isDark ? const Color(0xFFD1D5DB) : const Color(0xFF0F172A),
-                                        ),
+                                          const SizedBox(width: 2),
+                                          Icon(
+                                            Icons.keyboard_arrow_down_rounded,
+                                            size: 13,
+                                            color: isDark ? const Color(0xFF34D399) : theme.colorScheme.primary,
+                                          ),
+                                        ],
                                       ),
-                                      const SizedBox(width: 2),
-                                      Icon(
-                                        Icons.keyboard_arrow_down_rounded,
-                                        size: 13,
-                                        color: isDark ? const Color(0xFF34D399) : theme.colorScheme.primary,
-                                      ),
-                                    ],
+                                    ),
                                   ),
                                 ),
                               ),

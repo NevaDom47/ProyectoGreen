@@ -1056,7 +1056,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
         crossAxisCount: 2,
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
-        childAspectRatio: 1.15,
+        mainAxisExtent: 148,
       ),
       itemBuilder: (context, index) {
         return _animateItem(_buildGamifiedTaskCard(_tasks[index], isDark), index + 2);

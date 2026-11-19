@@ -99,6 +99,11 @@ void main() {
     // Check SKU
     expect(find.textContaining('SKU:'), findsWidgets);
 
+    // Check tags & reviews homologated with Home card
+    expect(find.text('Frutas'), findsWidgets);
+    expect(find.text('Oferta'), findsWidgets);
+    expect(find.text('(128 reseñas)'), findsWidgets);
+
     // Check CALIDAD row is present
     expect(find.text('CALIDAD'), findsWidgets);
     expect(find.text('PRIMERA CALIDAD'), findsWidgets);
@@ -111,15 +116,15 @@ void main() {
     expect(find.text('Detalle'), findsWidgets);
     expect(find.text('Por Mayor'), findsWidgets);
 
-    // Check action button
-    expect(find.text('AGREGAR AL CARRITO'), findsWidgets);
+    // Check action button homologated with Home card
+    expect(find.text('Agregar al carrito'), findsWidgets);
 
     // Tap 'Por Mayor' on the first product card
     await tester.tap(find.text('Por Mayor').first);
     await tester.pumpAndSettle();
 
     // Verify wholesale price & unit update
-    expect(find.textContaining('por mayor'), findsWidgets);
+    expect(find.text('POR MAYOR'), findsWidgets);
 
     // Check GridView has 2 columns
     final gridFinders = find.byType(GridView);
@@ -129,9 +134,9 @@ void main() {
     expect(delegate.crossAxisCount, 2);
   });
 
-  testWidgets('ProviderProfileScreen product cards fit on mobile screen without overflow', (WidgetTester tester) async {
-    tester.view.physicalSize = const Size(375, 812);
-    tester.view.devicePixelRatio = 1.0;
+  testWidgets('ProviderProfileScreen product cards fit on mobile screens without overflow (375x812 and 360x800)', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 3.0; // 360 x 800 dp
     addTearDown(() {
       tester.view.resetPhysicalSize();
       tester.view.resetDevicePixelRatio();
@@ -148,13 +153,32 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Calidad: Primera'), findsOneWidget);
-    expect(find.text('AGREGAR AL CARRITO'), findsWidgets);
+    expect(find.text('Agregar al carrito'), findsWidgets);
     expect(find.text('CALIDAD'), findsWidgets);
+    expect(find.text('(128 reseñas)'), findsWidgets);
     expect(find.text('PROVEEDOR'), findsNothing);
     expect(find.text('UBICACIÓN'), findsNothing);
 
-    final exception = tester.takeException();
-    expect(exception, isNull);
+    // Scroll down to bring product cards comfortably below the pinned TabBar
+    await tester.drag(find.byType(NestedScrollView), const Offset(0, -350));
+    await tester.pumpAndSettle();
+
+    // Toggle wholesale on narrow viewport too
+    final firstPorMayor = find.text('Por Mayor').first;
+    await tester.tap(firstPorMayor);
+    await tester.pumpAndSettle();
+    expect(find.text('POR MAYOR'), findsWidgets);
+
+    final exception360 = tester.takeException();
+    expect(exception360, isNull);
+
+    // Also test 375x812
+    tester.view.physicalSize = const Size(375, 812);
+    tester.view.devicePixelRatio = 1.0;
+    await tester.pumpAndSettle();
+
+    final exception375 = tester.takeException();
+    expect(exception375, isNull);
   });
 
   testWidgets('ProviderProfileScreen displays sector and average distance to user, and action buttons', (WidgetTester tester) async {

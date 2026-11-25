@@ -1,4 +1,4 @@
-package com.example.app_mercadito
+package com.elmercaditoapp
 
 import android.Manifest
 import android.app.Notification
@@ -22,7 +22,7 @@ import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
     companion object {
-        private const val CHANNEL_NAME = "com.example.app_mercadito/notifications"
+        private const val CHANNEL_NAME = "com.elmercaditoapp/notifications"
         private const val REQ_POST_NOTIFICATIONS = 9001
         private const val EXTRA_ROUTE = "notif_route"
         private const val EXTRA_NOTIF_ID = "notif_id"

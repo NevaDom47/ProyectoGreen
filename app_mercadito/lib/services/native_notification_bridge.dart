@@ -48,7 +48,7 @@ class NativeNotificationBridge {
   static final NativeNotificationBridge instance = NativeNotificationBridge._internal();
 
   static const MethodChannel _channel =
-      MethodChannel('com.example.app_mercadito/notifications');
+      MethodChannel('com.elmercaditoapp/notifications');
 
   bool _initialized = false;
   int _nextAndroidId = 1001;
